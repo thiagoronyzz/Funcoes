@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Funções: ferramenta educacional para visualizar gráficos e propriedades de funções matemáticas." />
+  <title>Funções — Visualizador Matemático</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">Ferramenta interativa de estudo</p>
+      <h1>Funções</h1>
+      <p class="hero__subtitle">
+        Escolha um tipo de função, ajuste os coeficientes e observe o gráfico e a ficha técnica em tempo real.
+      </p>
+    </div>
+    <aside class="hero__card" aria-label="Dica rápida">
+      <strong>Dica acadêmica</strong>
+      <span>Use o zoom com a roda do mouse e arraste o gráfico para navegar. Pontos críticos aparecem destacados.</span>
+    </aside>
+  </header>
+
+  <main class="app-shell">
+    <section class="panel controls-panel" aria-labelledby="controls-title">
+      <div class="section-heading">
+        <p class="eyebrow">Entrada</p>
+        <h2 id="controls-title">Configuração da função</h2>
+      </div>
+
+      <label class="field field--select" for="functionType">
+        <span>Tipo de função</span>
+        <select id="functionType" autocomplete="off"></select>
+      </label>
+
+      <form id="dynamicInputs" class="dynamic-inputs" autocomplete="off" aria-live="polite"></form>
+
+      <div id="warningBox" class="warning" role="status" aria-live="polite" hidden></div>
+
+      <div class="action-row">
+        <button id="resetZoom" class="button" type="button">Resetar zoom</button>
+        <button id="restoreDefaults" class="button button--ghost" type="button">Valores padrão</button>
+      </div>
+
+      <div class="helper-card">
+        <h3>Notação aceita</h3>
+        <ul>
+          <li>Coeficientes polinomiais: <code>1, 0, -4</code> representa <code>x² − 4</code>.</li>
+          <li>Expressões conceituais: use <code>x</code> ou <code>u</code>, por exemplo <code>sqrt(x+4)</code>, <code>sin(x)</code>, <code>abs(x)</code>.</li>
+          <li>Ângulos trigonométricos são medidos em radianos.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="panel graph-panel" aria-labelledby="graph-title">
+      <div class="section-heading graph-heading">
+        <div>
+          <p class="eyebrow">Visualização</p>
+          <h2 id="graph-title">Gráfico interativo</h2>
+        </div>
+        <span id="formulaBadge" class="formula-badge" aria-live="polite"></span>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="functionChart" aria-label="Gráfico da função selecionada" role="img"></canvas>
+      </div>
+      <p class="graph-note">
+        As assíntotas aparecem como linhas tracejadas. Pontos críticos são calculados com as fórmulas indicadas na ficha técnica.
+      </p>
+    </section>
+
+    <section class="panel study-panel" aria-labelledby="study-title">
+      <div class="section-heading">
+        <p class="eyebrow">Painel de estudo</p>
+        <h2 id="study-title">Dados relevantes</h2>
+      </div>
+      <div id="studyCards" class="study-grid" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>
+      Feito em HTML5, CSS3 e JavaScript puro com Chart.js, chartjs-plugin-zoom e math.js via CDN.
+    </p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjs@13.0.3/lib/browser/math.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

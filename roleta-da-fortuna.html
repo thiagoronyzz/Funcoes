@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0b0f1a" />
+<meta name="description" content="Roleta da Fortuna — jogo de apostas de cores com roleta metálica, 10 divisórias e 5 cores." />
+<title>Roleta da Fortuna</title>
+<style>
+/* ==========================================================================
+   ROLETA DA FORTUNA — arquivo único (HTML + CSS + JS)
+   Sem frameworks, sem bibliotecas, sem backend, sem imagens externas.
+   ========================================================================== */
+
+/* ---------- Tokens de design ---------- */
+:root{
+  --bg-0:#070a12;
+  --bg-1:#0d1322;
+  --bg-2:#141c30;
+  --panel: rgba(255,255,255,.045);
+  --panel-strong: rgba(255,255,255,.075);
+  --stroke: rgba(255,255,255,.10);
+  --stroke-strong: rgba(255,255,255,.20);
+  --text:#eef2ff;
+  --muted:#93a0bf;
+  --gold-1:#fff3c4;
+  --gold-2:#ffd479;
+  --gold-3:#c8942f;
+  --gold-4:#7a5410;
+  --green:#22c55e;
+  --yellow:#facc15;
+  --orange:#f97316;
+  --purple:#a855f7;
+  --red:#ef4444;
+  --win:#34d399;
+  --lose:#fb7185;
+  --radius:18px;
+  --shadow-soft: 0 18px 40px rgba(0,0,0,.45);
+  --font: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ---------- Reset básico ---------- */
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  font-family:var(--font);
+  color:var(--text);
+  background:
+    radial-gradient(1200px 700px at 12% -10%, #1b2a4d 0%, transparent 60%),
+    radial-gradient(900px 600px at 100% 0%, #3a2352 0%, transparent 55%),
+    radial-gradient(900px 700px at 50% 120%, #10233a 0%, transparent 60%),
+    linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+/* textura sutil de "carpete de cassino" */
+body::before{
+  content:"";
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255,255,255,.012) 0 2px, transparent 2px 6px),
+    repeating-linear-gradient(-45deg, rgba(255,255,255,.012) 0 2px, transparent 2px 6px);
+  opacity:.7;
+}
+button,input{ font-family:inherit; }
+button{ cursor:pointer; border:none; background:none; color:inherit; }
+button:disabled{ cursor:not-allowed; }
+:focus-visible{ outline:2px solid var(--gold-2); outline-offset:3px; }
+
+/* ---------- Layout geral ---------- */
+.wrap{
+  position:relative; z-index:1;
+  max-width:1180px;
+  margin:0 auto;
+  padding:22px 18px 44px;
+}
+
+/* ---------- Cabeçalho ---------- */
+.topbar{
+  display:flex; align-items:flex-start; justify-content:space-between;
+  gap:16px; flex-wrap:wrap; margin-bottom:18px;
+}
+.brand{ display:flex; align-items:center; gap:14px; min-width:0; }
+.brand__mark{
+  width:52px; height:52px; flex:0 0 auto; border-radius:50%;
+  background:
+    conic-gradient(from 200deg, var(--gold-4), var(--gold-2) 20%, var(--gold-1) 32%, var(--gold-3) 55%, var(--gold-4) 75%, var(--gold-2) 100%);
+  box-shadow: inset 0 0 0 2px rgba(0,0,0,.35), 0 8px 22px rgba(255,190,80,.22);
+  display:grid; place-items:center;
+  animation: markSpin 14s linear infinite;
+}
+.brand__mark span{
+  width:34px;height:34px;border-radius:50%;
+  background: radial-gradient(circle at 32% 28%, #2a3350, #0a0e18 70%);
+  display:grid;place-items:center;font-weight:800;font-size:15px;
+  color:var(--gold-2); letter-spacing:.5px;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,.8);
+}
+@keyframes markSpin{ to{ transform:rotate(360deg);} }
+@media (prefers-reduced-motion: reduce){ .brand__mark{ animation:none; } }
+
+h1{
+  margin:0; font-size:clamp(26px, 5.2vw, 44px); line-height:1.05;
+  letter-spacing:.5px; font-weight:800;
+  background:linear-gradient(180deg,#fffaf0 0%, var(--gold-2) 45%, var(--gold-3) 78%, #8a6317 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  text-shadow:0 2px 18px rgba(255,193,84,.18);
+  white-space:nowrap;
+}
+.tagline{ margin:3px 0 0; color:var(--muted); font-size:13px; letter-spacing:.4px; }
+
+/* ---------- Caixa de saldo inicial (canto) ---------- */
+.setup{
+  background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
+  border:1px solid var(--stroke);
+  border-radius:14px; padding:10px 12px;
+  box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,.09);
+  backdrop-filter: blur(8px);
+  min-width:236px;
+}
+.setup__label{
+  display:block; font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase;
+  color:var(--muted); margin-bottom:6px; font-weight:700;
+}
+.setup__row{ display:flex; gap:8px; align-items:center; }
+.money-field{ position:relative; flex:1; min-width:0; }
+.money-field .prefix{
+  position:absolute; left:10px; top:50%; transform:translateY(-50%);
+  font-size:12px; color:var(--muted); pointer-events:none; font-weight:700;
+}
+input[type="text"], input[type="number"]{
+  width:100%; padding:9px 10px 9px 32px;
+  background:rgba(4,8,16,.72); color:var(--text);
+  border:1px solid var(--stroke-strong); border-radius:10px;
+  font-size:15px; font-weight:700; letter-spacing:.4px;
+  transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+input:hover:not(:disabled){ border-color:rgba(255,212,121,.45); }
+input:focus{ border-color:var(--gold-2); box-shadow:0 0 0 3px rgba(255,212,121,.16); outline:none; }
+input:disabled{ opacity:.5; cursor:not-allowed; }
+input.invalid{ border-color:var(--lose); box-shadow:0 0 0 3px rgba(251,113,133,.16); }
+
+.btn-mini{
+  padding:9px 12px; border-radius:10px; font-size:12px; font-weight:800;
+  letter-spacing:.6px; text-transform:uppercase; white-space:nowrap;
+  background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.05));
+  border:1px solid var(--stroke-strong); color:var(--text);
+  transition:transform .14s ease, background .18s ease, border-color .18s ease, opacity .18s;
+}
+.btn-mini:hover:not(:disabled){ background:linear-gradient(180deg, rgba(255,212,121,.28), rgba(255,212,121,.10)); border-color:rgba(255,212,121,.5); }
+.btn-mini:active:not(:disabled){ transform:scale(.95); }
+.btn-mini:disabled{ opacity:.45; }
+.setup__hint{ margin:7px 0 0; font-size:11px; color:var(--muted); line-height:1.35; }
+.setup__hint.err{ color:var(--lose); }
+.setup__hint.ok{ color:var(--win); }
+
+/* ---------- Grade principal ---------- */
+.grid{
+  display:grid; gap:20px;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  align-items:start;
+}
+@media (max-width: 900px){ .grid{ grid-template-columns:1fr; } }
+
+.panel{
+  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  border:1px solid var(--stroke);
+  border-radius:var(--radius);
+  box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,.07);
+  backdrop-filter: blur(6px);
+  padding:18px;
+}
+
+/* ---------- Roleta ---------- */
+.stage{ display:flex; flex-direction:column; align-items:center; gap:14px; padding:22px 16px 18px; }
+.wheel-holder{
+  position:relative; width:100%; max-width:440px; aspect-ratio:1/1;
+  filter: drop-shadow(0 26px 40px rgba(0,0,0,.6));
+  transition: filter .4s ease;
+}
+.wheel-holder.is-winner{ filter: drop-shadow(0 26px 46px rgba(0,0,0,.6)) drop-shadow(0 0 26px rgba(255,214,130,.4)); }
+#wheel{ width:100%; height:100%; display:block; touch-action:manipulation; }
+/* halo de luz atrás da roleta */
+.wheel-holder::before{
+  content:""; position:absolute; inset:-9%; border-radius:50%; z-index:-1;
+  background: radial-gradient(circle, rgba(255,208,120,.16), rgba(255,208,120,0) 62%);
+  opacity:.85; transition:opacity .5s ease;
+}
+.wheel-holder.spinning::before{ opacity:1; animation:haloPulse 1.6s ease-in-out infinite; }
+@keyframes haloPulse{ 50%{ transform:scale(1.05); } }
+
+/* ---------- Resultado ---------- */
+.result{
+  width:100%; max-width:470px; min-height:82px;
+  border-radius:14px; padding:14px 16px; text-align:center;
+  background:linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.015));
+  border:1px solid var(--stroke);
+  display:flex; flex-direction:column; justify-content:center; gap:6px;
+  transition: border-color .3s ease, box-shadow .3s ease, background .3s ease;
+}
+.result.win{ border-color:rgba(52,211,153,.55); box-shadow:0 0 26px rgba(52,211,153,.18) inset; background:linear-gradient(180deg, rgba(52,211,153,.12), rgba(52,211,153,.03)); }
+.result.lose{ border-color:rgba(251,113,133,.5); box-shadow:0 0 26px rgba(251,113,133,.14) inset; background:linear-gradient(180deg, rgba(251,113,133,.10), rgba(251,113,133,.03)); }
+.result.pop{ animation: pop .45s cubic-bezier(.2,1.4,.4,1); }
+@keyframes pop{ 0%{ transform:scale(.94); opacity:.4 } 100%{ transform:scale(1); opacity:1 } }
+.result__head{ font-size:clamp(17px,3.4vw,22px); font-weight:800; letter-spacing:.4px; display:flex; align-items:center; justify-content:center; gap:9px; flex-wrap:wrap; }
+.result__sub{ font-size:13px; color:var(--muted); }
+.result__sub b{ color:var(--text); }
+.swatch{
+  width:17px;height:17px;border-radius:5px;display:inline-block;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.5), 0 0 12px currentColor;
+}
+
+/* ---------- Saldo ---------- */
+.balance-card{
+  display:flex; align-items:center; justify-content:space-between; gap:14px;
+  padding:14px 16px; border-radius:14px; margin-bottom:16px;
+  background:linear-gradient(135deg, rgba(255,212,121,.16), rgba(255,212,121,.03) 55%, rgba(255,255,255,.03));
+  border:1px solid rgba(255,212,121,.28);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+}
+.balance-card__k{ font-size:10.5px; letter-spacing:1.6px; text-transform:uppercase; color:var(--muted); font-weight:800; }
+.balance-card__v{
+  font-size:clamp(26px,5.5vw,36px); font-weight:800; letter-spacing:.5px; line-height:1.1;
+  background:linear-gradient(180deg,#fff8e6, var(--gold-2) 55%, var(--gold-3));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  font-variant-numeric: tabular-nums;
+}
+.balance-card__v.bump{ animation: bump .5s cubic-bezier(.2,1.5,.4,1); }
+@keyframes bump{ 0%{ transform:scale(1) } 45%{ transform:scale(1.14) } 100%{ transform:scale(1) } }
+.delta{
+  font-size:15px; font-weight:800; font-variant-numeric:tabular-nums;
+  opacity:0; transform:translateY(6px); transition:opacity .3s, transform .3s;
+}
+.delta.show{ opacity:1; transform:translateY(0); }
+.delta.up{ color:var(--win); } .delta.down{ color:var(--lose); }
+
+/* ---------- Blocos de controle ---------- */
+.block{ margin-bottom:16px; }
+.block__title{
+  display:flex; align-items:baseline; justify-content:space-between; gap:10px;
+  font-size:10.5px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted);
+  font-weight:800; margin-bottom:9px;
+}
+.block__title .note{ text-transform:none; letter-spacing:.2px; font-size:11px; font-weight:600; opacity:.85; }
+
+/* aviso discreto do saldo inicial escolhido (acima do campo de aposta) */
+.initial-note{
+  font-size:11px; color:var(--muted); opacity:.72; margin:0 0 7px;
+  letter-spacing:.3px;
+}
+.initial-note b{ font-weight:700; color:#c3cee8; }
+
+.bet-row{ display:flex; gap:8px; align-items:stretch; }
+.bet-row .money-field{ flex:1 1 auto; }
+.bet-row input{ font-size:18px; padding:12px 12px 12px 34px; }
+.chips{ display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+.chip{
+  flex:1 1 auto; min-width:56px; padding:8px 6px; border-radius:10px;
+  font-size:12px; font-weight:800; letter-spacing:.5px;
+  background:rgba(255,255,255,.05); border:1px solid var(--stroke);
+  color:#cdd7ee; transition:transform .13s ease, background .18s, border-color .18s, color .18s;
+}
+.chip:hover:not(:disabled){ background:rgba(255,212,121,.16); border-color:rgba(255,212,121,.45); color:#fff; }
+.chip:active:not(:disabled){ transform:scale(.94); }
+.chip:disabled{ opacity:.4; }
+
+/* ---------- Cartões de cor ---------- */
+.colors{ display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+@media (max-width:520px){ .colors{ grid-template-columns:repeat(3,1fr); } }
+.color-card{
+  position:relative; padding:12px 6px 10px; border-radius:14px;
+  background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
+  border:1px solid var(--stroke);
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  transition: transform .16s cubic-bezier(.2,1.3,.4,1), border-color .2s, box-shadow .25s, background .2s;
+  overflow:hidden;
+}
+.color-card::after{ /* brilho de vidro */
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(160deg, rgba(255,255,255,.16), transparent 45%);
+}
+.color-card:hover:not(:disabled){ transform:translateY(-3px); border-color:var(--stroke-strong); }
+.color-card:active:not(:disabled){ transform:translateY(-1px) scale(.98); }
+.color-card .dot{
+  width:34px; height:34px; border-radius:50%;
+  background:
+    radial-gradient(circle at 32% 26%, rgba(255,255,255,.85), rgba(255,255,255,0) 42%),
+    var(--c);
+  box-shadow: inset 0 -4px 9px rgba(0,0,0,.45), 0 4px 12px rgba(0,0,0,.4);
+  transition: box-shadow .25s ease, transform .25s ease;
+}
+.color-card .nm{ font-size:11.5px; font-weight:800; letter-spacing:.6px; color:#cdd7ee; transition:color .2s; }
+.color-card[aria-pressed="true"]{
+  border-color:var(--c);
+  background:linear-gradient(180deg, color-mix(in srgb, var(--c) 26%, transparent), rgba(255,255,255,.02));
+  box-shadow: 0 0 0 1px var(--c) inset, 0 8px 26px -6px var(--c);
+}
+.color-card[aria-pressed="true"] .dot{ transform:scale(1.08); box-shadow: inset 0 -4px 9px rgba(0,0,0,.35), 0 0 18px var(--c); }
+.color-card[aria-pressed="true"] .nm{ color:#fff; }
+.color-card .tick{
+  position:absolute; top:5px; right:6px; width:17px; height:17px; border-radius:50%;
+  background:var(--c); color:#08101c; font-size:11px; font-weight:900;
+  display:grid; place-items:center; opacity:0; transform:scale(.4);
+  transition:opacity .2s, transform .25s cubic-bezier(.2,1.6,.4,1); z-index:2;
+}
+.color-card[aria-pressed="true"] .tick{ opacity:1; transform:scale(1); }
+.color-card:disabled{ opacity:.55; }
+.color-card.shake{ animation: shake .42s ease; }
+@keyframes shake{
+  10%,90%{ transform:translateX(-2px) } 20%,80%{ transform:translateX(4px) }
+  30%,50%,70%{ transform:translateX(-6px) } 40%,60%{ transform:translateX(6px) }
+}
+
+.hintbar{
+  margin-top:9px; font-size:12px; color:var(--muted); min-height:17px;
+  transition:color .2s, opacity .2s; opacity:.9;
+}
+.hintbar.warn{ color:#ffcf6b; font-weight:700; }
+.hintbar.err{ color:var(--lose); font-weight:700; }
+.hintbar.flash{ animation: flashIn .4s ease; }
+@keyframes flashIn{ from{ transform:translateY(-4px); opacity:0 } to{ transform:none; opacity:.9 } }
+
+/* ---------- Botão GIRAR ---------- */
+.spin-btn{
+  position:relative; width:100%; padding:19px 18px; border-radius:16px;
+  font-size:clamp(18px,3.6vw,23px); font-weight:900; letter-spacing:3px; text-transform:uppercase;
+  color:#2a1c02; overflow:hidden;
+  background:linear-gradient(180deg, #fff4d0 0%, var(--gold-2) 36%, var(--gold-3) 72%, #8f6414 100%);
+  box-shadow: 0 12px 30px -8px rgba(255,190,80,.55), inset 0 2px 0 rgba(255,255,255,.7), inset 0 -3px 0 rgba(0,0,0,.28);
+  transition: transform .14s cubic-bezier(.2,1.4,.4,1), box-shadow .25s, filter .25s;
+}
+.spin-btn:hover:not(:disabled){ transform:translateY(-2px); box-shadow:0 18px 36px -8px rgba(255,190,80,.7), inset 0 2px 0 rgba(255,255,255,.8), inset 0 -3px 0 rgba(0,0,0,.28); }
+.spin-btn:active:not(:disabled){ transform:translateY(1px) scale(.99); }
+.spin-btn:disabled{ filter:grayscale(.75) brightness(.72); box-shadow:none; }
+.spin-btn::after{ /* varredura de brilho */
+  content:""; position:absolute; top:0; left:-60%; width:45%; height:100%;
+  background:linear-gradient(100deg, transparent, rgba(255,255,255,.75), transparent);
+  transform:skewX(-20deg);
+}
+.spin-btn:not(:disabled)::after{ animation: sweep 3.4s ease-in-out infinite; }
+@keyframes sweep{ 0%{ left:-60% } 55%{ left:130% } 100%{ left:130% } }
+
+/* ---------- Game over ---------- */
+.gameover{
+  margin-top:14px; padding:16px; border-radius:14px; text-align:center;
+  border:1px solid rgba(251,113,133,.45);
+  background:linear-gradient(180deg, rgba(251,113,133,.14), rgba(251,113,133,.03));
+  animation: pop .4s cubic-bezier(.2,1.4,.4,1);
+}
+.gameover p{ margin:0 0 12px; font-size:14px; color:#ffd9de; line-height:1.45; }
+.retry-btn{
+  width:100%; padding:16px; border-radius:14px;
+  font-size:clamp(14px,3vw,17px); font-weight:900; letter-spacing:1.6px; text-transform:uppercase; color:#fff;
+  background:linear-gradient(180deg, #ff8fa3 0%, #f43f5e 45%, #a8112f 100%);
+  box-shadow:0 12px 28px -10px rgba(244,63,94,.85), inset 0 2px 0 rgba(255,255,255,.35), inset 0 -3px 0 rgba(0,0,0,.28);
+  transition:transform .14s cubic-bezier(.2,1.4,.4,1), box-shadow .25s;
+  animation: retryPulse 2s ease-in-out infinite;
+}
+.retry-btn:hover{ transform:translateY(-2px); }
+.retry-btn:active{ transform:translateY(1px) scale(.99); }
+@keyframes retryPulse{ 50%{ box-shadow:0 16px 34px -10px rgba(244,63,94,1), inset 0 2px 0 rgba(255,255,255,.35), inset 0 -3px 0 rgba(0,0,0,.28); } }
+
+/* ---------- Rodapé / estatísticas ---------- */
+.stats{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:4px;
+}
+.stat{
+  text-align:center; padding:9px 4px; border-radius:11px;
+  background:rgba(255,255,255,.035); border:1px solid var(--stroke);
+}
+.stat b{ display:block; font-size:16px; font-variant-numeric:tabular-nums; }
+.stat span{ font-size:9.5px; letter-spacing:1px; text-transform:uppercase; color:var(--muted); font-weight:700; }
+.foot{ text-align:center; color:var(--muted); font-size:11.5px; margin-top:22px; opacity:.7; }
+
+/* utilitário de acessibilidade */
+.sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+
+/* botão de som */
+.sound-toggle{
+  width:38px; height:38px; border-radius:10px; flex:0 0 auto;
+  background:rgba(255,255,255,.05); border:1px solid var(--stroke);
+  display:grid; place-items:center; font-size:16px; transition:background .2s, border-color .2s, transform .14s;
+}
+.sound-toggle:hover{ background:rgba(255,212,121,.16); border-color:rgba(255,212,121,.4); }
+.sound-toggle:active{ transform:scale(.93); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ CABEÇALHO + CONFIGURAÇÃO DE SALDO INICIAL ============ -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand__mark" aria-hidden="true"><span>RF</span></div>
+      <div>
+        <h1>Roleta da Fortuna</h1>
+        <p class="tagline">10 divisórias &middot; 5 cores &middot; escolha 2 e dobre sua aposta</p>
+      </div>
+    </div>
+
+    <!-- Pequena área de configuração do saldo inicial (canto) -->
+    <section class="setup" aria-label="Configuração de saldo inicial">
+      <label class="setup__label" for="initialInput">Saldo inicial</label>
+      <div class="setup__row">
+        <div class="money-field">
+          <span class="prefix">R$</span>
+          <input id="initialInput" type="text" inputmode="numeric" value="100"
+                 autocomplete="off" aria-describedby="setupHint" />
+        </div>
+        <button class="btn-mini" id="applyInitial" type="button">Aplicar</button>
+        <button class="sound-toggle" id="soundBtn" type="button" title="Ligar/desligar som"
+                aria-label="Ligar ou desligar som">🔊</button>
+      </div>
+      <p class="setup__hint" id="setupHint">Aplicar reinicia a partida com o novo valor (mínimo R$5).</p>
+    </section>
+  </header>
+
+  <!-- ============ CONTEÚDO ============ -->
+  <div class="grid">
+
+    <!-- ---------- COLUNA ESQUERDA: ROLETA + RESULTADO ---------- -->
+    <section class="panel stage" aria-label="Roleta">
+      <div class="wheel-holder" id="wheelHolder">
+        <canvas id="wheel" width="880" height="880" role="img"
+                aria-label="Roleta com 10 divisórias: verde, amarelo, laranja, roxo e vermelho, cada cor duas vezes."></canvas>
+      </div>
+
+      <div class="result" id="result" role="status" aria-live="polite">
+        <div class="result__head" id="resultHead">Escolha duas cores e gire a roleta</div>
+        <div class="result__sub" id="resultSub">Aposta mínima de R$5 &middot; acertando, você recebe o dobro.</div>
+      </div>
+
+      <div class="stats" aria-label="Estatísticas da sessão">
+        <div class="stat"><b id="stRounds">0</b><span>Rodadas</span></div>
+        <div class="stat"><b id="stWins">0</b><span>Vitórias</span></div>
+        <div class="stat"><b id="stLosses">0</b><span>Derrotas</span></div>
+        <div class="stat"><b id="stBest">R$100</b><span>Recorde</span></div>
+      </div>
+    </section>
+
+    <!-- ---------- COLUNA DIREITA: CONTROLES ---------- -->
+    <section class="panel" aria-label="Controles do jogo">
+
+      <!-- Saldo atual -->
+      <div class="balance-card">
+        <div>
+          <div class="balance-card__k">Saldo atual</div>
+          <div class="balance-card__v" id="balanceValue">R$100</div>
+        </div>
+        <div class="delta" id="balanceDelta"></div>
+      </div>
+
+      <!-- Aposta -->
+      <div class="block">
+        <div class="block__title"><span>Valor da aposta</span><span class="note">mín. R$5 &middot; inteiros</span></div>
+        <!-- lembrete discreto do saldo inicial escolhido -->
+        <p class="initial-note" id="initialNote">Saldo inicial definido: <b>R$100</b></p>
+        <div class="bet-row">
+          <div class="money-field">
+            <span class="prefix">R$</span>
+            <input id="betInput" type="text" inputmode="numeric" value="5" autocomplete="off"
+                   aria-label="Valor da aposta em reais" />
+          </div>
+        </div>
+        <div class="chips">
+          <button class="chip" data-bet="min" type="button">Mín</button>
+          <button class="chip" data-bet="-5" type="button">−5</button>
+          <button class="chip" data-bet="+5" type="button">+5</button>
+          <button class="chip" data-bet="half" type="button">½</button>
+          <button class="chip" data-bet="max" type="button">Máx</button>
+        </div>
+        <div class="hintbar" id="betHint"></div>
+      </div>
+
+      <!-- Cores -->
+      <div class="block">
+        <div class="block__title"><span>Escolha duas cores</span><span class="note" id="colorCount">0 / 2</span></div>
+        <div class="colors" id="colors"></div>
+        <div class="hintbar" id="colorHint">Selecione exatamente 2 cores para liberar o giro.</div>
+      </div>
+
+      <!-- Girar -->
+      <button class="spin-btn" id="spinBtn" type="button" disabled>Girar</button>
+
+      <!-- Fim de jogo -->
+      <div id="gameOverBox" hidden></div>
+    </section>
+  </div>
+
+  <p class="foot">Jogo de entretenimento fictício &middot; sem dinheiro real &middot; feito em um único arquivo HTML.</p>
+</div>
+
+<script>
+"use strict";
+/* ==========================================================================
+   1) CONFIGURAÇÃO E ESTADO
+   ========================================================================== */
+
+/** Paleta das 5 cores do jogo (cada uma aparece 2x na roleta). */
+const COLORS = [
+  { id:"verde",    name:"Verde",    base:"#22c55e", dark:"#0b6b33", light:"#8bf5b4" },
+  { id:"amarelo",  name:"Amarelo",  base:"#facc15", dark:"#8f7205", light:"#fff196" },
+  { id:"laranja",  name:"Laranja",  base:"#f97316", dark:"#8f3c04", light:"#ffbe86" },
+  { id:"roxo",     name:"Roxo",     base:"#a855f7", dark:"#54169b", light:"#e0b6ff" },
+  { id:"vermelho", name:"Vermelho", base:"#ef4444", dark:"#8c1111", light:"#ffa3a3" },
+];
+
+/**
+ * Ordem das 10 divisórias (índices de COLORS).
+ * Padrão 0,1,2,3,4 repetido: cada cor aparece 2x e fica exatamente
+ * oposta (180°) à sua irmã — distribuição visualmente equilibrada.
+ */
+const WHEEL = [0, 1, 2, 3, 4, 0, 1, 2, 3, 4];
+const SLICES = WHEEL.length;              // 10 divisórias
+const SLICE_DEG = 360 / SLICES;           // 36° por divisória
+const MIN_BET = 5;                        // aposta mínima
+const DEFAULT_BALANCE = 100;              // saldo padrão
+const MAX_BALANCE = 1000000;              // limite sensato para o saldo inicial
+const SPIN_MS = 5200;                     // duração do giro
+
+/** Estado global do jogo. */
+const state = {
+  initialBalance: DEFAULT_BALANCE,
+  balance: DEFAULT_BALANCE,
+  selected: [],        // ids das cores escolhidas (máx. 2)
+  spinning: false,
+  gameOver: false,
+  rotation: 0,         // rotação atual da roleta em graus (0–360)
+  glowIndex: null,     // divisória sob o ponteiro (brilho durante o giro)
+  winnerIndex: null,   // divisória vencedora (destaque ao parar)
+  stats: { rounds:0, wins:0, losses:0, best: DEFAULT_BALANCE },
+  soundOn: true,
+};
+
+/* ---------- Atalhos de DOM ---------- */
+const $ = (id) => document.getElementById(id);
+const el = {
+  canvas:$("wheel"), holder:$("wheelHolder"),
+  balance:$("balanceValue"), delta:$("balanceDelta"),
+  bet:$("betInput"), betHint:$("betHint"),
+  colors:$("colors"), colorHint:$("colorHint"), colorCount:$("colorCount"),
+  spin:$("spinBtn"), gameOverBox:$("gameOverBox"),
+  result:$("result"), resultHead:$("resultHead"), resultSub:$("resultSub"),
+  initialInput:$("initialInput"), applyInitial:$("applyInitial"),
+  setupHint:$("setupHint"), initialNote:$("initialNote"), soundBtn:$("soundBtn"),
+  stRounds:$("stRounds"), stWins:$("stWins"), stLosses:$("stLosses"), stBest:$("stBest"),
+};
+const ctx = el.canvas.getContext("2d");
+
+/* ---------- Utilitários ---------- */
+const rad = (deg) => deg * Math.PI / 180;
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const brl = (v) => "R$" + Number(v).toLocaleString("pt-BR");
+/** Mantém apenas dígitos (aceita somente valores numéricos inteiros válidos). */
+const digitsOnly = (s) => String(s).replace(/\D+/g, "").replace(/^0+(?=\d)/, "");
+const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ==========================================================================
+   2) SOM (WebAudio — sem arquivos externos)
+   ========================================================================== */
+let audioCtx = null;
+function audio(){
+  if (!state.soundOn) return null;
+  if (!audioCtx){
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    audioCtx = new AC();
+  }
+  if (audioCtx.state === "suspended") audioCtx.resume();
+  return audioCtx;
+}
+/** Bipe curto genérico. */
+function beep(freq, dur = 0.06, type = "triangle", gain = 0.05){
+  const ac = audio(); if (!ac) return;
+  const osc = ac.createOscillator(), g = ac.createGain();
+  osc.type = type; osc.frequency.value = freq;
+  g.gain.setValueAtTime(gain, ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + dur);
+  osc.connect(g).connect(ac.destination);
+  osc.start(); osc.stop(ac.currentTime + dur);
+}
+const tick = () => beep(1100 + Math.random() * 120, 0.035, "square", 0.028);
+function melody(notes, step = 0.11){
+  notes.forEach((f, i) => setTimeout(() => beep(f, 0.16, "triangle", 0.06), i * step * 1000));
+}
+
+/* ==========================================================================
+   3) DESENHO DA ROLETA (Canvas — visual metálico)
+   ========================================================================== */
+
+/** Ajusta a resolução do canvas ao tamanho real em tela (nitidez em telas HiDPI). */
+function resizeCanvas(){
+  const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  const rect = el.holder.getBoundingClientRect();
+  const size = Math.max(240, Math.round(rect.width));
+  el.canvas.width = Math.round(size * dpr);
+  el.canvas.height = Math.round(size * dpr);
+  el.canvas.style.width = size + "px";
+  el.canvas.style.height = size + "px";
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  drawWheel();
+}
+
+/** Gradiente cônico dourado (com fallback linear em navegadores antigos). */
+function metalGradient(cx, cy, r){
+  if (typeof ctx.createConicGradient === "function"){
+    const g = ctx.createConicGradient(rad(-90), cx, cy);
+    const stops = [
+      [0.00,"#8a6417"],[0.08,"#f7dd9a"],[0.16,"#fffbe9"],[0.25,"#c99a35"],
+      [0.36,"#7d5a15"],[0.48,"#f0cd80"],[0.58,"#fff6dd"],[0.68,"#b98c2c"],
+      [0.78,"#6f4f12"],[0.88,"#f3d492"],[1.00,"#8a6417"],
+    ];
+    stops.forEach(([p, c]) => g.addColorStop(p, c));
+    return g;
+  }
+  const g = ctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
+  g.addColorStop(0, "#fff3c9"); g.addColorStop(.35, "#c8942f");
+  g.addColorStop(.6, "#7a5410"); g.addColorStop(1, "#f2d79b");
+  return g;
+}
+
+/**
+ * Redesenha toda a roleta.
+ * @param {number} pulse 0–1 intensidade extra de brilho (usada no vencedor)
+ */
+function drawWheel(pulse = 0){
+  // tamanho em pixels CSS (o contexto já está escalado pelo devicePixelRatio)
+  const size = parseFloat(el.canvas.style.width) || el.canvas.width;
+  const cx = size / 2, cy = size / 2;
+  const R = size / 2 - size * 0.012;      // raio externo
+  const rRimIn = R * 0.855;               // borda metálica interna
+  const rHub = R * 0.20;                  // cubo central
+  const rot = state.rotation;
+
+  ctx.clearRect(0, 0, size, size);
+
+  /* --- Aro metálico externo --- */
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.fillStyle = metalGradient(cx, cy, R);
+  ctx.shadowColor = "rgba(0,0,0,.65)"; ctx.shadowBlur = size * 0.05; ctx.shadowOffsetY = size * 0.012;
+  ctx.fill();
+  ctx.restore();
+
+  /* Sulcos escuros que dão espessura ao aro */
+  ctx.beginPath(); ctx.arc(cx, cy, R * 0.985, 0, Math.PI * 2);
+  ctx.strokeStyle = "rgba(0,0,0,.45)"; ctx.lineWidth = Math.max(1, size * 0.004); ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx, cy, rRimIn * 1.035, 0, Math.PI * 2);
+  ctx.strokeStyle = "rgba(0,0,0,.5)"; ctx.lineWidth = Math.max(1, size * 0.006); ctx.stroke();
+
+  /* --- Divisórias coloridas (giram) --- */
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(rad(rot));
+
+  for (let i = 0; i < SLICES; i++){
+    const color = COLORS[WHEEL[i]];
+    const a0 = rad(i * SLICE_DEG - 90 - SLICE_DEG / 2);
+    const a1 = a0 + rad(SLICE_DEG);
+    const isGlow = state.glowIndex === i;
+    const isWinner = state.winnerIndex === i;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, rRimIn, a0, a1);
+    ctx.closePath();
+
+    // Preenchimento com profundidade (claro no centro, escuro nas bordas)
+    const grd = ctx.createRadialGradient(0, 0, rHub * 0.6, 0, 0, rRimIn);
+    if (isWinner || isGlow){
+      grd.addColorStop(0, color.light);
+      grd.addColorStop(0.55, color.base);
+      grd.addColorStop(1, isWinner ? color.base : color.dark);
+    } else {
+      grd.addColorStop(0, color.base);
+      grd.addColorStop(0.62, color.base);
+      grd.addColorStop(1, color.dark);
+    }
+    ctx.fillStyle = grd;
+
+    if (isWinner){
+      ctx.shadowColor = color.light;
+      ctx.shadowBlur = size * (0.05 + 0.05 * pulse);
+    } else if (isGlow){
+      ctx.shadowColor = color.base;
+      ctx.shadowBlur = size * 0.035;
+    }
+    ctx.fill();
+    ctx.restore();
+
+    // Brilho de vidro na metade externa da fatia
+    ctx.save();
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, rRimIn, a0, a1); ctx.closePath(); ctx.clip();
+    const gloss = ctx.createLinearGradient(0, -rRimIn, 0, rRimIn * 0.35);
+    gloss.addColorStop(0, "rgba(255,255,255,.34)");
+    gloss.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.rotate(a0 + rad(SLICE_DEG / 2) + rad(90)); // alinha o brilho à fatia
+    ctx.fillStyle = gloss;
+    ctx.fillRect(-rRimIn, -rRimIn, rRimIn * 2, rRimIn * 2);
+    ctx.restore();
+
+    // Camada extra de luz quando a fatia está sob o ponteiro
+    if (isGlow || isWinner){
+      ctx.save();
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, rRimIn, a0, a1); ctx.closePath();
+      ctx.fillStyle = isWinner
+        ? "rgba(255,255,255," + (0.20 + 0.22 * pulse).toFixed(3) + ")"
+        : "rgba(255,255,255,.13)";
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Separador metálico entre fatias
+    ctx.save();
+    ctx.rotate(a0);
+    const sep = ctx.createLinearGradient(0, 0, rRimIn, 0);
+    sep.addColorStop(0, "rgba(120,90,20,.5)");
+    sep.addColorStop(0.5, "#ffe9b0");
+    sep.addColorStop(1, "#8a6417");
+    ctx.strokeStyle = sep;
+    ctx.lineWidth = Math.max(1.2, size * 0.006);
+    ctx.beginPath(); ctx.moveTo(rHub * 0.85, 0); ctx.lineTo(rRimIn, 0); ctx.stroke();
+    ctx.restore();
+
+    // Pino/rebite entre as fatias, na borda
+    const pinA = a0;
+    const px = Math.cos(pinA) * (rRimIn * 1.075), py = Math.sin(pinA) * (rRimIn * 1.075);
+    const pr = size * 0.011;
+    const pg = ctx.createRadialGradient(px - pr * .4, py - pr * .4, pr * .1, px, py, pr);
+    pg.addColorStop(0, "#fffbe9"); pg.addColorStop(.5, "#d9ac4c"); pg.addColorStop(1, "#6d4a0f");
+    ctx.beginPath(); ctx.arc(px, py, pr, 0, Math.PI * 2); ctx.fillStyle = pg; ctx.fill();
+  }
+
+  // Contorno interno das fatias
+  ctx.beginPath(); ctx.arc(0, 0, rRimIn, 0, Math.PI * 2);
+  ctx.strokeStyle = "rgba(0,0,0,.35)"; ctx.lineWidth = Math.max(1, size * 0.005); ctx.stroke();
+  ctx.restore(); // fim da parte que gira
+
+  /* --- Reflexo fixo de vidro sobre a roleta (não gira) --- */
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, rRimIn, 0, Math.PI * 2); ctx.clip();
+  const sheen = ctx.createLinearGradient(cx - R * .7, cy - R, cx + R * .3, cy + R * .5);
+  sheen.addColorStop(0, "rgba(255,255,255,.16)");
+  sheen.addColorStop(.45, "rgba(255,255,255,.03)");
+  sheen.addColorStop(.75, "rgba(0,0,0,.16)");
+  sheen.addColorStop(1, "rgba(0,0,0,.30)");
+  ctx.fillStyle = sheen; ctx.fillRect(cx - R, cy - R, R * 2, R * 2);
+  ctx.restore();
+
+  /* --- Cubo central metálico --- */
+  drawHub(cx, cy, rHub, size, pulse);
+
+  /* --- Ponteiro fixo no topo --- */
+  drawPointer(cx, cy, R, size, pulse);
+}
+
+/** Cubo central: disco metálico com aro, brilho e emblema. */
+function drawHub(cx, cy, rHub, size, pulse){
+  // sombra projetada do cubo
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, rHub * 1.34, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(0,0,0,.45)";
+  ctx.shadowColor = "rgba(0,0,0,.7)"; ctx.shadowBlur = size * 0.03;
+  ctx.fill(); ctx.restore();
+
+  // aro dourado
+  ctx.beginPath(); ctx.arc(cx, cy, rHub * 1.3, 0, Math.PI * 2);
+  ctx.fillStyle = metalGradient(cx, cy, rHub * 1.3); ctx.fill();
+
+  // disco escuro interno
+  const inner = ctx.createRadialGradient(cx - rHub * .35, cy - rHub * .4, rHub * .1, cx, cy, rHub * 1.06);
+  inner.addColorStop(0, "#3a4666"); inner.addColorStop(.55, "#131a2c"); inner.addColorStop(1, "#05080f");
+  ctx.beginPath(); ctx.arc(cx, cy, rHub * 1.04, 0, Math.PI * 2);
+  ctx.fillStyle = inner; ctx.fill();
+  ctx.strokeStyle = "rgba(255,225,160,.55)"; ctx.lineWidth = Math.max(1, size * .004); ctx.stroke();
+
+  // emblema central
+  ctx.save();
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.font = "800 " + (rHub * 0.62).toFixed(1) + "px " + getComputedStyle(document.body).fontFamily;
+  ctx.shadowColor = "rgba(255,214,130," + (0.5 + 0.5 * pulse).toFixed(2) + ")";
+  ctx.shadowBlur = size * (0.012 + 0.02 * pulse);
+  const tg = ctx.createLinearGradient(cx, cy - rHub * .5, cx, cy + rHub * .5);
+  tg.addColorStop(0, "#fffbe9"); tg.addColorStop(.6, "#ffd479"); tg.addColorStop(1, "#b8862a");
+  ctx.fillStyle = tg;
+  ctx.fillText("RF", cx, cy + rHub * 0.02);
+  ctx.restore();
+
+  // pequeno reflexo no topo do cubo
+  ctx.save();
+  ctx.beginPath(); ctx.ellipse(cx - rHub * .25, cy - rHub * .55, rHub * .5, rHub * .22, rad(-18), 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(255,255,255,.18)"; ctx.fill(); ctx.restore();
+}
+
+/** Seta/indicador fixo apontando para a divisória vencedora (topo). */
+function drawPointer(cx, cy, R, size, pulse){
+  const topY = cy - R - size * 0.006;
+  const tipY = cy - R * 0.845;
+  const halfW = size * 0.043;
+
+  ctx.save();
+  ctx.shadowColor = "rgba(0,0,0,.75)"; ctx.shadowBlur = size * 0.022; ctx.shadowOffsetY = size * 0.004;
+
+  // corpo da seta
+  ctx.beginPath();
+  ctx.moveTo(cx - halfW, topY);
+  ctx.lineTo(cx + halfW, topY);
+  ctx.lineTo(cx + halfW * 0.34, tipY - size * 0.018);
+  ctx.lineTo(cx, tipY);
+  ctx.lineTo(cx - halfW * 0.34, tipY - size * 0.018);
+  ctx.closePath();
+  const pg = ctx.createLinearGradient(cx - halfW, topY, cx + halfW, tipY);
+  pg.addColorStop(0, "#8a6417"); pg.addColorStop(.28, "#ffe9b0");
+  pg.addColorStop(.55, "#fffdf3"); pg.addColorStop(.8, "#d3a343"); pg.addColorStop(1, "#7a5410");
+  ctx.fillStyle = pg; ctx.fill();
+  ctx.lineWidth = Math.max(1, size * 0.0035); ctx.strokeStyle = "rgba(60,40,5,.7)"; ctx.stroke();
+  ctx.restore();
+
+  // cápsula superior
+  ctx.beginPath(); ctx.arc(cx, topY, size * 0.028, 0, Math.PI * 2);
+  ctx.fillStyle = metalGradient(cx, topY, size * 0.028); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx, topY, size * 0.013, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(20,14,2,.85)"; ctx.fill();
+
+  // luz pulsante ao redor da ponta quando há vencedor
+  if (pulse > 0){
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, tipY, size * 0.03 * (0.7 + pulse), 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255,235,170," + (0.30 * pulse).toFixed(3) + ")";
+    ctx.filter = "blur(2px)"; ctx.fill(); ctx.restore();
+  }
+}
+
+/* ==========================================================================
+   4) LÓGICA DE POSIÇÃO / RESULTADO
+   ========================================================================== */
+
+/**
+ * Retorna qual divisória está sob o ponteiro (topo) para uma dada rotação.
+ * A fatia i tem centro em (-90 + i*36 + rot) graus; o ponteiro fica em -90.
+ */
+function indexAtPointer(rotationDeg){
+  const norm = ((-rotationDeg % 360) + 360) % 360;
+  return Math.floor((norm + SLICE_DEG / 2) / SLICE_DEG) % SLICES;
+}
+
+/** Rotação final (em graus) que coloca `index` exatamente sob o ponteiro. */
+function rotationForIndex(index, offsetDeg){
+  return (((-(index * SLICE_DEG) + offsetDeg) % 360) + 360) % 360;
+}
+
+/* ==========================================================================
+   5) INTERFACE — construção e atualização
+   ========================================================================== */
+
+/** Cria os cartões de cor. */
+function buildColorCards(){
+  el.colors.innerHTML = "";
+  COLORS.forEach((c) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "color-card";
+    b.style.setProperty("--c", c.base);
+    b.dataset.id = c.id;
+    b.setAttribute("aria-pressed", "false");
+    b.innerHTML =
+      '<span class="tick" aria-hidden="true">✓</span>' +
+      '<span class="dot" aria-hidden="true"></span>' +
+      '<span class="nm">' + c.name + "</span>";
+    b.addEventListener("click", () => toggleColor(c.id, b));
+    el.colors.appendChild(b);
+  });
+}
+
+/** Seleciona/remove uma cor (máximo de 2). */
+function toggleColor(id, btn){
+  if (state.spinning || state.gameOver) return;
+
+  const pos = state.selected.indexOf(id);
+  if (pos >= 0){
+    state.selected.splice(pos, 1);                 // remove
+    beep(420, .05, "sine", .04);
+    setHint(el.colorHint, state.selected.length === 2
+      ? "Tudo pronto! Clique em GIRAR."
+      : "Selecione mais " + (2 - state.selected.length) + " cor(es).", "");
+  } else if (state.selected.length >= 2){
+    // Terceira cor: avisa visualmente que precisa remover uma antes
+    btn.classList.remove("shake"); void btn.offsetWidth; btn.classList.add("shake");
+    const nomes = state.selected.map(getColor).map((c) => c.name).join(" e ");
+    setHint(el.colorHint, "Limite de 2 cores — remova " + nomes + " antes de escolher outra.", "warn");
+    beep(180, .12, "sawtooth", .05);
+    return;
+  } else {
+    state.selected.push(id);                       // adiciona
+    beep(660 + state.selected.length * 130, .06, "triangle", .05);
+    setHint(el.colorHint, state.selected.length === 2
+      ? "Tudo pronto! Clique em GIRAR."
+      : "Selecione mais 1 cor.", "");
+  }
+  syncUI();
+}
+
+const getColor = (id) => COLORS.find((c) => c.id === id);
+
+/** Escreve um texto em uma barra de dica com destaque opcional. */
+function setHint(node, text, kind){
+  node.textContent = text;
+  node.className = "hintbar " + (kind || "");
+  node.classList.remove("flash"); void node.offsetWidth; node.classList.add("flash");
+}
+
+/** Lê e valida a aposta digitada. Retorna {ok, value, msg}. */
+function readBet(){
+  const raw = el.bet.value.trim();
+  if (raw === "") return { ok:false, value:0, msg:"Informe o valor da aposta." };
+  if (!/^\d+$/.test(raw)) return { ok:false, value:0, msg:"A aposta deve ser um número inteiro, sem centavos." };
+  const v = parseInt(raw, 10);
+  if (!Number.isFinite(v) || v <= 0) return { ok:false, value:0, msg:"Valor de aposta inválido." };
+  if (v < MIN_BET) return { ok:false, value:v, msg:"A aposta mínima é " + brl(MIN_BET) + "." };
+  if (v > state.balance) return { ok:false, value:v, msg:"Você não pode apostar mais do que seu saldo (" + brl(state.balance) + ")." };
+  return { ok:true, value:v, msg:"" };
+}
+
+/** Atualiza saldo, contadores, estados de botões e mensagens. */
+function syncUI(){
+  // saldo
+  el.balance.textContent = brl(state.balance);
+  el.initialNote.innerHTML = "Saldo inicial definido: <b>" + brl(state.initialBalance) + "</b>";
+
+  // estatísticas
+  el.stRounds.textContent = state.stats.rounds;
+  el.stWins.textContent = state.stats.wins;
+  el.stLosses.textContent = state.stats.losses;
+  el.stBest.textContent = brl(state.stats.best);
+
+  // cartões de cor
+  el.colorCount.textContent = state.selected.length + " / 2";
+  [...el.colors.children].forEach((b) => {
+    const on = state.selected.includes(b.dataset.id);
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+    b.disabled = state.spinning || state.gameOver;
+  });
+
+  // aposta
+  const bet = readBet();
+  el.bet.disabled = state.spinning || state.gameOver;
+  el.bet.classList.toggle("invalid", !bet.ok && el.bet.value.trim() !== "" && !state.gameOver && !state.spinning);
+  [...document.querySelectorAll(".chip")].forEach((c) => (c.disabled = state.spinning || state.gameOver));
+  el.initialInput.disabled = state.spinning;
+  el.applyInitial.disabled = state.spinning;
+
+  if (!state.gameOver && !state.spinning){
+    if (!bet.ok && el.bet.value.trim() !== "") setHintQuiet(el.betHint, bet.msg, "err");
+    else if (bet.ok) setHintQuiet(el.betHint, "Retorno se acertar: " + brl(bet.value * 2) + ".", "");
+    else setHintQuiet(el.betHint, "", "");
+  }
+
+  // botão girar
+  const canSpin = !state.spinning && !state.gameOver && bet.ok && state.selected.length === 2;
+  el.spin.disabled = !canSpin;
+  el.spin.textContent = state.spinning ? "Girando…" : "Girar";
+}
+/** Igual a setHint, mas sem animação (evita "piscar" a cada tecla). */
+function setHintQuiet(node, text, kind){
+  if (node.textContent === text && node.className === "hintbar " + (kind || "")) return;
+  node.textContent = text;
+  node.className = "hintbar " + (kind || "");
+}
+
+/** Anima a variação do saldo. */
+function showDelta(amount){
+  el.delta.textContent = (amount >= 0 ? "+" : "−") + brl(Math.abs(amount)).replace("R$", "R$ ");
+  el.delta.className = "delta show " + (amount >= 0 ? "up" : "down");
+  el.balance.classList.remove("bump"); void el.balance.offsetWidth; el.balance.classList.add("bump");
+  clearTimeout(showDelta._t);
+  showDelta._t = setTimeout(() => { el.delta.classList.remove("show"); }, 2600);
+}
+
+/* ==========================================================================
+   6) GIRO E RODADA
+   ========================================================================== */
+
+/** easeOutQuart — desaceleração suave e convincente. */
+const easeOut = (t) => 1 - Math.pow(1 - t, 4);
+
+function spin(){
+  // ---- Validações finais antes de iniciar a rodada ----
+  if (state.spinning || state.gameOver) return;
+  const bet = readBet();
+  if (!bet.ok){ setHint(el.betHint, bet.msg, "err"); el.bet.classList.add("invalid"); return; }
+  if (state.selected.length !== 2){
+    setHint(el.colorHint, "Selecione exatamente 2 cores antes de girar.", "err");
+    return;
+  }
+
+  // ---- Desconta a aposta (nunca deixa saldo negativo) ----
+  state.balance = Math.max(0, state.balance - bet.value);
+  state.spinning = true;
+  state.winnerIndex = null;
+  el.holder.classList.add("spinning");
+  el.holder.classList.remove("is-winner");
+  el.result.className = "result";
+  el.resultHead.textContent = "Girando…";
+  el.resultSub.textContent = "Aposta de " + brl(bet.value) + " em " +
+    state.selected.map((id) => getColor(id).name).join(" e ") + ".";
+  syncUI();
+  showDelta(-bet.value);
+
+  // ---- Sorteia a divisória vencedora e calcula a rotação-alvo ----
+  const winner = Math.floor(Math.random() * SLICES);            // 0–9, todas equiprováveis
+  const offset = (Math.random() * 2 - 1) * (SLICE_DEG / 2 - 5); // parada dentro da fatia (nunca na borda)
+  const turns = 5 + Math.floor(Math.random() * 3);              // várias voltas completas
+  const startRot = state.rotation;
+  const targetNorm = rotationForIndex(winner, offset);
+  const deltaToTarget = ((targetNorm - startRot) % 360 + 360) % 360;
+  const totalDelta = turns * 360 + deltaToTarget;
+  const duration = prefersReduced ? 900 : SPIN_MS;
+
+  let lastGlow = -1;
+  const t0 = performance.now();
+
+  function frame(now){
+    const t = clamp((now - t0) / duration, 0, 1);
+    state.rotation = (startRot + totalDelta * easeOut(t)) % 360;
+
+    // brilho acompanha a posição do ponteiro durante a rotação
+    const g = indexAtPointer(state.rotation);
+    if (g !== lastGlow){
+      lastGlow = g;
+      if (t < 0.995) tick();
+    }
+    state.glowIndex = g;
+    drawWheel(0);
+
+    if (t < 1){ requestAnimationFrame(frame); }
+    else { finishSpin(winner, bet.value); }
+  }
+  requestAnimationFrame(frame);
+}
+
+/** Encerra o giro: confere o resultado exatamente pela posição final. */
+function finishSpin(_expectedWinner, betValue){
+  // A posição final da roleta é a fonte da verdade:
+  // o resultado é lido da rotação real, então sempre bate com o visual.
+  const winnerIndex = indexAtPointer(state.rotation);
+  const winnerColor = COLORS[WHEEL[winnerIndex]];
+  const won = state.selected.includes(winnerColor.id);
+
+  state.winnerIndex = winnerIndex;
+  state.glowIndex = winnerIndex;
+  state.spinning = false;
+  el.holder.classList.remove("spinning");
+  el.holder.classList.add("is-winner");
+
+  // ---- Pagamento: acertou → recebe o dobro da aposta ----
+  if (won){
+    state.balance += betValue * 2;
+    state.stats.wins++;
+    showDelta(betValue * 2);
+    melody([660, 880, 1175, 1568]);
+  } else {
+    state.stats.losses++;
+    beep(200, .3, "sawtooth", .05);
+  }
+  state.stats.rounds++;
+  state.stats.best = Math.max(state.stats.best, state.balance);
+
+  // ---- Mensagem de resultado ----
+  el.result.className = "result " + (won ? "win" : "lose") + " pop";
+  el.resultHead.innerHTML =
+    '<span class="swatch" style="background:' + winnerColor.base + ';color:' + winnerColor.base + '"></span>' +
+    (won
+      ? "Você GANHOU! Saiu " + winnerColor.name
+      : "Você perdeu — saiu " + winnerColor.name);
+  el.resultSub.innerHTML = won
+    ? "Retorno de <b>" + brl(betValue * 2) + "</b> (aposta de " + brl(betValue) + "). Novo saldo: <b>" + brl(state.balance) + "</b>."
+    : "Você perdeu <b>" + brl(betValue) + "</b>. Suas cores: " +
+      state.selected.map((id) => getColor(id).name).join(" e ") + ". Novo saldo: <b>" + brl(state.balance) + "</b>.";
+
+  // mantém a aposta dentro do novo saldo (evita campo inválido após a rodada)
+  const curBet = parseInt(digitsOnly(el.bet.value) || "0", 10);
+  if (state.balance >= MIN_BET && curBet > state.balance) el.bet.value = String(Math.floor(state.balance));
+
+  // pulso de brilho na fatia vencedora
+  pulseWinner();
+  syncUI();
+  checkGameOver();
+}
+
+/** Animação de pulsação do brilho da fatia vencedora. */
+function pulseWinner(){
+  const t0 = performance.now();
+  const dur = 2400;
+  function loop(now){
+    if (state.spinning || state.winnerIndex === null) return; // interrompe em novo giro
+    const t = (now - t0) / dur;
+    if (t >= 1){ drawWheel(0.35); return; }
+    const p = 0.5 + 0.5 * Math.sin(t * Math.PI * 6);
+    drawWheel(p);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+}
+
+/* ==========================================================================
+   7) FIM DE JOGO E REINÍCIO
+   ========================================================================== */
+function checkGameOver(){
+  if (state.balance >= MIN_BET) return;
+  state.gameOver = true;
+  el.gameOverBox.hidden = false;
+  el.gameOverBox.innerHTML =
+    '<div class="gameover">' +
+      "<p>Seu saldo é de <b>" + brl(state.balance) + "</b> e não é suficiente para a aposta mínima de " +
+      brl(MIN_BET) + ".<br>Fim de jogo — você perdeu.</p>" +
+      '<button class="retry-btn" id="retryBtn" type="button">Perdeu — Tente novamente</button>' +
+    "</div>";
+  $("retryBtn").addEventListener("click", restart);
+  setHint(el.colorHint, "Reinicie a partida para jogar novamente.", "err");
+  setHintQuiet(el.betHint, "", "");
+  beep(160, .5, "sawtooth", .05);
+  syncUI();
+}
+
+/** Reinicia a partida usando o saldo inicial definido (sem recarregar a página). */
+function restart(){
+  state.balance = state.initialBalance;
+  state.gameOver = false;
+  state.spinning = false;
+  state.selected = [];
+  state.winnerIndex = null;
+  state.glowIndex = null;
+  state.stats = { rounds:0, wins:0, losses:0, best: state.initialBalance };
+  el.gameOverBox.hidden = true;
+  el.gameOverBox.innerHTML = "";
+  el.bet.value = String(Math.min(MIN_BET, state.initialBalance));
+  el.result.className = "result pop";
+  el.resultHead.textContent = "Nova partida! Escolha duas cores.";
+  el.resultSub.textContent = "Saldo restaurado para " + brl(state.initialBalance) + ".";
+  el.delta.classList.remove("show");
+  el.holder.classList.remove("is-winner");
+  setHint(el.colorHint, "Selecione exatamente 2 cores para liberar o giro.", "");
+  drawWheel();
+  syncUI();
+  melody([523, 659, 784], .09);
+}
+
+/* ==========================================================================
+   8) EVENTOS
+   ========================================================================== */
+
+/* --- Saldo inicial (somente números) --- */
+el.initialInput.addEventListener("input", () => {
+  const clean = digitsOnly(el.initialInput.value);
+  if (clean !== el.initialInput.value) el.initialInput.value = clean;
+  el.initialInput.classList.remove("invalid");
+  el.setupHint.className = "setup__hint";
+  el.setupHint.textContent = "Aplicar reinicia a partida com o novo valor (mínimo R$5).";
+});
+el.initialInput.addEventListener("keydown", (e) => { if (e.key === "Enter") el.applyInitial.click(); });
+
+el.applyInitial.addEventListener("click", () => {
+  if (state.spinning) return;
+  const raw = el.initialInput.value.trim();
+  if (!/^\d+$/.test(raw)){
+    el.initialInput.classList.add("invalid");
+    el.setupHint.className = "setup__hint err";
+    el.setupHint.textContent = "Digite apenas números inteiros válidos.";
+    return;
+  }
+  let v = parseInt(raw, 10);
+  if (v < MIN_BET || v > MAX_BALANCE){
+    el.initialInput.classList.add("invalid");
+    el.setupHint.className = "setup__hint err";
+    el.setupHint.textContent = "Use um valor entre " + brl(MIN_BET) + " e " + brl(MAX_BALANCE) + ".";
+    return;
+  }
+  state.initialBalance = v;
+  el.setupHint.className = "setup__hint ok";
+  el.setupHint.textContent = "Saldo inicial definido em " + brl(v) + ". Partida reiniciada.";
+  restart();
+});
+
+/* --- Campo de aposta: apenas inteiros --- */
+el.bet.addEventListener("input", () => {
+  const clean = digitsOnly(el.bet.value);
+  if (clean !== el.bet.value) el.bet.value = clean;
+  syncUI();
+});
+el.bet.addEventListener("blur", () => {
+  // normaliza para um valor válido ao sair do campo
+  const raw = digitsOnly(el.bet.value);
+  if (raw === ""){ el.bet.value = String(Math.min(MIN_BET, Math.max(0, state.balance))); }
+  else {
+    let v = parseInt(raw, 10);
+    v = clamp(v, MIN_BET, Math.max(MIN_BET, state.balance));
+    el.bet.value = String(v);
+  }
+  syncUI();
+});
+
+/* --- Atalhos de aposta --- */
+document.querySelectorAll(".chip").forEach((chip) => {
+  chip.addEventListener("click", () => {
+    if (state.spinning || state.gameOver) return;
+    const cur = parseInt(digitsOnly(el.bet.value) || "0", 10);
+    const max = Math.max(MIN_BET, Math.floor(state.balance));
+    let next = cur;
+    switch (chip.dataset.bet){
+      case "min":  next = MIN_BET; break;
+      case "-5":   next = cur - 5; break;
+      case "+5":   next = cur + 5; break;
+      case "half": next = Math.floor(state.balance / 2); break;
+      case "max":  next = Math.floor(state.balance); break;
+    }
+    next = clamp(next, MIN_BET, max);
+    el.bet.value = String(next);
+    beep(520, .04, "sine", .035);
+    syncUI();
+  });
+});
+
+/* --- Girar --- */
+el.spin.addEventListener("click", spin);
+
+/* --- Som --- */
+el.soundBtn.addEventListener("click", () => {
+  state.soundOn = !state.soundOn;
+  el.soundBtn.textContent = state.soundOn ? "🔊" : "🔇";
+  if (state.soundOn) beep(880, .07, "triangle", .05);
+});
+
+/* --- Teclado: espaço/enter giram --- */
+document.addEventListener("keydown", (e) => {
+  const a = document.activeElement;
+  // ignora quando o foco está em um campo ou em outro botão (cores, atalhos…)
+  if (a && (["INPUT", "TEXTAREA", "SELECT"].includes(a.tagName) ||
+            (a.tagName === "BUTTON" && a !== el.spin))) return;
+  if ((e.code === "Space" || e.code === "Enter") && !el.spin.disabled){
+    e.preventDefault(); spin();
+  }
+});
+
+/* --- Redimensionamento responsivo --- */
+let rzT;
+window.addEventListener("resize", () => { clearTimeout(rzT); rzT = setTimeout(resizeCanvas, 90); });
+window.addEventListener("orientationchange", () => setTimeout(resizeCanvas, 200));
+
+/* ==========================================================================
+   9) INICIALIZAÇÃO
+   ========================================================================== */
+buildColorCards();
+resizeCanvas();
+syncUI();
+// Fontes podem carregar depois: redesenha para o emblema central ficar nítido.
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => drawWheel());
+</script>
+</body>
+</html>

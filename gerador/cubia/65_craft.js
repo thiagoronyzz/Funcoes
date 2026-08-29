@@ -63,6 +63,38 @@ UI.syncCraft = function () {
   const arr = $('screenRoot').querySelector('.arrow');
   if (arr) arr.style.opacity = m ? 1 : .25;
 };
+/* o livro de receitas tira os itens do inventário ao montar; se a montagem
+   falhar no meio, eles voltam — nada de criar item do nada nem de perder */
+UI.takeFor = function (ids, gaveBack) {
+  for (const L of [INV.hot, INV.main]) for (let i = 0; i < L.length; i++) {
+    const s = L[i];
+    if (!s || !ids.includes(s.id) || s.dur !== undefined) continue;
+    s.n--;
+    if (s.n <= 0) L[i] = null;
+    if (gaveBack) gaveBack.push(s.id);
+    this.syncHotbar();
+    return ids.includes(s.id) ? s.id : ids[0];
+  }
+  return 0;
+};
+UI.giveBack = function (ids) {
+  for (const id of (ids || [])) { if (INV.addFull({ id, n: 1 }) > 0) dropStackWorld({ id, n: 1 }); }
+  if (ids && ids.length) { this.syncHotbar(); this.syncScreen(); }
+};
+UI.returnCraftGrid = function () {
+  let any = false;
+  for (let i = 0; i < 9; i++) {
+    const st = INV.craft[i];
+    if (!st) continue;
+    INV.craft[i] = null;
+    if (INV.addFull(st) > 0) dropStackWorld(st);
+    any = true;
+  }
+  INV.craftOut = null;
+  if (any) { this.syncHotbar(); markDirtySave(); }
+  return any;
+};
+
 UI.doCraft = function (times) {
   const { cells, size } = gridState();
   let made = 0;
@@ -183,77 +215,121 @@ function dropStackWorld(st) {
 /* ------------------------------------------------------ livro de receitas */
 UI.recipeBookEl = function () {
   const box = document.createElement('div');
-  box.style.cssText = 'max-width:250px';
+  box.style.cssText = 'max-width:290px';
   const h = document.createElement('h4'); h.textContent = 'Livro de receitas';
-  const sub = document.createElement('div'); sub.style.cssText = 'font-size:11px;color:var(--muted);margin-bottom:6px';
-  sub.textContent = 'Clique para colocar na bancada. Só aparece o que você tem materials.';
+  const bar = document.createElement('div'); bar.className = 'bookbar';
+  const b1 = document.createElement('button'); b1.textContent = 'Fabricáveis';
+  const b2 = document.createElement('button'); b2.textContent = 'Todas';
+  const setOn = () => { b1.classList.toggle('on', !this.bookAll); b2.classList.toggle('on', !!this.bookAll); };
+  b1.onclick = () => { this.bookAll = false; setOn(); this.refreshRecipes(); };
+  b2.onclick = () => { this.bookAll = true; setOn(); this.refreshRecipes(); };
+  setOn(); bar.appendChild(b1); bar.appendChild(b2);
+  const sub = document.createElement('div'); sub.style.cssText = 'font-size:11px;color:var(--muted)';
+  sub.textContent = 'Clique põe os itens na grade. Shift-clique cria o máximo possível.';
   const grid = document.createElement('div'); grid.className = 'recipes'; grid.id = 'recipeBook';
-  box.appendChild(h); box.appendChild(sub); box.appendChild(grid);
+  box.appendChild(h); box.appendChild(bar); box.appendChild(sub); box.appendChild(grid);
   this.recipeBookElRef = grid;
-  setTimeout(() => this.refreshRecipes(), 0);
+  setTimeout(() => { this.refreshRecipes(); }, 0);
   return box;
 };
-UI.canMake = function (r) {
-  const need = Object.create(null);
+UI.needsOf = function (r) {
+  const groups = [];
   if (r.shapeless) {
-    if (r.dynamic) {
-      const logs = TAGS.log || [];
-      for (const lb of logs) if (INV.count(asItem(lb)) > 0) return true;
-      return false;
+    for (const [key, n] of r.shapeless) {
+      const acc = acceptIds(key) || [asItem(ID[key])];
+      for (let i = 0; i < (n || 1); i++) groups.push(acc);
     }
-    for (const [k, n] of r.shapeless) { const id = asItem(ID[k]); if (id === undefined) return false; need[id] = (need[id] || 0) + n; }
-  }
-  else {
+  } else {
     for (const row of r.rows) for (const ch of row) {
       const acc = acceptIds(r.map[ch]);
-      if (!acc) continue;
-      need[acc[0]] = (need[acc[0]] || 0) + 1;
+      if (acc) groups.push(acc);
     }
   }
-  for (const id in need) if (INV.count(+id) < need[id]) return false;
+  const byKey = new Map();
+  for (const acc of groups) {
+    const ids = acc.filter((x) => x !== undefined && x !== null);
+    if (!ids.length) continue;
+    const key = ids.slice().sort((a, b) => a - b).join(',');
+    byKey.set(key, (byKey.get(key) || 0) + 1);
+  }
+  return [...byKey.entries()].map(([key, n]) => ({ ids: key.split(',').map(Number), n }));
+};
+UI.canMake = function (r) {
+  if (r.dynamic) { for (const lb of (TAGS.log || [])) if (INV.count(asItem(lb)) > 0) return true; return false; }
+  for (const g of this.needsOf(r)) {
+    let have = 0;
+    for (const id of g.ids) have += INV.count(id);
+    if (have < g.n) return false;
+  }
   return true;
+};
+UI.missingText = function (r) {
+  if (r.dynamic) return 'qualquer tronco';
+  const miss = [];
+  for (const g of this.needsOf(r)) {
+    let have = 0;
+    for (const id of g.ids) have += INV.count(id);
+    if (have < g.n) miss.push(DEFS[g.ids[0]].label + ' (' + have + '/' + g.n + ')');
+  }
+  return miss.join(', ');
 };
 UI.refreshRecipes = function () {
   const grid = this.recipeBookElRef; if (!grid) return;
   grid.innerHTML = '';
-  const list = RECIPES.filter((r) => this.canMake(r));
-  if (!list.length) { grid.innerHTML = '<div style="grid-column:1/-1;font-size:12px;color:var(--muted);padding:8px">Nenhuma receita disponível ainda. Quebre madeira para começar.</div>'; return; }
-  for (const r of list) {
-    const got = outOf(r.dynamic ? [r.preview, 4] : r.out);
-    const el = document.createElement('div');
-    el.className = 'slot';
-    const cv = document.createElement('canvas'); cv.width = cv.height = 32; el.appendChild(cv);
-    const n = document.createElement('div'); n.className = 'n'; n.textContent = got.n; el.appendChild(n);
-    drawTileOn(cv.getContext('2d'), DEFS[got.id].tiles ? DEFS[got.id].tiles.top : DEFS[got.id].icon, 32);
-    el.title = DEFS[got.id].label;
-    el.onclick = (e) => { if (e.shiftKey) { this.autoCraft(r); } else this.fillGrid(r); };
-    grid.appendChild(el);
+  const rows = RECIPES.map((r) => ({ r, ok: this.canMake(r) })).filter((x) => this.bookAll || x.ok);
+  if (!rows.length) { grid.innerHTML = '<div style="grid-column:1/-1;font-size:12px;color:var(--muted);padding:8px">Nada fabricável ainda. Quebre madeira com a mão para pegar troncos.</div>'; return; }
+  const CAT = [['Blocos', (d) => d.kind === 'block' || d.kind === 'blockitem'], ['Ferramentas e armas', (d) => !!d.tool], ['Comida', (d) => d.food !== undefined], ['Outros', () => true]];
+  const seen = new Set();
+  for (const [label, test] of CAT) {
+    const items = rows.filter((x) => {
+      const got = outOf(x.r.dynamic ? [x.r.preview, 4] : x.r.out);
+      const d = DEFS[got.id];
+      if (!test(d)) return false;
+      if (seen.has(x.r)) return false;
+      seen.add(x.r); return true;
+    });
+    if (!items.length) continue;
+    const t = document.createElement('h5'); t.textContent = label; grid.appendChild(t);
+    for (const x of items) {
+      const got = outOf(x.r.dynamic ? [x.r.preview, 4] : x.r.out);
+      const el = document.createElement('div');
+      el.className = 'slot' + (x.ok ? '' : ' off');
+      const cv = document.createElement('canvas'); cv.width = cv.height = 32; el.appendChild(cv);
+      const n = document.createElement('div'); n.className = 'n'; n.textContent = got.n; el.appendChild(n);
+      const od = DEFS[got.id];
+      drawTileOn(cv.getContext('2d'), od.tiles ? od.tiles.top : od.icon, 32);
+      el.title = od.label + ' × ' + got.n + '\n' + (x.ok ? 'clique: montar na grade · shift-clique: criar tudo' : 'falta: ' + this.missingText(x.r));
+      el.onclick = (e) => { if (e.shiftKey) this.autoCraft(x.r); else this.fillGrid(x.r, true); };
+      grid.appendChild(el);
+    }
   }
 };
-UI.fillGrid = function (r) {
-  if (UI.mode !== 'craft3' && r.size && (r.size[0] > 2 || r.size[1] > 2)) { toast('Receita precisa da bancada 3×3', 'bad'); return; }
+UI.fillGrid = function (r, silent) {
+  this.returnCraftGrid();
+  const gaveBack = [];
+  if (UI.mode !== 'craft3' && r.size && (r.size[0] > 2 || r.size[1] > 2)) { if (!silent) toast('Receita precisa da bancada 3×3', 'bad'); return; }
   if (r.dynamic) {
     INV.craft = new Array(9).fill(null);
-    for (const lb of (TAGS.log || [])) { const lid = asItem(lb); if (INV.count(lid) > 0) { INV.craft[0] = { id: lid, n: 1 }; break; } }
+    const acc = (TAGS.log || []).map(asItem).filter((x) => x !== undefined);
+    const lid = this.takeFor(acc, gaveBack);
+    if (!lid) { if (!silent) toast('Nenhum tronco no inventário', 'bad'); return this.syncCraft(); }
+    INV.craft[0] = { id: lid, n: 1 };
     this.syncScreen();
     return;
   }
   const size = UI.mode === 'craft3' ? 3 : 2;
   INV.craft = new Array(9).fill(null);
-  const used = Object.create(null);
-  const takeOne = (ids) => {
-    for (const L of [INV.hot, INV.main]) for (let i = 0; i < L.length; i++) {
-      const s = L[i]; if (!s) continue;
-      if (ids.includes(s.id) && (used[s.id] || 0) < s.n) { used[s.id] = (used[s.id] || 0) + 1; return s.id; }
-    }
-    return 0;
-  };
+  const takeOne = (ids) => this.takeFor(ids, gaveBack);
   if (r.shapeless) {
     let k = 0;
     const slots = size === 2 ? [0, 1, 3, 4] : [0, 1, 2, 3, 4, 5, 6, 7, 8];
     for (const [key, n] of r.shapeless) {
       const acc = acceptIds(key);
-      for (let i = 0; i < n; i++) { const id = takeOne(acc || [asItem(ID[key])]); if (!id) return this.syncCraft(); INV.craft[slots[k++]] = { id, n: 1 }; }
+      for (let i = 0; i < n; i++) {
+        const id = takeOne(acc || [asItem(ID[key])]);
+        if (!id) { this.giveBack(gaveBack); this.returnCraftGrid(); return this.syncCraft(); }
+        INV.craft[slots[k++]] = { id, n: 1 };
+      }
     }
   } else {
     const pw = r.size[0], ph = r.size[1];
@@ -262,16 +338,26 @@ UI.fillGrid = function (r) {
       const acc = acceptIds(r.map[r.rows[y][x]]);
       if (!acc) continue;
       const id = takeOne(acc);
-      if (!id) { toast('Faltam materiais', 'bad'); return this.syncCraft(); }
+      if (!id) { this.giveBack(gaveBack); if (!silent) toast('Faltam materiais', 'bad'); return this.syncCraft(); }
       INV.craft[(oy + y) * 3 + (ox + x)] = { id, n: 1 };
     }
   }
   this.syncScreen();
 };
 UI.autoCraft = function (r) {
-  this.fillGrid(r);
-  const { cells, size } = gridState();
-  if (cells.some((c) => c) && matchRecipe(cells, size)) this.doCraft(1);
+  let made = 0;
+  for (let k = 0; k < 40; k++) {
+    this.fillGrid(r, true);
+    const { cells, size } = gridState();
+    if (!cells.some((c) => c) || !matchRecipe(cells, size)) { this.returnCraftGrid(); break; }
+    const before = INV.count(outOf(r.dynamic ? [r.preview, 4] : r.out).id);
+    this.doCraft(1);
+    if (INV.count(outOf(r.dynamic ? [r.preview, 4] : r.out).id) <= before) { this.returnCraftGrid(); break; }
+    made++;
+    if (!this.canMake(r)) { this.returnCraftGrid(); break; }
+  }
+  if (made) toast('Criou ' + made + '× ' + DEFS[outOf(r.dynamic ? [r.preview, 4] : r.out).id].label, 'good');
+  this.syncScreen();
 };
 
 /* ----------------------------------------------- encantamentos e criativo */

@@ -45,7 +45,8 @@ function canHarvest(id, tool) {
 function updateMining(dt) {
   Player.swing = Math.max(0, Player.swing - dt * 4.4);
   const hit = Player.target;
-  if (Mouse.left && Player.targetMob && Game.mode !== 'spectator') { attackLoop(dt); if (Player.mineBlock) stopMine(); return; }
+  const tm = Player.targetMob;
+  if (Mouse.left && tm && Game.mode !== 'spectator' && (!hit || tm.dist <= hit.dist + .4)) { attackLoop(dt); if (Player.mineBlock) stopMine(); return; }
   if (Mouse.left && hit && Game.mode !== 'spectator') {
     const key = hit.x + ',' + hit.y + ',' + hit.z;
     if (Player.mineBlock !== key) { Player.mineBlock = key; Player.mineProgress = 0; }
@@ -260,14 +261,14 @@ function updateTargets() {
     if (Math.hypot(nc[0] + .5 - camera.position.x, nc[1] - camera.position.y, nc[2] + .5 - camera.position.z) > 6) Player.nearCraft = null;
   }
   let mob = null, md = 99;
+  const dirv = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion).normalize();
   for (const m of Mobs.list) {
     if (m.dead) continue;
-    const c = m.pos.clone(); c.y += m.def.h * .55;
-    const toC = c.sub(camera.position);
-    const proj = toC.length();
-    const dirv = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion).normalize();
-    const dotp = toC.clone().normalize().dot(dirv);
-    if (dotp < .82 || proj > 4.4) continue;
+    const cx = m.pos.x - camera.position.x, cy = m.pos.y + m.def.h * .5 - camera.position.y, cz = m.pos.z - camera.position.z;
+    const proj = cx * dirv.x + cy * dirv.y + cz * dirv.z;
+    if (proj <= .05 || proj > 4.2) continue;
+    const perp = Math.hypot(cx - dirv.x * proj, cy - dirv.y * proj, cz - dirv.z * proj);
+    if (perp > Math.max(.66, m.def.w * 1.05)) continue;
     if (proj < md) { md = proj; mob = m; }
   }
   Player.targetMob = mob ? { mob, dist: md } : null;
@@ -280,6 +281,28 @@ function updateTargets() {
   } else { selBox.visible = false; $('targetLabel').textContent = ''; }
   if (Player.targetMob) { selBox.visible = false; $('targetLabel').textContent = Player.targetMob.mob.def.label + '  ·  ' + Math.ceil(Player.targetMob.mob.hp) + ' HP'; }
 }
+/* Bater num bicho: dano da ferramenta, crítico na queda, empurrão e o bicho
+   reage — hostis/neutral te perseguem, passivo sai correndo. */
+const COOKED = { beef: 'cookbeef', pork: 'cookpork', chickenm: 'cookchicken' };
+function hitMob(m, dmg, tool) {
+  if (!m || m.dead || m.hp <= 0) return false;
+  const crit = !Player.onGround && !Player.inWater && Player.vel.y < -.4;
+  let d = dmg || 1;
+  if (crit) d *= 1.5;
+  m.hurt(d, false);
+  const dx = m.pos.x - Player.pos.x, dz = m.pos.z - Player.pos.z;
+  const l = Math.hypot(dx, dz) || 1;
+  m.vel.x += dx / l * 5.4; m.vel.z += dz / l * 5.4;
+  if (m.onGround) m.vel.y = Math.max(m.vel.y, 3.6);
+  if (m.def.hostile || m.def.neutral) m.aggro = 20;
+  else if (m.def.passive) { m.state = 'flee'; m.aggro = 0; }
+  const cy = m.pos.y + m.def.h * .6;
+  particles.spawn(m.pos.x, cy, m.pos.z, crit ? 0xffe9a8 : 0xc9412f, crit ? 10 : 5, 2.4, .45);
+  if (crit) toast('Golpe crítico!', 'good');
+  Player.hitMobT = .18;
+  return true;
+}
+
 function attackLoop(dt) {
   Player.attackT = (Player.attackT || 0) - dt;
   if (Player.attackT > 0) return;
@@ -287,10 +310,11 @@ function attackLoop(dt) {
   if (!tm) return;
   Player.attackT = Player.sprint ? .42 : .62;
   Player.swing = 1;
+  if (tm.mob.def.boom) tm.mob.fuse = Math.min(tm.mob.fuse < 0 ? 99 : tm.mob.fuse, .9);
   const tool = toolInfo();
   let dmg = tool.def && tool.def.dmg ? tool.def.dmg : 1;
-  if (tool.stack) dmg += enchOf(tool.stack, 'sharpness') * .5 + enchOf(tool.stack, 'sharpness') * .5 * .2;
-  if (tool.def && tool.def.tool === 'axe') dmg *= 1;
+  const sharp = tool.stack ? enchOf(tool.stack, 'sharpness') : 0;
+  if (sharp > 0) dmg += sharp * .5 + .5;                 /* Afiação: +0,5 por nível +0,5 */
   hitMob(tm.mob, dmg, tool);
   damageTool('attack');
 }

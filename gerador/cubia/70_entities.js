@@ -177,7 +177,10 @@ const Mobs = {
   kill(m) {
     if (m.dead) return;
     m.dead = true; m.fuse = -1; m.mesh.scale.setScalar(1);
-    for (const [k, n, p] of m.def.drop) if (Math.random() <= (p === undefined ? 1 : p)) spawnDrop(m.pos.x, m.pos.y + .4, m.pos.z, resolveItem(k), n);
+    for (const [k, n, p] of m.def.drop) if (Math.random() <= (p === undefined ? 1 : p)) {
+      const key = m.burnT > 0 && COOKED[k] ? COOKED[k] : k;
+      spawnDrop(m.pos.x, m.pos.y + .4, m.pos.z, resolveItem(key), n);
+    }
     particles.spawn(m.pos.x, m.pos.y + m.def.h * .5, m.pos.z, m.def.color, 10, 3, .5);
     if (Game.mode !== 'creative' && Game.mode !== 'spectator') addXp(m.def.xp || 1);
     Sound.mobDeath();

@@ -311,7 +311,7 @@ try {
   window.__cubia = {
     Game, world, chunks: world.chunks, Player, UI, INV, DEFS, ID, B, I, MAT: null, startWorld, saveWorld, loadWorld, applyState, Mobs, MOBDEF, Adv, stats,
     RECIPES, SMELT, FUELS, ENCH, ATLAS, matchRecipe, gridState, buildMesh, relight, genChunk, columnInfo, meshChunk, updateChunks, updateSky,
-    breakTime, canHarvest, rollDrops, damage, heal, addXp, xpState, spendLevels, spawnDrop, spawnArrow, drops, arrows, particles, TNT, updateArrows, releaseBow, updateDrops, updateSelfMesh, updateHeldView, mobBlocked, findGround,
+    breakTime, canHarvest, rollDrops, damage, heal, addXp, xpState, spendLevels, spawnDrop, spawnArrow, drops, arrows, particles, TNT, updateArrows, releaseBow, updateDrops, updateSelfMesh, updateHeldView, mobBlocked, findGround, hitMob, attackLoop, updateTargets, COOKED, camera,
     raycastVoxel, solidAt, canPlace, clock, SHADERS: () => ({ V: SH_V, F: SH_F }), MATS: () => ({ solid: solidMat, water: waterMat }), clockFn: clock, loop, doBreak, useItem, updatePlayer, updateFurnaces, FACES, faceUV, AO_LVL, genChunk2: genChunk, CH, WH, SEA, placeBlock: null, tileUV, DEFSLEN: () => DEFS.length, COL: null,
   };
   window.__cubia.match = (cells, size) => matchRecipe(cells, size);

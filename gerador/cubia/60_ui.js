@@ -117,14 +117,15 @@ const UI = {
   /* ------------------------------------------------------------- telas */
   close() {
     if (this.held) { if (INV.addFull(this.held) > 0) dropStackWorld(this.held); this.held = null; $('held').classList.add('hidden'); }
+    this.returnCraftGrid();
     this.open = null; this.mode = null; this.pos = null; this.key = null; this.furnace = null;
-    INV.craft = new Array(9).fill(null); INV.craftOut = null;
     $('screenRoot').innerHTML = ''; $('screenRoot').classList.remove('on');
     $('tooltip').classList.add('hidden');
     requestLock();
     Sound.click();
   },
   openCraft(mode) {
+    if (this.open) { this.close(); return; }
     this.show(mode, null);
   },
   show(mode, pos) {
@@ -171,7 +172,7 @@ const UI = {
       row.appendChild(g); row.appendChild(arrow); row.appendChild(out);
       craftWrap.appendChild(row);
       side.appendChild(craftWrap);
-      if (this.mode === 'craft3') side.appendChild(this.recipeBookEl());
+      side.appendChild(this.recipeBookEl());
     }
     if (this.mode === 'furnace') side.appendChild(this.furnaceEl(mkSlot));
     if (this.mode === 'chest') side.appendChild(grid('chest', 27, 9));
@@ -215,11 +216,36 @@ const UI = {
     el.addEventListener('mousedown', (e) => this.onSlot(e));
     el.addEventListener('contextmenu', (e) => e.preventDefault());
   },
+  collectMatch(list, i, id) {
+    const max = DEFS[id].stack;
+    let total = 0;
+    const src = list === 'main' ? INV.main : list === 'hot' ? INV.hot : list === 'chest' ? (world.chests.get(this.key) || []) : null;
+    const take = (L) => {
+      if (!L) return;
+      for (let k = 0; k < L.length; k++) {
+        const st = L[k];
+        if (!st || st.id !== id || st.dur !== undefined || total >= max) continue;
+        const n = Math.min(max - total, st.n);
+        total += n; st.n -= n;
+        if (st.n <= 0) L[k] = null;
+      }
+    };
+    take(src); if (src !== INV.main) take(INV.main); if (src !== INV.hot) take(INV.hot);
+    if (total > 0) this.held = { id, n: total };
+    Sound.pickup();
+    this.syncScreen(); this.syncHotbar();
+    $('held').classList.toggle('hidden', !this.held);
+    if (this.held) paintHeld(this.held);
+  },
   onSlot(e) {
     const el = e.target.closest('.slot');
     if (!el) return;
     const list = el.dataset.list, i = +el.dataset.i;
     const shift = e.shiftKey, right = e.button === 2;
+    if (e.detail === 2 && !this.held && !shift && !right) {
+      const st = this.slotStack(list, i);
+      if (st && DEFS[st.id].stack > 1) { this.collectMatch(list, i, st.id); return; }
+    }
     if (list === 'out') { this.doCraft(shift ? 99 : 1); return; }
     if (list === 'fout') {
       const st = this.slotStack('fout', 0);

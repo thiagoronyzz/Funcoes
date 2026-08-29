@@ -240,18 +240,27 @@ const genQueue = [];
 function chunkDist2(cx, cz, px, pz) { const dx = cx - px, dz = cz - pz; return dx * dx + dz * dz; }
 function updateChunks(budget) {
   const px = Math.floor(Player.pos.x / CH), pz = Math.floor(Player.pos.z / CH), RD = Game.rd;
-  const want = [];
+  const want = [], pre = [];
+  /* gerar com dois chunks de folga: assim o chão já existe antes de você
+     chegar na beira e não aparece aquele buraco embaixo da terra */
+  for (let dz = -RD - 3; dz <= RD + 3; dz++) for (let dx = -RD - 3; dx <= RD + 3; dx++) {
+    const q = dx * dx + dz * dz;
+    if (q > (RD + 3.2) * (RD + 3.2) || q <= (RD + 1.2) * (RD + 1.2)) continue;
+    pre.push([px + dx, pz + dz, q]);
+  }
   for (let dz = -RD - 1; dz <= RD + 1; dz++) for (let dx = -RD - 1; dx <= RD + 1; dx++) {
     if (dx * dx + dz * dz > (RD + 1.2) * (RD + 1.2)) continue;
     want.push([px + dx, pz + dz, dx * dx + dz * dz]);
   }
   want.sort((a, b) => a[2] - b[2]);
+  pre.sort((a, b) => a[2] - b[2]);
   let made = 0, meshed = 0;
   /* quem gera mundo pesado não pode derrubar o quadro: quando o fps cai,
      fazemos menos chunks por vez em vez de travar tudo */
   const slow = (Game.lastMs || 0) > 21;
   const BUD = budget || (slow ? { gen: 1, mesh: 1 } : { gen: 2, mesh: 3 });
-  for (const [cx, cz] of want) {
+  const genRing = want.concat(pre);
+  for (const [cx, cz] of genRing) {
     const ex = world.chunks.get(ckey(cx, cz));
     if (ex && ex.gen) continue;
     if (made >= BUD.gen) break;
@@ -269,7 +278,7 @@ function updateChunks(budget) {
   }
   for (const c of world.chunks.values()) {
     const d = Math.max(Math.abs(c.cx - px), Math.abs(c.cz - pz));
-    if (d > RD + 2) disposeChunk(c);
+    if (d > RD + 4) disposeChunk(c);
   }
 }
 function disposeChunk(c) {

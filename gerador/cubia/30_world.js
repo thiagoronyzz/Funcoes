@@ -231,10 +231,10 @@ function genChunk(ch) {
       continue;
     }
     if (r >= p) {
-      if (dx >= 0 && dz >= 0 && dx < CH && dz < CH) {
+      /* sem mato por cima de tudo: só flores esparsas, e só em campo aberto */
+      if (dx >= 0 && dz >= 0 && dx < CH && dz < CH && r > .9955 && (ci.biome === BIOME.PLAINS || ci.biome === BIOME.FOREST)) {
         const t = hash3(wx, 7, wz, s + 5);
-        let id = t < .2 ? B.rose : t < .28 ? B.dandelion : B.tallgrass;
-        if (ch.blocks[bidx(dx, gy + 1, dz)] === 0 || DEFS[ch.blocks[bidx(dx, gy + 1, dz)]].replaceable) put(wx, gy + 1, wz, id, false);
+        if (ch.blocks[bidx(dx, gy + 1, dz)] === 0 || DEFS[ch.blocks[bidx(dx, gy + 1, dz)]].replaceable) put(wx, gy + 1, wz, t < .5 ? B.rose : B.dandelion, false);
       }
       continue;
     }

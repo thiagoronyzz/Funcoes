@@ -36,7 +36,7 @@ function mkEl(tag, id) {
   el.contains = () => false;
   el.setAttribute = () => {}; el.getAttribute = () => null;
   el.focus = () => {}; el.blur = () => {}; el.getBoundingClientRect = () => ({ left: 0, top: 0, width: 100, height: 100, right: 100, bottom: 100 });
-  el.getContext = () => ctx2d();
+  el.getContext = () => ctx2d(el);
   el.toDataURL = () => 'data:,';
   el.insertBefore = (a) => { el.children.push(a); return a; };
   el.setPointerCapture = () => {};
@@ -44,8 +44,9 @@ function mkEl(tag, id) {
   el.scrollIntoView = () => {};
   return el;
 }
-function ctx2d() {
+function ctx2d(el) {
   const noop = () => {};
+  if (el && process.env.CRAFT_PEEK) { el.__c = el.__c || recCtx(el); return el.__c; }
   return {
     imageSmoothingEnabled: false, globalAlpha: 1, fillStyle: '', strokeStyle: '', lineWidth: 1,
     fillRect: noop, clearRect: noop, strokeRect: noop, beginPath: noop, rect: noop, clip: noop, save: noop, restore: noop,
@@ -56,6 +57,45 @@ function ctx2d() {
     putImageData: noop,
     getImageData: (x, y, w, h) => ({ width: w, height: h, data: new Uint8ClampedArray(Math.max(1, w * h * 4)).fill(128) }),
   };
+}
+/* contexto 2D que grava pixels — só com CRAFT_PEEK=1 (usado por /tmp/peek.js) */
+function recCtx(el) {
+  const noop = () => {};
+  let px = null, W = 0, H = 0, col = [0, 0, 0, 255], tx = 0, ty = 0, st = [], alpha = 1, lw = 1;
+  const buf = () => { const w = el.width | 0, h = el.height | 0; if (!px || W !== w || H !== h) { W = w; H = h; px = new Uint8Array(Math.max(1, w * h * 4)); } return px; };
+  const setPx = (x, y) => { x = Math.round(x); y = Math.round(y); const p = buf(); if (x < 0 || y < 0 || x >= W || y >= H) return; const i = (y * W + x) * 4; p[i] = col[0]; p[i + 1] = col[1]; p[i + 2] = col[2]; p[i + 3] = alpha < .5 ? 0 : (col[3] < 128 ? 0 : 255); };
+  const parse = (v) => {
+    if (typeof v !== 'string') return;
+    let m = /^#([0-9a-f]{6})$/i.exec(v.trim());
+    if (m) { const n = parseInt(m[1], 16); col = [(n >> 16) & 255, (n >> 8) & 255, n & 255, 255]; return; }
+    m = /^rgba?\(([^)]+)\)$/i.exec(v.trim());
+    if (m) { const q = m[1].split(',').map(parseFloat); col = [q[0] | 0, q[1] | 0, q[2] | 0, (q[3] === undefined ? 1 : q[3]) > .5 ? 255 : 0]; }
+    else if (/transparent|none/i.test(v)) col = [0, 0, 0, 0];
+  };
+  const c = {
+    imageSmoothingEnabled: false, globalAlpha: 1, fillStyle: '', strokeStyle: '', lineWidth: 1,
+    get px() { return buf(); }, get ctxW() { return W; },
+    get fillStyle2() { return c._f; }, set fillStyle2(v) { c._f = v; },
+  };
+  const C = {
+    get px() { return buf(); }, get W() { return W; }, get H() { return H; },
+    get imageSmoothingEnabled() { return false; }, set imageSmoothingEnabled(v) {},
+    get globalAlpha() { return alpha; }, set globalAlpha(v) { alpha = v; },
+    get fillStyle() { return C._f; }, set fillStyle(v) { C._f = v; parse(v); },
+    get strokeStyle() { return C._s; }, set strokeStyle(v) { C._s = v; parse(v); },
+    get lineWidth() { return lw; }, set lineWidth(v) { lw = v || 1; },
+    fillRect(x, y, w, h) { for (let j = Math.round(y + ty); j < Math.round(y + ty + h); j++) for (let i = Math.round(x + tx); i < Math.round(x + tx + w); i++) setPx(i, j); },
+    clearRect(x, y, w, h) { const p = buf(); for (let j = Math.round(y + ty); j < Math.round(y + ty + h); j++) for (let i = Math.round(x + tx); i < Math.round(x + tx + w); i++) { i = Math.round(i); j = Math.round(j); if (i < 0 || j < 0 || i >= W || j >= H) continue; p[(j * W + i) * 4 + 3] = 0; } },
+    strokeRect(x, y, w, h) { const t = Math.max(1, Math.round(lw)); for (let i = 0; i <= w; i++) for (let k = 0; k < t; k++) { setPx(x + tx + i, y + ty + k); setPx(x + tx + i, y + ty + h - t + k); } for (let j = 0; j <= h; j++) for (let k = 0; k < t; k++) { setPx(x + tx + k, y + ty + j); setPx(x + tx + w - t + k, y + ty + j); } },
+    beginPath() {}, rect() {}, clip() {}, closePath() {}, moveTo() {}, lineTo() {}, arc() {}, rotate() {}, scale() {}, setTransform() {}, fillText() {}, fill() {}, drawImage() {}, putImageData() {},
+    stroke() { parse(C._s); for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) { /* caminho não rastreado */ } },
+    save() { st.push([tx, ty, alpha]); }, restore() { const s2 = st.pop(); if (s2) { tx = s2[0]; ty = s2[1]; alpha = s2[2]; } },
+    translate(x, y) { tx += x; ty += y; },
+    createLinearGradient: () => ({ addColorStop: noop }), createRadialGradient: () => ({ addColorStop: noop }),
+    createImageData: (w, h) => ({ width: w, height: h, data: new Uint8ClampedArray(Math.max(1, w * h * 4)) }),
+    getImageData(x, y, w, h) { const p = buf(), d = new Uint8ClampedArray(Math.max(1, w * h * 4)); for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { const s3 = (((y + j) | 0) * W + ((x + i) | 0)) * 4, t = (j * w + i) * 4; if (s3 < 0 || s3 >= p.length) continue; d[t] = p[s3]; d[t + 1] = p[s3 + 1]; d[t + 2] = p[s3 + 2]; d[t + 3] = p[s3 + 3]; } return { width: w, height: h, data: d }; },
+  };
+  return C;
 }
 function V(x, y, z) { this.x = x || 0; this.y = y || 0; this.z = z || 0; }
 V.prototype = {

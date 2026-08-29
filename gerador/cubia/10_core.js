@@ -143,17 +143,26 @@ function buildAtlas() {
   P.deep = [0x4b4d59, 0x3b3d47, 0x5c5f6c, 0x2c2e37];
   P.tnt = [0xb5412f, 0xffffff, 0x8c2f22, 0x333333];
 
-  function speckle(pal, density, jitter) {
+  /* ruído em manchas (2×2) + grão fino, igual ao visual do Minecraft:
+     a textura parece terra/pedra de verdade, não estática de TV.
+     hash3 em vez de Math.random → o mundo fica igual a cada recarga. */
+  function speckle(pal, density, opt) {
+    opt = opt || {};
+    const cl = opt.cluster || 2, sd = opt.seed || 0, k = density === undefined ? 1 : density;
     for (let y = 0; y < TILE; y++) for (let x = 0; x < TILE; x++) {
-      const r = Math.random();
+      const patch = hash3((x / cl) | 0, (y / cl) | 0, sd, 977);
+      const grain = hash3(x, y, sd + 31, 613);
+      let r = (patch * .68 + grain * .32 - .5) * 1.9 + .5;
+      r = r < 0 ? 0 : (r > 1 ? 1 : r);
       let c = pal[0];
-      if (r < 0.09 * (density === undefined ? 1 : density)) c = pal[1];
-      else if (r < 0.2 * (density === undefined ? 1 : density)) c = pal[2];
-      else if (r > 0.965) c = pal[3];
+      if (r < .09 * k) c = pal[1];
+      else if (r < .2 * k) c = pal[2];
+      else if (r > .965) c = pal[3];
       g.fillStyle = hex(c);
       g.fillRect(x, y, 1, 1);
     }
   }
+
   function base(c) { g.fillStyle = hex(c); g.fillRect(0, 0, TILE, TILE); }
   function dot(x, y, c) { if (x < 0 || y < 0 || x > 15 || y > 15) return; g.fillStyle = hex(c); g.fillRect(x, y, 1, 1); }
   function rct(x, y, w, h, c) { g.fillStyle = hex(c); g.fillRect(x, y, w, h); }
@@ -168,11 +177,46 @@ function buildAtlas() {
     }
   }
   const DRAW = {
-    grass_top: () => speckle(P.grass, 1.2),
-    grass_side: () => { speckle(P.dirt, 1); for (let x = 0; x < TILE; x++) { const h = 3 + ((hash3(x, 7, 1, 5) * 2.4) | 0); for (let y = 0; y < h; y++) dot(x, y, mixc(P.grass[0], P.grass[y % 4], 0.6)); } },
-    dirt: () => speckle(P.dirt, 1.1),
-    stone: () => speckle(P.stone, 1),
-    cobble: () => { speckle(P.cobble, 1); g.fillStyle = hex(P.cobble[3]); for (let i = 0; i < 5; i++) { const y = (i * 3 + 1); g.fillRect(0, y, TILE, 1); } for (let i = 0; i < 4; i++) g.fillRect(i * 4 + 2, (i & 1) * 3 + 1, 1, 8); },
+    grass_top: () => {
+      speckle(P.grass, 1.35, { cluster: 2, seed: 5 });
+      for (let i = 0; i < 16; i++) { const x = (hash3(i, 2, 7, 43) * 16) | 0, y = (hash3(i, 5, 9, 71) * 16) | 0; dot(x, y, P.grass[3]); if (hash3(x, y, 1, 5) < .55) dot(x, y + (y > 0 ? -1 : 1), P.grass[2]); }
+    },
+    grass_side: () => {
+      speckle(P.dirt, 1.1, { cluster: 2, seed: 11 });
+      for (let x = 0; x < TILE; x++) {
+        const h = 3 + ((hash3(x, 7, 1, 5) * 3) | 0);
+        for (let y = 0; y < h; y++) {
+          const k = hash3(x, y, 3, 17);
+          dot(x, y, P.grass[k < .3 ? 1 : (k < .72 ? 0 : (k < .93 ? 2 : 3))]);
+        }
+        if (hash3(x, 13, 2, 23) < .32) dot(x, h, P.grass[1]);
+      }
+    },
+    dirt: () => speckle(P.dirt, 1.15, { cluster: 2, seed: 11 }),
+    stone: () => { speckle(P.stone, 1.05, { cluster: 3, seed: 3 }); for (let i = 0; i < 3; i++) { const x = (hash3(i, 4, 1, 61) * 13) | 0, y = (hash3(i, 8, 2, 83) * 13) | 0; for (let a = 0; a < 3 + (i & 1); a++) dot(x + a, y + (a & 1), P.stone[1]); } },
+    cobble: () => {
+      /* pedregulho: pedras irregulares com rejunte escuro entre elas */
+      base(P.cobble[3]);
+      const st = [[0, 0, 6, 4], [7, 0, 5, 3], [13, 0, 3, 5], [0, 5, 4, 4], [5, 4, 4, 5], [10, 4, 3, 4],
+                  [13, 6, 3, 4], [0, 10, 5, 3], [6, 10, 4, 3], [11, 11, 5, 5], [0, 14, 5, 2], [6, 14, 4, 2],
+                  [7, 1, 0, 0], [10, 9, 4, 1]];
+      for (let i = 0; i < st.length; i++) {
+        const q = st[i], cx = q[0], cy = q[1], w = q[2], h = q[3];
+        if (w <= 0 || h <= 0) continue;
+        const t = hash3(i, 3, 1, 71);
+        const c0 = P.cobble[t < .34 ? 1 : (t < .74 ? 0 : 2)];
+        for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+          const gx = cx + x, gy = cy + y;
+          if (gx > 15 || gy > 15) continue;
+          if ((x === 0 && y === 0) || (x === w - 1 && y === 0) || (x === 0 && y === h - 1) || (x === w - 1 && y === h - 1)) continue;
+          let c = c0;
+          if (y === 0 || x === 0) c = mixc(c0, P.cobble[2], .72);
+          else if (y === h - 1 || x === w - 1) c = mixc(c0, P.cobble[3], .55);
+          if (hash3(gx, gy, i, 13) < .17) c = mixc(c, P.cobble[3], .5);
+          dot(gx, gy, c);
+        }
+      }
+    },
     granite: () => speckle(P.granite, 1.4),
     diorite: () => speckle(P.diorite, 1.4),
     andesite: () => speckle(P.andesite, 1.4),

@@ -1,9 +1,8 @@
 const fs = require('fs'), cp = require('child_process');
-const path = require('path');
-cp.execSync('python3 ' + path.join(__dirname, '..', 'build_craft.py'));
-const html = fs.readFileSync(path.join(__dirname, '..', '..', '..', 'craft.html'), 'utf8');
+cp.execSync('python3 /home/user/craftbuild/build.py');
+const html = fs.readFileSync('/home/user/Funcoes/craft.html', 'utf8');
 const code = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].pop()[1];
-const { run } = require(path.join(__dirname, 'stub.js'));
+const { run } = require('/home/user/craftbuild/stub.js');
 
 let pass = 0, fail = 0;
 const ok = (c, l, x) => { if (c) { pass++; console.log('  ✔ ' + l); } else { fail++; console.log('  ✘ ' + l + (x !== undefined ? '   → ' + x : '')); } };
@@ -430,6 +429,163 @@ console.log('\n== geometria das faces e orientação de textura ==');
   ok(uvBad.length === 0, 'texturas laterais na vertical certa e sem vazar do azulejo', uvBad.slice(0, 3).join(' | '));
   const md2 = G.buildMesh(world.chunks.get(1000003 * 0 + 0));
   ok(md2.pos.length > 0 && md2.ind.length > 0, 'mesh do chunk 0,0 reconstruído');
+}
+
+console.log('\n== soco, couro e fogo: combate corpo a corpo ==');
+{
+  Game.mode = 'survival'; Game.running = true; Game.paused = false; Player.dead = false; Game.time = .3;
+  world.chunk(0, 0);
+  Player.pos.set(2.5, world.surfaceY(2, 2) + 1, 2.5); Player.vel.set(0, 0, 0);
+  Player.yaw = 0; Player.pitch = 0; Player.sneak = false;
+  const raf = env.win.__raf;
+  for (let i = 1; i <= 3; i++) raf(i * 16.7);        /* a câmera entra no lugar */
+  const cp = G.camera.position;
+  G.Mobs.clearAll();
+  G.drops.length = 0;
+  const cow = G.Mobs.make('cow', cp.x, cp.y - .65, cp.z - 2);
+  ok(!!cow, 'vaca spawnada na frente da câmera');
+  G.updateTargets();
+  ok(!!Player.targetMob && Player.targetMob.mob === cow, 'mirar pega o corpo do bicho, não só o centro exato', Player.targetMob ? Player.targetMob.dist.toFixed(2) + ' m' : 'null');
+  const hp0 = cow.hp;
+  Player.attackT = 0;
+  G.attackLoop(0.016);
+  ok(cow.hp < hp0, 'soco tira vida do bicho', hp0 + ' → ' + cow.hp);
+  ok(cow.state === 'flee', 'passivo foge depois de apanhar', cow.state);
+  let guard = 0;
+  while (cow.hp > 0 && guard++ < 40) { cow.hp -= 4; if (cow.hp <= 0) G.Mobs.kill(cow); }
+  ok(G.drops.length > 0, 'bicho morto derruba item', G.drops.length);
+  ok(G.drops.some((d) => DEFS[d.id].key === 'beef') && G.drops.some((d) => DEFS[d.id].key === 'leather'), 'vaca larga carne E couro', G.drops.map((d) => DEFS[d.id].key).join(','));
+  /* queimando: a carne já cai assada */
+  G.Mobs.clearAll(); G.drops.length = 0;
+  const cow2 = G.Mobs.make('cow', cp.x, cp.y - .65, cp.z - 3);
+  cow2.burnT = 1.5;
+  G.Mobs.kill(cow2);
+  ok(G.drops.some((d) => DEFS[d.id].key === 'cookbeef'), 'bicho pegando fogo solta carne assada', G.drops.map((d) => DEFS[d.id].key).join(','));
+  ok(!G.drops.some((d) => DEFS[d.id].key === 'beef'), 'e não solta a crua junto');
+  /* hostil reage ao levar dano */
+  G.Mobs.clearAll();
+  const z = G.Mobs.make('zombie', cp.x, cp.y - .95, cp.z - 2);
+  const ag0 = z.aggro;
+  G.hitMob(z, 5, null);
+  ok(z.aggro > ag0, 'zumbi parte pra cima depois de apanhar', z.aggro);
+  ok(z.state === 'chase', 'e entra em perseguição', z.state);
+  /* crítico na queda */
+  const c3 = G.Mobs.make('pig', cp.x, cp.y - .45, cp.z - 2);
+  Player.onGround = false; Player.inWater = false; Player.vel.y = -3;
+  const hpA = c3.hp; G.hitMob(c3, 4, null); const critDmg = hpA - c3.hp;
+  const c4 = G.Mobs.make('pig', cp.x, cp.y - .45, cp.z - 2);
+  Player.onGround = true; Player.vel.y = 0;
+  const hpB = c4.hp; G.hitMob(c4, 4, null); const flatDmg = hpB - c4.hp;
+  ok(critDmg > flatDmg, 'golpe crítico (caindo) dói mais', flatDmg + ' vs ' + critDmg.toFixed(2));
+  ok(critDmg === flatDmg * 1.5, 'crítico multiplica por 1,5', critDmg.toFixed(3));
+  /* levar dano de mob tira vida do jogador e empurra */
+  G.Mobs.clearAll();
+  Player.hp = 20; Player.hurtT = 0; Player.needsKnock = 0;
+  G.damage(3, 'mob', { knock: true });
+  ok(Player.hp < 20, 'o bicho também bate', Player.hp);
+  G.Mobs.clearAll(); G.drops.length = 0;
+  for (let i = 1; i <= 4; i++) raf(3000 + i * 16.7);
+}
+
+console.log('\n== inventário e bancada como no Minecraft ==');
+{
+  /* fechar a tela devolve o que estava na grade (antes sumia) */
+  Game.mode = 'creative';
+  INV.hot = new Array(9).fill(null); INV.main = new Array(27).fill(null);
+  UI.show('creative');
+  INV.hot[0] = { id: itemOf('cobblestone'), n: 12 };
+  UI.close();
+  UI.show('inv');
+  INV.craft[0] = { id: itemOf('cobblestone'), n: 5 };
+  UI.close();
+  eq(INV.count(itemOf('cobblestone')), 17, 'material da grade volta pro inventário ao fechar');
+  ok(!INV.craft.some((c) => c), 'grade esvazia ao fechar');
+  /* clique no livro monta a grade; shift-clique cria o máximo */
+  INV.hot = new Array(9).fill(null); INV.main = new Array(27).fill(null);
+  for (const lb of ['oaklog', 'sprucelog']) { /* nada */ }
+  INV.main[0] = { id: itemOf('oaklog'), n: 4 };
+  UI.show('inv');
+  const r = G.RECIPES.find((x) => x.dynamic);
+  UI.fillGrid(r, true);
+  ok(INV.craft.some((c) => c), 'clicar no livro põe a receita na grade');
+  eq(INV.count(itemOf('oaklog')), 3, 'usa 1 tronco da pilha');
+  UI.returnCraftGrid();
+  eq(INV.count(itemOf('oaklog')), 4, 'devolver a grade repõe o tronco');
+  UI.autoCraft(r);
+  ok(INV.count(itemOf('oakplanks')) >= 12, 'shift-clique cria o máximo de tábuas', INV.count(itemOf('oakplanks')));
+  eq(INV.count(itemOf('oaklog')), 0, 'troncos consumidos', INV.count(itemOf('oaklog')));
+  ok(!INV.craft.some((c) => c), 'grade fica limpa depois do auto-craft');
+  /* canMake soma categorias (tábua de qualquer madeira) */
+  INV.hot = new Array(9).fill(null); INV.main = new Array(27).fill(null);
+  INV.main[1] = { id: itemOf('birchplanks'), n: 3 };
+  INV.main[2] = { id: ID.stick, n: 2 };
+  const woodPick = G.RECIPES.find((x) => x.out && G.outOf(x.out).id === ID.woodpick);
+  ok(!!woodPick, 'receita da picareta de madeira encontrada');
+  ok(!!woodPick && UI.canMake(woodPick), 'receita aceita tábua de qualquer madeira');
+  INV.main[1].n = 2;
+  ok(!!woodPick && !UI.canMake(woodPick), 'e bloqueia quando falta material');
+  ok(!!woodPick && /tábua/i.test(UI.missingText(woodPick)), 'livro diz o que falta', UI.missingText(woodPick));
+  if (woodPick) {
+    INV.main[1].n = 3;
+    UI.show('inv');
+    const before = INV.count(ID.woodpick);
+    UI.fillGrid(woodPick, true);
+    ok(INV.count(itemOf('birchplanks')) === 3 && !INV.craft.some((c) => c), 'receita 3×3 não é montada na grade 2×2 (nem gasta nada)');
+    UI.show('craft3');
+    UI.fillGrid(woodPick, true);
+    eq(INV.count(itemOf('birchplanks')), 0, 'montar a receita consome as tábuas');
+    eq(INV.count(ID.stick), 0, 'e os gravetos');
+    eq(INV.count(ID.woodpick), before, 'nada foi criado antes da hora');
+    UI.returnCraftGrid();
+    eq(INV.count(itemOf('birchplanks')), 3, 'e desfazer devolve tudo');
+    eq(INV.count(ID.stick), 2, 'gravetos também voltam');
+  }
+  /* double-click junta pilhas iguais no cursor */
+  INV.main[3] = { id: itemOf('cobblestone'), n: 20 };
+  INV.main[4] = { id: itemOf('cobblestone'), n: 20 };
+  INV.hot[5] = { id: itemOf('cobblestone'), n: 18 };
+  UI.held = null;
+  UI.collectMatch('main', 3, itemOf('cobblestone'));
+  eq(UI.held && UI.held.n, 58, 'duplo clique acumula o mesmo item no cursor', UI.held && UI.held.n);
+  eq(INV.count(itemOf('cobblestone')), 0, 'as pilhas de origem esvaziam');
+  /* livro aparece também no inventário 2×2 */
+  UI.show('inv');
+  ok(!!UI.recipeBookElRef && UI.recipeBookElRef.id === 'recipeBook', 'inventário 2×2 tem livro de receitas', UI.recipeBookElRef && UI.recipeBookElRef.className);
+  UI.close();
+}
+
+console.log('\n== streaming sem buraco ==');
+{
+  Game.mode = 'survival'; Game.rd = 4; Game.running = true; Game.paused = false; Player.dead = false;
+  const W = G.world;
+  Player.pos.set(0.5, W.surfaceY(0, 0) + 1, 0.5); Player.vel.set(0, 0, 0);
+  for (let i = 0; i < 14; i++) G.updateChunks({ gen: 900, mesh: 900 });
+  let missing = 0;
+  for (let dz = -7; dz <= 7; dz++) for (let dx = -7; dx <= 7; dx++) {
+    if (dx * dx + dz * dz > 7.2 * 7.2) continue;
+    const c = W.chunks.get(dx * 1000003 + dz);
+    if (!c || !c.gen) missing++;
+  }
+  eq(missing, 0, 'o chão é gerado com folga antes de você chegar na beira', missing);
+  let unmeshed = 0;
+  for (const c of W.chunks.values()) if (c.gen && Math.abs(c.cx) <= 3 && Math.abs(c.cz) <= 3 && !c.mesh) unmeshed++;
+  eq(unmeshed, 0, 'no centro, tudo já tem malha', unmeshed);
+  let ringGen = 0, ringMesh = 0;
+  for (const c of W.chunks.values()) { const d = Math.max(Math.abs(c.cx), Math.abs(c.cz)); if (d >= 6 && d <= 7) { if (c.gen) ringGen++; if (c.mesh) ringMesh++; } }
+  ok(ringGen > 0, 'o anel de fora já foi gerado antes de precisar aparecer', ringGen);
+  ok(ringMesh < ringGen, 'a malha dele vem depois, sem travar o frame', ringMesh + '/' + ringGen);
+  ok(!!W.chunks.get(0) && !!W.chunks.get(0).mesh, 'o chunk embaixo do jogador continua vivo');
+  /* anda 3 chunks e nada de sumiço */
+  Player.pos.set(48.5, W.surfaceY(48, 0) + 1, 0.5);
+  for (let i = 0; i < 10; i++) G.updateChunks({ gen: 900, mesh: 900 });
+  let holes = 0;
+  for (let dz = -5; dz <= 5; dz++) for (let dx = -5; dx <= 5; dx++) {
+    if (dx * dx + dz * dz > 5.2 * 5.2) continue;
+    const c = W.chunks.get((3 + dx) * 1000003 + dz);
+    if (!c || !c.gen || !c.mesh) holes++;
+  }
+  eq(holes, 0, 'andar para o lado não deixa buraco na malha visível', holes);
+  ok(!W.chunks.has(-6 * 1000003 - 6), 'chunk bem distante é descartado (memória)');
 }
 
 console.log('\n== sessão completa: novo mundo, frames e todas as telas ==');

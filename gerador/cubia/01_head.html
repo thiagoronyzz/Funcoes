@@ -28,12 +28,12 @@
     user-select:none; -webkit-user-select:none; touch-action:none;
   }
   canvas{display:block}
-  #gl{position:fixed; inset:0; width:100%; height:100%; cursor:crosshair}
+  #gl{position:fixed; inset:0; width:100%; height:100%; cursor:crosshair; z-index:1}
   .hidden{display:none !important}
   button{font:inherit; color:inherit}
 
   /* ---------- HUD ---------- */
-  #hud{position:fixed; inset:0; pointer-events:none; z-index:5}
+  #hud{position:fixed; inset:0; pointer-events:none; z-index:6}
   #crosshair{
     position:absolute; left:50%; top:50%; width:20px; height:20px; transform:translate(-50%,-50%);
     opacity:.9; mix-blend-mode:difference;

@@ -25,12 +25,19 @@ Jogo de mineração, construção e sobrevivência em mundo procedural infinito,
   a divisa dos chunks.
 - Jogo: 57 blocos + 66 itens, dureza e nível de ferramenta (madeira → pedra → ferro → ouro →
   diamante), crafting 2×2 na mão e 3×3 na bancada (com padrão espelhado e receitas por categoria:
-  qualquer tronco vira tábua), fornalha com combustível e tempo, baús, cama, XP com 8
-  encantamentos que mudam o jogo de verdade, dinamite, partículas e 10 criaturas com IA.
+  qualquer tronco vira tábua), livro de receitas que monta a grade com um clique e cria o máximo
+  possível com shift-clique, duplo clique ajuntando pilhas iguais, fornalha com combustível,
+  animação de chama e tempo, baús, cama, XP com 8 encantamentos que mudam o jogo de verdade,
+  dinamite, partículas e 10 criaturas com IA.
+- Combate: alcance limitado, escolha do alvo por raio contra o corpo do bicho (não só o centro),
+  knockback, crítico caindo, armadura reduzindo dano, carne que cai assada se o bicho estava
+  queimando, creeper que acende ao ser tocado e flecha com puxada carregada.
 - Sobrevivência: vida, fome e saturação, armadura, queda, afogamento, lava, veneno, i-frames,
   queda do inventário na morte, ciclo dia-noite de 20 minutos com spawn de hostis por nível de luz.
 - Cinco modos (sobrevivência, hardcore, criativo, aventura, espectador), autosave no
   `localStorage` a cada 45 s e um mundo salvo por nome.
+- Streaming sem buraco: o chão é gerado dois chunks antes da borda visível e a malha vem depois,
+  com orçamento de tempo por quadro; o HUD fica sempre por cima do canvas (coração, fome, hotbar).
 - Texturas 16×16 e efeitos sonoros são gerados por código no próprio arquivo. A única rede
   usada é a biblioteca three.js (CDN com fonte reserva); se ela falhar, aparece um aviso na tela.
 

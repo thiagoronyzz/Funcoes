@@ -249,7 +249,8 @@ function startWorld(seed, mode, rd, fov, vol, name) {
   closeVeil();
   Game.running = true; Game.paused = false;
   scene.fog.near = Game.rd * CH * .42; scene.fog.far = Game.rd * CH * 1.06;
-  UI.init(); UI.syncHotbar(); UI.syncVitals();
+  UI.init(); gpuProbe();
+  UI.syncHotbar(); UI.syncVitals();
   localStorage.setItem('cubia:last', name);
   Sound.resume();
   toast('Bem-vindo a Cubia · seed ' + seed + ' · ' + (mode[0].toUpperCase() + mode.slice(1)));
@@ -311,7 +312,7 @@ try {
     Game, world, chunks: world.chunks, Player, UI, INV, DEFS, ID, B, I, MAT: null, startWorld, saveWorld, loadWorld, applyState, Mobs, MOBDEF, Adv, stats,
     RECIPES, SMELT, FUELS, ENCH, ATLAS, matchRecipe, gridState, buildMesh, relight, genChunk, columnInfo, meshChunk, updateChunks, updateSky,
     breakTime, canHarvest, rollDrops, damage, heal, addXp, xpState, spendLevels, spawnDrop, spawnArrow, drops, arrows, particles, TNT, updateArrows, releaseBow, updateDrops, updateSelfMesh, updateHeldView, mobBlocked, findGround,
-    raycastVoxel, solidAt, canPlace, clock, clockFn: clock, loop, doBreak, useItem, updatePlayer, updateFurnaces, FACES, faceUV, AO_LVL, genChunk2: genChunk, CH, WH, SEA, placeBlock: null, tileUV, DEFSLEN: () => DEFS.length, COL: null,
+    raycastVoxel, solidAt, canPlace, clock, SHADERS: () => ({ V: SH_V, F: SH_F }), MATS: () => ({ solid: solidMat, water: waterMat }), clockFn: clock, loop, doBreak, useItem, updatePlayer, updateFurnaces, FACES, faceUV, AO_LVL, genChunk2: genChunk, CH, WH, SEA, placeBlock: null, tileUV, DEFSLEN: () => DEFS.length, COL: null,
   };
   window.__cubia.match = (cells, size) => matchRecipe(cells, size);
   window.__cubia.outOf = outOf;

@@ -354,6 +354,45 @@ try { (0, eval)('0'); } catch (e) { e2 = e; }
 ok(true, 'explosão exercitada via creeper/TNT na navegação');
 
 
+console.log('\n== GLSL dos chunks (o que o nó não compila, o navegador descarta) ==');
+{
+  const sh = G.SHADERS(), mats = G.MATS();
+  ok(!/#include/.test(sh.V) && !/#include/.test(sh.F), 'GLSL autossuficiente (sem #include do three)');
+  ok(!/vFogDepth/.test(sh.V + sh.F) || (new RegExp('varying\\s+float\\s+vFogDepth').test(sh.V) && new RegExp('varying\\s+float\\s+vFogDepth').test(sh.F)),
+    'vFogDepth declarado nas duas etapas — sem isso o programa não compila e o chunk some');
+  const declaredIn = (src) => {
+    const out = new Set();
+    for (const m of src.matchAll(/(?:uniform|varying|attribute)\s+\w+\s+([\w,\s]+);/g)) m[1].split(',').forEach((n) => out.add(n.trim().replace(/\[.*/, '')));
+    for (const m of src.matchAll(/\b(?:float|int|bool|vec2|vec3|vec4|mat3|mat4)\s+(\w+)/g)) out.add(m[1]);
+    return out;
+  };
+  const IGNORE = new Set(['main', 'void', 'float', 'int', 'bool', 'vec2', 'vec3', 'vec4', 'if', 'else', 'return', 'for',
+    'ifdef', 'ifndef', 'endif', 'define', 'USE_FOG', 'USE_WAVE', 'FOG_EXP2', 'texture2D', 'gl_Position', 'gl_FragColor',
+    'sin', 'cos', 'mix', 'max', 'min', 'clamp', 'pow', 'smoothstep', 'exp', 'abs', 'dot', 'normalize', 'fract', 'floor',
+    'length', 'position', 'normal', 'uv', 'modelViewMatrix', 'projectionMatrix', 'discard']);
+  for (const [tag, src] of [['V', sh.V], ['F', sh.F]]) {
+    const mine = new Set(declaredIn(src)); [...IGNORE].forEach((x) => mine.add(x));
+    const body = src.slice(src.indexOf('void main'));
+    const loose = [...new Set([...body.matchAll(/(?<![.\w])([a-zA-Z_]\w*)\b/g)].map((m) => m[1]))].filter((id) => !mine.has(id));
+    ok(loose.length === 0, (tag === 'V' ? 'vertex' : 'fragment') + ': nenhum identificador sem declaração', loose.join(','));
+  }
+  /* uniforms do GLSL precisam existir no material — ausente vira 0 silencioso */
+  const uniformNames = (src) => {
+    const out = new Set();
+    for (const m of src.matchAll(/uniform\s+\w+\s+([\w\s,]+);/g)) m[1].split(',').forEach((n) => n.trim() && out.add(n.trim()));
+    return out;
+  };
+  const declared = [...new Set([...uniformNames(sh.V), ...uniformNames(sh.F)])];
+  ok(declared.length >= 6, 'shaders declaram seus uniforms', declared.join(','));
+  const fogNames = new Set(['fogColor', 'fogNear', 'fogFar', 'fogDensity']);
+  for (const [nm, mat] of [['sólido', mats.solid], ['água', mats.water]]) {
+    const missing = declared.filter((n) => !fogNames.has(n) && !(n in (mat.uniforms || {})));
+    ok(missing.length === 0, nm + ': todo uniform do shader existe no material', missing.join(','));
+  }
+  ok(mats.solid.uniforms.uAlpha.value === 1, 'bloco opaco renderiza alfa 1');
+  ok(mats.water.side === undefined || mats.water.side !== 0, 'água desenhada dos dois lados');
+}
+
 console.log('\n== geometria das faces e orientação de textura ==');
 {
   const F = G.FACES;

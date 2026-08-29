@@ -1,0 +1,82 @@
+<body>
+<canvas id="gl"></canvas>
+
+<div id="vig"></div>
+<div id="water"></div>
+<div id="flash"></div>
+<div id="hurtvig"></div>
+
+<div id="hud" class="hidden">
+  <div id="crosshair"></div>
+  <div id="targetLabel"></div>
+  <div id="actionbar"></div>
+  <div id="centerMsg"></div>
+  <div class="bars" id="armorbar"></div>
+  <div class="bars" id="hearts"></div>
+  <div class="bars" id="hunger"></div>
+  <div class="bars" id="breath"></div>
+  <div id="xpwrap"><div id="xpbar"><div id="xpfill"></div></div><div id="xplevel">0</div></div>
+  <div id="hotbar"></div>
+  <div id="debug" class="hidden"></div>
+  <div id="toasts"></div>
+</div>
+
+<div id="screenRoot"></div>
+<div id="held" class="hidden"></div>
+<div id="tooltip" class="hidden"></div>
+
+<div id="boot">
+  <div>
+    <div class="spin"></div>
+    <h1 style="margin:0 0 8px;font-size:1.5rem;letter-spacing:-.01em">Cubia</h1>
+    <p id="bootMsg">Gerando texturas 16×16 e carregando o motor voxel…</p>
+  </div>
+</div>
+
+<div id="fatal" class="veil hidden">
+  <div class="panel" style="max-width:620px">
+    <p class="eyebrow">Motor gráfico indisponível</p>
+    <h1>Não foi possível iniciar o WebGL</h1>
+    <p id="fatalMsg"></p>
+    <p>Cubia precisa da biblioteca three.js (carregada por CDN) e de um navegador com WebGL. Verifique a conexão com
+      <code>cdn.jsdelivr.net</code> ou <code>unpkg.com</code> e atualize a página. Se estiver em um navegador muito antigo,
+      tente o Chrome, Edge ou Firefox atualizados.</p>
+  </div>
+</div>
+
+<script>
+/* Carrega three.js com fallback de CDN; se falhar, mostra um erro amigável. */
+(function(){
+  const SRC = [
+    'https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js',
+    'https://unpkg.com/three@0.150.1/build/three.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/three.js/r150/three.min.js'
+  ];
+  let i = 0;
+  window.__cubiaThree = null;
+  function fail(msg){
+    const b = document.getElementById('boot'); if (b) b.classList.add('hidden');
+    const m = document.getElementById('fatalMsg'); if (m) m.textContent = msg;
+    const f = document.getElementById('fatal'); if (f) f.classList.remove('hidden');
+    if (window.console) console.error('[cubia]', msg);
+  }
+  function boot(){
+    if (window.__cubiaMain) { try { window.__cubiaMain(); } catch (e) { fail((e && e.message) || String(e)); } }
+  }
+  window.__cubiaFail = fail;
+  function next(){
+    if (i >= SRC.length) { fail('Nenhuma CDN de three.js respondeu (offline?).'); return; }
+    const s = document.createElement('script');
+    s.src = SRC[i++]; s.async = false;
+    s.onload = () => { window.__cubiaThree = window.THREE || null; window.__cubiaThree ? boot() : next(); };
+    s.onerror = next;
+    document.head.appendChild(s);
+  }
+  next();
+})();
+</script>
+<script>
+__CUBIA_CODE__
+</script>
+</body>
+</html>

@@ -115,6 +115,8 @@ function die() {
   if (Player.dead) return;
   Player.dead = true;
   Player.hp = 0;
+  if (UI.open) UI.close();                 /* senão a tela ficaria "aberta" para sempre */
+  $('hud').classList.add('hidden');        /* na morte a barra sai de cena, como no Minecraft */
   const dropAll = () => {
     for (let i = 0; i < 9; i++) if (INV.hot[i]) { spawnDrop(Player.pos.x, Player.pos.y + 1, Player.pos.z, INV.hot[i].id, INV.hot[i].n, null, INV.hot[i].ench, INV.hot[i].dur); INV.hot[i] = null; }
     for (let i = 0; i < 27; i++) if (INV.main[i]) { spawnDrop(Player.pos.x, Player.pos.y + 1, Player.pos.z, INV.main[i].id, INV.main[i].n, null, INV.main[i].ench, INV.main[i].dur); INV.main[i] = null; }
@@ -155,6 +157,7 @@ function deathScreen(hardcore) {
 }
 function respawn() {
   Player.dead = false;
+  $('hud').classList.remove('hidden');
   Player.hp = Player.maxHp; Player.food = 20; Player.sat = 5; Player.air = 10;
   Player.vel.set(0, 0, 0);
   const sp = Player.spawn.clone();

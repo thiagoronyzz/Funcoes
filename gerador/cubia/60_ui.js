@@ -5,6 +5,14 @@ const UI = {
   tiles: { full: ATLAS.T('heart_full'), half: ATLAS.T('heart_half'), empty: ATLAS.T('heart_empty') },
   init() {
     const hb = $('hotbar');
+    hb.addEventListener('mousedown', (e) => {
+      const el = e.target && e.target.closest ? e.target.closest('.slot') : null;
+      if (!el) return;
+      const i = +el.dataset.i;
+      if (UI.open) { if (UI.held || e.button === 2) { UI.onSlot(e); return; } }
+      Player.held = i; UI.syncHotbar(); UI.syncScreen();
+    });
+    hb.addEventListener('contextmenu', (e) => { if (UI.open) e.preventDefault(); });
     for (let i = 0; i < 9; i++) {
       const el = document.createElement('div');
       el.className = 'slot'; el.dataset.list = 'hot'; el.dataset.i = i;
@@ -79,6 +87,7 @@ const UI = {
     const root = $('screenRoot');
     root.querySelectorAll('.slot[data-list]').forEach((el) => this.paint(el, this.slotStack(el.dataset.list, +el.dataset.i)));
     if (this.mode === 'inv' || this.mode === 'craft3') this.syncCraft();
+    if (this.dollRef) this.paintDoll();
   },
   syncCrack() {
     if (!Player.mineBlock || Player.mineProgress <= 0.001) { crackMesh.visible = false; return; }
@@ -92,6 +101,10 @@ const UI = {
   },
   syncVitals() {
     if (!this.hearts || !this.food) return;
+    /* criativo e espectador não têm vida/fome — a barra de itens continua igual */
+    const vit = Game.mode === 'survival' || Game.mode === 'hardcore' || Game.mode === 'adventure';
+    for (const id of ['hearts', 'hunger', 'armorbar', 'breath', 'xpwrap']) $(id).style.opacity = vit ? '1' : '0';
+    if (!vit) return;
     const hp = Player.hp, fd = Player.food;
     const st = xpState();
     for (let i = 0; i < 10; i++) {
@@ -118,9 +131,10 @@ const UI = {
   close() {
     if (this.held) { if (INV.addFull(this.held) > 0) dropStackWorld(this.held); this.held = null; $('held').classList.add('hidden'); }
     this.returnCraftGrid();
-    this.open = null; this.mode = null; this.pos = null; this.key = null; this.furnace = null;
+    this.open = null; this.mode = null; this.pos = null; this.key = null; this.furnace = null; this.dollRef = null;
     $('screenRoot').innerHTML = ''; $('screenRoot').classList.remove('on');
     $('tooltip').classList.add('hidden');
+    $('hud').classList.remove('ui');
     requestLock();
     Sound.click();
   },
@@ -134,6 +148,7 @@ const UI = {
     this.open = mode === 'inv' ? 'Inventário' : mode === 'craft3' ? 'Bancada de trabalho' : mode === 'furnace' ? 'Fornalha' : mode === 'chest' ? 'Baú' : mode === 'enchant' ? 'Mesa de encantamentos' : 'Criativo';
     this.mode = mode; this.pos = pos; this.key = pos ? pos.join(',') : null;
     if (mode === 'furnace') this.furnace = { data: furnaceData(pos[0], pos[1], pos[2]) };
+    $('hud').classList.add('ui');
     this.build();
     Sound.click();
   },
@@ -156,65 +171,108 @@ const UI = {
       for (let i = 0; i < n; i++) g.appendChild(mkSlot(list, i));
       return g;
     };
-    const side = document.createElement('div');
-    if (this.mode === 'inv' || this.mode === 'craft3') {
-      const craftWrap = document.createElement('div');
-      craftWrap.innerHTML = '<h4>' + (this.mode === 'craft3' ? 'Criação 3×3' : 'Criação 2×2') + '</h4>';
-      const row = document.createElement('div'); row.style.cssText = 'display:flex;gap:14px;align-items:center';
+    const box = (label) => {
+      const d = document.createElement('div'); d.className = 'col'; d.style.alignItems = 'flex-start';
+      if (label) { const h4 = document.createElement('h4'); h4.textContent = label; d.appendChild(h4); }
+      return d;
+    };
+    const row = document.createElement('div'); row.className = 'row';
+    const invMode = this.mode === 'inv' || this.mode === 'craft3';
+
+    /* ---- mão esquerda do Minecraft: armadura em coluna + boneco + off-hand ---- */
+    if (this.mode === 'inv') {
+      const ch = document.createElement('div'); ch.className = 'col';
+      const ar = document.createElement('div'); ar.className = 'g g1';
+      ['Capacete', 'Peitoral', 'Calça', 'Botas'].forEach((nm, i) => { const el = mkSlot('armor', i); el.title = nm; ar.appendChild(el); });
+      ch.appendChild(ar);
+      ch.appendChild(this.dollCanvas());
+      const off = mkSlot('off', 0); off.title = 'Mão esquerda';
+      ch.appendChild(off);
+      const ol = document.createElement('div'); ol.textContent = 'mão esq.';
+      ol.style.cssText = 'font-size:10.5px;color:var(--muted);margin-top:-2px';
+      ch.appendChild(ol);
+      row.appendChild(ch);
+    }
+
+    /* ---- área principal: criação / fornalha / baú / encantamento / criativo ---- */
+    const main = box(invMode ? (this.mode === 'craft3' ? 'Criação 3×3' : 'Criação 2×2') : '');
+    if (invMode) {
+      const r = document.createElement('div');
+      r.style.cssText = 'display:flex;gap:14px;align-items:center';
       const g = document.createElement('div'); g.className = 'g ' + (this.mode === 'craft3' ? 'g3' : 'g2');
       const cells = this.mode === 'craft3' ? 9 : 4;
-      for (let i = 0; i < cells; i++) {
-        const el = mkSlot('craft', this.mode === 'craft3' ? i : [0, 1, 3, 4][i]);
-        g.appendChild(el);
-      }
+      for (let i = 0; i < cells; i++) g.appendChild(mkSlot('craft', this.mode === 'craft3' ? i : [0, 1, 3, 4][i]));
       const arrow = document.createElement('div'); arrow.className = 'arrow';
-      const out = mkSlot('out', 0); out.style.boxShadow = 'inset 0 0 0 2px rgba(45,191,155,.6)';
-      row.appendChild(g); row.appendChild(arrow); row.appendChild(out);
-      craftWrap.appendChild(row);
-      side.appendChild(craftWrap);
-      side.appendChild(this.recipeBookEl());
-    }
-    if (this.mode === 'furnace') side.appendChild(this.furnaceEl(mkSlot));
-    if (this.mode === 'chest') side.appendChild(grid('chest', 27, 9));
-    if (this.mode === 'enchant') side.appendChild(this.enchantEl());
-    if (this.mode === 'creative') side.appendChild(this.paletteEl());
-    wrap.appendChild(side);
-    const playerBox = document.createElement('div');
-    if (this.mode === 'inv' || this.mode === 'craft3') {
-      const box = document.createElement('div'); box.style.cssText = 'display:flex;gap:16px;align-items:center';
-      const ar = document.createElement('div');
-      ar.className = 'g g2'; ar.style.gridTemplateColumns = 'repeat(1,48px)';
-      ['Capacete', 'Peitoral', 'Calça', 'Botas'].forEach((nm, i) => { const el = mkSlot('armor', i); el.title = nm; ar.appendChild(el); });
-      box.appendChild(ar);
-      playerBox.appendChild(box);
-    }
+      const out = mkSlot('out', 0); out.style.boxShadow = 'inset 0 0 0 2px rgba(45,191,155,.6)'; out.title = 'Resultado';
+      r.appendChild(g); r.appendChild(arrow); r.appendChild(out);
+      main.appendChild(r);
+      main.style.paddingTop = '4px';
+    } else if (this.mode === 'furnace') main.appendChild(this.furnaceEl(mkSlot));
+    else if (this.mode === 'chest') { const g = grid('chest', 27, 9); main.appendChild(g); }
+    else if (this.mode === 'enchant') main.appendChild(this.enchantEl());
+    else if (this.mode === 'creative') main.appendChild(this.paletteEl());
+    row.appendChild(main);
+    if (invMode) row.appendChild(this.recipeBookEl());
+    wrap.appendChild(row);
+
+    /* ---- inventário 9×3 (a barra de 9 fica fixa na tela, sempre visível) ---- */
     const inv = document.createElement('div');
-    inv.innerHTML = '<h4 style="margin-top:10px">Inventário</h4>';
+    inv.className = 'invBlock';
+    const h4 = document.createElement('h4'); h4.textContent = 'Inventário';
+    inv.appendChild(h4);
     inv.appendChild(grid('main', 27, 9));
-    const hb = document.createElement('div'); hb.style.marginTop = '8px';
-    hb.innerHTML = '<h4 style="margin:8px 0 4px">Barra rápida</h4>';
-    hb.appendChild(grid('hot', 9, 9));
-    inv.appendChild(hb);
-    const offCol = document.createElement('div');
-    offCol.style.cssText = 'display:flex;flex-direction:column;gap:6px;align-items:center';
-    offCol.appendChild(mkSlot('off', 0));
-    const offLbl = document.createElement('div'); offLbl.textContent = 'Mão esq.'; offLbl.style.cssText = 'font-size:11px;color:var(--muted)';
-    offCol.appendChild(offLbl);
-    playerBox.appendChild(offCol);
-    wrap.appendChild(playerBox);
+    wrap.appendChild(inv);
+
     const btns = document.createElement('div');
     btns.className = 'btnrow';
-    btns.style.cssText = 'position:fixed;right:16px;bottom:14px;z-index:23';
+    btns.style.cssText = 'position:fixed;right:16px;top:12px;z-index:23';
     const b1 = document.createElement('button'); b1.className = 'btn'; b1.textContent = 'Fechar (E)'; b1.onclick = () => UI.close();
     const b2 = document.createElement('button'); b2.className = 'btn btn--ghost'; b2.textContent = 'Salvar mundo'; b2.onclick = () => { saveWorld(); toast('Mundo salvo'); };
     btns.appendChild(b1); btns.appendChild(b2);
     root.innerHTML = '';
-    root.appendChild(title); root.appendChild(wrap); root.appendChild(btns);
+    if (this.mode !== 'inv' && this.mode !== 'craft3') root.appendChild(title);
+    root.appendChild(wrap); root.appendChild(btns);
     root.classList.add('on');
     this.syncScreen();
     const el = wrap;
     el.addEventListener('mousedown', (e) => this.onSlot(e));
     el.addEventListener('contextmenu', (e) => e.preventDefault());
+  },
+  /* boneco do personagem no inventário (o "steve" da segunda linha de slots) */
+  dollCanvas() {
+    const cv = document.createElement('canvas');
+    cv.width = 56; cv.height = 88; cv.className = 'doll';
+    this.dollRef = cv;
+    return cv;
+  },
+  paintDoll() {
+    const cv = this.dollRef;
+    if (!cv) return;
+    const g = cv.getContext('2d');
+    g.imageSmoothingEnabled = false;
+    g.clearRect(0, 0, 56, 88);
+    const sq = (x, y, w, h, c) => { g.fillStyle = hex(c); g.fillRect(x, y, w, h); };
+    const SKIN = 0xd9a06b, HAIR = 0x4a2f1c, SHIRT = 0x3a6fd8, PANTS = 0x2d3a72, SHOE = 0x55555c;
+    const eq = (i) => { const st = INV.armor[i]; if (!st) return 0; const d = DEFS[st.id]; const mk = String(d.key || '').split('_')[0]; return (MAT[mk] !== undefined ? MAT[mk] : 0x9aa3b2); };
+    const helm = eq(0), chest = eq(1), legs = eq(2), boots = eq(3);
+    /* cabeça 32×32 */
+    sq(12, 0, 32, 32, SKIN);
+    sq(12, 0, 32, 8, HAIR); sq(12, 8, 4, 8, HAIR); sq(40, 8, 4, 8, HAIR);
+    sq(16, 14, 8, 4, 0xf3f5fa); sq(32, 14, 8, 4, 0xf3f5fa);
+    sq(20, 15, 4, 3, 0x3a5fa8); sq(32, 15, 4, 3, 0x3a5fa8);
+    sq(26, 22, 4, 3, 0xb27c4d);
+    if (helm) { sq(12, 0, 32, 12, helm); sq(12, 12, 4, 12, mixc(helm, 0x000000, .25)); sq(40, 12, 4, 12, mixc(helm, 0x000000, .25)); sq(12, 0, 32, 3, mixc(helm, 0xffffff, .25)); }
+    /* corpo 32×24 + braços */
+    sq(12, 32, 32, 24, SHIRT);
+    sq(4, 32, 8, 24, SHIRT); sq(44, 32, 8, 24, SHIRT);
+    sq(4, 50, 8, 6, SKIN); sq(44, 50, 8, 6, SKIN);
+    if (chest) { sq(12, 32, 32, 20, chest); sq(4, 32, 8, 18, chest); sq(44, 32, 8, 18, chest); sq(12, 32, 32, 3, mixc(chest, 0xffffff, .28)); }
+    /* pernas 2×(16×24) */
+    sq(12, 56, 16, 24, PANTS); sq(28, 56, 16, 24, PANTS);
+    sq(12, 76, 16, 4, SHOE); sq(28, 76, 16, 4, SHOE);
+    if (legs) { sq(12, 56, 32, 14, legs); }
+    if (boots) { sq(12, 70, 16, 10, boots); sq(28, 70, 16, 10, boots); }
+    for (const st of INV.hot.concat(INV.main)) { if (st && st.ench && Object.keys(st.ench).length) { sq(12, 34, 32, 1, 0xc9a6ff); break; } }
   },
   collectMatch(list, i, id) {
     const max = DEFS[id].stack;

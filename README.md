@@ -37,7 +37,12 @@ Jogo de mineração, construção e sobrevivência em mundo procedural infinito,
 - Cinco modos (sobrevivência, hardcore, criativo, aventura, espectador), autosave no
   `localStorage` a cada 45 s e um mundo salvo por nome.
 - Streaming sem buraco: o chão é gerado dois chunks antes da borda visível e a malha vem depois,
-  com orçamento de tempo por quadro; o HUD fica sempre por cima do canvas (coração, fome, hotbar).
+  com orçamento de tempo por quadro.
+- Física e HUD no molde do Minecraft: pulo nunca dá dano (só acima de 3 blocos, 1 coração por
+  bloco extra), o pé gruda no topo do bloco ao pousar (sem afundar de 0,06 em 0,06), a balançada
+  da câmera entra e sai suave, e atacar mexe só na mão — a barra de itens fica fixa e clicável com
+  qualquer tela aberta. Inventário com armadura + boneco + criação 2×2; bancada com 3×3 e
+  inventário embaixo, como nas telas originais.
 - Texturas 16×16 e efeitos sonoros são gerados por código no próprio arquivo. A única rede
   usada é a biblioteca three.js (CDN com fonte reserva); se ela falhar, aparece um aviso na tela.
 

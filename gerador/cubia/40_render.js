@@ -3,7 +3,7 @@
 const Game = {
   mode: 'survival', hardcore: false, rd: 6, fov: 75, seed: 1, running: false, paused: false,
   time: 0.28,                      // fração do dia (0 = meio-dia, .5 = meia-noite) — ciclo de 20 min
-  dayLen: 1200, skyMul: 1, t: 0, fps: 0, day: 1, worldName: 'mundo-1', sound: .6, autojump: true,
+  dayLen: 1200, skyMul: 1, t: 0, fps: 0, day: 1, worldName: 'mundo-1', sound: .6, autojump: false,
 };
 const canvas = $('gl');
 let renderer, scene, camera, skyMesh, sunMesh, moonMesh, cloudMesh, starPts, chunkGroup, ambient, sunLight;

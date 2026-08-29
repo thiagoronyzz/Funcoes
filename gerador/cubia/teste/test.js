@@ -15,6 +15,7 @@ ok(!err, 'boot sem exceção', err && err.message + '\n' + String(err && err.sta
 if (!G) process.exit(1);
 
 const { DEFS, ID, B, I, ATLAS, world, Game, Player, INV, UI } = G;
+const camera = G.camera;
 const releaseBow = G.releaseBow, mobBlocked = G.mobBlocked;
 const itemOf = (k) => { const d = DEFS[ID[k]]; return d && d.kind === 'block' && d.item !== undefined ? d.item : ID[k]; };
 const hand = { kind: null, tier: 0, speed: 1, stack: null };
@@ -586,6 +587,121 @@ console.log('\n== streaming sem buraco ==');
   }
   eq(holes, 0, 'andar para o lado não deixa buraco na malha visível', holes);
   ok(!W.chunks.has(-6 * 1000003 - 6), 'chunk bem distante é descartado (memória)');
+}
+
+console.log('\n== pulo, queda e o painel do Minecraft ==');
+{
+  Game.mode = 'survival'; Game.running = true; Game.paused = false; Player.dead = false;
+  Player.fly = false; Player.third = false; Player.inWater = false; Player.onLadder = false;
+  const W = G.world;
+  const gy = W.surfaceY(0, 0) + 1;
+  for (let dz = -3; dz <= 3; dz++) for (let dx = -3; dx <= 3; dx++) for (let y = gy; y <= gy + 16; y++) W.set(dx, y, dz, 0);
+  const raf = env.win.__raf;
+  Player.pos.set(.5, gy + 3, .5); Player.vel.set(0, 0, 0);
+  for (let i = 0; i < 60; i++) { raf(4000 + i * 16.7); if (Player.onGround && i > 8) break; }
+  ok(Player.onGround, 'o jogador assenta no chão');
+  const floor = Player.pos.y;
+  Player.hp = 20; Player.food = 20; Player.lastFall = undefined;
+  Player.vel.y = 8.6;                                    /* mesmo impulso do pulo */
+  for (let i = 0; i < 90; i++) { raf(5000 + i * 16.7); if (Player.onGround && i > 4) break; }
+  ok(Player.onGround, 'o pulo volta ao chão sozinho');
+  eq(Player.hp, 20, 'pular NÃO dá dano de queda');
+  eq(Player.lastFall, undefined, 'nem chegou a contar como queda');
+  /* 3 blocos: ainda é tombinho */
+  Player.pos.y = floor + 3; Player.vel.set(0, 0, 0);
+  for (let i = 0; i < 100; i++) { raf(6000 + i * 16.7); if (Player.onGround && i > 6) break; }
+  eq(Player.hp, 20, 'cair de 3 blocos não dói');
+  /* 9 blocos: dói como no Minecraft (1 coração por bloco acima de 3) */
+  Player.pos.y = floor + 9; Player.vel.set(0, 0, 0);
+  for (let i = 0; i < 140; i++) { raf(7000 + i * 16.7); if (Player.onGround && i > 6) break; }
+  ok(Player.hp < 20, 'de 9 blocos aí sim dói', Player.hp + ' HP');
+  ok(Player.lastFall > 8.4 && Player.lastFall < 9.1, 'altura medida da queda certa', Player.lastFall && Player.lastFall.toFixed(2));
+  ok(Player.lastFall > 3.6, 'e o limiar de dano ficou acima de 3 blocos');
+  Game.autojump = false;
+  ok(!/p\.y \+= 1\.02/.test(fs.readFileSync('/home/user/Funcoes/craft.html', 'utf8')), 'pulo automático não teleporta mais o jogador');
+  eq(Game.autojump, false, 'pulo automático vem desligado');
+  /* HUD sempre por cima das telas abertas */
+  const css = fs.readFileSync('/home/user/Funcoes/craft.html', 'utf8');
+  const zOf = (re) => { const blk = re.exec(css); return blk ? +/z-index:(\d+)/.exec(blk[0])[1] : -1; };
+  const hudZ = zOf(/#hud\{[^}]*\}/), scrZ = zOf(/#screenRoot\{[^}]*\}/), glZ = zOf(/#gl\{[^}]*\}/);
+  ok(hudZ > scrZ && scrZ > glZ, 'camadas: canvas < telas < HUD', glZ + ' < ' + scrZ + ' < ' + hudZ);
+  /* aterrissagem limpa: o pé gruda no topo do bloco, sem descer de 0,06 em 0,06 */
+  ok(Math.abs(Player.pos.y - Math.round(Player.pos.y)) < 1e-6, 'pousa exatamente em cima do bloco', Player.pos.y);
+  Player.vel.set(0, 0, 0);
+  for (let i = 0; i < 6; i++) raf(9000 + i * 16.7);
+  eq(Player.pos.y, floor, 'e fica parado ali, sem afundar nem tremer');
+  /* balanço da câmera entra suave e não pula quando você ataca */
+  Player.bobK = 0; Player.vel.set(5, 0, 0); Player.onGround = true;
+  G.updateCameraRig(.016);
+  ok(Player.bobK > .05 && Player.bobK < .5, 'a balançada entra gradual, não de uma vez', Player.bobK.toFixed(3));
+  const k0 = Player.bobK;
+  G.updateCameraRig(.016);
+  ok(Player.bobK > k0, 'e cresce quadro a quadro', Player.bobK.toFixed(3));
+  for (let i = 0; i < 40; i++) G.updateCameraRig(.016);
+  ok(Math.abs(camera.position.y - (Player.pos.y + 1.62)) < .05, 'a câmera nunca sai do olho por muito', Math.abs(camera.position.y - (Player.pos.y + 1.62)).toFixed(4));
+  Player.bobK = 0; Player.vel.set(0, 0, 0); Player.swing = 1;
+  G.updateCameraRig(.016);
+  ok(Math.abs(camera.position.y - (Player.pos.y + 1.62)) < 1e-9, 'atacar não empurra a câmera, só a mão', camera.position.y - (Player.pos.y + 1.62));
+  Player.swing = 0;
+  Player.onGround = false; Player.vel.set(0, -12, 0); Player.bobK = 0;
+  Player.vel.set(0, 0, 0);
+  for (let i = 0; i < 20; i++) G.updateCameraRig(.016);
+  ok(Player.bobK < .02, 'e para de balançar suavemente no ar', Player.bobK.toFixed(3));
+  /* painel igual ao Minecraft */
+  const walk = (el, pred, out) => {
+    out = out || [];
+    if (el && pred(el)) out.push(el);
+    for (const c of ((el && el.children) || [])) walk(c, pred, out);
+    return out;
+  };
+  const isSlot = (e) => typeof e.className === 'string' && /(^|\s)slot/.test(e.className);
+  UI.show('inv');
+  let root2 = env.win.document.getElementById('screenRoot');
+  let sl = walk(root2, isSlot);
+  const by = (L) => sl.filter((x) => x.dataset && x.dataset.list === L);
+  eq(by('armor').length, 4, 'inventário: quatro slots de armadura');
+  eq(by('craft').length, 4, 'inventário: grade de criação 2×2');
+  eq(by('main').length, 27, 'inventário: três linhas de nove');
+  eq(by('off').length, 1, 'inventário: slot da mão esquerda');
+  eq(by('hot').length, 0, 'sem barra rápida duplicada dentro do painel (a de baixo é a fixa)');
+  ok(by('out').length === 1, 'com o resultado ao lado da seta');
+  ok(walk(root2, (e) => e.className === 'doll').length === 1, 'boneco do personagem aparece no inventário');
+  ok(walk(root2, (e) => e.id === 'recipeBook').length === 1, 'e o livro de receitas continua junto');
+  UI.close();
+  UI.show('craft3');
+  root2 = env.win.document.getElementById('screenRoot');
+  sl = walk(root2, isSlot);
+  const by2 = (L) => sl.filter((x) => x.dataset && x.dataset.list === L);
+  eq(by2('craft').length, 9, 'bancada: grade 3×3');
+  eq(by2('armor').length, 0, 'bancada não mostra armadura, como no Minecraft');
+  eq(by2('main').length, 27, 'bancada mostra o inventário embaixo');
+  ok(walk(root2, (e) => e.id === 'recipeBook').length === 1, 'livro de receitas na bancada');
+  UI.close();
+  /* clique na barra fixa com o painel aberto */
+  INV.hot = new Array(9).fill(null); INV.main = new Array(27).fill(null); INV.craft = new Array(9).fill(null);
+  INV.main[0] = { id: itemOf('cobblestone'), n: 10 };
+  UI.show('inv');
+  UI.held = { id: itemOf('cobblestone'), n: 10 };
+  const fake = { dataset: { list: 'hot', i: '3' } };
+  fake.closest = () => fake;
+  UI.onSlot({ target: fake, button: 0, shiftKey: false, detail: 1 });
+  ok(!!INV.hot[3] && INV.hot[3].n === 10, 'clique na barra fixa coloca o item do cursor nela', INV.hot[3] && INV.hot[3].n);
+  eq(UI.held, null, 'cursor fica vazio depois');
+  UI.held = null;
+  UI.close();
+  /* morrer com uma tela aberta não deixa a interface presa */
+  Game.mode = 'survival'; Player.hp = 20; Player.food = 20;
+  INV.hot = new Array(9).fill(null); INV.main = new Array(27).fill(null);
+  INV.hot[0] = { id: itemOf('cobblestone'), n: 5 };
+  UI.show('inv');
+  ok(!!UI.open, 'inventário aberto');
+  G.die();
+  ok(!UI.open, 'morrer fecha a tela aberta (senão o jogo acharia que ela segue aberta)');
+  ok(env.win.document.getElementById('hud').classList.contains('hidden'), 'na morte a barra de itens sai de cena');
+  G.respawn();
+  ok(!env.win.document.getElementById('hud').classList.contains('hidden'), 'e volta depois de renascer');
+  eq(Player.hp, Player.maxHp, 'vida cheia ao renascer');
+  for (let i = 1; i <= 4; i++) raf(8000 + i * 16.7);
 }
 
 console.log('\n== sessão completa: novo mundo, frames e todas as telas ==');

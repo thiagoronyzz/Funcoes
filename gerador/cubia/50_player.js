@@ -137,7 +137,16 @@ canvas.addEventListener('mousedown', (e) => {
 });
 addEventListener('mouseup', (e) => { if (e.button === 0) { Mouse.left = false; stopMine(); } else if (e.button === 2) { Mouse.right = false; releaseBow(); } });
 addEventListener('contextmenu', (e) => e.preventDefault());
-addEventListener('wheel', (e) => { if (!Game.running || UI.open) return; Player.held = (Player.held + (e.deltaY > 0 ? 1 : 8)) % 9; UI.syncHotbar(); }, { passive: true });
+addEventListener('wheel', (e) => {
+  if (!Game.running) return;
+  /* com uma tela aberta ainda dá pra trocar o item da barra (como no Minecraft);
+     só não roubamos a rolagem das listas de receitas/paleta */
+  const over = e.target && e.target.closest ? e.target.closest('.recipes,.palette') : null;
+  if (over) return;
+  if (!UI.open && !pointerLocked()) return;
+  Player.held = (Player.held + (e.deltaY > 0 ? 1 : 8)) % 9;
+  UI.syncHotbar();
+}, { passive: true });
 const Mouse = { left: false, right: false };
 function requestLock() { const c = $('gl'); c.requestPointerLock && c.requestPointerLock(); }
 function pointerLocked() { return document.pointerLockElement === canvas; }
@@ -174,7 +183,16 @@ function moveAxis(axis, amt) {
     p[axis] += inc;
     if (collides(p.x, p.y, p.z)) {
       p[axis] -= inc;
-      if (axis === 'y') { if (inc < 0) { Player.onGround = true; landFall(); } Player.vel.y = 0; }
+      if (axis === 'y') {
+        if (inc < 0) {
+          /* gruda o pé no topo do bloco: sem ficar descendo 0,06 por quadro,
+             que era o que dava aquela tremida/pop ao pular e aterrissar */
+          const top = Math.floor(p.y + inc) + 1;
+          if (top <= p.y && !collides(p.x, top, p.z)) p.y = top;
+          Player.onGround = true; landFall();
+        }
+        Player.vel.y = 0;
+      }
       else if (Game.mode === 'creative' || Game.mode === 'spectator') { /* atravessa */ }
       else return true;
       return true;
@@ -183,10 +201,17 @@ function moveAxis(axis, amt) {
   }
   return false;
 }
+/* Altura de queda, não velocidade: um pulo comum (~1,4 bloco) nunca machuca.
+   Como no Minecraft, só passa de 3 blocos de altura que tem dano. */
 function landFall() {
-  const v = -Player.velPrevY;
+  const fall = Player.fallStart === null ? 0 : Math.max(0, Player.fallStart - Player.pos.y);
   Player.fallStart = null;
-  if (v > 8 && !Player.fly && !Player.inWater) { damage(Math.min(20, (v - 8) * .9), 'fall'); particles.spawn(Player.pos.x, Player.pos.y + .1, Player.pos.z, 0xdedede, 8, 2, .4); }
+  if (fall <= 3.6 || Player.fly || Player.inWater || Player.onLadder ||
+      Game.mode === 'creative' || Game.mode === 'spectator') return;
+  const dmg = Math.max(1, Math.min(20, Math.round((fall - 3) * 2)));
+  damage(dmg, 'fall');
+  particles.spawn(Player.pos.x, Player.pos.y + .1, Player.pos.z, 0xdedede, 8, 2, .4);
+  Player.lastFall = fall;
 }
 function updatePlayer(dt) {
   const K = Keys, p = Player.pos, v = Player.vel;
@@ -254,7 +279,11 @@ function updatePlayer(dt) {
     if (Game.autojump && (K.KeyW || K.KeyA || K.KeyS || K.KeyD) && Player.onGround && !Player.inWater && !fly) {
       const dirs = [[fx, fz], [rx, rz], [-fx, -fz], [-rx, -rz]];
       for (const [dx, dz] of dirs) {
-        if (collides(p.x + dx * .45, p.y, p.z + dz * .45) && !collides(p.x + dx * .45, p.y + 1.02, p.z + dz * .45)) { p.y += 1.02; v.y = Math.max(v.y, 6.2); break; }
+        /* dá um pulo mesmo, em vez de deslocar o jogador um bloco pra cima
+           (o "teleporte" que dava aquela travada ao pular perto da parede) */
+        if (collides(p.x + dx * .45, p.y, p.z + dz * .45) && !collides(p.x + dx * .45, p.y + 1.02, p.z + dz * .45)) {
+          v.y = Math.max(v.y, 8.6); Sound.jump(); break;
+        }
       }
     }
     if (Player.sneak && Player.onGround) {
@@ -275,17 +304,18 @@ function updatePlayer(dt) {
     Player.air -= dt * (Player.sneak ? .5 : 1);
     if (Player.air <= 0) { Player.drownT = (Player.drownT || 0) + dt; if (Player.drownT > 1) { Player.drownT = 0; damage(2, 'drown'); } }
   } else Player.air = Math.min(10, Player.air + dt * 4);
-  if (Player.air <= 0 && Game.mode !== 'creative') $('water').style.opacity = .9;
-  $('water').style.opacity = head === B.water ? .55 : (Player.air < 3.2 ? .85 : 0);
+  $('water').style.opacity = head === B.water ? (Player.air <= 0 && Game.mode !== 'creative' ? .9 : .55) : (Player.air < 3.2 ? .85 : 0);
   if (headDef.liquid && head === B.lava) { damage(4 * dt * 3, 'fire', { noKnock: true, trueDmg: true }); if (Math.random() < .35) particles.spawn(p.x, p.y + 1, p.z, 0xff8c1a, 2, 2, .5); }
   if (Player.inWater && Player.fireT) Player.fireT = 0;
   if (Player.fireT > 0) { Player.fireT -= dt; damage(2 * dt, 'fire', { noKnock: true, trueDmg: true }); if (Math.random() < .3) particles.spawn(p.x, p.y + .8, p.z, 0xffa03c, 1, 1.6, .4); }
   const feetB = world.block(Math.floor(p.x), Math.floor(p.y + .1), Math.floor(p.z));
   if (DEFS[feetB].hurt) damage(DEFS[feetB].hurt * dt * 2, 'cactus', { noKnock: true });
   /* sufocamento dentro de bloco */
-  if (!Player.inWater && !fly && collides(p.x, p.y, p.z) === false && world.isSolid(Math.floor(p.x), Math.floor(p.y + .5), Math.floor(p.z))) {
-    damage(1.2 * dt, 'suffocate', { noKnock: true, trueDmg: true });
-  }
+  const inBlock = DEFS[world.block(Math.floor(p.x), Math.floor(p.y + 1.35), Math.floor(p.z))];
+  if (!Player.inWater && !fly && !spect && inBlock && inBlock.solid && !inBlock.replaceable) {
+    Player.stuckT = (Player.stuckT || 0) + dt;
+    if (Player.stuckT > .5) { Player.stuckT = 0; damage(1, 'suffocate', { noKnock: true, trueDmg: true }); }
+  } else Player.stuckT = 0;
   if (v.y <= 0 && !Player.onGround && !fly && !Player.inWater && !Player.onLadder && Player.fallStart === null) Player.fallStart = p.y;
   if (Player.onGround && Player.fallStart !== null) Player.fallStart = null;
   /* passos + fome */
@@ -317,16 +347,21 @@ function burnFood(n) {
 }
 function updateCameraRig(dt) {
   const p = Player.pos;
-  const bob = Player.onGround && Math.hypot(Player.vel.x, Player.vel.z) > 1 ? Math.sin(Game.t * (Player.sprint ? 13 : 9)) * (Player.sneak ? .012 : .035) : 0;
+  const hsp = Math.hypot(Player.vel.x, Player.vel.z);
+  /* a balançada entra e sai suavizada e com fase própria: antes ela era ligada
+     no talo quando você saía do chão, e isso parecia um pequeno teleporte */
+  const want = Player.onGround && hsp > 1 && !Player.fly ? 1 : 0;
+  Player.bobK = (Player.bobK || 0) + (want - (Player.bobK || 0)) * clamp(dt * 8, 0, 1);
+  Player.bobT = (Player.bobT || 0) + dt * (1.9 + hsp * .42) * (Player.sprint ? 1.35 : 1);
+  const bob = Math.sin(Player.bobT * 2 * Math.PI) * (Player.sneak ? .012 : .032) * Player.bobK;
   const eye = p.y + (Player.sneak ? 1.52 : 1.62) + bob;
-  const swing = Math.sin(Math.min(1, Player.swing) * Math.PI) * .08;
   camera.rotation.order = 'YXZ';
   camera.rotation.y = Player.yaw; camera.rotation.x = Player.pitch; camera.rotation.z = bob * .3;
   if (Player.third) {
     const dir = new THREE.Vector3(Math.sin(Player.yaw) * Math.cos(Player.pitch), Math.sin(Player.pitch), -Math.cos(Player.yaw) * Math.cos(Player.pitch)).negate();
     const target = new THREE.Vector3(p.x, eye, p.z).add(dir.multiplyScalar(3.6 + (world.isSolid(Math.floor(p.x + dir.x), Math.floor(eye + dir.y), Math.floor(p.z + dir.z)) ? -1.2 : 0)));
     camera.position.lerp(target, clamp(dt * 18, 0, 1));
-  } else camera.position.set(p.x, eye + swing, p.z);
+  } else camera.position.set(p.x, eye, p.z);
   const fov = Game.fov + (Player.sprint ? 6 : 0) + (Player.fly ? 4 : 0);
   if (Math.abs(camera.fov - fov) > .05) { camera.fov += (fov - camera.fov) * clamp(dt * 8, 0, 1); camera.updateProjectionMatrix(); }
 }

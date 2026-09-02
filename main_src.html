@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<meta name="description" content="Escultor 3D — esculpa, pinte e exporte para impressão 3D direto no navegador." />
+<title>Escultor 3D — Estúdio de Escultura</title>
+<style>
+:root{
+  --bg:#0b0e14;
+  --panel:rgba(18,22,32,.84);
+  --panel-solid:#121621;
+  --line:rgba(255,255,255,.09);
+  --text:#e8ecf4;
+  --muted:#9aa4b8;
+  --accent:#ffb02e;
+  --accent2:#38bdf8;
+  --shadow:0 12px 34px rgba(0,0,0,.5);
+  --radius:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:radial-gradient(1200px 700px at 70% -10%, #1a2130 0%, var(--bg) 55%) fixed;
+  color:var(--text);
+  overflow:hidden;
+  user-select:none;
+  -webkit-user-select:none;
+  touch-action:none;
+}
+canvas#view{display:block;position:fixed;inset:0;width:100%;height:100%;cursor:crosshair}
+#vignette{position:fixed;inset:0;pointer-events:none;box-shadow:inset 0 0 160px rgba(0,0,0,.65)}
+#hud{position:fixed;top:14px;left:14px;z-index:5;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+#hud .hud-chip{
+  pointer-events:auto;
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:7px 11px;font-size:12px;color:var(--muted);line-height:1.35;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:var(--shadow);
+  white-space:nowrap;
+}
+#hud .hud-chip b{color:var(--text);font-weight:600}
+#toolbar{
+  position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:6;
+  display:flex;align-items:center;gap:6px;padding:7px;
+  background:var(--panel);border:1px solid var(--line);border-radius:16px;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:var(--shadow);
+}
+.tb-btn{
+  position:relative;width:46px;height:46px;border-radius:11px;border:1px solid transparent;
+  background:transparent;color:var(--muted);font-size:20px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s,transform .06s;
+  padding:0;
+}
+.tb-btn:hover{background:rgba(255,255,255,.07);color:var(--text)}
+.tb-btn.active{background:linear-gradient(180deg,#ffc24d,#f59e0b);color:#241a05;box-shadow:0 2px 10px rgba(245,158,11,.4)}
+.tb-btn:active{transform:scale(.93)}
+.tb-btn .tb-tip{
+  position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%) translateY(-4px);
+  background:#000;color:#fff;font-size:11px;padding:5px 9px;border-radius:8px;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity .12s,transform .12s;z-index:20;
+}
+.tb-btn:hover .tb-tip{opacity:1;transform:translateX(-50%) translateY(0)}
+.tb-sep{width:1px;height:30px;background:var(--line);margin:0 3px}
+#leftPanel{
+  position:fixed;top:50%;left:14px;transform:translateY(-50%);z-index:5;
+  width:216px;max-height:78vh;display:flex;flex-direction:column;
+  background:var(--panel);border:1px solid var(--line);border-radius:16px;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:var(--shadow);overflow:hidden;
+}
+#pTitle{padding:13px 16px;font-size:13px;font-weight:700;letter-spacing:.4px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+#pBody{padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:9px}
+.tool-card{
+  display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:12px;
+  border:1px solid var(--line);background:rgba(255,255,255,.03);cursor:pointer;
+  transition:border-color .13s,background .13s;
+}
+.tool-card:hover{background:rgba(255,255,255,.06)}
+.tool-card.active{border-color:var(--accent);background:rgba(255,176,46,.10)}
+.tool-card .ticon{font-size:21px;width:26px;text-align:center;flex:0 0 26px}
+.tool-card .tmeta{min-width:0}
+.tool-card .tname{font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tool-card .ttip{font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pBody .label{font-size:10.5px;letter-spacing:.7px;text-transform:uppercase;color:var(--muted);margin:8px 2px 0;font-weight:700}
+.slider-row{display:flex;align-items:center;gap:9px}
+.slider-row .sname{font-size:11.5px;color:var(--muted);flex:0 0 52px}
+.slider-row input[type=range]{flex:1;accent-color:var(--accent);height:22px}
+.slider-row .sval{font-size:11px;color:var(--text);flex:0 0 30px;text-align:right;font-variant-numeric:tabular-nums}
+#pBody input[type=color]{width:100%;height:34px;border:1px solid var(--line);border-radius:10px;background:transparent;cursor:pointer;padding:2px}
+.swatches{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
+.swatch{aspect-ratio:1;border-radius:8px;border:2px solid rgba(255,255,255,.14);cursor:pointer;transition:transform .1s}
+.swatch:hover{transform:scale(1.12)}
+.swatch.active{border-color:#fff;box-shadow:0 0 0 2px var(--accent)}
+.check-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text);cursor:pointer}
+.check-row input{accent-color:var(--accent);width:15px;height:15px}
+#bottomPanel{
+  position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:6;
+  background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:11px 14px;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:var(--shadow);
+  display:flex;flex-direction:column;gap:10px;min-width:520px;max-width:94vw;
+}
+.bp-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.bp-group{display:flex;align-items:center;gap:8px}
+.bp-label{font-size:10.5px;letter-spacing:.7px;text-transform:uppercase;color:var(--muted);font-weight:700}
+.seg{display:flex;background:rgba(0,0,0,.28);border-radius:10px;padding:3px;gap:2px}
+.seg-btn{border:0;background:transparent;color:var(--muted);font-size:12px;padding:6px 11px;border-radius:8px;cursor:pointer;font-weight:600;transition:background .13s,color .13s}
+.seg-btn:hover{color:var(--text)}
+.seg-btn.active{background:var(--accent);color:#241a05}
+#sizeSlider{width:150px;accent-color:var(--accent)}
+.bp-actions{justify-content:flex-end}
+.bp-btn{
+  border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--text);
+  padding:9px 14px;border-radius:11px;font-size:12.5px;font-weight:600;cursor:pointer;transition:background .13s,transform .06s;
+  display:flex;align-items:center;gap:7px;
+}
+.bp-btn:hover{background:rgba(255,255,255,.1)}
+.bp-btn:active{transform:scale(.96)}
+.bp-btn.primary{background:linear-gradient(180deg,#3ecf8e,#16a36a);border-color:transparent;color:#04271a}
+.bp-btn.primary:hover{filter:brightness(1.08)}
+.bp-btn.ghost{background:transparent}
+#modalRoot{position:fixed;inset:0;z-index:30}
+#modalRoot[hidden]{display:none}
+.overlay{position:absolute;inset:0;background:rgba(5,7,12,.66);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+#modal{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:var(--panel-solid);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);
+  width:min(680px,94vw);max-height:88vh;display:flex;flex-direction:column;overflow:hidden;
+}
+#modal .mhead{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+#modal .mhead h2{margin:0;font-size:16px}
+#modal .mbody{padding:18px;overflow-y:auto}
+#modal .mclose{border:1px solid var(--line);background:transparent;color:var(--muted);width:30px;height:30px;border-radius:9px;cursor:pointer;font-size:14px}
+#modal .mclose:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.mat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.mat-card{
+  border:1px solid var(--line);border-radius:13px;padding:12px;cursor:pointer;text-align:center;
+  transition:border-color .13s,background .13s;display:flex;flex-direction:column;gap:8px;align-items:center;
+}
+.mat-card:hover{background:rgba(255,255,255,.05)}
+.mat-card.active{border-color:var(--accent);background:rgba(255,176,46,.09)}
+.mat-card .swatch-lg{width:100%;height:56px;border-radius:9px;border:1px solid rgba(255,255,255,.14)}
+.mat-card .mname{font-size:13px;font-weight:600}
+.mat-card .mdesc{font-size:10.5px;color:var(--muted);line-height:1.4}
+.mat-note{font-size:11.5px;color:var(--muted);margin-top:14px;line-height:1.55}
+.mat-note b{color:var(--text)}
+.snack{
+  position:fixed;left:50%;top:18px;transform:translate(-50%,-10px);z-index:40;
+  background:#161b27;border:1px solid var(--line);color:var(--text);padding:10px 16px;border-radius:12px;
+  font-size:13px;box-shadow:var(--shadow);opacity:0;transition:opacity .18s,transform .18s;pointer-events:none;max-width:80vw;text-align:center;
+}
+.snack.show{opacity:1;transform:translate(-50%,0)}
+.snack.err{border-color:rgba(255,90,90,.5);color:#ffb4b4}
+.export-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0}
+.export-row .bp-btn{white-space:nowrap}
+@media (max-width:840px){
+  #leftPanel{width:190px}
+  #bottomPanel{min-width:0;width:calc(100vw - 24px)}
+  .bp-group{flex-wrap:wrap}
+  #sizeSlider{width:110px}
+}
+</style>
+</head>
+<body>
+<div id="hud"></div>
+<canvas id="view"></canvas>
+<div id="vignette"></div>
+
+<div id="toolbar">
+  <button class="tb-btn" id="btnMaterial" title="Material / bloco (M)">🪵<span class="tb-tip">Material / Bloco (M)</span></button>
+  <button class="tb-btn active" id="btnCarve" title="Esculpir (E)">🔨<span class="tb-tip">Esculpir (E)</span></button>
+  <button class="tb-btn" id="btnSmooth" title="Suavizar (S)">🧼<span class="tb-tip">Suavizar (S)</span></button>
+  <button class="tb-btn" id="btnFlatten" title="Nivelar (F)">📐<span class="tb-tip">Nivelar (F)</span></button>
+  <button class="tb-btn" id="btnPaint" title="Pintar (P)">🎨<span class="tb-tip">Pintar (P)</span></button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" id="btnCut" title="Cortar com linha (L)">✂️<span class="tb-tip">Cortar (L)</span></button>
+  <button class="tb-btn" id="btnMeasure" title="Régua (R)">📏<span class="tb-tip">Régua (R)</span></button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" id="btnUndo" title="Desfazer (Ctrl+Z)">↩️<span class="tb-tip">Desfazer (Ctrl+Z)</span></button>
+  <button class="tb-btn" id="btnRedo" title="Refazer (Ctrl+Shift+Z)">↪️<span class="tb-tip">Refazer (Ctrl+Shift+Z)</span></button>
+</div>
+
+<div id="leftPanel">
+  <div id="pTitle">🧰 Ferramentas</div>
+  <div id="pBody"></div>
+</div>
+
+<div id="bottomPanel">
+  <div class="bp-row">
+    <div class="bp-group">
+      <span class="bp-label">Bloco</span>
+      <div class="seg" id="shapeSeg">
+        <button class="seg-btn" data-shape="cube">Cubo</button>
+        <button class="seg-btn" data-shape="sphere">Esfera</button>
+        <button class="seg-btn" data-shape="cylinder">Cilindro</button>
+      </div>
+    </div>
+    <div class="bp-group">
+      <span class="bp-label">Tamanho</span>
+      <input type="range" id="sizeSlider" min="60" max="320" value="170">
+    </div>
+    <div class="bp-group">
+      <span class="bp-label">Detalhe</span>
+      <div class="seg" id="detailSeg">
+        <button class="seg-btn" data-detail="2">Baixo</button>
+        <button class="seg-btn" data-detail="1">Médio</button>
+        <button class="seg-btn" data-detail="0">Alto</button>
+      </div>
+    </div>
+  </div>
+  <div class="bp-row bp-actions">
+    <button class="bp-btn" id="btnCenter">🎯 Centralizar</button>
+    <button class="bp-btn" id="btnNew">🗻 Novo bloco</button>
+    <button class="bp-btn primary" id="btnExport">📦 Exportar p/ impressão 3D (STL)</button>
+  </div>
+</div>
+
+<div id="modalRoot" hidden>
+  <div class="overlay"></div>
+  <div id="modal"></div>
+</div>
+
+<!--THREE_INJECT-->
+<!--ORBIT_INJECT-->
+
+<script>
+(() => {
+'use strict';
+
+/* ============================== CONFIG ============================== */
+const MAX_SCALE = 340;
+const HEMI_STR = 0.95;
+const TRI_SCALE = 90;
+const MAX_CUT_VERTS = 60000;
+
+const SHAPE_SEGS = {
+  cube:     [12, 20, 30],
+  sphere:   [64, 96, 160],
+  cylinder: [48, 72, 112],
+};
+
+const MATERIALS = [
+  { id:'wood',   name:'Madeira',   color:'#b57b46', desc:'Veios naturais de madeira. Quente e fácil de esculpir.', texture:'wood' },
+  { id:'stone',  name:'Pedra',     color:'#8d8f95', desc:'Granito com textura mineral. Duro e firme.', texture:'stone' },
+  { id:'metal',  name:'Metal',     color:'#b9c1cc', desc:'Aço escovado com reflexos metálicos.', texture:'metal' },
+  { id:'plastic',name:'Plástico',  color:'#c9d4e0', desc:'Polímero liso e leve, em cor sólida.', texture:'none' },
+  { id:'rubber', name:'Borracha',  color:'#3a3f47', desc:'Elastômero fosco e levemente granulado.', texture:'rubber' },
+  { id:'concrete',name:'Concreto', color:'#a6a49e', desc:'Cimento poroso com salpicos de areia.', texture:'concrete' },
+];
+
+const CARVE_TOOLS = [
+  { id:'hatchet', icon:'🪓', name:'Machado', tip:'Remoção grosseira e rápida', r:34, str:0.40, rate:3.4 },
+  { id:'chisel',  icon:'🪚', name:'Serra',   tip:'Corte médio controlado',      r:24, str:0.30, rate:3.0 },
+  { id:'rasp',    icon:'🔧', name:'Grosa',   tip:'Remoção média',               r:16, str:0.20, rate:2.5 },
+  { id:'file',    icon:'🪛', name:'Lima',    tip:'Desbaste fino',               r:10, str:0.12, rate:2.2 },
+  { id:'burin',   icon:'🗡️', name:'Buril',   tip:'Detalhes e linhas finas',     r:5.5,str:0.06, rate:1.7 },
+];
+
+const SMOOTH_TOOLS = [
+  { id:'sandCoarse', icon:'🧽', name:'Lixa grossa', tip:'Suavização forte',        r:26, str:0.20, rate:1.6 },
+  { id:'sandMed',    icon:'🧽', name:'Lixa média',  tip:'Suavização equilibrada',  r:16, str:0.13, rate:1.6 },
+  { id:'sandFine',   icon:'🧽', name:'Lixa fina',   tip:'Acabamento suave',        r:10, str:0.07, rate:1.6 },
+  { id:'polish',     icon:'✨', name:'Polimento',   tip:'Alisamento de precisão',  r:7,  str:0.035,rate:1.6 },
+];
+
+const FLATTEN_TOOLS = [
+  { id:'planeCoarse', icon:'🪚', name:'Plainha bruta', tip:'Aplaina mais rápido',   r:26, str:0.11, rate:1.8 },
+  { id:'planeFine',   icon:'🪚', name:'Plainha fina',  tip:'Superfície mais plana', r:16, str:0.05, rate:1.8 },
+];
+
+const PAINT_COLORS = ['#ffffff','#e8e8e8','#9aa0aa','#3f4652','#1c222c','#b4553a','#d97a36','#e8c15a','#7fb069','#3f9b6a','#4aa3c9','#5f7bd6','#9a6bd0','#d06ba8','#d04545','#000000'];
+
+/* ============================== ESTADO ============================== */
+const state = {
+  mode: 'carve',
+  materialId: 'wood',
+  colorMode: 'texture',
+  baseColor: '#b57b46',
+  carveTool: 'chisel',
+  smoothTool: 'sandMed',
+  flattenTool: 'planeCoarse',
+  paintColor: '#b4553a',
+  paintEraser: false,
+  brushRadius: 24,
+  brushStrength: 0.30,
+  brushRate: 3.0,
+  shape: 'cube',
+  size: 170,
+  detail: 1,
+  measureA: null,
+  measureB: null,
+  cursorVisible: false,
+  strokeActive: false,
+  strokeChanged: false,
+  strokeOriginPos: null,
+  strokeOriginCol: null,
+  lastPoint: null,
+  activePointerId: null,
+  undoTimer: null,
+};
+
+/* ============================== THREE SETUP ============================== */
+const canvas = document.getElementById('view');
+const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#0c0f16');
+scene.fog = new THREE.Fog('#0c0f16', 900, 3600);
+
+const camera = new THREE.PerspectiveCamera(48, 1, 1, 20000);
+camera.position.set(280, 190, 360);
+
+const controls = new THREE.OrbitControls(camera, canvas);
+controls.target.set(0, 0, 0);
+controls.enableDamping = true;
+controls.dampingFactor = 0.09;
+controls.minDistance = 70;
+controls.maxDistance = 1800;
+controls.rotateSpeed = 0.9;
+controls.panSpeed = 0.9;
+
+/* --- iluminação --- */
+scene.add(new THREE.HemisphereLight('#dbe8ff', '#2a2620', HEMI_STR));
+const key = new THREE.DirectionalLight('#ffffff', 1.5);
+key.position.set(260, 420, 220);
+scene.add(key);
+const fill = new THREE.DirectionalLight('#bcd2ff', 0.5);
+fill.position.set(-240, 90, -160);
+scene.add(fill);
+const rim = new THREE.DirectionalLight('#ffd9a0', 0.6);
+rim.position.set(-80, 120, -320);
+scene.add(rim);
+
+/* --- chão --- */
+const grid = new THREE.GridHelper(1200, 60, 0x3a4356, 0x1d2430);
+grid.position.y = -182;
+scene.add(grid);
+
+/* --- sombra suave de contato --- */
+const shadowCanvas = document.createElement('canvas');
+shadowCanvas.width = shadowCanvas.height = 256;
+(function drawShadow() {
+  const ctx = shadowCanvas.getContext('2d');
+  const g = ctx.createRadialGradient(128, 128, 10, 128, 128, 126);
+  g.addColorStop(0, 'rgba(0,0,0,0.62)');
+  g.addColorStop(0.55, 'rgba(0,0,0,0.30)');
+  g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 256, 256);
+})();
+const shadowTex = new THREE.CanvasTexture(shadowCanvas);
+const shadowBlob = new THREE.Mesh(
+  new THREE.PlaneGeometry(360, 360),
+  new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false })
+);
+shadowBlob.rotation.x = -Math.PI / 2;
+shadowBlob.position.y = -181;
+scene.add(shadowBlob);
+
+/* --- cursor (anel 3D) --- */
+const cursorRing = new THREE.Mesh(
+  new THREE.RingGeometry(0.9, 1.0, 48),
+  new THREE.MeshBasicMaterial({ color: 0xffb02e, transparent: true, opacity: 0.95, depthTest: false, side: THREE.DoubleSide })
+);
+cursorRing.renderOrder = 999;
+cursorRing.visible = false;
+scene.add(cursorRing);
+const cursorFill = new THREE.Mesh(
+  new THREE.CircleGeometry(0.9, 48),
+  new THREE.MeshBasicMaterial({ color: 0xffb02e, transparent: true, opacity: 0.30, depthTest: false, side: THREE.DoubleSide })
+);
+cursorFill.renderOrder = 998;
+cursorFill.visible = false;
+scene.add(cursorFill);
+
+/* --- régua --- */
+const measureGroup = new THREE.Group();
+scene.add(measureGroup);
+
+/* ============================== OBJETO ============================== */
+let geometry = null;
+let material = null;
+let mesh = null;
+let neighborMap = null;
+
+function makeMaterial() {
+  const m = new THREE.MeshLambertMaterial({ color: 0xffffff, vertexColors: true });
+  m.onBeforeCompile = (shader) => {
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>',
+        '#include <common>\n\tvarying vec3 vWorldPos;\n\tvarying vec3 vWorldNormal;')
+      .replace('#include <worldpos_vertex>',
+        '#include <worldpos_vertex>\n\tvWorldPos = ( modelMatrix * vec4( transformed, 1.0 ) ).xyz;')
+      .replace('#include <beginnormal_vertex>',
+        '#include <beginnormal_vertex>\n\tvWorldNormal = normalize( mat3( modelMatrix ) * objectNormal );');
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>',
+        '#include <common>\n\tvarying vec3 vWorldPos;\n\tvarying vec3 vWorldNormal;\n\tfloat triScale = ' + TRI_SCALE + '.0;')
+      .replace('#include <map_fragment>',
+        '#ifdef USE_MAP\n' +
+        '\t\tvec3 wP = vWorldPos;\n' +
+        '\t\tvec3 wN = normalize( vWorldNormal );\n' +
+        '\t\tvec3 bf = abs( wN );\n' +
+        '\t\tbf /= ( bf.x + bf.y + bf.z + 1e-4 );\n' +
+        '\t\tvec3 smp = wP / triScale;\n' +
+        '\t\tvec4 cX = texture2D( map, smp.zy );\n' +
+        '\t\tvec4 cY = texture2D( map, smp.xz );\n' +
+        '\t\tvec4 cZ = texture2D( map, smp.xy );\n' +
+        '\t\tvec4 tri = cX * bf.x + cY * bf.y + cZ * bf.z;\n' +
+        '\t\tdiffuseColor *= vec4( tri.rgb, 1.0 );\n' +
+        '#endif');
+  };
+  return m;
+}
+
+function weldGeometry(geo) {
+  const ngeo = geo.toNonIndexed();
+  geo.dispose();
+  const src = ngeo.attributes.position.array;
+  const srcCol = ngeo.attributes.color ? ngeo.attributes.color.array : null;
+  const vcount = src.length / 3;
+  const map = new Map();
+  const newPos = [];
+  const newCol = srcCol ? [] : null;
+  const index = [];
+  const q = 1e4;
+  for (let i = 0; i < vcount; i++) {
+    const ix = i * 3;
+    const key = Math.round(src[ix] * q) + '_' + Math.round(src[ix + 1] * q) + '_' + Math.round(src[ix + 2] * q);
+    let ni = map.get(key);
+    if (ni === undefined) {
+      ni = newPos.length / 3;
+      newPos.push(src[ix], src[ix + 1], src[ix + 2]);
+      if (newCol) newCol.push(srcCol[ix], srcCol[ix + 1], srcCol[ix + 2]);
+      map.set(key, ni);
+    }
+    index.push(ni);
+  }
+  ngeo.dispose();
+  const out = new THREE.BufferGeometry();
+  out.setAttribute('position', new THREE.BufferAttribute(new Float32Array(newPos), 3));
+  if (newCol) out.setAttribute('color', new THREE.BufferAttribute(new Float32Array(newCol), 3));
+  out.setIndex(new THREE.BufferAttribute(new Uint32Array(index), 1));
+  out.computeVertexNormals();
+  return out;
+}
+
+function createGeometry() {
+  const size = state.size;
+  let geo;
+  if (state.shape === 'cube') {
+    const s = SHAPE_SEGS.cube[state.detail];
+    geo = new THREE.BoxGeometry(size, size, size, s, s, s);
+  } else if (state.shape === 'sphere') {
+    const res = SHAPE_SEGS.sphere[state.detail];
+    geo = new THREE.SphereGeometry(size * 0.56, res, Math.max(16, Math.round(res * 0.72)));
+  } else {
+    const res = SHAPE_SEGS.cylinder[state.detail];
+    geo = new THREE.CylinderGeometry(size * 0.42, size * 0.42, size, res, Math.max(4, Math.round(res / 2.6)));
+  }
+  const count = geo.attributes.position.count;
+  const colors = new Float32Array(count * 3);
+  colors.fill(1);
+  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  geo = weldGeometry(geo);
+  return geo;
+}
+
+function rebuildModel() {
+  if (mesh) scene.remove(mesh);
+  if (geometry) geometry.dispose();
+  geometry = createGeometry();
+  material = makeMaterial();
+  applyMaterialMode();
+  mesh = new THREE.Mesh(geometry, material);
+  scene.add(mesh);
+  neighborMap = null;
+}
+
+/* ============================== TEXTURAS PROCEDURAIS ============================== */
+function texCanvas(w, h, draw) {
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  const ctx = c.getContext('2d');
+  draw(ctx, w, h);
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.encoding = THREE.sRGBEncoding;
+  t.anisotropy = 4;
+  return t;
+}
+function rand(a, b) { return a + Math.random() * (b - a); }
+
+function woodTexture() {
+  return texCanvas(512, 512, (ctx, w, h) => {
+    ctx.fillStyle = '#b8804a'; ctx.fillRect(0, 0, w, h);
+    let y = 0; const stripes = [];
+    while (y < h) { stripes.push(y); y += rand(14, 46); }
+    for (let s = 0; s < stripes.length; s++) {
+      const cy = stripes[s], cw = rand(2, 7);
+      const grad = ctx.createLinearGradient(0, cy - cw, 0, cy + cw);
+      const dark = s % 2 === 0;
+      grad.addColorStop(0, 'rgba(122,78,40,0)');
+      grad.addColorStop(0.5, dark ? 'rgba(118,74,36,.55)' : 'rgba(196,148,92,.5)');
+      grad.addColorStop(1, 'rgba(122,78,40,0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, cy - cw, w, cw * 2);
+    }
+    for (let i = 0; i < 3200; i++) {
+      ctx.strokeStyle = `rgba(${rand(70,110)|0},${rand(40,70)|0},${rand(20,38)|0},${rand(0.04,0.16)})`;
+      ctx.lineWidth = rand(0.5, 1.4);
+      ctx.beginPath();
+      const px = rand(0, w), py = rand(0, h);
+      ctx.moveTo(px, py);
+      ctx.bezierCurveTo(px + rand(-22, 22), py + rand(4, 14), px + rand(-22, 22), py + rand(12, 24), px + rand(-14, 14), py + rand(18, 32));
+      ctx.stroke();
+    }
+  });
+}
+
+function stoneTexture() {
+  return texCanvas(512, 512, (ctx, w, h) => {
+    ctx.fillStyle = '#86888d'; ctx.fillRect(0, 0, w, h);
+    for (let i = 0; i < 5000; i++) {
+      const g = rand(118, 152) | 0;
+      ctx.fillStyle = `rgba(${g},${g},${g + rand(-4, 4) | 0},${rand(0.05, 0.22)})`;
+      ctx.fillRect(rand(0, w), rand(0, h), rand(1, 3.4), rand(1, 3.4));
+    }
+    for (let i = 0; i < 90; i++) {
+      const g = rand(96, 128) | 0;
+      ctx.strokeStyle = `rgba(${g},${g},${g},${rand(0.12, 0.3)})`;
+      ctx.lineWidth = rand(0.6, 1.4);
+      ctx.beginPath();
+      ctx.moveTo(rand(0, w), rand(0, h));
+      ctx.lineTo(rand(0, w), rand(0, h));
+      ctx.stroke();
+    }
+  });
+}
+
+function metalTexture() {
+  return texCanvas(512, 512, (ctx, w, h) => {
+    const g = ctx.createLinearGradient(0, 0, 0, h);
+    g.addColorStop(0, '#c4cad3');
+    g.addColorStop(0.5, '#9aa2ad');
+    g.addColorStop(1, '#c0c6cf');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    for (let i = 0; i < 700; i++) {
+      ctx.strokeStyle = `rgba(255,255,255,${rand(0.02, 0.09)})`;
+      ctx.lineWidth = rand(0.4, 1);
+      ctx.beginPath();
+      const y = rand(0, h);
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y + rand(-6, 6));
+      ctx.stroke();
+    }
+    for (let i = 0; i < 2600; i++) {
+      ctx.fillStyle = `rgba(0,0,0,${rand(0.02, 0.07)})`;
+      ctx.fillRect(rand(0, w), rand(0, h), rand(1, 2), rand(1, 2));
+    }
+  });
+}
+
+function rubberTexture() {
+  return texCanvas(256, 256, (ctx, w, h) => {
+    ctx.fillStyle = '#34373e'; ctx.fillRect(0, 0, w, h);
+    for (let i = 0; i < 2600; i++) {
+      const g = rand(30, 90) | 0;
+      ctx.fillStyle = `rgba(${g},${g},${g + 4},${rand(0.04, 0.14)})`;
+      ctx.fillRect(rand(0, w), rand(0, h), rand(1, 2.4), rand(1, 2.4));
+    }
+  });
+}
+
+function concreteTexture() {
+  return texCanvas(512, 512, (ctx, w, h) => {
+    ctx.fillStyle = '#a3a19a'; ctx.fillRect(0, 0, w, h);
+    for (let i = 0; i < 5000; i++) {
+      const g = rand(130, 178) | 0;
+      ctx.fillStyle = `rgba(${g},${g},${g},${rand(0.05, 0.18)})`;
+      ctx.fillRect(rand(0, w), rand(0, h), rand(1, 2.6), rand(1, 2.6));
+    }
+    for (let i = 0; i < 700; i++) {
+      ctx.fillStyle = `rgba(70,72,70,${rand(0.05, 0.16)})`;
+      ctx.fillRect(rand(0, w), rand(0, h), rand(1, 2), rand(1, 2));
+    }
+  });
+}
+
+const textureBuilders = {
+  wood: woodTexture,
+  stone: stoneTexture,
+  metal: metalTexture,
+  rubber: rubberTexture,
+  concrete: concreteTexture,
+};
+
+/* ============================== CORES ============================== */
+function setAllColors(color) {
+  const col = geometry.attributes.color;
+  if (!col) return;
+  const c = new THREE.Color(color);
+  for (let i = 0; i < col.count; i++) col.setXYZ(i, c.r, c.g, c.b);
+  uploadColors();
+}
+
+function applyMaterialMode() {
+  if (!material || !geometry) return;
+  if (state.colorMode === 'texture') {
+    const matInfo = MATERIALS.find(m => m.id === state.materialId) || MATERIALS[0];
+    const tex = matInfo.texture !== 'none' ? textureBuilders[matInfo.texture]() : null;
+    const oldMap = material.map;
+    material.map = tex;
+    material.color.set('#ffffff');
+    material.needsUpdate = true;
+    if (oldMap && oldMap !== tex) oldMap.dispose();
+    setAllColors('#ffffff');
+  } else {
+    if (material.map) { material.map.dispose(); material.map = null; }
+    material.color.set('#ffffff');
+    material.needsUpdate = true;
+    setAllColors(state.baseColor);
+  }
+  updateHud();
+}
+
+/* ============================== HELPERS DE MESH ============================== */
+function uploadPositions() {
+  const pos = geometry.attributes.position;
+  pos.needsUpdate = true;
+  geometry.computeBoundingBox();
+  geometry.computeBoundingSphere();
+}
+function uploadColors() {
+  const c = geometry.attributes.color;
+  if (c) c.needsUpdate = true;
+}
+function recomputeNormals() {
+  geometry.computeVertexNormals();
+  geometry.attributes.normal.needsUpdate = true;
+}
+function setAttr(name, arr, itemSize) {
+  const buf = new Float32Array(arr);
+  const attr = geometry.attributes[name];
+  if (!attr || attr.array.length !== buf.length) {
+    geometry.setAttribute(name, new THREE.BufferAttribute(buf, itemSize));
+  } else {
+    attr.array.set(buf);
+    attr.needsUpdate = true;
+  }
+}
+
+function buildNeighbors() {
+  const index = geometry.index;
+  const posCount = geometry.attributes.position.count;
+  const triCount = index ? index.count / 3 : posCount / 3;
+  const map = new Map();
+  const add = (a, b) => {
+    let s = map.get(a);
+    if (!s) { s = new Set(); map.set(a, s); }
+    s.add(b);
+  };
+  for (let t = 0; t < triCount; t++) {
+    const a = index ? index.array[t * 3] : t * 3;
+    const b = index ? index.array[t * 3 + 1] : t * 3 + 1;
+    const c = index ? index.array[t * 3 + 2] : t * 3 + 2;
+    add(a, b); add(b, a); add(a, c); add(c, a); add(b, c); add(c, b);
+  }
+  const out = new Map();
+  for (const [k, s] of map) out.set(k, Array.from(s));
+  neighborMap = out;
+}
+
+/* ============================== FERRAMENTAS ============================== */
+function doCarve(cx, cy, cz) {
+  const r = state.brushRadius, r2 = r * r;
+  const strength = state.brushStrength * state.brushRate;
+  const arr = geometry.attributes.position.array;
+  const nrm = geometry.attributes.normal.array;
+  const dir = camera.position;
+  let dx = dir.x - cx, dy = dir.y - cy, dz = dir.z - cz;
+  const dl = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1;
+  dx /= dl; dy /= dl; dz /= dl;
+  const min = -MAX_SCALE - 1;
+  for (let i = 0, n = geometry.attributes.position.count; i < n; i++) {
+    const ix = i * 3;
+    const ex = arr[ix] - cx, ey = arr[ix + 1] - cy, ez = arr[ix + 2] - cz;
+    const d2 = ex * ex + ey * ey + ez * ez;
+    if (d2 > r2) continue;
+    const d = Math.sqrt(d2) || 1e-4;
+    const fall = Math.pow(Math.max(0, 1 - d / r), 2);
+    const a = Math.max(0.05, dx * nrm[ix] + dy * nrm[ix + 1] + dz * nrm[ix + 2]);
+    const k = strength * fall * a;
+    arr[ix] = Math.max(min, arr[ix] - nrm[ix] * k);
+    arr[ix + 1] = Math.max(min, arr[ix + 1] - nrm[ix + 1] * k);
+    arr[ix + 2] = Math.max(min, arr[ix + 2] - nrm[ix + 2] * k);
+  }
+  uploadPositions();
+}
+
+function doSmooth(cx, cy, cz) {
+  if (!neighborMap) buildNeighbors();
+  const r = state.brushRadius, r2 = r * r;
+  const strength = Math.min(0.5, state.brushStrength * state.brushRate);
+  const arr = geometry.attributes.position.array;
+  const temp = new Float32Array(arr);
+  for (let i = 0, n = geometry.attributes.position.count; i < n; i++) {
+    const ix = i * 3;
+    const ex = arr[ix] - cx, ey = arr[ix + 1] - cy, ez = arr[ix + 2] - cz;
+    const d2 = ex * ex + ey * ey + ez * ez;
+    if (d2 > r2) continue;
+    const nbrs = neighborMap.get(i);
+    if (!nbrs || !nbrs.length) continue;
+    let ax = 0, ay = 0, az = 0;
+    for (const j of nbrs) { const jx = j * 3; ax += arr[jx]; ay += arr[jx + 1]; az += arr[jx + 2]; }
+    const inv = 1 / nbrs.length;
+    const d = Math.sqrt(d2) || 1e-4;
+    const fall = Math.max(0, 1 - d / r);
+    const k = strength * fall;
+    temp[ix] = arr[ix] + (ax * inv - arr[ix]) * k;
+    temp[ix + 1] = arr[ix + 1] + (ay * inv - arr[ix + 1]) * k;
+    temp[ix + 2] = arr[ix + 2] + (az * inv - arr[ix + 2]) * k;
+  }
+  arr.set(temp);
+  uploadPositions();
+}
+
+function doFlatten(cx, cy, cz) {
+  const r = state.brushRadius, r2 = r * r;
+  const arr = geometry.attributes.position.array;
+  const dir = camera.position;
+  let dx = dir.x - cx, dy = dir.y - cy, dz = dir.z - cz;
+  const dl = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1;
+  dx /= dl; dy /= dl; dz /= dl;
+  let sum = 0, cnt = 0;
+  for (let i = 0, n = geometry.attributes.position.count; i < n; i++) {
+    const ix = i * 3;
+    const ex = arr[ix] - cx, ey = arr[ix + 1] - cy, ez = arr[ix + 2] - cz;
+    const d2 = ex * ex + ey * ey + ez * ez;
+    if (d2 > r2) continue;
+    const d = Math.sqrt(d2) || 1e-4;
+    const w = Math.pow(Math.max(0, 1 - d / r), 2);
+    sum += (arr[ix] * dx + arr[ix + 1] * dy + arr[ix + 2] * dz) * w;
+    cnt += w;
+  }
+  if (cnt < 1e-6) return;
+  const planeVal = sum / cnt;
+  const strength = Math.min(1, state.brushStrength * state.brushRate);
+  for (let i = 0, n = geometry.attributes.position.count; i < n; i++) {
+    const ix = i * 3;
+    const ex = arr[ix] - cx, ey = arr[ix + 1] - cy, ez = arr[ix + 2] - cz;
+    const d2 = ex * ex + ey * ey + ez * ez;
+    if (d2 > r2) continue;
+    const d = Math.sqrt(d2) || 1e-4;
+    const fall = Math.pow(Math.max(0, 1 - d / r), 2);
+    const proj = arr[ix] * dx + arr[ix + 1] * dy + arr[ix + 2] * dz;
+    const delta = (planeVal - proj) * strength * fall;
+    arr[ix] += dx * delta;
+    arr[ix + 1] += dy * delta;
+    arr[ix + 2] += dz * delta;
+  }
+  uploadPositions();
+}
+
+function doPaint(cx, cy, cz) {
+  const r = state.brushRadius, r2 = r * r;
+  const col = geometry.attributes.color;
+  if (!col) return;
+  const arr = geometry.attributes.position.array;
+  const carr = col.array;
+  const target = new THREE.Color(state.paintEraser ? state.baseColor : state.paintColor);
+  const strength = Math.min(1, state.brushStrength * 1.4);
+  for (let i = 0, n = geometry.attributes.position.count; i < n; i++) {
+    const ix = i * 3;
+    const ex = arr[ix] - cx, ey = arr[ix + 1] - cy, ez = arr[ix + 2] - cz;
+    const d2 = ex * ex + ey * ey + ez * ez;
+    if (d2 > r2) continue;
+    const d = Math.sqrt(d2) || 1e-4;
+    const fall = Math.pow(Math.max(0, 1 - d / r), 2) * strength;
+    carr[ix] += (target.r - carr[ix]) * fall;
+    carr[ix + 1] += (target.g - carr[ix + 1]) * fall;
+    carr[ix + 2] += (target.b - carr[ix + 2]) * fall;
+  }
+  uploadColors();
+}
+
+/* ============================== CORTE ============================== */
+function collectBoundaryLoops(indexArr) {
+  const edgeCount = new Map();
+  const addEdge = (a, b) => {
+    const k = a < b ? a + '_' + b : b + '_' + a;
+    edgeCount.set(k, (edgeCount.get(k) || 0) + 1);
+  };
+  for (let i = 0; i < indexArr.length; i += 3) {
+    addEdge(indexArr[i], indexArr[i + 1]);
+    addEdge(indexArr[i + 1], indexArr[i + 2]);
+    addEdge(indexArr[i + 2], indexArr[i]);
+  }
+  const adj = new Map();
+  for (const [k, c] of edgeCount) {
+    if (c !== 1) continue;
+    const [a, b] = k.split('_').map(Number);
+    let sa = adj.get(a); if (!sa) { sa = new Set(); adj.set(a, sa); } sa.add(b);
+    let sb = adj.get(b); if (!sb) { sb = new Set(); adj.set(b, sb); } sb.add(a);
+  }
+  const visited = new Set();
+  const loops = [];
+  for (const start of adj.keys()) {
+    if (visited.has(start)) continue;
+    const loop = [];
+    let cur = start, prev = -1;
+    while (cur !== -1 && !visited.has(cur)) {
+      visited.add(cur);
+      loop.push(cur);
+      const nbrs = adj.get(cur);
+      let next = -1;
+      for (const nb of nbrs) { if (nb !== prev) { next = nb; break; } }
+      prev = cur; cur = next;
+    }
+    if (loop.length >= 3) loops.push(loop);
+  }
+  return loops;
+}
+
+function pointInTri(px, py, ax, ay, bx, by, cx, cy) {
+  const d1 = (px - bx) * (ay - by) - (ax - bx) * (py - by);
+  const d2 = (px - cx) * (by - cy) - (bx - cx) * (py - cy);
+  const d3 = (px - ax) * (cy - ay) - (cx - ax) * (py - ay);
+  const hasNeg = d1 < -1e-9 || d2 < -1e-9 || d3 < -1e-9;
+  const hasPos = d1 > 1e-9 || d2 > 1e-9 || d3 > 1e-9;
+  return !(hasNeg && hasPos);
+}
+
+function triangulateCap(loop, posArr, planeN) {
+  const n = loop.length;
+  if (n < 3) return [];
+  const ax = Math.abs(planeN.x), ay = Math.abs(planeN.y), az = Math.abs(planeN.z);
+  const drop = (ax >= ay && ax >= az) ? 0 : (ay >= az ? 1 : 2);
+  const u = (drop + 1) % 3, v = (drop + 2) % 3;
+  const px = new Float64Array(n), py = new Float64Array(n);
+  for (let i = 0; i < n; i++) {
+    const vi = loop[i] * 3;
+    px[i] = posArr[vi + u]; py[i] = posArr[vi + v];
+  }
+  let area = 0;
+  for (let i = 0; i < n; i++) { const j = (i + 1) % n; area += px[i] * py[j] - px[j] * py[i]; }
+  const order = [];
+  if (area < 0) { for (let i = n - 1; i >= 0; i--) order.push(i); }
+  else { for (let i = 0; i < n; i++) order.push(i); }
+  const tris = [];
+  const rem = order.slice();
+  let guard = 0;
+  while (rem.length > 3) {
+    if (++guard > 50000) break;
+    let found = false;
+    for (let i = 0; i < rem.length; i++) {
+      const i0 = rem[(i - 1 + rem.length) % rem.length];
+      const i1 = rem[i];
+      const i2 = rem[(i + 1) % rem.length];
+      const c = (px[i1] - px[i0]) * (py[i2] - py[i0]) - (py[i1] - py[i0]) * (px[i2] - px[i0]);
+      if (c <= 1e-12) continue;
+      let inside = false;
+      for (let j = 0; j < rem.length; j++) {
+        const q = rem[j];
+        if (q === i0 || q === i1 || q === i2) continue;
+        if (pointInTri(px[q], py[q], px[i0], py[i0], px[i1], py[i1], px[i2], py[i2])) { inside = true; break; }
+      }
+      if (inside) continue;
+      tris.push(loop[i0], loop[i1], loop[i2]);
+      rem.splice(i, 1);
+      found = true;
+      break;
+    }
+    if (!found) break;
+  }
+  if (rem.length === 3) tris.push(loop[rem[0]], loop[rem[1]], loop[rem[2]]);
+  for (let i = 0; i < tris.length; i += 3) {
+    const a = tris[i], b = tris[i + 1], c = tris[i + 2];
+    const ax3 = posArr[a * 3], ay3 = posArr[a * 3 + 1], az3 = posArr[a * 3 + 2];
+    const bx3 = posArr[b * 3], by3 = posArr[b * 3 + 1], bz3 = posArr[b * 3 + 2];
+    const cx3 = posArr[c * 3], cy3 = posArr[c * 3 + 1], cz3 = posArr[c * 3 + 2];
+    const e1x = bx3 - ax3, e1y = by3 - ay3, e1z = bz3 - az3;
+    const e2x = cx3 - ax3, e2y = cy3 - ay3, e2z = cz3 - az3;
+    const nx = e1y * e2z - e1z * e2y, ny = e1z * e2x - e1x * e2z, nz = e1x * e2y - e1y * e2x;
+    if (nx * planeN.x + ny * planeN.y + nz * planeN.z > 0) {
+      const t = tris[i + 1]; tris[i + 1] = tris[i + 2]; tris[i + 2] = t;
+    }
+  }
+  return tris;
+}
+
+function cutGeometry(planeN, planeD) {
+  const pos = geometry.attributes.position;
+  const col = geometry.attributes.color;
+  const count = pos.count;
+  if (count > MAX_CUT_VERTS) {
+    toast('Malha muito densa para cortar. Reduza o detalhe do bloco.', true);
+    return;
+  }
+  const index = geometry.index;
+  const triCount = index ? index.count / 3 : count / 3;
+  const arr = pos.array;
+  const side = new Float32Array(count);
+  for (let i = 0; i < count; i++) {
+    const ix = i * 3;
+    side[i] = planeN.x * arr[ix] + planeN.y * arr[ix + 1] + planeN.z * arr[ix + 2] - planeD;
+  }
+  const EPS = 1e-4;
+  const newPos = [];
+  const newCol = col ? [] : null;
+  const vmap = new Map();
+  const gv = (i) => {
+    if (vmap.has(i)) return vmap.get(i);
+    const ni = newPos.length / 3;
+    newPos.push(arr[i * 3], arr[i * 3 + 1], arr[i * 3 + 2]);
+    if (newCol) newCol.push(col.array[i * 3], col.array[i * 3 + 1], col.array[i * 3 + 2]);
+    vmap.set(i, ni);
+    return ni;
+  };
+  const edgeMap = new Map();
+  const midOf = (ia, ib) => {
+    const sa = side[ia], sb = side[ib];
+    if (Math.abs(sa) <= EPS) return gv(ia);
+    if (Math.abs(sb) <= EPS) return gv(ib);
+    const key = ia < ib ? ia + '_' + ib : ib + '_' + ia;
+    if (edgeMap.has(key)) return edgeMap.get(key);
+    const t = sa / (sa - sb);
+    const ni = newPos.length / 3;
+    newPos.push(
+      arr[ia * 3] + (arr[ib * 3] - arr[ia * 3]) * t,
+      arr[ia * 3 + 1] + (arr[ib * 3 + 1] - arr[ia * 3 + 1]) * t,
+      arr[ia * 3 + 2] + (arr[ib * 3 + 2] - arr[ia * 3 + 2]) * t);
+    if (newCol) {
+      const ca = col.array, i0 = ia * 3, i1 = ib * 3;
+      newCol.push(
+        ca[i0] + (ca[i1] - ca[i0]) * t,
+        ca[i0 + 1] + (ca[i1 + 1] - ca[i0 + 1]) * t,
+        ca[i0 + 2] + (ca[i1 + 2] - ca[i0 + 2]) * t);
+    }
+    edgeMap.set(key, ni);
+    return ni;
+  };
+  let newIndex = [];
+  for (let t = 0; t < triCount; t++) {
+    const a = index ? index.array[t * 3] : t * 3;
+    const b = index ? index.array[t * 3 + 1] : t * 3 + 1;
+    const c = index ? index.array[t * 3 + 2] : t * 3 + 2;
+    const sa = side[a], sb = side[b], sc = side[c];
+    const kA = sa > -EPS, kB = sb > -EPS, kC = sc > -EPS;
+    const keep = (kA ? 1 : 0) + (kB ? 1 : 0) + (kC ? 1 : 0);
+    // normal de referência do triângulo original (orientação consistente)
+    const ax0 = arr[a * 3], ay0 = arr[a * 3 + 1], az0 = arr[a * 3 + 2];
+    const bx0 = arr[b * 3], by0 = arr[b * 3 + 1], bz0 = arr[b * 3 + 2];
+    const cx0 = arr[c * 3], cy0 = arr[c * 3 + 1], cz0 = arr[c * 3 + 2];
+    const e1x = bx0 - ax0, e1y = by0 - ay0, e1z = bz0 - az0;
+    const e2x = cx0 - ax0, e2y = cy0 - ay0, e2z = cz0 - az0;
+    const refNx = e1y * e2z - e1z * e2y, refNy = e1z * e2x - e1x * e2z, refNz = e1x * e2y - e1y * e2x;
+    const emit = (i1, i2, i3) => {
+      if (i1 === i2 || i2 === i3 || i1 === i3) return;
+      const p1x = newPos[i1 * 3], p1y = newPos[i1 * 3 + 1], p1z = newPos[i1 * 3 + 2];
+      const p2x = newPos[i2 * 3], p2y = newPos[i2 * 3 + 1], p2z = newPos[i2 * 3 + 2];
+      const p3x = newPos[i3 * 3], p3y = newPos[i3 * 3 + 1], p3z = newPos[i3 * 3 + 2];
+      const ux = p2x - p1x, uy = p2y - p1y, uz = p2z - p1z;
+      const vx = p3x - p1x, vy = p3y - p1y, vz = p3z - p1z;
+      const nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+      if (nx * refNx + ny * refNy + nz * refNz < 0) newIndex.push(i1, i3, i2);
+      else newIndex.push(i1, i2, i3);
+    };
+    const tk = [], tc = [];
+    if (kA) tk.push(a); else tc.push(a);
+    if (kB) tk.push(b); else tc.push(b);
+    if (kC) tk.push(c); else tc.push(c);
+    if (keep === 3) {
+      emit(gv(a), gv(b), gv(c));
+    } else if (keep === 2) {
+      const ka = gv(tk[0]), kb = gv(tk[1]);
+      const m0 = midOf(tc[0], tk[0]), m1 = midOf(tc[0], tk[1]);
+      emit(ka, kb, m1);
+      emit(ka, m1, m0);
+    } else if (keep === 1) {
+      const ka = gv(tk[0]);
+      const m0 = midOf(tk[0], tc[0]), m1 = midOf(tk[0], tc[1]);
+      emit(ka, m0, m1);
+    }
+  }
+
+  if (newIndex.length === 0) {
+    toast('Esse corte removeria o bloco inteiro. Ajuste a linha.', true);
+    return;
+  }
+
+  const loops = collectBoundaryLoops(newIndex);
+  for (const loop of loops) {
+    const cap = triangulateCap(loop, newPos, planeN);
+    for (const ci of cap) newIndex.push(ci);
+  }
+
+  pushHistory();
+  setAttr('position', newPos, 3);
+  if (newCol) setAttr('color', newCol, 3);
+  geometry.setIndex(new THREE.BufferAttribute(new Uint32Array(newIndex), 1));
+  neighborMap = null;
+  recomputeNormals();
+  clearMeasure();
+  toast('✂️ Corte aplicado — superfície fechada.');
+}
+
+/* ============================== HISTÓRICO ============================== */
+const history = { undo: [], redo: [], limit: 40 };
+function snapshotPositions() { return new Float32Array(geometry.attributes.position.array); }
+function snapshotColors() { const c = geometry.attributes.color; return c ? new Float32Array(c.array) : null; }
+function snapshotIndex() { return geometry.index ? new Uint32Array(geometry.index.array) : null; }
+function pushHistory() {
+  history.undo.push({ pos: snapshotPositions(), col: snapshotColors(), idx: snapshotIndex() });
+  if (history.undo.length > history.limit) history.undo.shift();
+  history.redo.length = 0;
+}
+function applyRecord(rec) {
+  setAttr('position', rec.pos, 3);
+  if (rec.col) setAttr('color', rec.col, 3);
+  if (rec.idx) geometry.setIndex(new THREE.BufferAttribute(rec.idx, 1));
+  else if (geometry.index) geometry.setIndex(null);
+  neighborMap = null;
+  recomputeNormals();
+}
+function undo() {
+  if (!history.undo.length) { toast('Nada para desfazer.', true); return; }
+  history.redo.push({ pos: snapshotPositions(), col: snapshotColors(), idx: snapshotIndex() });
+  applyRecord(history.undo.pop());
+  updateHud();
+  toast('↩️ Desfeito.');
+}
+function redo() {
+  if (!history.redo.length) { toast('Nada para refazer.', true); return; }
+  history.undo.push({ pos: snapshotPositions(), col: snapshotColors(), idx: snapshotIndex() });
+  applyRecord(history.redo.pop());
+  updateHud();
+  toast('↪️ Refeito.');
+}
+function clearHistory() { history.undo.length = 0; history.redo.length = 0; }
+
+/* ============================== STROKE ============================== */
+const _v1 = new THREE.Vector3(), _v2 = new THREE.Vector3();
+const raycaster = new THREE.Raycaster();
+
+function pickPoint(e) {
+  const rect = canvas.getBoundingClientRect();
+  const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  const ny = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(new THREE.Vector2(nx, ny), camera);
+  const hits = raycaster.intersectObject(mesh, false);
+  return hits.length ? hits[0].point : null;
+}
+
+function beginStroke(e) {
+  if (e.button !== 0) return;
+  if (e.pointerType === 'touch') return;
+  const p = pickPoint(e);
+  if (!p) return;
+  if (state.mode === 'measure' || state.mode === 'cut') {
+    setMeasurePoint(p);
+    return;
+  }
+  if (state.mode === 'paint' && state.colorMode !== 'color') setColorMode('color');
+  controls.enabled = false;
+  state.strokeActive = true;
+  state.strokeChanged = false;
+  state.strokeOriginPos = snapshotPositions();
+  state.strokeOriginCol = snapshotColors();
+  state.lastPoint = p.clone();
+  state.activePointerId = e.pointerId;
+  try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
+  applyToolAt(p);
+  state.strokeChanged = true;
+  showCursor(true);
+  updateCursorAt(p);
+}
+
+function moveStroke(e) {
+  if (!state.strokeActive) return;
+  const p = pickPoint(e);
+  if (!p) return;
+  const step = Math.max(2.5, state.brushRadius * 0.32);
+  const d = p.distanceTo(state.lastPoint);
+  if (d < step) { updateCursorAt(p); return; }
+  const segs = Math.min(40, Math.ceil(d / step));
+  for (let s = 1; s <= segs; s++) {
+    _v1.copy(state.lastPoint).lerp(p, s / segs);
+    applyToolAt(_v1);
+  }
+  state.lastPoint.copy(p);
+  state.strokeChanged = true;
+  updateCursorAt(p);
+}
+
+function endStroke() {
+  if (!state.strokeActive) return;
+  state.strokeActive = false;
+  try { canvas.releasePointerCapture(state.activePointerId); } catch (err) {}
+  if (state.strokeChanged) {
+    recomputeNormals();
+    const posChanged = countChangedVerts(state.strokeOriginPos);
+    const colChanged = countChangedColors(state.strokeOriginCol);
+    if (posChanged || colChanged) {
+      pushHistory();
+    } else {
+      setAttr('position', state.strokeOriginPos, 3);
+      if (state.strokeOriginCol) setAttr('color', state.strokeOriginCol, 3);
+    }
+  }
+  state.strokeOriginPos = null;
+  state.strokeOriginCol = null;
+  controls.enabled = true;
+  updateHud();
+}
+
+function countChangedVerts(orig) {
+  if (!orig) return 0;
+  const arr = geometry.attributes.position.array;
+  const n = Math.min(arr.length / 3, orig.length / 3);
+  let c = 0;
+  for (let i = 0; i < n; i++) {
+    const ix = i * 3;
+    if (Math.abs(arr[ix] - orig[ix]) + Math.abs(arr[ix + 1] - orig[ix + 1]) + Math.abs(arr[ix + 2] - orig[ix + 2]) > 1e-5) c++;
+  }
+  return c;
+}
+function countChangedColors(orig) {
+  if (!orig) return 0;
+  const col = geometry.attributes.color;
+  if (!col) return 0;
+  const arr = col.array;
+  const n = Math.min(arr.length / 3, orig.length / 3);
+  let c = 0;
+  for (let i = 0; i < n; i++) {
+    const ix = i * 3;
+    if (Math.abs(arr[ix] - orig[ix]) + Math.abs(arr[ix + 1] - orig[ix + 1]) + Math.abs(arr[ix + 2] - orig[ix + 2]) > 1e-5) c++;
+  }
+  return c;
+}
+
+function applyToolAt(p) {
+  if (state.mode === 'carve') doCarve(p.x, p.y, p.z);
+  else if (state.mode === 'smooth') doSmooth(p.x, p.y, p.z);
+  else if (state.mode === 'flatten') doFlatten(p.x, p.y, p.z);
+  else if (state.mode === 'paint') doPaint(p.x, p.y, p.z);
+}
+
+/* ============================== CURSOR ============================== */
+function showCursor(v) {
+  state.cursorVisible = v;
+  const brush = state.mode === 'carve' || state.mode === 'smooth' || state.mode === 'flatten' || state.mode === 'paint';
+  cursorRing.visible = v && brush;
+  cursorFill.visible = v && brush;
+}
+function updateCursorAt(p) {
+  cursorRing.position.copy(p);
+  cursorFill.position.copy(p);
+}
+
+/* ============================== RÉGUA / CORTE ============================== */
+function setMeasurePoint(p) {
+  if (!state.measureA) {
+    state.measureA = p.clone();
+  } else if (!state.measureB) {
+    state.measureB = p.clone();
+  } else {
+    state.measureA = p.clone();
+    state.measureB = null;
+  }
+  updateMeasureMarks();
+  if (state.mode === 'cut' && state.measureA && state.measureB) doCut();
+  updateHud();
+}
+function updateMeasureMarks() {
+  clearMeasureMarks();
+  if (state.measureA) addMarker(state.measureA, 0xffb02e);
+  if (state.measureB) addMarker(state.measureB, 0x38bdf8);
+}
+function addMarker(p, color) {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(3.4, 16, 16), new THREE.MeshBasicMaterial({ color, depthTest: false }));
+  m.position.copy(p);
+  m.renderOrder = 997;
+  measureGroup.add(m);
+}
+function clearMeasureMarks() {
+  while (measureGroup.children.length) {
+    const c = measureGroup.children.pop();
+    if (c.geometry) c.geometry.dispose();
+    if (c.material) c.material.dispose();
+  }
+}
+function clearMeasure() {
+  state.measureA = null;
+  state.measureB = null;
+  clearMeasureMarks();
+}
+
+function doCut() {
+  const A = state.measureA, B = state.measureB;
+  if (!A || !B) return;
+  const n = B.clone().sub(A).normalize();
+  const toCam = camera.position.clone().sub(A).normalize();
+  let planeN = n.clone().cross(toCam).cross(n).normalize();
+  if (planeN.lengthSq() < 0.5) planeN = new THREE.Vector3(0, 1, 0);
+  if (planeN.dot(toCam) < 0) planeN.negate();
+  const planeD = planeN.dot(A);
+  cutGeometry(planeN, planeD);
+}
+
+/* ============================== EXPORTAÇÃO STL ============================== */
+function downloadBlob(blob, name) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+
+function exportSTL() {
+  try {
+    const geo = geometry.toNonIndexed();
+    const pos = geo.attributes.position;
+    const vcount = pos.count;
+    if (vcount < 12) { geo.dispose(); toast('Modelo vazio demais para exportar.', true); return; }
+    let minX = Infinity, minY = Infinity, minZ = Infinity, maxX = -Infinity, maxY = -Infinity, maxZ = -Infinity;
+    const arr = pos.array;
+    for (let i = 0; i < vcount; i++) {
+      const ix = i * 3;
+      const x = arr[ix], y = arr[ix + 1], z = arr[ix + 2];
+      if (x < minX) minX = x; if (x > maxX) maxX = x;
+      if (y < minY) minY = y; if (y > maxY) maxY = y;
+      if (z < minZ) minZ = z; if (z > maxZ) maxZ = z;
+    }
+    const target = 60; // mm
+    const cur = Math.max(maxX - minX, maxY - minY, maxZ - minZ) || 1;
+    const s = target / cur;
+    const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2, cz = (minZ + maxZ) / 2;
+    const triData = [];
+    for (let i = 0; i < vcount; i += 3) {
+      const ax = (arr[i * 3] - cx) * s, ay = (arr[i * 3 + 1] - cy) * s, az = (arr[i * 3 + 2] - cz) * s;
+      const bx = (arr[(i + 1) * 3] - cx) * s, by = (arr[(i + 1) * 3 + 1] - cy) * s, bz = (arr[(i + 1) * 3 + 2] - cz) * s;
+      const cx2 = (arr[(i + 2) * 3] - cx) * s, cy2 = (arr[(i + 2) * 3 + 1] - cy) * s, cz2 = (arr[(i + 2) * 3 + 2] - cz) * s;
+      const ex = bx - ax, ey = by - ay, ez = bz - az;
+      const fx = cx2 - ax, fy = cy2 - ay, fz = cz2 - az;
+      let nx = ey * fz - ez * fy, ny = ez * fx - ex * fz, nz = ex * fy - ey * fx;
+      const nl = Math.sqrt(nx * nx + ny * ny + nz * nz);
+      if (nl < 1e-9) continue; // descarta triângulos degenerados
+      triData.push(nx / nl, ny / nl, nz / nl, ax, ay, az, bx, by, bz, cx2, cy2, cz2);
+    }
+    geo.dispose();
+    const triCount = triData.length / 12;
+    if (triCount < 4) { toast('Modelo degenerado demais para exportar. Esculpa um pouco mais.', true); return; }
+    const out = new Uint8Array(84 + triCount * 50);
+    const dv = new DataView(out.buffer);
+    dv.setUint32(80, triCount, true);
+    let o = 84;
+    for (let i = 0; i < triData.length; i += 12) {
+      for (let k = 0; k < 12; k++) dv.setFloat32(o + k * 4, triData[i + k], true);
+      dv.setUint16(o + 48, 0, true);
+      o += 50;
+    }
+    downloadBlob(new Blob([out], { type: 'model/stl' }), 'escultura.stl');
+    toast('📦 STL gerado! ' + triCount.toLocaleString('pt-BR') + ' triângulos, 60 mm — pronto para fatiar (Cura, PrusaSlicer, Bambu…).');
+  } catch (err) {
+    console.error(err);
+    toast('Erro ao exportar: ' + err.message, true);
+  }
+}
+
+/* ============================== MODOS DE COR ============================== */
+function setColorMode(mode) {
+  state.colorMode = mode;
+  applyMaterialMode();
+}
+
+/* ============================== UI ============================== */
+const $ = (id) => document.getElementById(id);
+const hudEl = $('hud');
+const pBody = $('pBody');
+const pTitle = $('pTitle');
+
+function toast(msg, isErr) {
+  const el = document.createElement('div');
+  el.className = 'snack' + (isErr ? ' err' : '');
+  el.textContent = msg;
+  document.body.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
+  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 250); }, 2600);
+}
+
+function toolCards(list, activeId, onPick) {
+  const wrap = document.createElement('div');
+  list.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'tool-card' + (t.id === activeId ? ' active' : '');
+    card.innerHTML = `<div class="ticon">${t.icon}</div><div class="tmeta"><div class="tname">${t.name}</div><div class="ttip">${t.tip}</div></div>`;
+    card.addEventListener('click', () => {
+      wrap.querySelectorAll('.tool-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      onPick(t);
+    });
+    wrap.appendChild(card);
+  });
+  return wrap;
+}
+
+function sliderRow(name, min, max, step, getVal, onInput) {
+  const row = document.createElement('div');
+  row.className = 'slider-row';
+  row.innerHTML = `<span class="sname">${name}</span><input type="range" min="${min}" max="${max}" step="${step}"><span class="sval"></span>`;
+  const input = row.querySelector('input');
+  const val = row.querySelector('.sval');
+  const refresh = () => { input.value = getVal(); val.textContent = Number(getVal()).toFixed(step < 1 ? 1 : 0); };
+  input.addEventListener('input', () => onInput(Number(input.value)));
+  refresh();
+  return { row, refresh };
+}
+
+const sliderRows = {};
+
+function buildPanel() {
+  pBody.innerHTML = '';
+  if (state.mode === 'material') {
+    pTitle.textContent = '🪵 Material';
+    const l0 = document.createElement('div'); l0.className = 'label'; l0.textContent = 'Aparência do bloco';
+    pBody.appendChild(l0);
+    const modeSeg = document.createElement('div');
+    modeSeg.className = 'seg';
+    modeSeg.style.display = 'flex';
+    modeSeg.innerHTML = `<button class="seg-btn ${state.colorMode === 'texture' ? 'active' : ''}" data-m="texture">Material real</button>
+                         <button class="seg-btn ${state.colorMode === 'color' ? 'active' : ''}" data-m="color">Cor sólida</button>`;
+    modeSeg.addEventListener('click', (e) => {
+      const b = e.target.closest('.seg-btn');
+      if (!b) return;
+      state.colorMode = b.dataset.m;
+      applyMaterialMode();
+      buildPanel();
+    });
+    pBody.appendChild(modeSeg);
+    if (state.colorMode === 'texture') {
+      const grid = document.createElement('div');
+      grid.className = 'mat-grid';
+      grid.style.gridTemplateColumns = 'repeat(2,1fr)';
+      MATERIALS.forEach(m => {
+        const card = document.createElement('div');
+        card.className = 'mat-card' + (m.id === state.materialId ? ' active' : '');
+        card.innerHTML = `<div class="swatch-lg" style="background:${m.color}"></div>
+                          <div class="mname">${m.name}</div>
+                          <div class="mdesc">${m.desc}</div>`;
+        card.addEventListener('click', () => {
+          state.materialId = m.id;
+          state.baseColor = m.color;
+          applyMaterialMode();
+          grid.querySelectorAll('.mat-card').forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+        });
+        grid.appendChild(card);
+      });
+      pBody.appendChild(grid);
+    } else {
+      const l1 = document.createElement('div'); l1.className = 'label'; l1.textContent = 'Cor base (repinta o bloco)';
+      pBody.appendChild(l1);
+      const cp = document.createElement('input');
+      cp.type = 'color';
+      cp.value = state.baseColor;
+      cp.addEventListener('input', () => { state.baseColor = cp.value; applyMaterialMode(); });
+      pBody.appendChild(cp);
+    }
+    const hint = document.createElement('div');
+    hint.className = 'mat-note';
+    hint.innerHTML = '💡 O material usa <b>textura triplanar</b>: ao esculpir, veios e grãos atravessam o bloco de forma realista. Para pintar à mão, use a ferramenta 🎨.';
+    pBody.appendChild(hint);
+  }
+  else if (state.mode === 'carve' || state.mode === 'smooth' || state.mode === 'flatten') {
+    const isCarve = state.mode === 'carve';
+    const isSmooth = state.mode === 'smooth';
+    pTitle.textContent = isCarve ? '🔨 Esculpir (remover)' : (isSmooth ? '🧼 Suavizar' : '📐 Nivelar / aplainar');
+    const list = isCarve ? CARVE_TOOLS : (isSmooth ? SMOOTH_TOOLS : FLATTEN_TOOLS);
+    const activeId = isCarve ? state.carveTool : (isSmooth ? state.smoothTool : state.flattenTool);
+    const l1 = document.createElement('div'); l1.className = 'label';
+    l1.textContent = isCarve ? 'Ferramenta de corte' : (isSmooth ? 'Tipo de lixa' : 'Ferramenta');
+    pBody.appendChild(l1);
+    pBody.appendChild(toolCards(list, activeId, (t) => {
+      if (isCarve) { state.carveTool = t.id; state.brushRate = t.rate; }
+      else if (isSmooth) state.smoothTool = t.id;
+      else state.flattenTool = t.id;
+      state.brushRadius = t.r;
+      state.brushStrength = t.str;
+      sliderRows.radius.refresh();
+      sliderRows.strength.refresh();
+      updateHud();
+    }));
+    const l2 = document.createElement('div'); l2.className = 'label'; l2.textContent = 'Pincel';
+    pBody.appendChild(l2);
+    const rr = sliderRow('Raio', 2, 80, 1, () => state.brushRadius, (v) => { state.brushRadius = v; });
+    const rs = sliderRow('Força', 0.02, 1, 0.02, () => state.brushStrength, (v) => { state.brushStrength = v; });
+    pBody.appendChild(rr.row);
+    pBody.appendChild(rs.row);
+    sliderRows.radius = rr;
+    sliderRows.strength = rs;
+  }
+  else if (state.mode === 'paint') {
+    pTitle.textContent = '🎨 Pintar';
+    const l1 = document.createElement('div'); l1.className = 'label'; l1.textContent = 'Cor';
+    pBody.appendChild(l1);
+    const cp = document.createElement('input');
+    cp.type = 'color';
+    cp.value = state.paintColor;
+    cp.addEventListener('input', () => { state.paintColor = cp.value; state.paintEraser = false; });
+    pBody.appendChild(cp);
+    const sw = document.createElement('div');
+    sw.className = 'swatches';
+    PAINT_COLORS.forEach(c => {
+      const s = document.createElement('div');
+      s.className = 'swatch';
+      s.style.background = c;
+      if (c.toLowerCase() === state.paintColor.toLowerCase()) s.classList.add('active');
+      s.addEventListener('click', () => {
+        state.paintColor = c;
+        state.paintEraser = false;
+        sw.querySelectorAll('.swatch').forEach(x => x.classList.remove('active'));
+        s.classList.add('active');
+      });
+      sw.appendChild(s);
+    });
+    pBody.appendChild(sw);
+    const er = document.createElement('label');
+    er.className = 'check-row';
+    er.innerHTML = `<input type="checkbox"> <span>Borracha (voltar à cor base)</span>`;
+    const cb = er.querySelector('input');
+    cb.checked = state.paintEraser;
+    cb.addEventListener('change', () => { state.paintEraser = cb.checked; });
+    pBody.appendChild(er);
+    const l2 = document.createElement('div'); l2.className = 'label'; l2.textContent = 'Pincel';
+    pBody.appendChild(l2);
+    const rr = sliderRow('Raio', 2, 60, 1, () => state.brushRadius, (v) => { state.brushRadius = v; });
+    const rs = sliderRow('Força', 0.05, 1, 0.05, () => state.brushStrength, (v) => { state.brushStrength = v; });
+    pBody.appendChild(rr.row);
+    pBody.appendChild(rs.row);
+    sliderRows.radius = rr;
+    sliderRows.strength = rs;
+    const note = document.createElement('div');
+    note.className = 'mat-note';
+    note.innerHTML = '🎨 A pintura usa <b>cor sólida</b>. Volte em <b>Material → Material real</b> para reaplicar textura.';
+    pBody.appendChild(note);
+  }
+  else if (state.mode === 'cut') {
+    pTitle.textContent = '✂️ Cortar com linha';
+    const note = document.createElement('div');
+    note.className = 'mat-note';
+    note.innerHTML = 'Clique em <b>2 pontos</b> sobre o bloco para definir a linha de corte. O corte acontece no plano perpendicular à tela que passa por essa linha, removendo a parte de trás e <b>fechando a superfície</b> (fica pronto para impressão 3D).';
+    pBody.appendChild(note);
+    const r = document.createElement('button');
+    r.className = 'bp-btn';
+    r.style.marginTop = '8px';
+    r.style.justifyContent = 'center';
+    r.textContent = '↺ Resetar pontos';
+    r.addEventListener('click', () => { clearMeasure(); updateHud(); });
+    pBody.appendChild(r);
+    const note2 = document.createElement('div');
+    note2.className = 'mat-note';
+    note2.innerHTML = '💡 Use 🧼 Suavizar depois para arredondar as bordas do corte.';
+    pBody.appendChild(note2);
+  }
+  else if (state.mode === 'measure') {
+    pTitle.textContent = '📏 Régua';
+    const note = document.createElement('div');
+    note.className = 'mat-note';
+    note.innerHTML = 'Clique em <b>2 pontos</b> sobre o bloco para medir a distância entre eles.';
+    pBody.appendChild(note);
+    const r = document.createElement('button');
+    r.className = 'bp-btn';
+    r.style.marginTop = '8px';
+    r.style.justifyContent = 'center';
+    r.textContent = '↺ Resetar pontos';
+    r.addEventListener('click', () => { clearMeasure(); updateHud(); });
+    pBody.appendChild(r);
+  }
+}
+
+function setMode(mode) {
+  state.mode = mode;
+  const map = { material: 'btnMaterial', carve: 'btnCarve', smooth: 'btnSmooth', flatten: 'btnFlatten', paint: 'btnPaint', cut: 'btnCut', measure: 'btnMeasure' };
+  Object.keys(map).forEach(k => $(map[k]).classList.toggle('active', k === mode));
+  if (mode !== 'measure' && mode !== 'cut') clearMeasure();
+  if (mode === 'paint' && state.colorMode !== 'color') setColorMode('color');
+  buildPanel();
+  updateHud();
+}
+
+function toolLabel() {
+  const m = state.mode;
+  if (m === 'carve') return CARVE_TOOLS.find(t => t.id === state.carveTool).name;
+  if (m === 'smooth') return SMOOTH_TOOLS.find(t => t.id === state.smoothTool).name;
+  if (m === 'flatten') return FLATTEN_TOOLS.find(t => t.id === state.flattenTool).name;
+  if (m === 'paint') return 'Pintar';
+  if (m === 'cut') return 'Cortar';
+  if (m === 'measure') return 'Régua';
+  return 'Material';
+}
+
+function updateHud() {
+  const matInfo = MATERIALS.find(m => m.id === state.materialId) || MATERIALS[0];
+  const pos = geometry.attributes.position;
+  const triCount = geometry.index ? geometry.index.count / 3 : pos.count / 3;
+  let html = `<div class="hud-chip">🖱️ <b>Arraste fora do bloco</b> p/ girar · roda p/ zoom · botão direito p/ mover · <b>Ctrl+Z</b> desfaz</div>`;
+  html += `<div class="hud-chip">🪵 <b>${matInfo.name}</b> · ${state.colorMode === 'texture' ? 'textura' : 'cor sólida'}</div>`;
+  html += `<div class="hud-chip">🛠️ <b>${toolLabel()}</b></div>`;
+  html += `<div class="hud-chip">📐 <b>${pos.count.toLocaleString('pt-BR')}</b> vértices · <b>${Math.round(triCount).toLocaleString('pt-BR')}</b> triângulos</div>`;
+  if (state.mode === 'measure' || state.mode === 'cut') {
+    let s = '📍 Clique para marcar o ponto A';
+    if (state.measureA && !state.measureB) s = '📍 Ponto A marcado — clique no ponto B';
+    if (state.measureA && state.measureB) {
+      const d = state.measureA.distanceTo(state.measureB);
+      s = `📏 Distância: <b>${d.toFixed(1)}</b> unidades`;
+    }
+    html += `<div class="hud-chip">${s}</div>`;
+  } else if (state.mode === 'carve' || state.mode === 'smooth' || state.mode === 'flatten') {
+    html += `<div class="hud-chip">Raio <b>${state.brushRadius}</b> · Força <b>${state.brushStrength.toFixed(2)}</b></div>`;
+  } else if (state.mode === 'paint') {
+    html += `<div class="hud-chip">Raio <b>${state.brushRadius}</b></div>`;
+  }
+  hudEl.innerHTML = html;
+}
+
+/* ============================== MODAL ============================== */
+function openModal() {
+  const root = $('modalRoot');
+  const modal = $('modal');
+  modal.innerHTML = `<div class="mhead"><h2>Novo bloco</h2><button class="mclose">✕</button></div><div class="mbody"></div>`;
+  root.hidden = false;
+  const close = () => { root.hidden = true; };
+  modal.querySelector('.mclose').addEventListener('click', close);
+  root.querySelector('.overlay').addEventListener('click', close);
+  return modal.querySelector('.mbody');
+}
+
+function openNewModal() {
+  const body = openModal();
+  const title = document.createElement('p');
+  title.className = 'mat-note';
+  title.style.marginTop = '0';
+  title.innerHTML = 'Escolha forma, tamanho, detalhe e material do novo bloco. <b>A escultura atual será descartada.</b>';
+  body.appendChild(title);
+
+  const l1 = document.createElement('div'); l1.className = 'label'; l1.textContent = 'Forma'; body.appendChild(l1);
+  const shapeSeg = document.createElement('div'); shapeSeg.className = 'seg';
+  shapeSeg.innerHTML = `<button class="seg-btn ${state.shape === 'cube' ? 'active' : ''}" data-s="cube">Cubo</button>
+                        <button class="seg-btn ${state.shape === 'sphere' ? 'active' : ''}" data-s="sphere">Esfera</button>
+                        <button class="seg-btn ${state.shape === 'cylinder' ? 'active' : ''}" data-s="cylinder">Cilindro</button>`;
+  shapeSeg.addEventListener('click', (e) => {
+    const b = e.target.closest('.seg-btn'); if (!b) return;
+    state.shape = b.dataset.s;
+    shapeSeg.querySelectorAll('.seg-btn').forEach(x => x.classList.toggle('active', x === b));
+  });
+  body.appendChild(shapeSeg);
+
+  const l3 = document.createElement('div'); l3.className = 'label'; l3.textContent = 'Material'; body.appendChild(l3);
+  const grid = document.createElement('div'); grid.className = 'mat-grid';
+  MATERIALS.forEach(m => {
+    const card = document.createElement('div');
+    card.className = 'mat-card' + (m.id === state.materialId ? ' active' : '');
+    card.innerHTML = `<div class="swatch-lg" style="background:${m.color}"></div><div class="mname">${m.name}</div>`;
+    card.addEventListener('click', () => {
+      state.materialId = m.id; state.baseColor = m.color;
+      grid.querySelectorAll('.mat-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+    });
+    grid.appendChild(card);
+  });
+  body.appendChild(grid);
+
+  const l2 = document.createElement('div'); l2.className = 'label'; l2.textContent = 'Detalhe'; body.appendChild(l2);
+  const detSeg = document.createElement('div'); detSeg.className = 'seg';
+  detSeg.innerHTML = `<button class="seg-btn ${state.detail === 2 ? 'active' : ''}" data-d="2">Baixo</button>
+                      <button class="seg-btn ${state.detail === 1 ? 'active' : ''}" data-d="1">Médio</button>
+                      <button class="seg-btn ${state.detail === 0 ? 'active' : ''}" data-d="0">Alto</button>`;
+  detSeg.addEventListener('click', (e) => {
+    const b = e.target.closest('.seg-btn'); if (!b) return;
+    state.detail = Number(b.dataset.d);
+    detSeg.querySelectorAll('.seg-btn').forEach(x => x.classList.toggle('active', x === b));
+  });
+  body.appendChild(detSeg);
+
+  const l4 = document.createElement('div'); l4.className = 'label'; l4.textContent = 'Tamanho: ' + state.size; body.appendChild(l4);
+  const sizeR = document.createElement('input');
+  sizeR.type = 'range'; sizeR.min = 60; sizeR.max = 320; sizeR.value = state.size;
+  sizeR.style.width = '100%';
+  sizeR.addEventListener('input', () => { state.size = Number(sizeR.value); l4.textContent = 'Tamanho: ' + state.size; });
+  body.appendChild(sizeR);
+
+  const actions = document.createElement('div'); actions.className = 'export-row';
+  actions.style.marginTop = '16px';
+  const ok = document.createElement('button'); ok.className = 'bp-btn primary'; ok.textContent = '🗻 Criar novo bloco';
+  ok.addEventListener('click', () => {
+    $('modalRoot').hidden = true;
+    state.colorMode = 'texture';
+    clearHistory();
+    clearMeasure();
+    rebuildModel();
+    updateHud();
+    toast('Novo bloco criado!');
+  });
+  const cancel = document.createElement('button'); cancel.className = 'bp-btn ghost'; cancel.textContent = 'Cancelar';
+  cancel.addEventListener('click', () => { $('modalRoot').hidden = true; });
+  actions.appendChild(ok); actions.appendChild(cancel);
+  body.appendChild(actions);
+}
+
+/* ============================== EVENTOS ============================== */
+function bindEvents() {
+  $('btnMaterial').addEventListener('click', () => setMode('material'));
+  $('btnCarve').addEventListener('click', () => setMode('carve'));
+  $('btnSmooth').addEventListener('click', () => setMode('smooth'));
+  $('btnFlatten').addEventListener('click', () => setMode('flatten'));
+  $('btnPaint').addEventListener('click', () => setMode('paint'));
+  $('btnCut').addEventListener('click', () => { clearMeasure(); setMode('cut'); });
+  $('btnMeasure').addEventListener('click', () => { clearMeasure(); setMode('measure'); });
+  $('btnUndo').addEventListener('click', undo);
+  $('btnRedo').addEventListener('click', redo);
+  $('btnExport').addEventListener('click', exportSTL);
+  $('btnNew').addEventListener('click', openNewModal);
+  $('btnCenter').addEventListener('click', () => {
+    geometry.computeBoundingBox();
+    const c = geometry.boundingBox.getCenter(new THREE.Vector3());
+    const arr = geometry.attributes.position.array;
+    for (let i = 0; i < arr.length / 3; i++) {
+      arr[i * 3] -= c.x; arr[i * 3 + 1] -= c.y; arr[i * 3 + 2] -= c.z;
+    }
+    pushHistory();
+    uploadPositions();
+    recomputeNormals();
+    toast('🎯 Bloco centralizado.');
+  });
+
+  bindSeg('shapeSeg', 'shape', () => { toast('Bloco recriado — escultura anterior descartada.'); });
+  bindSeg('detailSeg', 'detail', () => { toast('Bloco recriado — escultura anterior descartada.'); });
+
+  const sizeSlider = $('sizeSlider');
+  sizeSlider.addEventListener('input', () => {
+    state.size = Number(sizeSlider.value);
+    if (state.undoTimer) clearTimeout(state.undoTimer);
+    state.undoTimer = setTimeout(() => {
+      clearHistory();
+      rebuildModel();
+      clearMeasure();
+      updateHud();
+      toast('Bloco redimensionado — escultura anterior descartada.');
+    }, 300);
+  });
+
+  canvas.addEventListener('pointerdown', beginStroke);
+  canvas.addEventListener('pointermove', (e) => {
+    if (state.strokeActive) { moveStroke(e); return; }
+    if (state.mode === 'material' || state.mode === 'measure' || state.mode === 'cut') { showCursor(false); return; }
+    const p = pickPoint(e);
+    if (p) { updateCursorAt(p); showCursor(true); }
+    else showCursor(false);
+  });
+  const end = () => endStroke();
+  canvas.addEventListener('pointerup', end);
+  canvas.addEventListener('pointercancel', end);
+  canvas.addEventListener('lostpointercapture', end);
+  canvas.addEventListener('pointerleave', () => { if (!state.strokeActive) showCursor(false); });
+  canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+  window.addEventListener('resize', onResize);
+
+  window.addEventListener('keydown', (e) => {
+    const tag = (document.activeElement && document.activeElement.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea') return;
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+      e.preventDefault();
+      if (e.shiftKey) redo(); else undo();
+      return;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') { e.preventDefault(); redo(); return; }
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    switch (e.key.toLowerCase()) {
+      case 'm': setMode('material'); break;
+      case 'e': setMode('carve'); break;
+      case 's': setMode('smooth'); break;
+      case 'f': setMode('flatten'); break;
+      case 'p': setMode('paint'); break;
+      case 'l': clearMeasure(); setMode('cut'); break;
+      case 'r': clearMeasure(); setMode('measure'); break;
+    }
+  });
+}
+
+function bindSeg(segId, attr, onChange) {
+  const el = $(segId);
+  el.addEventListener('click', (e) => {
+    const b = e.target.closest('.seg-btn');
+    if (!b) return;
+    const newVal = (attr === 'detail' || attr === 'size') ? Number(b.dataset[attr]) : b.dataset[attr];
+    if (newVal === state[attr]) return;
+    state[attr] = newVal;
+    el.querySelectorAll('.seg-btn').forEach(x => x.classList.toggle('active', x === b));
+    clearHistory();
+    clearMeasure();
+    rebuildModel();
+    updateHud();
+    onChange && onChange();
+  });
+}
+
+function initSeg(segId, attr) {
+  const el = $(segId);
+  el.querySelectorAll('.seg-btn').forEach(b => {
+    b.classList.toggle('active', String(b.dataset[attr]) === String(state[attr]));
+  });
+}
+
+function onResize() {
+  const w = canvas.clientWidth || window.innerWidth;
+  const h = canvas.clientHeight || window.innerHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h, false);
+}
+
+/* ============================== LOOP ============================== */
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  if (state.cursorVisible) {
+    const s = state.brushRadius;
+    cursorRing.scale.setScalar(s);
+    cursorFill.scale.setScalar(s);
+    cursorRing.lookAt(camera.position);
+    cursorFill.lookAt(camera.position);
+  }
+  renderer.render(scene, camera);
+}
+
+/* ============================== INIT ============================== */
+function init() {
+  onResize();
+  initSeg('shapeSeg', 'shape');
+  initSeg('detailSeg', 'detail');
+  rebuildModel();
+  setMode('carve');
+  bindEvents();
+  updateHud();
+  animate();
+  toast('👋 Bem-vindo! Arraste sobre o bloco para esculpir. Roda do mouse dá zoom.');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+
+})();
+</script>
+</body>
+</html>

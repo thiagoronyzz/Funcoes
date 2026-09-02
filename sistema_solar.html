@@ -1394,19 +1394,34 @@ function texEarth(data, w, h, seed) {
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
     const u = x / w, v = y / h, i = (y * w + x) * 4;
     const lat = (0.5 - v) * Math.PI; // + = norte
-    const cont = fbmAng(u, v, seed, 6, 6);
-    const detail = fbmAng(u, v, seed + 4, 5, 26);
+    const cont = fbmAng(u, v, seed, 6, 6);       // máscara continente/oceano
+    const elev = fbmAng(u, v, seed + 4, 5, 24);   // variação de terreno
     let r, g, b;
-    if (cont > 0.54) { // terra
-      const e = (cont - 0.54) / 0.46;
-      const green = clamp(0.25 + e * 0.5, 0, 0.75) * (1 - Math.abs(lat) * 0.25);
-      r = 62 + 40 * green + 40 * detail; g = 96 + 46 * green + 30 * detail; b = 40 + 12 * green + 20 * detail;
-      if (Math.abs(lat) > 1.2) { r += 60; g += 55; b += 45; } // montanhas polares
-    } else { // oceano
-      const d = 0.54 - cont;
-      r = 8 + 26 * d + 8 * detail; g = 34 + 52 * d + 8 * detail; b = 92 + 70 * d + 10 * detail;
+    if (cont > 0.545) {
+      // terra firme: verde -> marrom/deserto conforme o ruído
+      const veg = clamp(elev * 1.15 - 0.08, 0, 1);
+      const desert = clamp((0.58 - elev) * 1.9, 0, 1);
+      const coast = clamp((cont - 0.545) / 0.06, 0, 1);
+      r = 88 + (1 - veg) * 60 + desert * 70;
+      g = 108 + veg * 55 - desert * 45 - coast * 12;
+      b = 50 + veg * 12 - desert * 28;
+      if (Math.abs(lat) > 1.15) { // tundra perto dos polos
+        const t = (Math.abs(lat) - 1.15) / 0.12;
+        r = lerp(r, 120, t); g = lerp(g, 112, t); b = lerp(b, 84, t);
+      }
+    } else {
+      // oceano: azul profundo, mais claro perto da costa
+      const d = 0.545 - cont;
+      r = 4 + 22 * d * 2;
+      g = 26 + 48 * d * 2;
+      b = 84 + 70 * d * 2;
+      const glint = Math.pow(clamp(elev - 0.5, 0, 1), 2) * 18;
+      r += glint; g += glint; b += glint;
     }
-    if (Math.abs(lat) > 1.28) { const ice = (Math.abs(lat) - 1.28) / 0.29; r = lerp(r, 245, ice); g = lerp(g, 250, ice); b = lerp(b, 255, ice); }
+    if (Math.abs(lat) > 1.24) { // calotas polares
+      const ice = (Math.abs(lat) - 1.24) / 0.33;
+      r = lerp(r, 242, ice); g = lerp(g, 248, ice); b = lerp(b, 254, ice);
+    }
     px(data, i, clamp(r, 0, 255), clamp(g, 0, 255), clamp(b, 0, 255));
   }
 }
@@ -1551,6 +1566,9 @@ const TEX_BUILDERS = {
   oberon:    [128, 64, 221,  (d, w, h, s) => texRocky(d, w, h, s, [150, 146, 140], 0.6)],
   pluto:     [256, 128, 231, texPluto],
   charon:    [128, 64, 241,  (d, w, h, s) => texRocky(d, w, h, s, [150, 144, 140], 0.6)],
+  earthclouds: [512, 256, 46, texEarthClouds],
+  saturnring:  [512, 512, 85, texSaturnRing],
+  uraring:     [256, 256, 96, texUraRing],
 };
 const texCache = {};
 function getTexture(id) {

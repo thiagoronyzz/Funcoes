@@ -3,92 +3,79 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Funções: ferramenta educacional para visualizar gráficos e propriedades de funções matemáticas." />
-  <title>Funções — Visualizador Matemático</title>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <meta name="description" content="Corrida 3D hiper-realista em mundo aberto: pista extensa, natureza, tráfego, pedestres e física." />
+  <title>Estrada Dourada — Corrida 3D</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="hero">
-    <div>
-      <p class="eyebrow">Ferramenta interativa de estudo</p>
-      <h1>Funções</h1>
-      <p class="hero__subtitle">
-        Escolha um tipo de função, ajuste os coeficientes e observe o gráfico e a ficha técnica em tempo real.
-      </p>
+  <div id="canvasHolder"></div>
+  <div id="vignette"></div>
+  <div id="crashFlash">💥</div>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div class="hud-top">
+      <canvas id="minimap" width="170" height="170"></canvas>
+      <div class="race-box glass">
+        <div id="lap" class="race-lap">Volta 1</div>
+        <div class="race-line"><span id="time">--:--.---</span></div>
+        <div class="race-sub" id="best">Melhor: --</div>
+        <div class="race-sub" id="ped">🚶 0</div>
+      </div>
     </div>
-    <aside class="hero__card" aria-label="Dica rápida">
-      <strong>Dica acadêmica</strong>
-      <span>Use o zoom com a roda do mouse e arraste o gráfico para navegar. Pontos críticos aparecem destacados.</span>
-    </aside>
-  </header>
-
-  <main class="app-shell">
-    <section class="panel controls-panel" aria-labelledby="controls-title">
-      <div class="section-heading">
-        <p class="eyebrow">Entrada</p>
-        <h2 id="controls-title">Configuração da função</h2>
+    <div class="hud-right glass">
+      <div class="speed-wrap">
+        <span id="speed">0</span><span id="unit">km/h</span>
       </div>
-
-      <label class="field field--select" for="functionType">
-        <span>Tipo de função</span>
-        <select id="functionType" autocomplete="off"></select>
-      </label>
-
-      <form id="dynamicInputs" class="dynamic-inputs" autocomplete="off" aria-live="polite"></form>
-
-      <div id="warningBox" class="warning" role="status" aria-live="polite" hidden></div>
-
-      <div class="action-row">
-        <button id="resetZoom" class="button" type="button">Resetar zoom</button>
-        <button id="restoreDefaults" class="button button--ghost" type="button">Valores padrão</button>
+      <div class="gear-row"><span id="gear">D1</span></div>
+    </div>
+    <div class="hud-buttons">
+      <button id="pauseBtn" class="hbtn" title="Pausar (P)">⏸</button>
+      <button id="soundBtn" class="hbtn" title="Som (M)">🔊</button>
+    </div>
+    <div id="toast"></div>
+    <div id="touchUI">
+      <div class="trow trow-left">
+        <button class="tbtn" data-k="ArrowLeft" aria-label="Esquerda">◀</button>
+        <button class="tbtn" data-k="ArrowRight" aria-label="Direita">▶</button>
       </div>
-
-      <div class="helper-card">
-        <h3>Notação aceita</h3>
-        <ul>
-          <li>Coeficientes polinomiais: <code>1, 0, -4</code> representa <code>x² − 4</code>.</li>
-          <li>Expressões conceituais: use <code>x</code> ou <code>u</code>, por exemplo <code>sqrt(x+4)</code>, <code>sin(x)</code>, <code>abs(x)</code>.</li>
-          <li>Ângulos trigonométricos são medidos em radianos.</li>
-        </ul>
+      <div class="trow trow-right">
+        <button class="tbtn" data-k="ArrowDown" aria-label="Frear">▼</button>
+        <button class="tbtn tbtn-big" data-k="ArrowUp" aria-label="Acelerar">▲</button>
       </div>
-    </section>
+    </div>
+  </div>
 
-    <section class="panel graph-panel" aria-labelledby="graph-title">
-      <div class="section-heading graph-heading">
-        <div>
-          <p class="eyebrow">Visualização</p>
-          <h2 id="graph-title">Gráfico interativo</h2>
-        </div>
-        <span id="formulaBadge" class="formula-badge" aria-live="polite"></span>
+  <!-- Menu inicial -->
+  <div id="overlay">
+    <div id="menu" class="menu-card glass-strong">
+      <div class="logo">
+        <h1>🏎️ Estrada Dourada</h1>
+        <p>Corrida hiper-realista em mundo aberto</p>
       </div>
-      <div class="chart-wrap">
-        <canvas id="functionChart" aria-label="Gráfico da função selecionada" role="img"></canvas>
+      <div class="quality">
+        <p class="qlabel">Qualidade gráfica</p>
+        <label><input type="radio" name="quality" value="alta" checked /><span>Alta</span></label>
+        <label><input type="radio" name="quality" value="media" /><span>Média</span></label>
+        <label><input type="radio" name="quality" value="baixa" /><span>Rápida</span></label>
       </div>
-      <p class="graph-note">
-        As assíntotas aparecem como linhas tracejadas. Pontos críticos são calculados com as fórmulas indicadas na ficha técnica.
-      </p>
-    </section>
-
-    <section class="panel study-panel" aria-labelledby="study-title">
-      <div class="section-heading">
-        <p class="eyebrow">Painel de estudo</p>
-        <h2 id="study-title">Dados relevantes</h2>
+      <button id="startBtn" class="cta">▶ Dirigir</button>
+      <div class="controls">
+        <p><b>W / ↑</b> acelerar &nbsp; <b>S / ↓</b> frear &nbsp; <b>A / D</b> direção</p>
+        <p><b>Espaço</b> freio de mão (drift) &nbsp; <b>P / Esc</b> pausa &nbsp; <b>M</b> som</p>
+        <p class="sub">Explore a pista de 6 km, desvie dos cones, deixe os pedestres atravessarem… ou não 😉</p>
       </div>
-      <div id="studyCards" class="study-grid" aria-live="polite"></div>
-    </section>
-  </main>
+    </div>
+    <div id="loading" class="loading hidden"><div class="spinner"></div><p>Gerando a paisagem…</p></div>
+  </div>
 
-  <footer class="footer">
-    <p>
-      Feito em HTML5, CSS3 e JavaScript puro com Chart.js, chartjs-plugin-zoom e math.js via CDN.
-    </p>
-  </footer>
+  <!-- Pausa -->
+  <div id="pauseMenu" class="pause hidden glass-strong">
+    <h2>Pausado</h2>
+    <button id="resumeBtn" class="cta">Continuar</button>
+    <button id="quitBtn" class="ghost">Sair para o menu</button>
+  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjs@13.0.3/lib/browser/math.min.js"></script>
-  <script src="app.js"></script>
+  <script type="module" src="./src/main.js"></script>
 </body>
 </html>

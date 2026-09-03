@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Corrida 3D hiper-realista em mundo aberto: pista extensa, natureza, tráfego, pedestres e física." />
+  <title>Estrada Dourada — Corrida 3D</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="canvasHolder"></div>
+  <div id="vignette"></div>
+  <div id="crashFlash">💥</div>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div class="hud-top">
+      <canvas id="minimap" width="170" height="170"></canvas>
+      <div class="race-box glass">
+        <div id="lap" class="race-lap">Volta 1</div>
+        <div class="race-line"><span id="time">--:--.---</span></div>
+        <div class="race-sub" id="best">Melhor: --</div>
+        <div class="race-sub" id="ped">🚶 0</div>
+      </div>
+    </div>
+    <div class="hud-right glass">
+      <div class="speed-wrap">
+        <span id="speed">0</span><span id="unit">km/h</span>
+      </div>
+      <div class="gear-row"><span id="gear">D1</span></div>
+    </div>
+    <div class="hud-buttons">
+      <button id="pauseBtn" class="hbtn" title="Pausar (P)">⏸</button>
+      <button id="soundBtn" class="hbtn" title="Som (M)">🔊</button>
+    </div>
+    <div id="toast"></div>
+    <div id="touchUI">
+      <div class="trow trow-left">
+        <button class="tbtn" data-k="ArrowLeft" aria-label="Esquerda">◀</button>
+        <button class="tbtn" data-k="ArrowRight" aria-label="Direita">▶</button>
+      </div>
+      <div class="trow trow-right">
+        <button class="tbtn" data-k="ArrowDown" aria-label="Frear">▼</button>
+        <button class="tbtn tbtn-big" data-k="ArrowUp" aria-label="Acelerar">▲</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu inicial -->
+  <div id="overlay">
+    <div id="menu" class="menu-card glass-strong">
+      <div class="logo">
+        <h1>🏎️ Estrada Dourada</h1>
+        <p>Corrida hiper-realista em mundo aberto</p>
+      </div>
+      <div class="quality">
+        <p class="qlabel">Qualidade gráfica</p>
+        <label><input type="radio" name="quality" value="alta" checked /><span>Alta</span></label>
+        <label><input type="radio" name="quality" value="media" /><span>Média</span></label>
+        <label><input type="radio" name="quality" value="baixa" /><span>Rápida</span></label>
+      </div>
+      <button id="startBtn" class="cta">▶ Dirigir</button>
+      <div class="controls">
+        <p><b>W / ↑</b> acelerar &nbsp; <b>S / ↓</b> frear &nbsp; <b>A / D</b> direção</p>
+        <p><b>Espaço</b> freio de mão (drift) &nbsp; <b>P / Esc</b> pausa &nbsp; <b>M</b> som</p>
+        <p class="sub">Explore a pista de 6 km, desvie dos cones, deixe os pedestres atravessarem… ou não 😉</p>
+      </div>
+    </div>
+    <div id="loading" class="loading hidden"><div class="spinner"></div><p>Gerando a paisagem…</p></div>
+  </div>
+
+  <!-- Pausa -->
+  <div id="pauseMenu" class="pause hidden glass-strong">
+    <h2>Pausado</h2>
+    <button id="resumeBtn" class="cta">Continuar</button>
+    <button id="quitBtn" class="ghost">Sair para o menu</button>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

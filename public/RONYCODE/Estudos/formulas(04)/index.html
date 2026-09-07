@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca de Fórmulas - Ciências da Natureza</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-page: #f0f4f8;
+            --bg-card: #ffffff;
+            --text-main: #1a1f36;
+            --text-secondary: #6b7280;
+            --blue-primary: #1d4ed8;
+            --blue-dark: #1e40af;
+            --blue-light: #eff6ff;
+            --border-color: #e5e7eb;
+            --green: #10b981;
+            --purple: #8b5cf6;
+            --orange: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0eaf5 0%, #f4f7fb 100%);
+            min-height: 100vh;
+            color: var(--text-main);
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* === CABEÇALHO === */
+        header {
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-text .tag-title {
+            color: var(--blue-primary);
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+            color: #111827;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            max-width: 600px;
+        }
+
+        /* === BARRA DE BUSCA === */
+        .search-container {
+            position: relative;
+        }
+
+        #search {
+            padding: 12px 20px 12px 45px;
+            font-size: 0.95rem;
+            border: 2px solid var(--border-color);
+            border-radius: 30px;
+            width: 320px;
+            outline: none;
+            background: var(--bg-card);
+            transition: all 0.2s;
+        }
+
+        #search:focus {
+            border-color: var(--blue-primary);
+            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.15);
+        }
+
+        .search-container::before {
+            content: '🔍';
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
+            opacity: 0.5;
+        }
+
+        /* === ABAS DAS MATÉRIAS === */
+        .subject-tabs {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .subject-tab {
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subject-tab:hover {
+            border-color: var(--blue-primary);
+            color: var(--blue-primary);
+        }
+
+        .subject-tab.active {
+            background: var(--blue-primary);
+            color: white;
+            border-color: var(--blue-primary);
+        }
+
+        .subject-tab .icon {
+            font-size: 1.2rem;
+        }
+
+        /* === LAYOUT PRINCIPAL === */
+        .main-container {
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        /* === SIDEBAR DE CATEGORIAS === */
+        .sidebar {
+            position: sticky;
+            top: 20px;
+            transition: opacity 0.3s;
+        }
+
+        /* Adição para desativar a sidebar na pesquisa global */
+        .sidebar.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .sidebar h3 {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--blue-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .category-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .category-item {
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.15s;
+            border-left: 3px solid transparent;
+        }
+
+        .category-item:hover {
+            background: var(--blue-light);
+            color: var(--blue-primary);
+        }
+
+        .category-item.active {
+            background: var(--blue-light);
+            color: var(--blue-primary);
+            border-left-color: var(--blue-primary);
+            font-weight: 600;
+        }
+
+        /* === CONTEÚDO PRINCIPAL === */
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .category-header {
+            margin-bottom: 5px;
+        }
+
+        .category-header h2 {
+            font-size: 1.75rem;
+            margin-bottom: 8px;
+        }
+
+        .category-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .search-results-title {
+            color: var(--blue-primary);
+        }
+
+        /* === CARDS DE FÓRMULA === */
+        .formula-card {
+            transition: transform 0.15s;
+        }
+
+        .formula-card:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Adição para mostrar o caminho na pesquisa global */
+        .breadcrumb {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .formula-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+
+        .formula-title h4 {
+            font-size: 1.15rem;
+            margin-bottom: 4px;
+        }
+
+        .formula-title .badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: var(--blue-light);
+            color: var(--blue-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .formula-equation {
+            background: linear-gradient(135deg, #f0f9ff 0%, #eff6ff 100%);
+            border: 1px solid #dbeafe;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--blue-dark);
+            margin: 15px 0;
+        }
+
+        .formula-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .variables {
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+        }
+
+        .variables-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .variables-list {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .var-item {
+            font-size: 0.85rem;
+            color: var(--text-main);
+        }
+
+        .var-item code {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: var(--blue-primary);
+            background: var(--blue-light);
+            padding: 1px 6px;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+
+        .example {
+            border-left: 3px solid var(--green);
+            background: #f0fdf4;
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .example-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--green);
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .example-text {
+            font-size: 0.85rem;
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar { position: static; }
+            h1 { font-size: 2rem; }
+            #search { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-text">
+            <span class="tag-title">Ferramenta Interativa de Estudo</span>
+            <h1>Biblioteca de Fórmulas</h1>
+            <p class="subtitle">Todas as fórmulas essenciais das Ciências da Natureza organizadas por área e categoria, com explicações e exemplos práticos.</p>
+        </div>
+        <div class="search-container">
+            <input type="text" id="search" placeholder="Buscar fórmula em todas as matérias...">
+        </div>
+    </header>
+
+    <!-- ABAS DE MATÉRIAS -->
+    <div class="subject-tabs" id="subject-tabs"></div>
+
+    <div class="main-container">
+        <!-- SIDEBAR -->
+        <aside class="card sidebar" id="sidebar">
+            <h3>Categorias</h3>
+            <ul class="category-list" id="category-list"></ul>
+        </aside>
+
+        <!-- CONTEÚDO -->
+        <main class="content-area" id="content-area"></main>
+    </div>
+
+    <script>
+        // =================== BASE DE DADOS COMPLETA (DO PENÚLTIMO CÓDIGO) ===================
+        const database = {
+            fisica: {
+                name: "Física",
+                icon: "⚛️",
+                categories: {
+                    mecanica: {
+                        name: "Mecânica",
+                        desc: "Estuda o movimento dos corpos, as forças que atuam sobre eles e o equilíbrio.",
+                        formulas: [
+                            {
+                                name: "Velocidade Média",
+                                badge: "Cinemática",
+                                eq: "Vₘ = ΔS / Δt",
+                                desc: "Calcula a taxa de variação da posição de um objeto em relação ao tempo. É a base do estudo de movimento.",
+                                vars: [
+                                    ["Vₘ", "Velocidade média (m/s)"],
+                                    ["ΔS", "Variação do espaço/deslocamento (m)"],
+                                    ["Δt", "Variação do tempo (s)"]
+                                ],
+                                example: "Um carro percorre 200 km em 4 horas. Sua velocidade média é 200/4 = 50 km/h."
+                            },
+                            {
+                                name: "MRUV - Função Horária",
+                                badge: "Cinemática",
+                                eq: "S = S₀ + V₀·t + ½·a·t²",
+                                desc: "Descreve a posição de um objeto em movimento uniformemente variado ao longo do tempo.",
+                                vars: [
+                                    ["S", "Posição final (m)"],
+                                    ["S₀", "Posição inicial (m)"],
+                                    ["V₀", "Velocidade inicial (m/s)"],
+                                    ["a", "Aceleração (m/s²)"],
+                                    ["t", "Tempo (s)"]
+                                ],
+                                example: "Um objeto parte do repouso (V₀=0) com aceleração de 2 m/s². Após 3s, S = 0 + 0 + ½·2·9 = 9m."
+                            },
+                            {
+                                name: "Equação de Torricelli",
+                                badge: "Cinemática",
+                                eq: "V² = V₀² + 2·a·ΔS",
+                                desc: "Relaciona velocidade, aceleração e deslocamento sem depender do tempo.",
+                                vars: [
+                                    ["V", "Velocidade final (m/s)"],
+                                    ["V₀", "Velocidade inicial (m/s)"],
+                                    ["a", "Aceleração (m/s²)"],
+                                    ["ΔS", "Deslocamento (m)"]
+                                ],
+                                example: "Um carro a 20 m/s freia a -5 m/s² até parar. Distância: 0 = 400 + 2(-5)ΔS → ΔS = 40m."
+                            },
+                            {
+                                name: "2ª Lei de Newton",
+                                badge: "Dinâmica",
+                                eq: "F = m · a",
+                                desc: "A força resultante em um corpo é igual ao produto de sua massa pela aceleração adquirida.",
+                                vars: [
+                                    ["F", "Força resultante (N - Newton)"],
+                                    ["m", "Massa (kg)"],
+                                    ["a", "Aceleração (m/s²)"]
+                                ],
+                                example: "Empurrar um carrinho de 10 kg com aceleração de 2 m/s² requer uma força de 20 N."
+                            },
+                            {
+                                name: "Força Peso",
+                                badge: "Dinâmica",
+                                eq: "P = m · g",
+                                desc: "Força com que a gravidade atrai um corpo em direção ao centro do planeta.",
+                                vars: [
+                                    ["P", "Peso (N)"],
+                                    ["m", "Massa (kg)"],
+                                    ["g", "Gravidade (≈ 9,8 m/s² na Terra)"]
+                                ],
+                                example: "Uma pessoa de 70 kg pesa aproximadamente 70 × 9,8 = 686 N na Terra."
+                            },
+                            {
+                                name: "Energia Cinética",
+                                badge: "Energia",
+                                eq: "Ec = ½ · m · v²",
+                                desc: "Energia associada ao movimento de um corpo. Depende quadraticamente da velocidade.",
+                                vars: [
+                                    ["Ec", "Energia cinética (J - Joule)"],
+                                    ["m", "Massa (kg)"],
+                                    ["v", "Velocidade (m/s)"]
+                                ],
+                                example: "Um carro de 1000 kg a 20 m/s tem Ec = ½·1000·400 = 200.000 J = 200 kJ."
+                            },
+                            {
+                                name: "Energia Potencial Gravitacional",
+                                badge: "Energia",
+                                eq: "Ep = m · g · h",
+                                desc: "Energia armazenada em um corpo devido à sua altura em relação a um referencial.",
+                                vars: [
+                                    ["Ep", "Energia potencial (J)"],
+                                    ["m", "Massa (kg)"],
+                                    ["g", "Gravidade (m/s²)"],
+                                    ["h", "Altura (m)"]
+                                ],
+                                example: "Um livro de 2 kg em uma prateleira a 1,5m tem Ep = 2·9,8·1,5 = 29,4 J."
+                            }
+                        ]
+                    },
+                    termologia: {
+                        name: "Termologia",
+                        desc: "Estuda os fenômenos relacionados ao calor, temperatura e mudanças de estado da matéria.",
+                        formulas: [
+                            {
+                                name: "Conversão Celsius → Fahrenheit",
+                                badge: "Temperatura",
+                                eq: "°F = (°C · 9/5) + 32",
+                                desc: "Converte uma temperatura da escala Celsius para Fahrenheit.",
+                                vars: [
+                                    ["°F", "Temperatura em Fahrenheit"],
+                                    ["°C", "Temperatura em Celsius"]
+                                ],
+                                example: "100°C equivalem a (100·9/5)+32 = 212°F (ponto de ebulição da água)."
+                            },
+                            {
+                                name: "Conversão Celsius → Kelvin",
+                                badge: "Temperatura",
+                                eq: "K = °C + 273,15",
+                                desc: "Converte Celsius para a escala absoluta Kelvin, usada na ciência.",
+                                vars: [
+                                    ["K", "Temperatura em Kelvin"],
+                                    ["°C", "Temperatura em Celsius"]
+                                ],
+                                example: "0°C = 273,15 K (temperatura de congelamento da água)."
+                            },
+                            {
+                                name: "Calor Sensível",
+                                badge: "Calorimetria",
+                                eq: "Q = m · c · ΔT",
+                                desc: "Quantidade de calor necessária para variar a temperatura de um corpo sem mudar seu estado físico.",
+                                vars: [
+                                    ["Q", "Quantidade de calor (cal ou J)"],
+                                    ["m", "Massa (g ou kg)"],
+                                    ["c", "Calor específico (cal/g°C)"],
+                                    ["ΔT", "Variação de temperatura (°C)"]
+                                ],
+                                example: "Aquecer 500g de água (c=1) de 20°C para 80°C: Q = 500·1·60 = 30.000 cal."
+                            },
+                            {
+                                name: "Calor Latente",
+                                badge: "Calorimetria",
+                                eq: "Q = m · L",
+                                desc: "Quantidade de calor para mudar o estado físico de um corpo, sem variar a temperatura.",
+                                vars: [
+                                    ["Q", "Calor absorvido/cedido (cal)"],
+                                    ["m", "Massa (g)"],
+                                    ["L", "Calor latente (cal/g)"]
+                                ],
+                                example: "Derreter 100g de gelo (L=80 cal/g): Q = 100·80 = 8.000 cal."
+                            },
+                            {
+                                name: "Equação dos Gases Ideais",
+                                badge: "Gases",
+                                eq: "P · V = n · R · T",
+                                desc: "Relaciona pressão, volume e temperatura de um gás ideal em qualquer estado.",
+                                vars: [
+                                    ["P", "Pressão (atm ou Pa)"],
+                                    ["V", "Volume (L ou m³)"],
+                                    ["n", "Número de mols"],
+                                    ["R", "Constante universal (0,082 atm·L/mol·K)"],
+                                    ["T", "Temperatura (K)"]
+                                ],
+                                example: "1 mol de gás a 273K e 1 atm ocupa V = 1·0,082·273/1 ≈ 22,4 L."
+                            }
+                        ]
+                    },
+                    eletricidade: {
+                        name: "Eletricidade",
+                        desc: "Estuda cargas elétricas, correntes, tensão, resistência e circuitos elétricos.",
+                        formulas: [
+                            {
+                                name: "1ª Lei de Ohm",
+                                badge: "Circuitos",
+                                eq: "U = R · i",
+                                desc: "Estabelece a relação entre tensão, corrente elétrica e resistência em condutores ôhmicos.",
+                                vars: [
+                                    ["U", "Tensão / DDP (V - Volt)"],
+                                    ["R", "Resistência (Ω - Ohm)"],
+                                    ["i", "Corrente elétrica (A - Ampere)"]
+                                ],
+                                example: "Um resistor de 10Ω conectado a 20V terá corrente i = 20/10 = 2 A."
+                            },
+                            {
+                                name: "Potência Elétrica",
+                                badge: "Circuitos",
+                                eq: "P = U · i",
+                                desc: "Taxa de energia elétrica consumida ou fornecida por um dispositivo por unidade de tempo.",
+                                vars: [
+                                    ["P", "Potência (W - Watt)"],
+                                    ["U", "Tensão (V)"],
+                                    ["i", "Corrente (A)"]
+                                ],
+                                example: "Um chuveiro que usa 220V e consome 25A tem potência P = 5500 W = 5,5 kW."
+                            },
+                            {
+                                name: "Lei de Coulomb",
+                                badge: "Eletrostática",
+                                eq: "F = k · (q₁·q₂) / d²",
+                                desc: "Calcula a força elétrica entre duas cargas puntiformes.",
+                                vars: [
+                                    ["F", "Força elétrica (N)"],
+                                    ["k", "Constante eletrostática (9×10⁹ N·m²/C²)"],
+                                    ["q₁, q₂", "Cargas elétricas (C - Coulomb)"],
+                                    ["d", "Distância entre as cargas (m)"]
+                                ],
+                                example: "Duas cargas de 1C separadas por 1m se repelem/atraem com força de 9×10⁹ N."
+                            },
+                            {
+                                name: "Consumo de Energia Elétrica",
+                                badge: "Consumo",
+                                eq: "E = P · Δt",
+                                desc: "Calcula a energia elétrica consumida por um aparelho em um intervalo de tempo.",
+                                vars: [
+                                    ["E", "Energia (kWh)"],
+                                    ["P", "Potência (kW)"],
+                                    ["Δt", "Tempo (h)"]
+                                ],
+                                example: "Uma lâmpada de 60W ligada por 5h: E = 0,06·5 = 0,3 kWh."
+                            }
+                        ]
+                    },
+                    ondulatoria: {
+                        name: "Ondulatória e Óptica",
+                        desc: "Estuda ondas, som, luz e fenômenos ópticos como reflexão e refração.",
+                        formulas: [
+                            {
+                                name: "Velocidade da Onda",
+                                badge: "Ondas",
+                                eq: "v = λ · f",
+                                desc: "Relação fundamental entre velocidade, comprimento de onda e frequência.",
+                                vars: [
+                                    ["v", "Velocidade da onda (m/s)"],
+                                    ["λ", "Comprimento de onda (m)"],
+                                    ["f", "Frequência (Hz)"]
+                                ],
+                                example: "Uma onda com λ = 2m e f = 5 Hz tem v = 2·5 = 10 m/s."
+                            },
+                            {
+                                name: "Período e Frequência",
+                                badge: "Ondas",
+                                eq: "T = 1 / f",
+                                desc: "O período é o inverso da frequência de uma onda.",
+                                vars: [
+                                    ["T", "Período (s)"],
+                                    ["f", "Frequência (Hz)"]
+                                ],
+                                example: "Uma onda de 50 Hz tem período T = 1/50 = 0,02 s."
+                            },
+                            {
+                                name: "Equação de Gauss (Óptica)",
+                                badge: "Óptica",
+                                eq: "1/f = 1/p + 1/p'",
+                                desc: "Relaciona a distância focal com as distâncias do objeto e da imagem em espelhos e lentes.",
+                                vars: [
+                                    ["f", "Distância focal (cm)"],
+                                    ["p", "Distância do objeto (cm)"],
+                                    ["p'", "Distância da imagem (cm)"]
+                                ],
+                                example: "Objeto a 30cm de uma lente com f=10cm: 1/10 = 1/30 + 1/p' → p' = 15cm."
+                            }
+                        ]
+                    }
+                }
+            },
+            quimica: {
+                name: "Química",
+                icon: "🧪",
+                categories: {
+                    geral: {
+                        name: "Química Geral",
+                        desc: "Conceitos fundamentais sobre matéria, mol, massa molar e cálculos básicos.",
+                        formulas: [
+                            {
+                                name: "Número de Mols",
+                                badge: "Estequiometria",
+                                eq: "n = m / MM",
+                                desc: "Calcula a quantidade de matéria (em mols) a partir da massa e da massa molar.",
+                                vars: [
+                                    ["n", "Número de mols (mol)"],
+                                    ["m", "Massa da amostra (g)"],
+                                    ["MM", "Massa molar (g/mol)"]
+                                ],
+                                example: "18g de água (MM = 18 g/mol) equivale a n = 18/18 = 1 mol."
+                            },
+                            {
+                                name: "Constante de Avogadro",
+                                badge: "Estequiometria",
+                                eq: "N = n · 6,02×10²³",
+                                desc: "Relaciona o número de mols com a quantidade total de partículas (átomos, moléculas).",
+                                vars: [
+                                    ["N", "Número de partículas"],
+                                    ["n", "Número de mols"]
+                                ],
+                                example: "1 mol de átomos contém 6,02×10²³ átomos."
+                            },
+                            {
+                                name: "Densidade",
+                                badge: "Propriedades",
+                                eq: "d = m / V",
+                                desc: "Relação entre a massa de uma substância e o volume que ela ocupa.",
+                                vars: [
+                                    ["d", "Densidade (g/mL ou g/cm³)"],
+                                    ["m", "Massa (g)"],
+                                    ["V", "Volume (mL ou cm³)"]
+                                ],
+                                example: "100g de água ocupam 100 mL. Densidade = 100/100 = 1 g/mL."
+                            }
+                        ]
+                    },
+                    solucoes: {
+                        name: "Soluções",
+                        desc: "Estuda misturas homogêneas, concentrações e diluições.",
+                        formulas: [
+                            {
+                                name: "Concentração Comum",
+                                badge: "Concentração",
+                                eq: "C = m₁ / V",
+                                desc: "Relaciona a massa do soluto com o volume da solução.",
+                                vars: [
+                                    ["C", "Concentração (g/L)"],
+                                    ["m₁", "Massa do soluto (g)"],
+                                    ["V", "Volume da solução (L)"]
+                                ],
+                                example: "20g de sal em 2L de água: C = 20/2 = 10 g/L."
+                            },
+                            {
+                                name: "Concentração Molar (Molaridade)",
+                                badge: "Concentração",
+                                eq: "M = n₁ / V",
+                                desc: "Quantidade de mols do soluto por litro de solução.",
+                                vars: [
+                                    ["M", "Molaridade (mol/L)"],
+                                    ["n₁", "Mols do soluto"],
+                                    ["V", "Volume da solução (L)"]
+                                ],
+                                example: "0,5 mol de NaCl em 1L de solução: M = 0,5 mol/L."
+                            },
+                            {
+                                name: "Diluição de Soluções",
+                                badge: "Diluição",
+                                eq: "C₁ · V₁ = C₂ · V₂",
+                                desc: "Ao adicionar solvente, a concentração diminui, mas a massa de soluto permanece constante.",
+                                vars: [
+                                    ["C₁", "Concentração inicial"],
+                                    ["V₁", "Volume inicial"],
+                                    ["C₂", "Concentração final"],
+                                    ["V₂", "Volume final"]
+                                ],
+                                example: "Diluir 100mL de solução 5M para 500mL: C₂ = (5·100)/500 = 1M."
+                            }
+                        ]
+                    },
+                    termoquimica: {
+                        name: "Termoquímica",
+                        desc: "Estuda o calor envolvido nas reações químicas.",
+                        formulas: [
+                            {
+                                name: "Variação de Entalpia",
+                                badge: "Entalpia",
+                                eq: "ΔH = H(produtos) - H(reagentes)",
+                                desc: "Calcula o calor liberado (exotérmico) ou absorvido (endotérmico) em uma reação a pressão constante.",
+                                vars: [
+                                    ["ΔH", "Variação de entalpia (kJ/mol)"],
+                                    ["H produtos", "Entalpia dos produtos"],
+                                    ["H reagentes", "Entalpia dos reagentes"]
+                                ],
+                                example: "Se ΔH < 0, reação exotérmica (libera calor). Se ΔH > 0, endotérmica (absorve calor)."
+                            },
+                            {
+                                name: "Lei de Hess",
+                                badge: "Entalpia",
+                                eq: "ΔH total = ΔH₁ + ΔH₂ + ΔH₃...",
+                                desc: "A variação de entalpia de uma reação depende apenas dos estados inicial e final, não do caminho.",
+                                vars: [
+                                    ["ΔH total", "Entalpia da reação global"],
+                                    ["ΔH₁, ΔH₂...", "Entalpias das etapas intermediárias"]
+                                ],
+                                example: "Permite calcular ΔH de reações difíceis de medir somando reações conhecidas."
+                            }
+                        ]
+                    },
+                    cinetica: {
+                        name: "Cinética e Equilíbrio",
+                        desc: "Estuda a velocidade das reações e o estado de equilíbrio químico.",
+                        formulas: [
+                            {
+                                name: "Velocidade de Reação",
+                                badge: "Cinética",
+                                eq: "V = Δ[C] / Δt",
+                                desc: "Mede o quão rápido a concentração de reagentes ou produtos muda com o tempo.",
+                                vars: [
+                                    ["V", "Velocidade média (mol/L·s)"],
+                                    ["Δ[C]", "Variação da concentração (mol/L)"],
+                                    ["Δt", "Variação do tempo (s)"]
+                                ],
+                                example: "Se [A] cai de 1M para 0,4M em 3s: V = 0,6/3 = 0,2 mol/L·s."
+                            },
+                            {
+                                name: "Constante de Equilíbrio (Kc)",
+                                badge: "Equilíbrio",
+                                eq: "Kc = [C]ᶜ·[D]ᵈ / [A]ᵃ·[B]ᵇ",
+                                desc: "Para aA + bB ⇌ cC + dD, expressa a razão entre produtos e reagentes no equilíbrio.",
+                                vars: [
+                                    ["Kc", "Constante de equilíbrio"],
+                                    ["[A],[B]", "Concentração dos reagentes"],
+                                    ["[C],[D]", "Concentração dos produtos"],
+                                    ["a,b,c,d", "Coeficientes estequiométricos"]
+                                ],
+                                example: "Se Kc >> 1, o equilíbrio favorece os produtos. Se Kc << 1, favorece os reagentes."
+                            },
+                            {
+                                name: "pH e pOH",
+                                badge: "Ácidos/Bases",
+                                eq: "pH = -log[H⁺]  |  pH + pOH = 14",
+                                desc: "Escala logarítmica que mede a acidez ou basicidade de uma solução aquosa.",
+                                vars: [
+                                    ["pH", "Potencial hidrogeniônico"],
+                                    ["pOH", "Potencial hidroxiliônico"],
+                                    ["[H⁺]", "Concentração de íons H⁺ (mol/L)"]
+                                ],
+                                example: "Solução com [H⁺] = 10⁻³ mol/L: pH = 3 (ácida). Água pura: pH = 7 (neutro)."
+                            }
+                        ]
+                    }
+                }
+            },
+            biologia: {
+                name: "Biologia",
+                icon: "🧬",
+                categories: {
+                    genetica: {
+                        name: "Genética",
+                        desc: "Estuda a hereditariedade e a variação dos organismos, com foco em genes e cromossomos.",
+                        formulas: [
+                            {
+                                name: "Proporção Mendeliana (Monoibridismo)",
+                                badge: "1ª Lei de Mendel",
+                                eq: "3 : 1 (fenótipo)  |  1 : 2 : 1 (genótipo)",
+                                desc: "No cruzamento de heterozigotos (Aa × Aa), a proporção fenotípica é 3 dominantes para 1 recessivo.",
+                                vars: [
+                                    ["3", "Indivíduos com fenótipo dominante"],
+                                    ["1", "Indivíduos com fenótipo recessivo"],
+                                    ["AA, Aa, aa", "Genótipos possíveis"]
+                                ],
+                                example: "Ervilhas Aa × Aa → 25% AA (amarela), 50% Aa (amarela), 25% aa (verde)."
+                            },
+                            {
+                                name: "Proporção Diibridismo",
+                                badge: "2ª Lei de Mendel",
+                                eq: "9 : 3 : 3 : 1",
+                                desc: "Proporção fenotípica no cruzamento de duplo-heterozigotos (AaBb × AaBb) para caracteres independentes.",
+                                vars: [
+                                    ["9", "Ambos dominantes (A_B_)"],
+                                    ["3", "Dominante A / recessivo b (A_bb)"],
+                                    ["3", "Recessivo a / dominante B (aaB_)"],
+                                    ["1", "Ambos recessivos (aabb)"]
+                                ],
+                                example: "AaBb × AaBb: 9 amarelas lisas, 3 amarelas rugosas, 3 verdes lisas, 1 verde rugosa."
+                            },
+                            {
+                                name: "Equilíbrio de Hardy-Weinberg",
+                                badge: "Genética Pop.",
+                                eq: "p² + 2pq + q² = 1",
+                                desc: "Descreve a frequência dos genótipos em uma população em equilíbrio genético.",
+                                vars: [
+                                    ["p²", "Frequência de homozigotos dominantes"],
+                                    ["2pq", "Frequência de heterozigotos"],
+                                    ["q²", "Frequência de homozigotos recessivos"],
+                                    ["p + q", "= 1 (frequências alélicas)"]
+                                ],
+                                example: "Se q² = 0,01 (recessivos), q = 0,1 e p = 0,9. Heterozigotos: 2·0,9·0,1 = 18%."
+                            }
+                        ]
+                    },
+                    ecologia: {
+                        name: "Ecologia",
+                        desc: "Estuda as relações entre os seres vivos e o ambiente em que vivem.",
+                        formulas: [
+                            {
+                                name: "Densidade Populacional",
+                                badge: "Populações",
+                                eq: "D = N / A",
+                                desc: "Número de indivíduos de uma espécie por unidade de área ou volume.",
+                                vars: [
+                                    ["D", "Densidade populacional"],
+                                    ["N", "Número de indivíduos"],
+                                    ["A", "Área ou volume ocupado"]
+                                ],
+                                example: "500 capivaras em um parque de 10 km²: D = 50 indivíduos/km²."
+                            },
+                            {
+                                name: "Taxa de Crescimento Populacional",
+                                badge: "Populações",
+                                eq: "TC = (N - M) + (I - E)",
+                                desc: "Variação do tamanho de uma população considerando nascimentos, mortes, imigração e emigração.",
+                                vars: [
+                                    ["TC", "Taxa de crescimento"],
+                                    ["N", "Nascimentos"],
+                                    ["M", "Mortes"],
+                                    ["I", "Imigrantes"],
+                                    ["E", "Emigrantes"]
+                                ],
+                                example: "Uma cidade com 1000 nascimentos, 400 mortes, 200 imigrantes e 100 emigrantes: TC = 700."
+                            },
+                            {
+                                name: "Eficiência Ecológica (Regra dos 10%)",
+                                badge: "Ecossistemas",
+                                eq: "E = (E₂ / E₁) · 100%",
+                                desc: "Apenas cerca de 10% da energia é transferida de um nível trófico para o próximo na cadeia alimentar.",
+                                vars: [
+                                    ["E", "Eficiência (%)"],
+                                    ["E₁", "Energia no nível anterior"],
+                                    ["E₂", "Energia transferida"]
+                                ],
+                                example: "Se produtores têm 10.000 kcal, herbívoros terão ≈1.000 kcal, carnívoros ≈100 kcal."
+                            }
+                        ]
+                    },
+                    citologia: {
+                        name: "Citologia",
+                        desc: "Estuda a célula, sua estrutura e funcionamento.",
+                        formulas: [
+                            {
+                                name: "Aumento do Microscópio",
+                                badge: "Microscopia",
+                                eq: "A total = A ocular × A objetiva",
+                                desc: "Aumento final observado no microscópio é o produto das lentes ocular e objetiva.",
+                                vars: [
+                                    ["A total", "Aumento total obtido"],
+                                    ["A ocular", "Aumento da lente ocular"],
+                                    ["A objetiva", "Aumento da lente objetiva"]
+                                ],
+                                example: "Ocular de 10× e objetiva de 40×: aumento total = 400×."
+                            },
+                            {
+                                name: "Divisão Celular (Mitose)",
+                                badge: "Divisão Celular",
+                                eq: "1 célula (2n) → 2 células (2n)",
+                                desc: "Uma célula-mãe origina duas células-filhas geneticamente idênticas, com o mesmo número de cromossomos.",
+                                vars: [
+                                    ["2n", "Célula diploide (46 cromossomos em humanos)"],
+                                    ["Fases", "Prófase, Metáfase, Anáfase, Telófase"]
+                                ],
+                                example: "Renovação de células da pele, cicatrização e crescimento dos tecidos."
+                            },
+                            {
+                                name: "Divisão Celular (Meiose)",
+                                badge: "Divisão Celular",
+                                eq: "1 célula (2n) → 4 células (n)",
+                                desc: "Uma célula-mãe origina quatro células-filhas com metade do número de cromossomos (gametas).",
+                                vars: [
+                                    ["2n", "Célula diploide"],
+                                    ["n", "Célula haploide (gameta)"]
+                                ],
+                                example: "Formação de espermatozoides e óvulos para reprodução sexuada."
+                            }
+                        ]
+                    },
+                    fisiologia: {
+                        name: "Fisiologia",
+                        desc: "Estuda o funcionamento dos órgãos e sistemas dos seres vivos.",
+                        formulas: [
+                            {
+                                name: "Índice de Massa Corporal (IMC)",
+                                badge: "Saúde",
+                                eq: "IMC = m / h²",
+                                desc: "Indicador da relação entre peso e altura, usado para avaliar sobrepeso e obesidade.",
+                                vars: [
+                                    ["IMC", "Índice (kg/m²)"],
+                                    ["m", "Massa corporal (kg)"],
+                                    ["h", "Altura (m)"]
+                                ],
+                                example: "Pessoa com 70 kg e 1,75 m: IMC = 70/(1,75)² ≈ 22,86 (peso normal)."
+                            },
+                            {
+                                name: "Débito Cardíaco",
+                                badge: "Cardiovascular",
+                                eq: "DC = VS · FC",
+                                desc: "Volume de sangue bombeado pelo coração por minuto.",
+                                vars: [
+                                    ["DC", "Débito cardíaco (mL/min)"],
+                                    ["VS", "Volume sistólico (mL/batida)"],
+                                    ["FC", "Frequência cardíaca (bpm)"]
+                                ],
+                                example: "VS = 70 mL, FC = 72 bpm: DC = 70·72 = 5.040 mL/min ≈ 5 L/min."
+                            },
+                            {
+                                name: "Fotossíntese (Equação Geral)",
+                                badge: "Botânica",
+                                eq: "6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂",
+                                desc: "Plantas convertem gás carbônico e água em glicose e oxigênio usando energia solar.",
+                                vars: [
+                                    ["CO₂", "Gás carbônico"],
+                                    ["H₂O", "Água"],
+                                    ["C₆H₁₂O₆", "Glicose (energia)"],
+                                    ["O₂", "Oxigênio liberado"]
+                                ],
+                                example: "Processo essencial para a manutenção da vida e produção de oxigênio na atmosfera."
+                            },
+                            {
+                                name: "Respiração Celular",
+                                badge: "Metabolismo",
+                                eq: "C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ATP",
+                                desc: "Células quebram glicose usando oxigênio para produzir energia (ATP).",
+                                vars: [
+                                    ["C₆H₁₂O₆", "Glicose"],
+                                    ["O₂", "Oxigênio"],
+                                    ["ATP", "Energia (≈ 38 moléculas)"]
+                                ],
+                                example: "Processo inverso da fotossíntese, ocorre nas mitocôndrias das células."
+                            }
+                        ]
+                    }
+                }
+            }
+        };
+
+        // =================== LÓGICA DA APLICAÇÃO ===================
+        let currentSubject = 'fisica';
+        let currentCategory = 'mecanica';
+        let searchTerm = '';
+
+        const subjectTabsEl = document.getElementById('subject-tabs');
+        const categoryListEl = document.getElementById('category-list');
+        const contentAreaEl = document.getElementById('content-area');
+        const searchEl = document.getElementById('search');
+        const sidebarEl = document.getElementById('sidebar');
+
+        // Renderiza as abas de matérias
+        function renderSubjectTabs() {
+            subjectTabsEl.innerHTML = '';
+            Object.keys(database).forEach(key => {
+                const subject = database[key];
+                const tab = document.createElement('button');
+                // Se estiver buscando, remove o destaque visual das abas
+                const isActive = (key === currentSubject && searchTerm === '');
+                tab.className = `subject-tab ${isActive ? 'active' : ''}`;
+                tab.innerHTML = `<span class="icon">${subject.icon}</span> ${subject.name}`;
+                tab.onclick = () => {
+                    searchTerm = '';
+                    searchEl.value = '';
+                    currentSubject = key;
+                    currentCategory = Object.keys(database[key].categories)[0];
+                    renderAll();
+                };
+                subjectTabsEl.appendChild(tab);
+            });
+        }
+
+        // Renderiza a sidebar de categorias
+        function renderCategories() {
+            categoryListEl.innerHTML = '';
+            
+            // Desativa visualmente a sidebar no modo busca
+            if (searchTerm !== '') {
+                sidebarEl.classList.add('disabled');
+                return;
+            } else {
+                sidebarEl.classList.remove('disabled');
+            }
+
+            const cats = database[currentSubject].categories;
+            Object.keys(cats).forEach(key => {
+                const cat = cats[key];
+                const li = document.createElement('li');
+                li.className = `category-item ${key === currentCategory ? 'active' : ''}`;
+                li.textContent = cat.name;
+                li.onclick = () => {
+                    currentCategory = key;
+                    renderCategories();
+                    renderContent();
+                };
+                categoryListEl.appendChild(li);
+            });
+        }
+
+        // Função geradora de HTML do Card de Fórmula
+        function generateFormulaHTML(f, breadcrumbText = null) {
+            return `
+                <div class="card formula-card">
+                    ${breadcrumbText ? `<div class="breadcrumb">${breadcrumbText}</div>` : ''}
+                    <div class="formula-header">
+                        <div class="formula-title">
+                            <h4>${f.name}</h4>
+                        </div>
+                        <span class="badge">${f.badge}</span>
+                    </div>
+                    <div class="formula-equation">${f.eq}</div>
+                    <p class="formula-desc">${f.desc}</p>
+                    <div class="variables">
+                        <div class="variables-title">Onde:</div>
+                        <div class="variables-list">
+                            ${f.vars.map(v => `<div class="var-item"><code>${v[0]}</code> ${v[1]}</div>`).join('')}
+                        </div>
+                    </div>
+                    <div class="example">
+                        <div class="example-title">💡 Exemplo prático</div>
+                        <div class="example-text">${f.example}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Renderiza o conteúdo principal (fórmulas)
+        function renderContent() {
+            let html = '';
+
+            // ================= PESQUISA GLOBAL =================
+            if (searchTerm.trim() !== '') {
+                const term = searchTerm.toLowerCase();
+                let foundFormulas = [];
+
+                // Varre TODAS as matérias, categorias e fórmulas
+                for (const subKey in database) {
+                    const subject = database[subKey];
+                    for (const catKey in subject.categories) {
+                        const category = subject.categories[catKey];
+                        for (const f of category.formulas) {
+                            if (
+                                f.name.toLowerCase().includes(term) ||
+                                f.eq.toLowerCase().includes(term) ||
+                                f.desc.toLowerCase().includes(term) ||
+                                f.badge.toLowerCase().includes(term) ||
+                                f.vars.some(v => v[0].toLowerCase().includes(term) || v[1].toLowerCase().includes(term))
+                            ) {
+                                foundFormulas.push({
+                                    ...f,
+                                    path: `${subject.icon} ${subject.name} &nbsp;>&nbsp; ${category.name}`
+                                });
+                            }
+                        }
+                    }
+                }
+
+                html += `
+                    <div class="category-header">
+                        <h2 class="search-results-title">Resultados da busca</h2>
+                        <p>Encontramos <b>${foundFormulas.length}</b> fórmula(s) para "${searchTerm}" em todo o acervo.</p>
+                    </div>
+                `;
+
+                if (foundFormulas.length === 0) {
+                    html += `
+                        <div class="card empty-state">
+                            <h3>Nenhuma fórmula encontrada</h3>
+                            <p>Tente ajustar sua busca com outros termos ou conceitos.</p>
+                        </div>
+                    `;
+                } else {
+                    foundFormulas.forEach(f => {
+                        html += generateFormulaHTML(f, f.path);
+                    });
+                }
+            } 
+            // ================= NAVEGAÇÃO NORMAL =================
+            else {
+                const cat = database[currentSubject].categories[currentCategory];
+                html += `
+                    <div class="category-header">
+                        <h2>${cat.name}</h2>
+                        <p>${cat.desc}</p>
+                    </div>
+                `;
+                
+                if (cat.formulas.length === 0) {
+                    html += `
+                        <div class="card empty-state">
+                            <h3>Categoria vazia</h3>
+                            <p>Em breve adicionaremos fórmulas aqui.</p>
+                        </div>
+                    `;
+                } else {
+                    cat.formulas.forEach(f => {
+                        html += generateFormulaHTML(f);
+                    });
+                }
+            }
+
+            contentAreaEl.innerHTML = html;
+        }
+
+        function renderAll() {
+            renderSubjectTabs();
+            renderCategories();
+            renderContent();
+        }
+
+        // Evento da busca
+        searchEl.addEventListener('input', (e) => {
+            searchTerm = e.target.value;
+            renderAll(); // Atualiza toda a tela (Abas, Sidebar, Fórmulas)
+        });
+
+        // Inicializa
+        renderAll();
+    </script>
+</body>
+</html>
+```

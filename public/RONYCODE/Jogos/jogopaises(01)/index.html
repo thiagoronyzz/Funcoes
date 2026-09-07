@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo das Bandeiras do Mundo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+        :root {
+            --bg-color: #f4f7fb;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --accent-blue: #2563eb;
+            --accent-blue-hover: #1d4ed8;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --danger: #ef4444;
+            --success: #22c55e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .header-text h3 {
+            color: var(--accent-blue);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-text h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-text p {
+            color: var(--text-light);
+            font-size: 1rem;
+            max-width: 600px;
+        }
+
+        .info-box {
+            background: var(--card-bg);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            min-width: 240px;
+        }
+
+        .info-box h4 {
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        #high-score-display {
+            font-weight: bold;
+            color: var(--accent-blue);
+            font-size: 1.3rem;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header {
+            font-size: 0.75rem;
+            color: var(--accent-blue);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, input[type="text"]:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-blue-hover);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+        }
+        
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .game-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 420px;
+            text-align: center;
+        }
+
+        .flag-container {
+            width: 100%;
+            max-width: 380px;
+            height: 230px;
+            margin-bottom: 1.5rem;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            display: none;
+            background: #f8fafc;
+        }
+
+        .flag-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .btn-option {
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 0.9rem 0.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-main);
+            font-size: 0.9rem;
+        }
+
+        .btn-option:hover {
+            border-color: var(--accent-blue);
+            background: #eff6ff;
+            color: var(--accent-blue);
+        }
+
+        .write-container {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+            color: var(--text-light);
+            display: none;
+        }
+
+        .stat-badge {
+            background: #f1f5f9;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            font-size: 0.85rem;
+        }
+
+        #message-area {
+            margin-top: 1.2rem;
+            font-weight: 700;
+            min-height: 24px;
+            font-size: 1rem;
+        }
+
+        .text-danger { color: var(--danger); }
+        .text-success { color: var(--success); }
+
+        @media (max-width: 768px) {
+            .main-content { grid-template-columns: 1fr; }
+            .header { flex-direction: column; gap: 1rem; }
+            .info-box { width: 100%; }
+            .options-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="header">
+        <div class="header-text">
+            <h3>Ferramenta Interativa de Estudo</h3>
+            <h1>Jogo dos Países</h1>
+            <p>Descubra a qual país pertence a bandeira. 195 países em ordem aleatória e sem repetições!</p>
+        </div>
+        <div class="info-box">
+            <h4>Recorde Máximo (Marcar)</h4>
+            <p><span id="high-score-display">0</span> acertos</p>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <aside class="card">
+            <div class="card-header">Entrada</div>
+            <h2 class="card-title">Configurações</h2>
+            
+            <div class="form-group">
+                <label for="game-mode">Modo de jogo</label>
+                <select id="game-mode">
+                    <option value="marcar">Múltipla Escolha (Marcar)</option>
+                    <option value="escrever">Digitação (Escrever)</option>
+                </select>
+            </div>
+
+            <div class="info-box" style="margin-bottom: 1.5rem; box-shadow: none; background: #f8fafc;">
+                <h4>Regras</h4>
+                <ul style="font-size: 0.75rem; color: var(--text-light); padding-left: 1rem; margin-top: 0.5rem; line-height: 1.6;">
+                    <li><strong>Marcar:</strong> Se errar, o jogo acaba e a pontuação é salva no recorde.</li>
+                    <li><strong>Escrever:</strong> Digite o nome (acentos e maiúsculas são ignorados).</li>
+                    <li>O cronômetro conta o tempo total da partida.</li>
+                </ul>
+            </div>
+
+            <button id="btn-start" class="btn-primary">Iniciar Jogo</button>
+        </aside>
+
+        <main class="card">
+            <div class="card-header">Visualização</div>
+            <h2 class="card-title" id="game-title">Área de Jogo</h2>
+
+            <div class="game-area">
+                <div class="game-stats" id="game-stats">
+                    <div class="stat-badge">Pontos: <span id="current-score">0</span> / <span id="total-countries">195</span></div>
+                    <div class="stat-badge">Tempo: <span id="timer">00:00</span></div>
+                </div>
+
+                <div class="flag-container" id="flag-container">
+                    <img id="flag-image" src="" alt="Bandeira">
+                </div>
+
+                <div class="options-grid" id="options-container" style="display: none;"></div>
+
+                <div class="write-container" id="write-container" style="display: none;">
+                    <input type="text" id="country-input" placeholder="Digite o nome do país..." autocomplete="off">
+                    <button id="btn-submit-write" class="btn-primary" style="width: auto;">Enviar</button>
+                </div>
+
+                <div id="message-area"></div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+    // Lista completa dos ~195 países reconhecidos (Código ISO2 e Nome em Português)
+    const countriesList = [
+        {n:"Afeganistão",c:"af"},{n:"África do Sul",c:"za"},{n:"Albânia",c:"al"},{n:"Alemanha",c:"de"},{n:"Andorra",c:"ad"},
+        {n:"Angola",c:"ao"},{n:"Antígua e Barbuda",c:"ag"},{n:"Arábia Saudita",c:"sa"},{n:"Argélia",c:"dz"},{n:"Argentina",c:"ar"},
+        {n:"Armênia",c:"am"},{n:"Austrália",c:"au"},{n:"Áustria",c:"at"},{n:"Azerbaijão",c:"az"},{n:"Bahamas",c:"bs"},
+        {n:"Bahrein",c:"bh"},{n:"Bangladesh",c:"bd"},{n:"Barbados",c:"bb"},{n:"Bélgica",c:"be"},{n:"Belize",c:"bz"},
+        {n:"Benim",c:"bj"},{n:"Bielorrússia",c:"by"},{n:"Bolívia",c:"bo"},{n:"Bósnia e Herzegovina",c:"ba"},{n:"Botsuana",c:"bw"},
+        {n:"Brasil",c:"br"},{n:"Brunei",c:"bn"},{n:"Bulgária",c:"bg"},{n:"Burkina Faso",c:"bf"},{n:"Burundi",c:"bi"},
+        {n:"Butão",c:"bt"},{n:"Cabo Verde",c:"cv"},{n:"Camarões",c:"cm"},{n:"Camboja",c:"kh"},{n:"Canadá",c:"ca"},
+        {n:"Catar",c:"qa"},{n:"Cazaquistão",c:"kz"},{n:"Chade",c:"td"},{n:"Chile",c:"cl"},{n:"China",c:"cn"},
+        {n:"Chipre",c:"cy"},{n:"Colômbia",c:"co"},{n:"Comores",c:"km"},{n:"Coreia do Norte",c:"kp"},{n:"Coreia do Sul",c:"kr"},
+        {n:"Costa do Marfim",c:"ci"},{n:"Costa Rica",c:"cr"},{n:"Croácia",c:"hr"},{n:"Cuba",c:"cu"},{n:"Dinamarca",c:"dk"},
+        {n:"Djibuti",c:"dj"},{n:"Dominica",c:"dm"},{n:"Egito",c:"eg"},{n:"El Salvador",c:"sv"},{n:"Emirados Árabes Unidos",c:"ae"},
+        {n:"Equador",c:"ec"},{n:"Eritreia",c:"er"},{n:"Eslováquia",c:"sk"},{n:"Eslovênia",c:"si"},{n:"Espanha",c:"es"},
+        {n:"Estados Unidos",c:"us"},{n:"Estônia",c:"ee"},{n:"Eswatini",c:"sz"},{n:"Etiópia",c:"et"},{n:"Fiji",c:"fj"},
+        {n:"Filipinas",c:"ph"},{n:"Finlândia",c:"fi"},{n:"França",c:"fr"},{n:"Gabão",c:"ga"},{n:"Gâmbia",c:"gm"},
+        {n:"Gana",c:"gh"},{n:"Geórgia",c:"ge"},{n:"Granada",c:"gd"},{n:"Grécia",c:"gr"},{n:"Guatemala",c:"gt"},
+        {n:"Guiana",c:"gy"},{n:"Guiné",c:"gn"},{n:"Guiné-Bissau",c:"gw"},{n:"Guiné Equatorial",c:"gq"},{n:"Haiti",c:"ht"},
+        {n:"Holanda",c:"nl"},{n:"Honduras",c:"hn"},{n:"Hungria",c:"hu"},{n:"Iêmen",c:"ye"},{n:"Ilhas Marshall",c:"mh"},
+        {n:"Ilhas Salomão",c:"sb"},{n:"Índia",c:"in"},{n:"Indonésia",c:"id"},{n:"Irã",c:"ir"},{n:"Iraque",c:"iq"},
+        {n:"Irlanda",c:"ie"},{n:"Islândia",c:"is"},{n:"Israel",c:"il"},{n:"Itália",c:"it"},{n:"Jamaica",c:"jm"},
+        {n:"Japão",c:"jp"},{n:"Jordânia",c:"jo"},{n:"Kuwait",c:"kw"},{n:"Laos",c:"la"},{n:"Lesoto",c:"ls"},
+        {n:"Letônia",c:"lv"},{n:"Líbano",c:"lb"},{n:"Libéria",c:"lr"},{n:"Líbia",c:"ly"},{n:"Liechtenstein",c:"li"},
+        {n:"Lituânia",c:"lt"},{n:"Luxemburgo",c:"lu"},{n:"Macedônia do Norte",c:"mk"},{n:"Madagascar",c:"mg"},{n:"Malásia",c:"my"},
+        {n:"Malaui",c:"mw"},{n:"Maldivas",c:"mv"},{n:"Mali",c:"ml"},{n:"Malta",c:"mt"},{n:"Marrocos",c:"ma"},
+        {n:"Maurício",c:"mu"},{n:"Mauritânia",c:"mr"},{n:"México",c:"mx"},{n:"Mianmar",c:"mm"},{n:"Micronésia",c:"fm"},
+        {n:"Moçambique",c:"mz"},{n:"Moldávia",c:"md"},{n:"Mônaco",c:"mc"},{n:"Mongólia",c:"mn"},{n:"Montenegro",c:"me"},
+        {n:"Namíbia",c:"na"},{n:"Nauru",c:"nr"},{n:"Nepal",c:"np"},{n:"Nicarágua",c:"ni"},{n:"Níger",c:"ne"},
+        {n:"Nigéria",c:"ng"},{n:"Noruega",c:"no"},{n:"Nova Zelândia",c:"nz"},{n:"Omã",c:"om"},{n:"Palau",c:"pw"},
+        {n:"Panamá",c:"pa"},{n:"Papua-Nova Guiné",c:"pg"},{n:"Paquistão",c:"pk"},{n:"Paraguai",c:"py"},{n:"Peru",c:"pe"},
+        {n:"Polônia",c:"pl"},{n:"Portugal",c:"pt"},{n:"Quênia",c:"ke"},{n:"Quirguistão",c:"kg"},{n:"Quiribati",c:"ki"},
+        {n:"Reino Unido",c:"gb"},{n:"República Centro-Africana",c:"cf"},{n:"República Tcheca",c:"cz"},{n:"República do Congo",c:"cg"},
+        {n:"República Democrática do Congo",c:"cd"},{n:"República Dominicana",c:"do"},{n:"Romênia",c:"ro"},{n:"Ruanda",c:"rw"},
+        {n:"Rússia",c:"ru"},{n:"Samoa",c:"ws"},{n:"San Marino",c:"sm"},{n:"Santa Lúcia",c:"lc"},{n:"São Cristóvão e Neves",c:"kn"},
+        {n:"São Tomé e Príncipe",c:"st"},{n:"São Vicente e Granadinas",c:"vc"},{n:"Seychelles",c:"sc"},{n:"Senegal",c:"sn"},
+        {n:"Serra Leoa",c:"sl"},{n:"Sérvia",c:"rs"},{n:"Singapura",c:"sg"},{n:"Síria",c:"sy"},{n:"Somália",c:"so"},
+        {n:"Sri Lanka",c:"lk"},{n:"Sudão",c:"sd"},{n:"Sudão do Sul",c:"ss"},{n:"Suécia",c:"se"},{n:"Suíça",c:"ch"},
+        {n:"Suriname",c:"sr"},{n:"Tailândia",c:"th"},{n:"Taiwan",c:"tw"},{n:"Tajiquistão",c:"tj"},{n:"Tanzânia",c:"tz"},
+        {n:"Timor-Leste",c:"tl"},{n:"Togo",c:"tg"},{n:"Tonga",c:"to"},{n:"Trinidad e Tobago",c:"tt"},{n:"Tunísia",c:"tn"},{n:"Turcomenistão",c:"tm"},
+        {n:"Turquia",c:"tr"},{n:"Tuvalu",c:"tv"},{n:"Ucrânia",c:"ua"},{n:"Uganda",c:"ug"},{n:"Uruguai",c:"uy"},
+        {n:"Uzbequistão",c:"uz"},{n:"Vanuatu",c:"vu"},{n:"Vaticano",c:"va"},{n:"Venezuela",c:"ve"},{n:"Vietnã",c:"vn"},
+        {n:"Zâmbia",c:"zm"},{n:"Zimbábue",c:"zw"}
+    ];
+
+    // Variáveis do Estado do Jogo
+    let gameDeck = [];
+    let currentCountry = null;
+    let score = 0;
+    let highScore = localStorage.getItem('flagsHighScore') || 0;
+    let timerInterval = null;
+    let timeElapsed = 0;
+    let isPlaying = false;
+    let currentMode = 'marcar';
+
+    // Elementos do DOM
+    const btnStart = document.getElementById('btn-start');
+    const modeSelect = document.getElementById('game-mode');
+    const flagContainer = document.getElementById('flag-container');
+    const flagImage = document.getElementById('flag-image');
+    const optionsContainer = document.getElementById('options-container');
+    const writeContainer = document.getElementById('write-container');
+    const countryInput = document.getElementById('country-input');
+    const btnSubmitWrite = document.getElementById('btn-submit-write');
+    const gameStats = document.getElementById('game-stats');
+    const scoreDisplay = document.getElementById('current-score');
+    const timerDisplay = document.getElementById('timer');
+    const highScoreDisplay = document.getElementById('high-score-display');
+    const messageArea = document.getElementById('message-area');
+    const totalCountriesDisplay = document.getElementById('total-countries');
+
+    // Inicialização
+    highScoreDisplay.textContent = highScore;
+    totalCountriesDisplay.textContent = countriesList.length;
+
+    // Normalizador de texto para aceitar digitação sem acento/maiúscula
+    function normalize(str) {
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+    }
+
+    // Função de Embaralhar (Fisher-Yates)
+    function shuffle(array) {
+        let m = array.length, t, i;
+        while (m) {
+            i = Math.floor(Math.random() * m--);
+            t = array[m];
+            array[m] = array[i];
+            array[i] = t;
+        }
+        return array;
+    }
+
+    // Timer
+    function updateTimer() {
+        timeElapsed++;
+        const mins = String(Math.floor(timeElapsed / 60)).padStart(2, '0');
+        const secs = String(timeElapsed % 60).padStart(2, '0');
+        timerDisplay.textContent = `${mins}:${secs}`;
+    }
+
+    // Iniciar/Parar
+    btnStart.addEventListener('click', () => {
+        if (isPlaying) {
+            endGame("Jogo cancelado pelo jogador.");
+        } else {
+            startGame();
+        }
+    });
+
+    function startGame() {
+        isPlaying = true;
+        score = 0;
+        timeElapsed = 0;
+        currentMode = modeSelect.value;
+        
+        // Clona e embaralha todos os países (ordem aleatória, sem repetição)
+        gameDeck = shuffle([...countriesList]);
+
+        scoreDisplay.textContent = score;
+        timerDisplay.textContent = "00:00";
+        messageArea.textContent = "";
+
+        btnStart.textContent = "Parar Jogo";
+        btnStart.classList.add('btn-danger');
+        modeSelect.disabled = true;
+
+        gameStats.style.display = 'flex';
+        flagContainer.style.display = 'block';
+
+        if (currentMode === 'marcar') {
+            optionsContainer.style.display = 'grid';
+            writeContainer.style.display = 'none';
+        } else {
+            optionsContainer.style.display = 'none';
+            writeContainer.style.display = 'flex';
+        }
+
+        clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+
+        nextQuestion();
+    }
+
+    function nextQuestion() {
+        if (gameDeck.length === 0) {
+            endGame("Parabéns! Você acertou TODOS os países do mundo!", true);
+            return;
+        }
+
+        // Retira o próximo país da fila
+        currentCountry = gameDeck.pop();
+        
+        // Carrega a bandeira via CDN FlagCDN
+        flagImage.src = `https://flagcdn.com/w320/${currentCountry.c}.png`;
+
+        if (currentMode === 'marcar') {
+            renderOptions(currentCountry);
+        } else {
+            countryInput.value = "";
+            countryInput.focus();
+        }
+    }
+
+    function renderOptions(correct) {
+        optionsContainer.innerHTML = "";
+        let options = [correct];
+
+        // Escolhe 3 opções erradas aleatórias
+        while (options.length < 4) {
+            let randomC = countriesList[Math.floor(Math.random() * countriesList.length)];
+            if (!options.find(item => item.c === randomC.c)) {
+                options.push(randomC);
+            }
+        }
+
+        // Embaralha as 4 alternativas
+        options = shuffle(options);
+
+        options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-option';
+            btn.textContent = opt.n;
+            btn.onclick = () => handleMarcar(opt.n);
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    function handleMarcar(selectedName) {
+        if (!isPlaying) return;
+
+        if (selectedName === currentCountry.n) {
+            score++;
+            scoreDisplay.textContent = score;
+            messageArea.className = 'text-success';
+            messageArea.textContent = "Correto!";
+            setTimeout(() => {
+                if (isPlaying) {
+                    messageArea.textContent = "";
+                    nextQuestion();
+                }
+            }, 600);
+        } else {
+            endGame(`Errado! Era "${currentCountry.n}". Você perdeu!`);
+        }
+    }
+
+    function handleEscrever() {
+        if (!isPlaying) return;
+
+        const val = normalize(countryInput.value);
+        const correctVal = normalize(currentCountry.n);
+
+        if (val === correctVal) {
+            score++;
+            scoreDisplay.textContent = score;
+            messageArea.className = 'text-success';
+            messageArea.textContent = "Correto!";
+            setTimeout(() => {
+                if (isPlaying) {
+                    messageArea.textContent = "";
+                    nextQuestion();
+                }
+            }, 600);
+        } else {
+            endGame(`Errado! O país correto era "${currentCountry.n}".`);
+        }
+    }
+
+    btnSubmitWrite.addEventListener('click', handleEscrever);
+    countryInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleEscrever();
+    });
+
+    function endGame(msg, isWin = false) {
+        isPlaying = false;
+        clearInterval(timerInterval);
+
+        btnStart.textContent = "Iniciar Jogo";
+        btnStart.classList.remove('btn-danger');
+        modeSelect.disabled = false;
+
+        optionsContainer.style.display = 'none';
+        writeContainer.style.display = 'none';
+
+        messageArea.className = isWin ? 'text-success' : 'text-danger';
+        messageArea.textContent = msg;
+
+        // Atualiza recorde se for no modo marcar
+        if (currentMode === 'marcar' && score > highScore) {
+            highScore = score;
+            localStorage.setItem('flagsHighScore', highScore);
+            highScoreDisplay.textContent = highScore;
+            messageArea.textContent += ` Novo Recorde: ${highScore} acertos!`;
+        }
+    }
+</script>
+
+</body>
+</html>

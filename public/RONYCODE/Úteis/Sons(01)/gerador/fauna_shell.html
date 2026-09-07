@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Fauna Sonora: catálogo interativo com o canto real de aves, mamíferos, bichos marinhos, anfíbios, répteis e insetos. Áudios e fotos reais hospedados no Wikimedia Commons." />
+<title>Fauna Sonora — o canto real dos animais</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-soft: #f8fafc;
+  --text: #172033;
+  --muted: #64748b;
+  --line: #dbe3ef;
+  --primary: #1d4ed8;
+  --primary-strong: #1e40af;
+  --primary-soft: #dbeafe;
+  --accent: #0f766e;
+  --warning-bg: #fff7ed;
+  --warning-border: #fed7aa;
+  --warning-text: #9a3412;
+  --shadow: 0 18px 45px rgba(15, 23, 42, 0.09);
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding-bottom: 128px;
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.14), transparent 34rem),
+    radial-gradient(circle at top right, rgba(15, 118, 110, 0.10), transparent 30rem),
+    linear-gradient(180deg, #eef4ff 0%, var(--bg) 22rem);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+button, input, select { font: inherit; }
+a { color: var(--primary-strong); }
+
+.hero {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 3rem 0 1.2rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 1.4rem;
+  align-items: end;
+}
+.eyebrow {
+  margin: 0 0 0.45rem;
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 0.76rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+h1, h2, h3, p { margin-top: 0; }
+h1 { margin-bottom: 0.7rem; font-size: clamp(2.4rem, 6vw, 4.8rem); line-height: 0.9; letter-spacing: -0.06em; }
+h2 { margin-bottom: 0; font-size: clamp(1.25rem, 2vw, 1.6rem); line-height: 1.12; letter-spacing: -0.03em; }
+h3 { margin-bottom: 0.55rem; font-size: 1rem; }
+.hero__subtitle { max-width: 780px; margin-bottom: 0; color: var(--muted); font-size: clamp(1rem, 2vw, 1.18rem); }
+.hero__card {
+  padding: 1.15rem;
+  border: 1px solid rgba(29, 78, 216, 0.18);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+}
+.hero__card strong, .hero__card span { display: block; }
+.hero__card strong { margin-bottom: 0.35rem; color: var(--primary-strong); }
+.hero__card span { color: var(--muted); font-size: 0.95rem; }
+
+.app-shell {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto 2rem;
+  display: grid;
+  grid-template-columns: minmax(285px, 360px) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+.panel {
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+.controls-panel, .study-panel, .catalog-panel { padding: 1.2rem; }
+.controls-panel { position: sticky; top: 1rem; }
+.catalog-panel { min-width: 0; }
+.study-panel { grid-column: 1 / -1; }
+.section-heading { margin-bottom: 1rem; }
+.catalog-heading { display: flex; gap: 0.85rem; align-items: start; justify-content: space-between; flex-wrap: wrap; }
+.formula-badge {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+  font-weight: 800;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.field { display: grid; gap: 0.4rem; margin-bottom: 0.8rem; }
+.field > span { color: #334155; font-weight: 750; font-size: 0.92rem; }
+.field small { color: var(--muted); font-size: 0.78rem; }
+input, select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--text);
+  outline: none;
+  min-height: 2.65rem;
+  padding: 0.65rem 0.75rem;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.13); }
+input[type=range] { padding: 0; min-height: 0; height: 1.6rem; accent-color: var(--primary); }
+
+.chip-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.9rem; }
+.chip {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--primary-strong);
+  font-size: 0.84rem;
+  font-weight: 750;
+  padding: 0.34rem 0.62rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+.chip:hover { transform: translateY(-1px); background: #eff6ff; }
+.chip[aria-pressed=true] { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 8px 18px rgba(29, 78, 216, 0.22); }
+.chip b { font-weight: 800; opacity: 0.72; margin-left: 0.25rem; }
+
+.switch { display: flex; align-items: center; gap: 0.55rem; margin-bottom: 0.55rem; font-size: 0.92rem; color: #334155; font-weight: 700; cursor: pointer; }
+.switch input { width: auto; min-height: 0; padding: 0; accent-color: var(--accent); transform: scale(1.2); }
+
+.warning {
+  margin: 0.3rem 0 0.9rem;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid var(--warning-border);
+  border-radius: var(--radius-sm);
+  background: var(--warning-bg);
+  color: var(--warning-text);
+  font-size: 0.9rem;
+}
+.ok-box {
+  margin: 0.3rem 0 0.9rem;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid #a7f3d0;
+  border-radius: var(--radius-sm);
+  background: #ecfdf5;
+  color: #065f46;
+  font-size: 0.9rem;
+}
+.action-row { display: flex; gap: 0.65rem; flex-wrap: wrap; margin-top: 0.4rem; }
+.button {
+  min-height: 2.55rem;
+  padding: 0.65rem 0.95rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(29, 78, 216, 0.2);
+  transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+.button:hover { background: var(--primary-strong); transform: translateY(-1px); }
+.button--ghost { border: 1px solid var(--line); background: #fff; color: var(--primary-strong); box-shadow: none; }
+.button--ghost:hover { background: #eff6ff; }
+.button--accent { background: var(--accent); box-shadow: 0 10px 22px rgba(15, 118, 110, 0.2); }
+.button--accent:hover { background: #115e59; }
+.button:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+.helper-card {
+  margin-top: 1rem;
+  padding: 0.95rem;
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+}
+.helper-card ul { margin: 0; padding-left: 1.15rem; color: var(--muted); font-size: 0.88rem; }
+.helper-card li + li { margin-top: 0.35rem; }
+.formats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; margin-top: 0.55rem; }
+.fmt { border: 1px solid var(--line); border-radius: 10px; padding: 0.4rem 0.3rem; text-align: center; font-size: 0.76rem; font-weight: 800; background: #fff; }
+.fmt[data-ok="1"] { border-color: #86efac; background: #f0fdf4; color: #166534; }
+.fmt[data-ok="0"] { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
+
+/* ------------------------------------------------------------- catálogo -- */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(196px, 1fr)); gap: 0.85rem; }
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+  overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.card:hover { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(15, 23, 42, 0.13); }
+.card[data-playing="1"] { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.18), 0 16px 34px rgba(15, 118, 110, 0.16); }
+.card__media { position: relative; aspect-ratio: 4 / 3; background: linear-gradient(135deg, #e2e8f0, #f1f5f9); }
+.card__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.card__media.noimg img { opacity: 0; }
+.card__ph {
+  position: absolute; inset: 0; display: none; place-items: center;
+  font-weight: 900; font-size: 1.9rem; color: #94a3b8;
+  background: repeating-linear-gradient(135deg, #eef2ff 0 10px, #e8eefc 10px 20px);
+}
+.card__media.noimg .card__ph { display: grid; }
+.play {
+  position: absolute; left: 0.55rem; bottom: 0.55rem;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  border: 0; border-radius: 999px; padding: 0.45rem 0.78rem 0.45rem 0.62rem;
+  background: rgba(255, 255, 255, 0.94); color: var(--primary-strong);
+  font-weight: 900; font-size: 0.84rem; cursor: pointer;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.22);
+  backdrop-filter: blur(6px);
+}
+.play:hover { background: #fff; transform: translateY(-1px); }
+.play svg { width: 15px; height: 15px; }
+.badge {
+  position: absolute; right: 0.5rem; top: 0.5rem;
+  padding: 0.22rem 0.46rem; border-radius: 999px;
+  background: rgba(23, 32, 51, 0.72); color: #fff;
+  font-size: 0.7rem; font-weight: 800; letter-spacing: 0.02em;
+  backdrop-filter: blur(4px);
+}
+.badge--warn { background: #b45309; }
+.badge--ok { background: #047857; }
+.card__body { padding: 0.7rem 0.75rem 0.8rem; }
+.card__name { margin: 0 0 0.1rem; font-weight: 800; font-size: 0.98rem; letter-spacing: -0.01em; }
+.card__sci { margin: 0 0 0.5rem; color: var(--muted); font-size: 0.78rem; font-style: italic; }
+.tags { display: flex; flex-wrap: wrap; gap: 0.28rem; }
+.tag { border: 1px solid var(--line); border-radius: 8px; background: #fff; color: #475569; font-size: 0.7rem; font-weight: 750; padding: 0.15rem 0.38rem; }
+.tag--som { color: var(--primary-strong); border-color: #bfdbfe; background: #eff6ff; }
+.eq { display: none; position: absolute; right: 0.55rem; bottom: 0.55rem; gap: 2px; align-items: flex-end; height: 20px; }
+.card[data-playing="1"] .eq { display: flex; }
+.eq i { width: 3px; background: var(--accent); border-radius: 2px; height: 40%; animation: eq 0.9s ease-in-out infinite; }
+.eq i:nth-child(2) { animation-duration: 0.7s; }
+.eq i:nth-child(3) { animation-duration: 1.1s; }
+.eq i:nth-child(4) { animation-duration: 0.55s; }
+@keyframes eq { 0%, 100% { height: 25%; } 50% { height: 100%; } }
+
+/* ------------------------------------------------------------- player --- */
+.player {
+  position: fixed; left: 50%; transform: translateX(-50%) translateY(140%);
+  bottom: 0.8rem; width: min(1180px, calc(100% - 1.4rem));
+  display: flex; align-items: center; gap: 0.85rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(15, 118, 110, 0.3);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.93);
+  box-shadow: 0 22px 50px rgba(15, 23, 42, 0.22);
+  backdrop-filter: blur(20px);
+  z-index: 40;
+  transition: transform 0.3s cubic-bezier(.2,.8,.2,1);
+}
+.player[data-open="1"] { transform: translateX(-50%) translateY(0); }
+.player__art { width: 54px; height: 54px; border-radius: 14px; object-fit: cover; background: #e2e8f0; flex: 0 0 auto; }
+.player__meta { min-width: 0; flex: 0 0 auto; width: 210px; }
+.player__meta strong { display: block; font-size: 0.95rem; }
+.player__meta span { display: block; color: var(--muted); font-size: 0.76rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player__mid { flex: 1 1 auto; min-width: 110px; }
+.seek { position: relative; height: 8px; border-radius: 999px; background: #e2e8f0; cursor: pointer; overflow: hidden; }
+.seek__fill { position: absolute; inset: 0 auto 0 0; width: 0%; border-radius: 999px; background: linear-gradient(90deg, var(--primary), var(--accent)); }
+.times { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.72rem; font-weight: 700; margin-top: 0.25rem; }
+.player__ctrl { display: flex; align-items: center; gap: 0.35rem; flex: 0 0 auto; }
+.iconbtn {
+  width: 38px; height: 38px; display: grid; place-items: center;
+  border: 1px solid var(--line); border-radius: 50%; background: #fff; color: var(--primary-strong);
+  cursor: pointer; transition: transform 0.15s ease, background 0.15s ease;
+}
+.iconbtn:hover { background: #eff6ff; transform: translateY(-1px); }
+.iconbtn--main { width: 44px; height: 44px; border: 0; background: var(--primary); color: #fff; box-shadow: 0 10px 22px rgba(29, 78, 216, 0.26); }
+.iconbtn--main:hover { background: var(--primary-strong); }
+.iconbtn svg { width: 17px; height: 17px; }
+.iconbtn[data-on="1"] { border-color: var(--accent); color: var(--accent); background: #f0fdfa; }
+
+/* ------------------------------------------------------------- ficha ---- */
+.study-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.85rem; }
+.study-card { min-height: 108px; padding: 0.95rem; border: 1px solid var(--line); border-radius: var(--radius-md); background: linear-gradient(180deg, #fff 0%, #f8fafc 100%); }
+.study-card__label { margin-bottom: 0.35rem; color: var(--muted); font-size: 0.76rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
+.study-card__value { font-weight: 650; word-break: break-word; }
+.ficha-head { display: flex; align-items: center; justify-content: space-between; gap: 0.85rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+.ficha-title { display: flex; align-items: center; gap: 0.7rem; }
+.ficha-title img { width: 46px; height: 46px; border-radius: 12px; object-fit: cover; background: #e2e8f0; }
+.ficha-title h2 { font-size: 1.35rem; }
+.ficha-title p { margin: 0; color: var(--muted); font-size: 0.85rem; font-style: italic; }
+.src-note { margin: 0.9rem 0 0; color: var(--muted); font-size: 0.84rem; }
+
+.footer { width: min(1180px, calc(100% - 2rem)); margin: 0 auto 2.5rem; color: var(--muted); text-align: center; font-size: 0.9rem; }
+.footer p { margin: 0.2rem 0; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+@media (max-width: 980px) {
+  .hero, .app-shell { grid-template-columns: 1fr; }
+  .controls-panel { position: static; }
+  .study-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .hero, .app-shell, .footer { width: min(100% - 1rem, 1180px); }
+  .hero { padding-top: 1.35rem; }
+  .panel, .hero__card { border-radius: 18px; }
+  .study-grid, .formats { grid-template-columns: 1fr; }
+  .formats { grid-template-columns: repeat(2, 1fr); }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .player { align-items: flex-start; flex-wrap: wrap; border-radius: 16px; }
+  .player__meta { width: calc(100% - 70px); }
+  .player__mid { order: 3; width: 100%; flex-basis: 100%; }
+  .player__ctrl { order: 2; margin-left: auto; }
+  body { padding-bottom: 190px; }
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div>
+    <p class="eyebrow">Catálogo interativo de bioacústica</p>
+    <h1>Fauna Sonora</h1>
+    <p class="hero__subtitle">
+      O canto, o rugido, o uivo e o zumbido reais de __COUNT__ animais. Nada é sintetizado: cada áudio é
+      uma gravação de campo hospedada no Wikimedia Commons, com foto verdadeira do bicho e a ficha técnica da vocalização.
+    </p>
+  </div>
+  <aside class="hero__card" aria-label="Dica de uso">
+    <strong>Use fones ou caixinha</strong>
+    <span>Gravações de campo têm volumes diferentes: comece baixo. Nada é baixado até você dar play. Os 29 registros em OGG tocam em Chrome, Firefox, Edge e Safari 17.4 ou mais novo.</span>
+  </aside>
+</header>
+
+<main class="app-shell">
+  <section class="panel controls-panel" aria-labelledby="controls-title">
+    <div class="section-heading">
+      <p class="eyebrow">Explorar</p>
+      <h2 id="controls-title">Busca e filtros</h2>
+    </div>
+
+    <label class="field" for="q">
+      <span>Procurar bicho</span>
+      <input id="q" type="search" placeholder="sabiá, coruja, onça, sapo…" autocomplete="off" />
+    </label>
+
+    <div class="field">
+      <span>Grupos</span>
+      <div class="chip-row" id="chips"></div>
+    </div>
+
+    <label class="field" for="sort">
+      <span>Ordenar por</span>
+      <select id="sort">
+        <option value="az">Nome (A–Z)</option>
+        <option value="za">Nome (Z–A)</option>
+        <option value="dur-desc">Canto mais longo</option>
+        <option value="dur-asc">Canto mais curto</option>
+        <option value="group">Grupo</option>
+      </select>
+    </label>
+
+    <label class="field" for="vol">
+      <span>Volume — <b id="volLabel">80%</b></span>
+      <input id="vol" type="range" min="0" max="100" value="80" />
+    </label>
+
+    <div class="field">
+      <span>Modo de audição</span>
+      <label class="switch"><input type="checkbox" id="autoNext" checked /> encadear o próximo da lista</label>
+      <label class="switch"><input type="checkbox" id="loop" /> repetir o mesmo áudio</label>
+      <label class="switch"><input type="checkbox" id="safeVol" checked /> partir 20% mais baixo em gravações sem compressão</label>
+    </div>
+
+    <div class="action-row">
+      <button class="button button--accent" id="playAll" type="button">Tocar a lista</button>
+      <button class="button button--ghost" id="stop" type="button">Parar</button>
+      <button class="button button--ghost" id="check" type="button">Testar os __COUNT__ áudios</button>
+    </div>
+
+    <div id="checkBox" class="ok-box" hidden></div>
+    <div id="warnBox" class="warning" role="status" aria-live="polite" hidden></div>
+
+    <div class="helper-card">
+      <h3>Compatibilidade do seu navegador</h3>
+      <p style="margin:0;color:var(--muted);font-size:0.85rem">
+        Os registros chegam em 4 formatos. Se algum estiver indisponível aqui, os cards do tipo correspondente
+        mostram um aviso antes de você clicar.
+      </p>
+      <div class="formats" id="formats"></div>
+    </div>
+
+    <div class="helper-card">
+      <h3>De onde vem o som</h3>
+      <ul>
+        <li>Passarinhos e aves: acervos do <b>Xeno-canto</b> publicados no Commons.</li>
+        <li>Mamíferos, anfíbios, insetos: registros de campo, zoológicos e arquivos da <b>Macaulay Library / Yle / PLoS</b>.</li>
+        <li>Fotos: Wikimedia Commons (domínio público ou CC BY / CC BY-SA).</li>
+        <li>O áudio só é requisitado quando você aperta o play (<code>preload="none"</code>).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="panel catalog-panel" aria-labelledby="catalog-title">
+    <div class="section-heading catalog-heading">
+      <div>
+        <p class="eyebrow">Coleção</p>
+        <h2 id="catalog-title">Catálogo de vozes animais</h2>
+      </div>
+      <span id="countBadge" class="formula-badge" aria-live="polite"></span>
+    </div>
+    <div class="grid" id="grid"></div>
+    <p class="src-note">
+      Clique no play de qualquer card para ouvir. A ficha técnica embaixo muda junto com o animal escolhido.
+    </p>
+  </section>
+
+  <section class="panel study-panel" aria-labelledby="study-title">
+    <div class="section-heading">
+      <p class="eyebrow">Ficha técnica</p>
+      <h2 id="study-title">Sobre a vocalização</h2>
+    </div>
+    <div class="ficha-head" id="fichaHead"></div>
+    <div id="studyCards" class="study-grid"></div>
+    <p class="src-note" id="srcNote"></p>
+  </section>
+</main>
+
+<footer class="footer">
+  <p>Fauna Sonora — HTML, CSS e JavaScript puros em arquivo único, sem bibliotecas externas.</p>
+  <p>Áudios e imagens: Wikimedia Commons (licenças CC / domínio público). Nenhum som foi gerado por IA.</p>
+  <p>Mesmo modelo visual de <a href="index.html">Funções — Visualizador Matemático</a>.</p>
+</footer>
+
+<div class="player" id="player" data-open="0" role="region" aria-label="Reprodutor de áudio">
+  <img class="player__art" id="pArt" alt="" />
+  <div class="player__meta">
+    <strong id="pName">—</strong>
+    <span id="pSci">—</span>
+  </div>
+  <div class="player__mid">
+    <div class="seek" id="seek" role="slider" tabindex="0" aria-label="Progresso do áudio" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="seek__fill" id="seekFill"></div>
+    </div>
+    <div class="times"><span id="tCur">0:00</span><span id="tDur">0:00</span></div>
+  </div>
+  <div class="player__ctrl">
+    <button class="iconbtn" id="btnPrev" type="button" title="Anterior (seta ←)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg></button>
+    <button class="iconbtn iconbtn--main" id="btnPlay" type="button" title="Play/pause (espaço)"><svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+    <button class="iconbtn" id="btnNext" type="button" title="Próximo (seta →)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg></button>
+    <button class="iconbtn" id="btnMute" type="button" title="Silenciar (m)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 9v6h4l5 4V5L8 9zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg></button>
+    <button class="iconbtn" id="btnClose" type="button" title="Fechar player"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m19 6.4-1.4-1.4-5.6 5.6-5.6-5.6L5 6.4 10.6 12 5 17.6l1.4 1.4 5.6-5.6 5.6 5.6 1.4-1.4L13.4 12z"/></svg></button>
+  </div>
+</div>
+
+<audio id="audio" preload="none"></audio>
+
+<script>
+__DATA__
+
+(() => {
+  'use strict';
+
+  const CDN = 'https://upload.wikimedia.org/wikipedia/commons/';
+  const DESC = 'https://commons.wikimedia.org/wiki/File:';
+  const enc = (name) => encodeURIComponent(name.replace(/ /g, '_'));
+  const audioUrl = (a) => CDN + a.p + '/' + enc(a.g);
+  const imgUrl = (a, w) => CDN + 'thumb/' + a.ip + '/' + enc(a.i) + '/' + w + 'px-' + enc(a.i);
+  const imgOrig = (a) => CDN + a.ip + '/' + enc(a.i);
+  // se o thumbnail falhar, tenta o arquivo original; se falhar de novo, mostra o placeholder
+  const imgChain = (a, w) => [imgUrl(a, w), imgOrig(a)];
+  const fmtOf = (name) => { const f = (name.split('.').pop() || '').toLowerCase(); return f === 'oga' ? 'ogg' : f; };
+  const mmss = (s) => { if (!isFinite(s) || s < 0) return '0:00'; s = Math.round(s); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+  const norm = (t) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  // ------------------------------------------------------ compatibilidade --
+  const probe = document.createElement('audio');
+  const FORMATS = {
+    mp3: ['audio/mpeg', 'MP3'],
+    ogg: ['audio/ogg; codecs="vorbis"', 'OGG'],
+    wav: ['audio/wav', 'WAV'],
+    flac: ['audio/flac', 'FLAC']
+  };
+  const SUPPORT = {};
+  Object.entries(FORMATS).forEach(([k, [mime, label]]) => {
+    let r = '';
+    try { r = probe.canPlayType(mime) || (k === 'wav' ? 'probably' : r); } catch (e) { r = ''; }
+    SUPPORT[k] = r !== '';
+    if (!SUPPORT[k] && k === 'flac') SUPPORT[k] = probe.canPlayType('audio/x-flac') !== '';
+  });
+
+  const els = {
+    q: document.getElementById('q'),
+    chips: document.getElementById('chips'),
+    sort: document.getElementById('sort'),
+    grid: document.getElementById('grid'),
+    badge: document.getElementById('countBadge'),
+    audio: document.getElementById('audio'),
+    player: document.getElementById('player'),
+    pArt: document.getElementById('pArt'),
+    pName: document.getElementById('pName'),
+    pSci: document.getElementById('pSci'),
+    seek: document.getElementById('seek'),
+    seekFill: document.getElementById('seekFill'),
+    tCur: document.getElementById('tCur'),
+    tDur: document.getElementById('tDur'),
+    btnPlay: document.getElementById('btnPlay'),
+    playIcon: document.getElementById('playIcon'),
+    btnPrev: document.getElementById('btnPrev'),
+    btnNext: document.getElementById('btnNext'),
+    btnMute: document.getElementById('btnMute'),
+    btnClose: document.getElementById('btnClose'),
+    vol: document.getElementById('vol'),
+    volLabel: document.getElementById('volLabel'),
+    autoNext: document.getElementById('autoNext'),
+    loop: document.getElementById('loop'),
+    safeVol: document.getElementById('safeVol'),
+    playAll: document.getElementById('playAll'),
+    stop: document.getElementById('stop'),
+    check: document.getElementById('check'),
+    checkBox: document.getElementById('checkBox'),
+    warn: document.getElementById('warnBox'),
+    formats: document.getElementById('formats'),
+    fichaHead: document.getElementById('fichaHead'),
+    studyCards: document.getElementById('studyCards'),
+    srcNote: document.getElementById('srcNote')
+  };
+
+  const state = { group: 'todos', text: '', sort: 'az', current: -1, list: [], checking: false, watchdog: 0 };
+  const VERIFY = new Map();
+
+  DATA.forEach((a, i) => { a.id = i; a.fmt = fmtOf(a.g); });
+
+  // --------------------------------------------------------------- filtros --
+  const GROUPS = { todos: 'Todos', ...GROUP_LABELS };
+  const counts = { todos: DATA.length };
+  Object.keys(GROUP_LABELS).forEach((g) => { counts[g] = DATA.filter((a) => a.c === g).length; });
+
+  els.chips.innerHTML = Object.entries(GROUPS).map(([g, label]) =>
+    `<button class="chip" type="button" data-group="${g}" aria-pressed="${g === 'todos' ? 'true' : 'false'}">${esc(label)}<b>${counts[g] || 0}</b></button>`
+  ).join('');
+
+  els.formats.innerHTML = Object.entries(FORMATS).map(([k, [, label]]) =>
+    `<div class="fmt" data-ok="${SUPPORT[k] ? 1 : 0}">${label}<br>${SUPPORT[k] ? 'ok' : 'sem suporte'}</div>`
+  ).join('');
+
+  function applyFilters() {
+    const t = norm(state.text.trim());
+    let list = DATA.filter((a) => {
+      if (state.group !== 'todos' && a.c !== state.group) return false;
+      if (!t) return true;
+      return norm(a.n + ' ' + a.s + ' ' + a.t + ' ' + (GROUP_LABELS[a.c] || '')).includes(t);
+    });
+    const by = {
+      az: (x, y) => x.n.localeCompare(y.n, 'pt-BR'),
+      za: (x, y) => y.n.localeCompare(x.n, 'pt-BR'),
+      'dur-desc': (x, y) => y.d - x.d,
+      'dur-asc': (x, y) => x.d - y.d,
+      group: (x, y) => (x.c.localeCompare(y.c) || x.n.localeCompare(y.n, 'pt-BR'))
+    }[state.sort];
+    state.list = list.slice().sort(by);
+    render();
+  }
+
+  function render() {
+    els.grid.innerHTML = state.list.map((a) => {
+      const v = VERIFY.get(a.id);
+      const bad = !SUPPORT[a.fmt];
+      const badge = bad ? '<span class="badge badge--warn" title="formato não suportado neste navegador">' + a.fmt + '</span>'
+        : v === 'ok' ? '<span class="badge badge--ok" title="arquivo respondeu ok">✓ ' + a.fmt + '</span>'
+        : v === 'fail' ? '<span class="badge badge--warn" title="não foi possível confirmar">? ' + a.fmt + '</span>'
+        : '<span class="badge">' + a.fmt + '</span>';
+      return `<article class="card" data-playing="0" data-id="${a.id}">
+        <div class="card__media" data-img>
+          <img src="${imgUrl(a, 480)}" data-alt="${imgOrig(a)}" alt="${esc(a.n)}" loading="lazy" decoding="async" />
+          <div class="card__ph">${esc(a.n[0])}</div>
+          ${badge}
+          <button class="play" type="button" data-play="${a.id}" aria-label="Tocar o som de ${esc(a.n)}">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <span>ouvir</span>
+          </button>
+          <div class="eq"><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="card__body">
+          <h3 class="card__name">${esc(a.n)}</h3>
+          <p class="card__sci">${esc(a.s)}</p>
+          <div class="tags">
+            <span class="tag tag--som">${esc(a.t)}</span>
+            <span class="tag">${mmss(a.d)}</span>
+          </div>
+        </div>
+      </article>`;
+    }).join('');
+
+    els.badge.textContent = state.list.length + (state.list.length === 1 ? ' espécie' : ' espécies');
+    state.list.forEach((a) => { if (a.id === state.current) markPlaying(a.id, true); });
+  }
+
+  function markPlaying(id, on) {
+    const card = els.grid.querySelector('.card[data-id="' + id + '"]');
+    if (card) card.dataset.playing = on ? '1' : '0';
+  }
+
+  // -------------------------------------------------------- ficha técnica --
+  function ficha(a) {
+    els.fichaHead.innerHTML = `<div class="ficha-title">
+        <img src="${imgUrl(a, 120)}" data-alt="${imgOrig(a)}" alt="" loading="lazy" />
+        <div><h2>${esc(a.n)}</h2><p>${esc(a.s)} · ${esc(GROUP_LABELS[a.c])}</p></div>
+      </div>
+      <a class="button button--ghost" style="text-decoration:none;display:inline-flex;align-items:center" href="${DESC + enc(a.g)}" target="_blank" rel="noopener">arquivo original ↗</a>`;
+    els.studyCards.innerHTML = [
+      ['O que ele está fazendo', a.t + ' gravado em campo, sem edição de timbre'],
+      ['Onde vive', a.h],
+      ['Como o som é produzido', a.prod],
+      ['Curiosidade', a.f]
+    ].map(([label, value]) => `<div class="study-card">
+        <p class="study-card__label">${esc(label)}</p>
+        <div class="study-card__value">${esc(value)}</div>
+      </div>`).join('');
+    els.srcNote.innerHTML = `Duração do registro: <b>${mmss(a.d)}</b> · formato <b>${a.fmt.toUpperCase()}</b> ·
+      fonte <a href="${DESC + enc(a.g)}" target="_blank" rel="noopener">Wikimedia Commons</a> ·
+      foto <a href="${DESC + enc(a.i)}" target="_blank" rel="noopener">aqui</a>.
+      ${SUPPORT[a.fmt] ? '' : '<b>Atenção:</b> seu navegador não suporta ' + a.fmt.toUpperCase() + '.'}`;
+  }
+
+  // --------------------------------------------------------------- player --
+  function setWarn(msg) {
+    els.warn.hidden = !msg;
+    els.warn.textContent = msg || '';
+  }
+
+  function play(id) {
+    const a = DATA[id];
+    if (!a) return;
+    setWarn('');
+    if (!SUPPORT[a.fmt]) {
+      setWarn('Seu navegador não consegue decodificar ' + a.fmt.toUpperCase() + '. Você pode abrir o arquivo direto no Commons pelo link da ficha técnica.');
+      ficha(a);
+      return;
+    }
+    state.current = id;
+    ficha(a);
+    els.player.dataset.open = '1';
+    els.pArt.dataset.alt = imgOrig(a);
+    delete els.pArt.dataset.tried;
+    els.pArt.src = imgUrl(a, 120);
+    els.pName.textContent = a.n;
+    els.pSci.textContent = a.s + ' · ' + a.t + ' · ' + mmss(a.d);
+    document.querySelectorAll('.card[data-playing="1"]').forEach((c) => { c.dataset.playing = '0'; });
+    markPlaying(id, true);
+
+    const au = els.audio;
+    au.pause();
+    au.src = audioUrl(a);
+    au.currentTime = 0;
+    au.loop = els.loop.checked;
+    au.playbackRate = 1;
+    const pad = els.safeVol.checked && a.fmt !== 'mp3' ? 0.8 : 1;
+    au.volume = Math.max(0, Math.min(1, (Number(els.vol.value) / 100) * pad));
+    const p = au.play();
+    if (p && p.catch) p.catch((err) => {
+      setWarn('O navegador bloqueou o início automático (' + (err.name || 'erro') + '). Toque no play do player para continuar.');
+      updatePlayIcon(false);
+    });
+    clearTimeout(state.watchdog);
+    state.watchdog = setTimeout(() => {
+      if (au.readyState < 3 && !au.paused) {
+        setWarn('A conexão com o Wikimedia Commons está lenta ou bloqueada nesta rede. Tente de novo ou abra o arquivo direto no link da ficha técnica.');
+      }
+    }, 12000);
+  }
+
+  function updatePlayIcon(playing) {
+    els.playIcon.innerHTML = playing
+      ? '<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>'
+      : '<path d="M8 5v14l11-7z"/>';
+  }
+
+  function toggle() {
+    const au = els.audio;
+    if (state.current < 0) { if (state.list[0]) play(state.list[0].id); return; }
+    if (au.paused) { if (au.ended) au.currentTime = 0; au.play(); } else au.pause();
+  }
+
+  function step(delta) {
+    if (!state.list.length) return;
+    let idx = state.list.findIndex((a) => a.id === state.current);
+    if (idx < 0) idx = delta > 0 ? -1 : 0;
+    const next = state.list[(idx + delta + state.list.length) % state.list.length];
+    play(next.id);
+  }
+
+  const au = els.audio;
+  au.addEventListener('playing', () => { setWarn(''); updatePlayIcon(true); clearTimeout(state.watchdog); });
+  au.addEventListener('pause', () => updatePlayIcon(false));
+  au.addEventListener('ended', () => {
+    updatePlayIcon(false);
+    if (els.autoNext.checked && !els.loop.checked) step(1);
+  });
+  au.addEventListener('timeupdate', () => {
+    const real = au.duration && isFinite(au.duration) ? au.duration : 0;
+    const est = DATA[state.current] ? DATA[state.current].d : 0;
+    const d = real || est;
+    const ratio = real ? au.currentTime / real : (est ? Math.min(1, au.currentTime / est) : 0);
+    els.tCur.textContent = mmss(au.currentTime);
+    els.tDur.textContent = mmss(d) + (real ? '' : '~');
+    const pct = ratio * 100;
+    els.seekFill.style.width = pct + '%';
+    els.seek.setAttribute('aria-valuenow', Math.round(pct));
+  });
+  au.addEventListener('error', () => {
+    const code = au.error ? au.error.code : 0;
+    const why = { 1: 'carregamento cancelado', 2: 'falha de rede', 3: 'decodificação falhou', 4: 'formato não suportado' }[code] || 'falha desconhecida';
+    const a = DATA[state.current];
+    setWarn('Não deu play (' + why + '). ' + (a ? 'Você pode abrir o registro no Commons pelo link da ficha técnica.' : '') + ' Verifique a conexão e tente de novo.');
+    updatePlayIcon(false);
+    clearTimeout(state.watchdog);
+  });
+
+  els.seek.addEventListener('click', (e) => {
+    const d = (au.duration && isFinite(au.duration)) ? au.duration : (DATA[state.current] ? DATA[state.current].d : 0);
+    if (!d) return;
+    const r = els.seek.getBoundingClientRect();
+    const frac = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+    if (au.duration && isFinite(au.duration)) au.currentTime = frac * d;
+    else { au.currentTime = frac * d; }
+  });
+  els.seek.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      au.currentTime = Math.max(0, au.currentTime + (e.key === 'ArrowRight' ? 5 : -5));
+    }
+  });
+  els.btnPlay.addEventListener('click', toggle);
+  els.btnPrev.addEventListener('click', () => step(-1));
+  els.btnNext.addEventListener('click', () => step(1));
+  els.btnClose.addEventListener('click', () => { au.pause(); els.player.dataset.open = '0'; });
+  els.btnMute.addEventListener('click', () => {
+    au.muted = !au.muted;
+    els.btnMute.dataset.on = au.muted ? '1' : '0';
+  });
+  els.vol.addEventListener('input', () => {
+    els.volLabel.textContent = els.vol.value + '%';
+    const cur = DATA[state.current];
+    const pad = els.safeVol.checked && cur && cur.fmt !== 'mp3' ? 0.8 : 1;
+    au.volume = Math.max(0, Math.min(1, (Number(els.vol.value) / 100) * pad));
+  });
+  els.loop.addEventListener('change', () => { au.loop = els.loop.checked; });
+  els.safeVol.addEventListener('change', () => els.vol.dispatchEvent({ type: 'input' }));
+  els.playAll.addEventListener('click', () => { if (state.list[0]) play(state.list[0].id); });
+  els.stop.addEventListener('click', () => { au.pause(); au.currentTime = 0; els.player.dataset.open = '0'; setWarn(''); });
+
+  els.q.addEventListener('input', () => { state.text = els.q.value; applyFilters(); });
+  els.sort.addEventListener('change', () => { state.sort = els.sort.value; applyFilters(); });
+  els.chips.addEventListener('click', (e) => {
+    const b = e.target.closest('.chip');
+    if (!b) return;
+    state.group = b.dataset.group;
+    els.chips.querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', String(c === b)));
+    applyFilters();
+  });
+
+  els.grid.addEventListener('click', (e) => {
+    const p = e.target.closest('[data-play]');
+    if (p) { play(Number(p.dataset.play)); return; }
+    const card = e.target.closest('.card');
+    if (card) { const a = DATA[Number(card.dataset.id)]; if (a) { ficha(a); card.scrollIntoView({ block: 'nearest' }); } }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (e.code === 'Space') { e.preventDefault(); toggle(); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+    else if (e.key === 'm') els.btnMute.click();
+  });
+
+  // ---------------------------------------------------------------- teste --
+  els.check.addEventListener('click', async () => {
+    if (state.checking) return;
+    state.checking = true;
+    els.check.disabled = true;
+    els.check.textContent = 'testando…';
+    els.checkBox.hidden = false;
+    els.checkBox.textContent = 'Consultando o CDN do Wikimedia Commons…';
+    const queue = DATA.slice();
+    let ok = 0, fail = 0, blocked = 0;
+    const worker = async () => {
+      while (queue.length) {
+        const a = queue.shift();
+        try {
+          const res = await fetch(audioUrl(a), { method: 'HEAD', mode: 'cors', cache: 'no-store' });
+          if (res.ok) { VERIFY.set(a.id, 'ok'); ok++; }
+          else { VERIFY.set(a.id, 'fail'); fail++; }
+        } catch (err) { VERIFY.set(a.id, 'unknown'); blocked++; }
+      }
+    };
+    await Promise.all([worker(), worker(), worker(), worker()]);
+    els.checkBox.textContent = ok + ' de ' + DATA.length + ' registros responderam no CDN'
+      + (fail ? ' · ' + fail + ' com resposta inesperada' : '')
+      + (blocked ? ' · ' + blocked + ' sem resposta por causa de bloqueio de CORS na rede (isso não impede o play)' : '')
+      + '. Toques individuais continuam sob demanda.';
+    render();
+    els.check.disabled = false;
+    els.check.textContent = 'Testar os ' + DATA.length + ' áudios';
+    state.checking = false;
+  });
+
+  // ------------------------------------------------------------- fallback --
+  document.addEventListener('error', (e) => {
+    const img = e.target;
+    if (!img || img.tagName !== 'IMG') return;
+    const next = img.dataset.alt;
+    if (next && !img.dataset.tried) { img.dataset.tried = '1'; img.src = next; return; }
+    const media = img.closest('.card__media');
+    if (media) { media.classList.add('noimg'); return; }
+    img.style.visibility = 'hidden';
+  }, true);
+
+  au.volume = 0.8;
+  applyFilters();
+  if (DATA.length) {
+    const hero = DATA.find((a) => a.n.indexOf('Sabi') === 0) || DATA[0];
+    ficha(hero);
+  }
+})();
+</script>
+</body>
+</html>

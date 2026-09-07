@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFood Rider - Corrida Infinita</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1a2e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        #gameContainer {
+            position: relative;
+            border: 3px solid #e94560;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(233, 69, 96, 0.3);
+        }
+
+        canvas {
+            display: block;
+            background: #555;
+        }
+
+        #ui {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .ui-box {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid #ea1d2c;
+        }
+
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            color: white;
+            text-align: center;
+        }
+
+        #overlay.hidden {
+            display: none;
+        }
+
+        #overlay h1 {
+            font-size: 36px;
+            margin-bottom: 5px;
+            color: #ea1d2c;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        #overlay h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #ffcc00;
+        }
+
+        #overlay p {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #ccc;
+            max-width: 350px;
+            line-height: 1.4;
+        }
+
+        #overlay .subtitle {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+
+        .btn {
+            background: #ea1d2c;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            pointer-events: all;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn:hover {
+            background: #ff3347;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(234, 29, 44, 0.5);
+        }
+
+        .controls-info {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .control-key {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .score-final {
+            font-size: 48px;
+            color: #ea1d2c;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .record {
+            color: #ffcc00;
+            font-size: 18px;
+        }
+
+        #mobileControls {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            display: none;
+            justify-content: space-between;
+            padding: 0 15px;
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        .mobile-btn {
+            width: 70px;
+            height: 70px;
+            background: rgba(234, 29, 44, 0.5);
+            border: 2px solid rgba(234, 29, 44, 0.8);
+            border-radius: 50%;
+            color: white;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: all;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .mobile-btn:active {
+            background: rgba(234, 29, 44, 0.8);
+        }
+
+        @media (max-width: 600px) {
+            #mobileControls {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="gameContainer">
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="ui">
+        <div class="ui-box" id="scoreDisplay">🏆 0</div>
+        <div class="ui-box" id="speedDisplay">⚡ 1x</div>
+    </div>
+
+    <div id="overlay">
+        <h1>🏍️ IFood Rider</h1>
+        <h2>Corrida Infinita</h2>
+        <p class="subtitle">Você está ATRASADO pro serviço! Desvie dos obstáculos e entregue o máximo de pedidos!</p>
+        <p>🕳️ Buracos na rua</p>
+        <p>🚗 Carros parados</p>
+        <p>🛒 Carrinhos de compras</p>
+        <p>🚧 Cones e barreiras</p>
+        <p>🐕 Cachorros na rua</p>
+        <p>🍔 Colete entregas para bônus!</p>
+        <div class="controls-info">
+            <div class="control-key">⬅️ A / ←</div>
+            <div class="control-key">➡️ D / →</div>
+            <div class="control-key">⬆️ W / ↑ Turbo</div>
+        </div>
+        <button class="btn" id="startBtn">COMEÇAR TURNO</button>
+    </div>
+
+    <div id="mobileControls">
+        <div class="mobile-btn" id="mLeftBtn">◀</div>
+        <div class="mobile-btn" id="mUpBtn">▲</div>
+        <div class="mobile-btn" id="mRightBtn">▶</div>
+    </div>
+</div>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const overlay = document.getElementById('overlay');
+const startBtn = document.getElementById('startBtn');
+const scoreDisplay = document.getElementById('scoreDisplay');
+const speedDisplay = document.getElementById('speedDisplay');
+
+const GAME_WIDTH = 400;
+const GAME_HEIGHT = 650;
+canvas.width = GAME_WIDTH;
+canvas.height = GAME_HEIGHT;
+
+// Game state
+let gameRunning = false;
+let gameOver = false;
+let score = 0;
+let highScore = parseInt(localStorage.getItem('ifoodRiderHighScore')) || 0;
+let speed = 3;
+let baseSpeed = 3;
+let turbo = false;
+let frameCount = 0;
+let difficultyLevel = 1;
+let shakeTimer = 0;
+let flashTimer = 0;
+let deliveries = 0;
+
+// Road
+const ROAD_LEFT = 50;
+const ROAD_RIGHT = 350;
+const ROAD_WIDTH = ROAD_RIGHT - ROAD_LEFT;
+const LANE_COUNT = 3;
+const LANE_WIDTH = ROAD_WIDTH / LANE_COUNT;
+
+// Player
+const player = {
+    x: GAME_WIDTH / 2,
+    y: GAME_HEIGHT - 120,
+    width: 30,
+    height: 50,
+    lane: 1,
+    tilt: 0,
+    bobTimer: 0,
+    invincible: 0
+};
+
+// Input — usando Set para evitar bugs de estado preso
+const keysDown = new Set();
+let touchLeft = false;
+let touchRight = false;
+let touchUp = false;
+
+// Cooldown para troca de faixa (evita pular faixas)
+let laneCooldown = 0;
+const LANE_COOLDOWN_MAX = 10; // frames
+
+// Game objects
+let obstacles = [];
+let roadLines = [];
+let particles = [];
+let bonusItems = [];
+let buildings = [];
+let clouds = [];
+
+function initRoadLines() {
+    roadLines = [];
+    for (let i = 0; i < 15; i++) {
+        roadLines.push({ y: i * 50 });
+    }
+}
+
+function initBuildings() {
+    buildings = [];
+    for (let i = 0; i < 8; i++) {
+        buildings.push({
+            x: Math.random() < 0.5 ? Math.random() * 40 : ROAD_RIGHT + 10 + Math.random() * 30,
+            y: i * 100 - 50,
+            w: 30 + Math.random() * 20,
+            h: 60 + Math.random() * 40,
+            color: `hsl(${Math.random() * 40 + 20}, ${20 + Math.random() * 20}%, ${30 + Math.random() * 20}%)`
+        });
+    }
+}
+
+function initClouds() {
+    clouds = [];
+    for (let i = 0; i < 4; i++) {
+        clouds.push({
+            x: Math.random() * GAME_WIDTH,
+            y: Math.random() * 200,
+            size: 20 + Math.random() * 30,
+            speed: 0.2 + Math.random() * 0.3
+        });
+    }
+}
+
+initRoadLines();
+initBuildings();
+initClouds();
+
+// Obstacle types
+const OBSTACLE_TYPES = {
+    BURACO: {
+        width: 45, height: 30,
+        draw: function(ctx, x, y, w, h) {
+            ctx.fillStyle = '#1a1a1a';
+            ctx.beginPath();
+            ctx.ellipse(x + w/2, y + h/2, w/2, h/2, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#444';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.strokeStyle = '#555';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(x + w/2 - 25, y + h/2 - 5);
+            ctx.lineTo(x + w/2 - 10, y + h/2 + 2);
+            ctx.moveTo(x + w/2 + 25, y + h/2 + 3);
+            ctx.lineTo(x + w/2 + 12, y + h/2 - 4);
+            ctx.stroke();
+        }
+    },
+    CARRO: {
+        width: 38, height: 60,
+        draw: function(ctx, x, y, w, h) {
+            const colors = ['#c0392b', '#2980b9', '#f39c12', '#27ae60', '#8e44ad'];
+            const idx = Math.abs(Math.floor(x + y)) % colors.length;
+            const color = colors[idx];
+            ctx.fillStyle = 'rgba(0,0,0,0.3)';
+            ctx.fillRect(x + 3, y + 3, w, h);
+            ctx.fillStyle = color;
+            roundRect(ctx, x, y, w, h, 6);
+            ctx.fillStyle = shadeColor(color, -20);
+            roundRect(ctx, x + 4, y + 15, w - 8, h - 30, 4);
+            ctx.fillStyle = '#85c1e9';
+            ctx.fillRect(x + 6, y + 8, w - 12, 10);
+            ctx.fillStyle = '#85c1e9';
+            ctx.fillRect(x + 6, y + h - 15, w - 12, 8);
+            ctx.fillStyle = '#e74c3c';
+            ctx.fillRect(x + 2, y + h - 6, 6, 4);
+            ctx.fillRect(x + w - 8, y + h - 6, 6, 4);
+            ctx.fillStyle = '#2c3e50';
+            ctx.fillRect(x - 2, y + 8, 4, 10);
+            ctx.fillRect(x + w - 2, y + 8, 4, 10);
+            ctx.fillRect(x - 2, y + h - 18, 4, 10);
+            ctx.fillRect(x + w - 2, y + h - 18, 4, 10);
+        }
+    },
+    CONE: {
+        width: 22, height: 30,
+        draw: function(ctx, x, y, w, h) {
+            ctx.fillStyle = '#e67e22';
+            ctx.beginPath();
+            ctx.moveTo(x + w/2, y);
+            ctx.lineTo(x + w - 2, y + h);
+            ctx.lineTo(x + 2, y + h);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = '#ecf0f1';
+            ctx.fillRect(x + 5, y + 8, w - 10, 4);
+            ctx.fillRect(x + 3, y + 18, w - 6, 4);
+            ctx.fillStyle = '#d35400';
+            ctx.fillRect(x - 2, y + h - 4, w + 4, 4);
+        }
+    },
+    CACHORRO: {
+        width: 35, height: 25,
+        draw: function(ctx, x, y, w, h, frame) {
+            ctx.fillStyle = '#a0522d';
+            ctx.beginPath();
+            ctx.ellipse(x + w/2, y + h/2 + 2, w/2 - 2, h/2 - 2, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(x + w - 5, y + h/2 - 2, 8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#8B4513';
+            ctx.beginPath();
+            ctx.ellipse(x + w - 1, y + h/2 - 9, 3, 5, 0.3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(x + w - 2, y + h/2 - 3, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+            const legOffset = Math.sin(frame * 0.2) * 3;
+            ctx.fillStyle = '#a0522d';
+            ctx.fillRect(x + 5, y + h - 4 + legOffset, 4, 6);
+            ctx.fillRect(x + 14, y + h - 4 - legOffset, 4, 6);
+            ctx.fillRect(x + w - 12, y + h - 4 + legOffset, 4, 6);
+            ctx.fillRect(x + w - 6, y + h - 4 - legOffset, 4, 6);
+            ctx.strokeStyle = '#a0522d';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x + 3, y + h/2 - 2);
+            ctx.quadraticCurveTo(x - 5, y + h/2 - 10 + Math.sin(frame * 0.3) * 4, x - 2, y + h/2 - 14);
+            ctx.stroke();
+        }
+    },
+    CARRINHO: {
+        width: 30, height: 35,
+        draw: function(ctx, x, y, w, h) {
+            ctx.strokeStyle = '#bdc3c7';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x + 3, y, w - 6, h - 10);
+            ctx.fillStyle = 'rgba(189, 195, 199, 0.3)';
+            ctx.fillRect(x + 3, y, w - 6, h - 10);
+            ctx.strokeStyle = '#95a5a6';
+            ctx.lineWidth = 1;
+            for (let i = 1; i < 3; i++) {
+                ctx.beginPath();
+                ctx.moveTo(x + 3, y + (h - 10) * i / 3);
+                ctx.lineTo(x + w - 3, y + (h - 10) * i / 3);
+                ctx.stroke();
+            }
+            ctx.fillStyle = '#2c3e50';
+            ctx.beginPath();
+            ctx.arc(x + 8, y + h - 3, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(x + w - 8, y + h - 3, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#bdc3c7';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x + w - 3, y + 5);
+            ctx.lineTo(x + w + 5, y - 5);
+            ctx.stroke();
+        }
+    },
+    LIXEIRA: {
+        width: 25, height: 32,
+        draw: function(ctx, x, y, w, h) {
+            ctx.fillStyle = '#2ecc71';
+            ctx.beginPath();
+            ctx.moveTo(x + 2, y + 6);
+            ctx.lineTo(x + 5, y + h);
+            ctx.lineTo(x + w - 5, y + h);
+            ctx.lineTo(x + w - 2, y + 6);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = '#27ae60';
+            roundRect(ctx, x - 1, y + 2, w + 2, 6, 2);
+            ctx.strokeStyle = '#27ae60';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(x + w/2, y + 2, 5, Math.PI, 0);
+            ctx.stroke();
+            ctx.strokeStyle = '#1e8449';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(x + w/2, y + 10);
+            ctx.lineTo(x + w/2, y + h - 5);
+            ctx.stroke();
+        }
+    },
+    PEDRA: {
+        width: 30, height: 22,
+        draw: function(ctx, x, y, w, h) {
+            ctx.fillStyle = '#7f8c8d';
+            ctx.beginPath();
+            ctx.moveTo(x + 5, y + h);
+            ctx.lineTo(x, y + h/2);
+            ctx.lineTo(x + 8, y + 2);
+            ctx.lineTo(x + w - 5, y);
+            ctx.lineTo(x + w, y + h/2 - 3);
+            ctx.lineTo(x + w - 2, y + h);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = '#95a5a6';
+            ctx.beginPath();
+            ctx.moveTo(x + 8, y + 2);
+            ctx.lineTo(x + w - 5, y);
+            ctx.lineTo(x + w, y + h/2 - 3);
+            ctx.lineTo(x + 10, y + h/2);
+            ctx.closePath();
+            ctx.fill();
+        }
+    },
+    POCO_AGUA: {
+        width: 45, height: 18,
+        draw: function(ctx, x, y, w, h, frame) {
+            ctx.fillStyle = `rgba(52, 152, 219, ${0.5 + Math.sin(frame * 0.1) * 0.1})`;
+            ctx.beginPath();
+            ctx.ellipse(x + w/2, y + h/2, w/2, h/2, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = `rgba(133, 193, 233, ${0.3 + Math.sin(frame * 0.15) * 0.1})`;
+            ctx.beginPath();
+            ctx.ellipse(x + w/2 + 5, y + h/2 - 2, w/4, h/3, 0.2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+};
+
+const obstacleTypeKeys = Object.keys(OBSTACLE_TYPES);
+
+function getLaneX(lane) {
+    return ROAD_LEFT + lane * LANE_WIDTH + LANE_WIDTH / 2;
+}
+
+function createBonusItem() {
+    const lane = Math.floor(Math.random() * LANE_COUNT);
+    return {
+        x: getLaneX(lane),
+        y: -30,
+        width: 25,
+        height: 25,
+        lane: lane,
+        bobTimer: Math.random() * Math.PI * 2
+    };
+}
+
+function createParticles(x, y, color, count) {
+    for (let i = 0; i < count; i++) {
+        particles.push({
+            x: x, y: y,
+            vx: (Math.random() - 0.5) * 6,
+            vy: (Math.random() - 0.5) * 6,
+            life: 1,
+            decay: 0.02 + Math.random() * 0.03,
+            color: color,
+            size: 2 + Math.random() * 4
+        });
+    }
+}
+
+function createExhaustParticle() {
+    if (Math.random() > 0.3) return;
+    particles.push({
+        x: player.x + (Math.random() - 0.5) * 6,
+        y: player.y + player.height / 2,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: 1 + Math.random(),
+        life: 0.7,
+        decay: 0.03,
+        color: turbo ? '#ff6600' : '#999',
+        size: 2 + Math.random() * 2
+    });
+}
+
+function spawnObstacle() {
+    if (!gameRunning || gameOver) return;
+    const type = obstacleTypeKeys[Math.floor(Math.random() * obstacleTypeKeys.length)];
+    const obs = OBSTACLE_TYPES[type];
+    const lane = Math.floor(Math.random() * LANE_COUNT);
+    obstacles.push({
+        x: getLaneX(lane),
+        y: -obs.height - 10,
+        width: obs.width,
+        height: obs.height,
+        type: type,
+        lane: lane,
+        passed: false
+    });
+}
+
+// Input handlers
+document.addEventListener('keydown', (e) => {
+    keysDown.add(e.key.toLowerCase());
+    keysDown.add(e.code);
+});
+document.addEventListener('keyup', (e) => {
+    keysDown.delete(e.key.toLowerCase());
+    keysDown.delete(e.code);
+});
+
+// Limpa tudo ao perder foco (evita teclas presas)
+window.addEventListener('blur', () => {
+    keysDown.clear();
+    touchLeft = false;
+    touchRight = false;
+    touchUp = false;
+});
+
+// Mobile controls
+function setupMobileBtn(id, setFn) {
+    const btn = document.getElementById(id);
+    btn.addEventListener('touchstart', (e) => { e.preventDefault(); setFn(true); });
+    btn.addEventListener('touchend', (e) => { e.preventDefault(); setFn(false); });
+    btn.addEventListener('touchcancel', (e) => { e.preventDefault(); setFn(false); });
+}
+setupMobileBtn('mLeftBtn', (v) => touchLeft = v);
+setupMobileBtn('mRightBtn', (v) => touchRight = v);
+setupMobileBtn('mUpBtn', (v) => touchUp = v);
+
+// Helpers
+function roundRect(ctx, x, y, w, h, r) {
+    if (w <= 0 || h <= 0) return;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+    ctx.fill();
+}
+
+function shadeColor(color, percent) {
+    const num = parseInt(color.replace("#", ""), 16);
+    const amt = Math.round(2.55 * percent);
+    const R = Math.max(0, Math.min(255, (num >> 16) + amt));
+    const G = Math.max(0, Math.min(255, (num >> 8 & 0x00FF) + amt));
+    const B = Math.max(0, Math.min(255, (num & 0x0000FF) + amt));
+    return `rgb(${R},${G},${B})`;
+}
+
+function boxCollision(ax, ay, aw, ah, bx, by, bw, bh) {
+    const shrink = 6;
+    return ax + shrink < bx + bw - shrink &&
+           ax + aw - shrink > bx + shrink &&
+           ay + shrink < by + bh - shrink &&
+           ay + ah - shrink > by + shrink;
+}
+
+function checkCollision(playerObj, obj) {
+    const px = playerObj.x - playerObj.width / 2;
+    const py = playerObj.y - playerObj.height / 2;
+    const ox = obj.x - obj.width / 2;
+    const oy = obj.y - obj.height / 2;
+    return boxCollision(px, py, playerObj.width, playerObj.height, ox, oy, obj.width, obj.height);
+}
+
+// Draw player
+function drawPlayer() {
+    if (!isFinite(player.x) || !isFinite(player.y)) {
+        player.x = getLaneX(1);
+        player.y = GAME_HEIGHT - 120;
+        player.lane = 1;
+    }
+
+    const px = player.x;
+    const py = player.y;
+    const bob = Math.sin(player.bobTimer) * 1.5;
+
+    ctx.save();
+    ctx.translate(px, py + bob);
+    ctx.rotate(player.tilt * 0.15);
+
+    if (player.invincible > 0 && Math.floor(frameCount / 3) % 2 === 0) {
+        ctx.globalAlpha = 0.4;
+    }
+
+    // Sombra
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.beginPath();
+    ctx.ellipse(2, player.height / 2 + 5, 18, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Roda traseira
+    ctx.fillStyle = '#1a1a1a';
+    ctx.beginPath();
+    ctx.ellipse(0, player.height / 2 - 3, 10, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#333';
+    ctx.beginPath();
+    ctx.ellipse(0, player.height / 2 - 3, 7, 3, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Corpo da moto
+    ctx.fillStyle = '#e74c3c';
+    ctx.beginPath();
+    ctx.moveTo(-8, player.height / 2 - 5);
+    ctx.lineTo(-5, -player.height / 2 + 20);
+    ctx.lineTo(5, -player.height / 2 + 20);
+    ctx.lineTo(8, player.height / 2 - 5);
+    ctx.closePath();
+    ctx.fill();
+
+    // Tanque
+    ctx.fillStyle = '#c0392b';
+    ctx.beginPath();
+    ctx.ellipse(0, 2, 9, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Roda dianteira
+    ctx.fillStyle = '#1a1a1a';
+    ctx.beginPath();
+    ctx.ellipse(0, -player.height / 2 + 12, 8, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#333';
+    ctx.beginPath();
+    ctx.ellipse(0, -player.height / 2 + 12, 5, 2.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Farol
+    ctx.fillStyle = '#f1c40f';
+    ctx.beginPath();
+    ctx.ellipse(0, -player.height / 2 + 8, 3, 2, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(241, 196, 15, 0.1)';
+    ctx.beginPath();
+    ctx.moveTo(-3, -player.height / 2 + 8);
+    ctx.lineTo(-15, -player.height / 2 - 40);
+    ctx.lineTo(15, -player.height / 2 - 40);
+    ctx.lineTo(3, -player.height / 2 + 8);
+    ctx.closePath();
+    ctx.fill();
+
+    // Guidão
+    ctx.strokeStyle = '#bdc3c7';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-12, -player.height / 2 + 16);
+    ctx.lineTo(12, -player.height / 2 + 16);
+    ctx.stroke();
+
+    // Corpo entregador
+    ctx.fillStyle = '#e74c3c';
+    roundRect(ctx, -7, -player.height / 2 + 17, 14, 12, 2);
+
+    // Capacete
+    ctx.fillStyle = '#2c3e50';
+    ctx.beginPath();
+    ctx.arc(0, -player.height / 2 + 14, 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#85c1e9';
+    ctx.beginPath();
+    ctx.arc(0, -player.height / 2 + 16, 5, 0, Math.PI, false);
+    ctx.fill();
+
+    // Bag iFood
+    ctx.fillStyle = '#ea1d2c';
+    roundRect(ctx, -10, -player.height / 2 + 18, 20, 16, 3);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 7px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('iFood', 0, -player.height / 2 + 27);
+
+    // Braços
+    ctx.strokeStyle = '#e74c3c';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(-7, -player.height / 2 + 22);
+    ctx.lineTo(-12, -player.height / 2 + 17);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(7, -player.height / 2 + 22);
+    ctx.lineTo(12, -player.height / 2 + 17);
+    ctx.stroke();
+
+    // Turbo fire
+    if (turbo) {
+        ctx.fillStyle = `rgba(255, ${100 + Math.random() * 100}, 0, ${0.7 + Math.random() * 0.3})`;
+        ctx.beginPath();
+        const flameH = 8 + Math.random() * 8;
+        ctx.moveTo(-5, player.height / 2);
+        ctx.lineTo(0, player.height / 2 + flameH);
+        ctx.lineTo(5, player.height / 2);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    ctx.globalAlpha = 1;
+    ctx.restore();
+}
+
+function drawBonus(item) {
+    item.bobTimer += 0.05;
+    const bob = Math.sin(item.bobTimer) * 3;
+    ctx.save();
+    ctx.translate(item.x, item.y + bob);
+    ctx.fillStyle = 'rgba(46, 204, 113, 0.2)';
+    ctx.beginPath();
+    ctx.arc(0, 0, 20, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#f39c12';
+    roundRect(ctx, -12, -10, 24, 20, 3);
+    ctx.fillStyle = '#e67e22';
+    ctx.fillRect(-12, -2, 24, 2);
+    ctx.fillRect(-1, -10, 2, 20);
+    ctx.font = '14px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('🍔', 0, 0);
+    ctx.fillStyle = '#2ecc71';
+    ctx.font = 'bold 10px Arial';
+    ctx.fillText('+$', 0, -18 + bob);
+    ctx.restore();
+}
+
+function drawRoad() {
+    // Calçadas
+    ctx.fillStyle = '#8e8e8e';
+    ctx.fillRect(0, 0, ROAD_LEFT, GAME_HEIGHT);
+    ctx.fillRect(ROAD_RIGHT, 0, GAME_WIDTH - ROAD_RIGHT, GAME_HEIGHT);
+
+    ctx.fillStyle = '#7d7d7d';
+    for (let y = 0; y < GAME_HEIGHT; y += 20) {
+        for (let x = 0; x < ROAD_LEFT; x += 20) {
+            if ((x + y) % 40 === 0) ctx.fillRect(x, y, 19, 19);
+        }
+        for (let x = ROAD_RIGHT; x < GAME_WIDTH; x += 20) {
+            if ((x + y) % 40 === 0) ctx.fillRect(x, y, 19, 19);
+        }
+    }
+
+    // Asfalto
+    ctx.fillStyle = '#3a3a3a';
+    ctx.fillRect(ROAD_LEFT, 0, ROAD_WIDTH, GAME_HEIGHT);
+
+    // Meio-fio
+    ctx.fillStyle = '#f1c40f';
+    ctx.fillRect(ROAD_LEFT - 3, 0, 3, GAME_HEIGHT);
+    ctx.fillRect(ROAD_RIGHT, 0, 3, GAME_HEIGHT);
+
+    // Faixas
+    for (let line of roadLines) {
+        line.y += speed;
+        if (line.y > GAME_HEIGHT) line.y -= GAME_HEIGHT + 50;
+        for (let i = 1; i < LANE_COUNT; i++) {
+            const lx = ROAD_LEFT + i * LANE_WIDTH;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.fillRect(lx - 1, line.y, 2, 25);
+        }
+    }
+}
+
+function drawBuildings() {
+    for (let b of buildings) {
+        b.y += speed * 0.3;
+        if (b.y > GAME_HEIGHT + 50) {
+            b.y = -b.h;
+            b.x = b.x < ROAD_LEFT ? Math.random() * 40 : ROAD_RIGHT + 10 + Math.random() * 30;
+            b.h = 60 + Math.random() * 40;
+        }
+        ctx.fillStyle = b.color;
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.fillStyle = `rgba(255, 255, 150, ${0.3 + Math.random() * 0.4})`;
+        for (let wy = b.y + 8; wy < b.y + b.h - 8; wy += 14) {
+            for (let wx = b.x + 4; wx < b.x + b.w - 8; wx += 10) {
+                ctx.fillRect(wx, wy, 6, 8);
+            }
+        }
+    }
+}
+
+function drawHUD() {
+    const speedColor = turbo ? '#ff6600' : '#2ecc71';
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    roundRect(ctx, GAME_WIDTH - 35, GAME_HEIGHT - 160, 20, 140, 5);
+    ctx.fillStyle = speedColor;
+    const barH = 130 * Math.min(1, speed / 10);
+    if (barH > 0) roundRect(ctx, GAME_WIDTH - 33, GAME_HEIGHT - 25 - barH, 16, barH, 3);
+
+    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+    roundRect(ctx, 10, GAME_HEIGHT - 35, 110, 25, 5);
+    ctx.fillStyle = '#f39c12';
+    ctx.font = 'bold 14px Arial';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(`📦 ${deliveries} entregas`, 18, GAME_HEIGHT - 22);
+}
+
+// ====== UPDATE ======
+function update() {
+    if (!gameRunning || gameOver) return;
+
+    frameCount++;
+    player.bobTimer += turbo ? 0.3 : 0.15;
+
+    // Difficulty
+    difficultyLevel = 1 + Math.floor(score / 500);
+    baseSpeed = 3 + difficultyLevel * 0.4;
+    if (baseSpeed > 9) baseSpeed = 9;
+
+    // Input
+    const wantLeft = keysDown.has('a') || keysDown.has('arrowleft') || touchLeft;
+    const wantRight = keysDown.has('d') || keysDown.has('arrowright') || touchRight;
+    turbo = keysDown.has('w') || keysDown.has('arrowup') || touchUp;
+
+    // Lane switching com cooldown
+    if (laneCooldown > 0) {
+        laneCooldown--;
+    } else {
+        if (wantLeft && player.lane > 0) {
+            player.lane--;
+            laneCooldown = LANE_COOLDOWN_MAX;
+        } else if (wantRight && player.lane < LANE_COUNT - 1) {
+            player.lane++;
+            laneCooldown = LANE_COOLDOWN_MAX;
+        }
+    }
+
+    // Clamp lane
+    player.lane = Math.max(0, Math.min(LANE_COUNT - 1, player.lane));
+
+    // Target X
+    const targetX = getLaneX(player.lane);
+
+    // Smooth movement com proteção contra NaN
+    if (isFinite(targetX)) {
+        player.x += (targetX - player.x) * 0.15;
+    } else {
+        player.x = getLaneX(1);
+    }
+
+    // Clamp player X
+    player.x = Math.max(ROAD_LEFT + 15, Math.min(ROAD_RIGHT - 15, player.x));
+
+    // Tilt
+    player.tilt = (targetX - player.x) * 0.05;
+
+    // Speed
+    speed = turbo ? baseSpeed + 3 : baseSpeed;
+
+    // Score
+    score += Math.floor(speed * 0.5);
+
+    // Invincibility
+    if (player.invincible > 0) {
+        player.invincible -= 1 / 60;
+        if (player.invincible < 0) player.invincible = 0;
+    }
+
+    // Timers
+    if (shakeTimer > 0) shakeTimer -= 1 / 60;
+    if (flashTimer > 0) flashTimer -= 1 / 60;
+
+    // Spawn obstacles
+    const spawnRate = Math.max(30, 70 - difficultyLevel * 5);
+    if (frameCount % spawnRate === 0) {
+        spawnObstacle();
+        if (difficultyLevel > 2 && Math.random() < 0.3) {
+            spawnObstacle();
+        }
+    }
+
+    // Spawn bonus
+    if (frameCount % 180 === 0 && Math.random() < 0.6) {
+        bonusItems.push(createBonusItem());
+    }
+
+    // Update obstacles
+    for (let i = obstacles.length - 1; i >= 0; i--) {
+        const obs = obstacles[i];
+        obs.y += speed;
+
+        if (!obs.passed && obs.y > player.y + player.height) {
+            obs.passed = true;
+            score += 10;
+        }
+
+        // Collision
+        if (player.invincible <= 0 && checkCollision(player, obs)) {
+            shakeTimer = 0.5;
+            flashTimer = 0.3;
+            createParticles(player.x, player.y, '#ff0000', 8);
+            createParticles(player.x, player.y, '#ff6600', 6);
+            createParticles(player.x, player.y, '#ffcc00', 6);
+            endGame();
+            return;
+        }
+
+        if (obs.y > GAME_HEIGHT + 100) {
+            obstacles.splice(i, 1);
+        }
+    }
+
+    // Update bonus
+    for (let i = bonusItems.length - 1; i >= 0; i--) {
+        const item = bonusItems[i];
+        item.y += speed;
+
+        if (checkCollision(player, item)) {
+            score += 200;
+            deliveries++;
+            createParticles(item.x, item.y, '#2ecc71', 12);
+            createParticles(item.x, item.y, '#f39c12', 8);
+            bonusItems.splice(i, 1);
+            continue;
+        }
+
+        if (item.y > GAME_HEIGHT + 50) {
+            bonusItems.splice(i, 1);
+        }
+    }
+
+    // Update particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= p.decay;
+        if (p.life <= 0) particles.splice(i, 1);
+    }
+
+    // Exhaust
+    createExhaustParticle();
+
+    // Clouds
+    for (let c of clouds) {
+        c.y += speed * 0.05;
+        if (c.y > GAME_HEIGHT + 50) {
+            c.y = -c.size;
+            c.x = Math.random() * GAME_WIDTH;
+        }
+    }
+
+    // UI
+    scoreDisplay.textContent = `🏆 ${score.toLocaleString()}`;
+    speedDisplay.textContent = `⚡ ${(speed / baseSpeed).toFixed(1)}x`;
+    speedDisplay.style.color = turbo ? '#ff6600' : 'white';
+}
+
+// ====== DRAW ======
+function draw() {
+    ctx.save();
+
+    if (shakeTimer > 0) {
+        const intensity = shakeTimer * 10;
+        ctx.translate(
+            (Math.random() - 0.5) * intensity,
+            (Math.random() - 0.5) * intensity
+        );
+    }
+
+    // Background
+    const grad = ctx.createLinearGradient(0, 0, 0, GAME_HEIGHT);
+    grad.addColorStop(0, '#1a1a2e');
+    grad.addColorStop(1, '#16213e');
+    ctx.fillStyle = grad;
+    ctx.fillRect(-10, -10, GAME_WIDTH + 20, GAME_HEIGHT + 20);
+
+    // Clouds
+    for (let c of clouds) {
+        ctx.fillStyle = 'rgba(255,255,255,0.05)';
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(c.x + c.size * 0.6, c.y - c.size * 0.2, c.size * 0.7, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    drawBuildings();
+    drawRoad();
+
+    // Bonus items
+    for (let item of bonusItems) {
+        drawBonus(item);
+    }
+
+    // Obstacles
+    for (let obs of obstacles) {
+        const obsType = OBSTACLE_TYPES[obs.type];
+        if (obsType && obsType.draw) {
+            ctx.save();
+            obsType.draw(ctx, obs.x - obs.width / 2, obs.y - obs.height / 2, obs.width, obs.height, frameCount);
+            ctx.restore();
+        }
+    }
+
+    // Particles
+    for (let p of particles) {
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // Player
+    if (gameRunning) {
+        drawPlayer();
+    }
+
+    // HUD
+    if (gameRunning) {
+        drawHUD();
+    }
+
+    // Flash
+    if (flashTimer > 0) {
+        ctx.fillStyle = `rgba(255, 0, 0, ${Math.max(0, flashTimer)})`;
+        ctx.fillRect(-10, -10, GAME_WIDTH + 20, GAME_HEIGHT + 20);
+    }
+
+    // Turbo lines
+    if (turbo && gameRunning) {
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.lineWidth = 1;
+        for (let i = 0; i < 5; i++) {
+            const lx = ROAD_LEFT + Math.random() * ROAD_WIDTH;
+            const ly = Math.random() * GAME_HEIGHT;
+            ctx.beginPath();
+            ctx.moveTo(lx, ly);
+            ctx.lineTo(lx, ly + 30 + Math.random() * 20);
+            ctx.stroke();
+        }
+    }
+
+    ctx.restore();
+}
+
+function endGame() {
+    gameOver = true;
+    gameRunning = false;
+
+    if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('ifoodRiderHighScore', highScore);
+    }
+
+    // Limpa inputs
+    keysDown.clear();
+    touchLeft = false;
+    touchRight = false;
+    touchUp = false;
+
+    overlay.classList.remove('hidden');
+    overlay.innerHTML = `
+        <h1>💥 BATEU!</h1>
+        <h2>Turno encerrado</h2>
+        <div class="score-final">${score.toLocaleString()}</div>
+        <p>📦 ${deliveries} entregas realizadas</p>
+        <p class="record">🏆 Recorde: ${highScore.toLocaleString()}</p>
+        <p class="subtitle">Nível de dificuldade alcançado: ${difficultyLevel}</p>
+        <button class="btn" onclick="resetGame()">TENTAR DE NOVO</button>
+    `;
+}
+
+function resetGame() {
+    score = 0;
+    speed = 3;
+    baseSpeed = 3;
+    frameCount = 0;
+    difficultyLevel = 1;
+    gameOver = false;
+    turbo = false;
+    shakeTimer = 0;
+    flashTimer = 0;
+    deliveries = 0;
+    laneCooldown = 0;
+
+    player.x = getLaneX(1);
+    player.y = GAME_HEIGHT - 120;
+    player.lane = 1;
+    player.tilt = 0;
+    player.bobTimer = 0;
+    player.invincible = 2;
+
+    obstacles = [];
+    particles = [];
+    bonusItems = [];
+
+    keysDown.clear();
+    touchLeft = false;
+    touchRight = false;
+    touchUp = false;
+
+    overlay.classList.add('hidden');
+    gameRunning = true;
+}
+
+// ====== GAME LOOP ======
+function gameLoop() {
+    try {
+        update();
+        draw();
+    } catch (e) {
+        console.error('Game loop error:', e);
+    }
+    requestAnimationFrame(gameLoop);
+}
+
+startBtn.addEventListener('click', () => {
+    resetGame();
+});
+
+// Draw initial screen
+draw();
+gameLoop();
+</script>
+</body>
+</html>

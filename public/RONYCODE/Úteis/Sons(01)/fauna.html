@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Fauna Sonora: catálogo interativo com o canto real de aves, mamíferos, bichos marinhos, anfíbios, répteis e insetos. Áudios e fotos reais hospedados no Wikimedia Commons." />
+<title>Fauna Sonora — o canto real dos animais</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-soft: #f8fafc;
+  --text: #172033;
+  --muted: #64748b;
+  --line: #dbe3ef;
+  --primary: #1d4ed8;
+  --primary-strong: #1e40af;
+  --primary-soft: #dbeafe;
+  --accent: #0f766e;
+  --warning-bg: #fff7ed;
+  --warning-border: #fed7aa;
+  --warning-text: #9a3412;
+  --shadow: 0 18px 45px rgba(15, 23, 42, 0.09);
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding-bottom: 128px;
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.14), transparent 34rem),
+    radial-gradient(circle at top right, rgba(15, 118, 110, 0.10), transparent 30rem),
+    linear-gradient(180deg, #eef4ff 0%, var(--bg) 22rem);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+button, input, select { font: inherit; }
+a { color: var(--primary-strong); }
+
+.hero {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 3rem 0 1.2rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 1.4rem;
+  align-items: end;
+}
+.eyebrow {
+  margin: 0 0 0.45rem;
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 0.76rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+h1, h2, h3, p { margin-top: 0; }
+h1 { margin-bottom: 0.7rem; font-size: clamp(2.4rem, 6vw, 4.8rem); line-height: 0.9; letter-spacing: -0.06em; }
+h2 { margin-bottom: 0; font-size: clamp(1.25rem, 2vw, 1.6rem); line-height: 1.12; letter-spacing: -0.03em; }
+h3 { margin-bottom: 0.55rem; font-size: 1rem; }
+.hero__subtitle { max-width: 780px; margin-bottom: 0; color: var(--muted); font-size: clamp(1rem, 2vw, 1.18rem); }
+.hero__card {
+  padding: 1.15rem;
+  border: 1px solid rgba(29, 78, 216, 0.18);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+}
+.hero__card strong, .hero__card span { display: block; }
+.hero__card strong { margin-bottom: 0.35rem; color: var(--primary-strong); }
+.hero__card span { color: var(--muted); font-size: 0.95rem; }
+
+.app-shell {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto 2rem;
+  display: grid;
+  grid-template-columns: minmax(285px, 360px) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+.panel {
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+.controls-panel, .study-panel, .catalog-panel { padding: 1.2rem; }
+.controls-panel { position: sticky; top: 1rem; }
+.catalog-panel { min-width: 0; }
+.study-panel { grid-column: 1 / -1; }
+.section-heading { margin-bottom: 1rem; }
+.catalog-heading { display: flex; gap: 0.85rem; align-items: start; justify-content: space-between; flex-wrap: wrap; }
+.formula-badge {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+  font-weight: 800;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.field { display: grid; gap: 0.4rem; margin-bottom: 0.8rem; }
+.field > span { color: #334155; font-weight: 750; font-size: 0.92rem; }
+.field small { color: var(--muted); font-size: 0.78rem; }
+input, select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--text);
+  outline: none;
+  min-height: 2.65rem;
+  padding: 0.65rem 0.75rem;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.13); }
+input[type=range] { padding: 0; min-height: 0; height: 1.6rem; accent-color: var(--primary); }
+
+.chip-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.9rem; }
+.chip {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--primary-strong);
+  font-size: 0.84rem;
+  font-weight: 750;
+  padding: 0.34rem 0.62rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+.chip:hover { transform: translateY(-1px); background: #eff6ff; }
+.chip[aria-pressed=true] { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 8px 18px rgba(29, 78, 216, 0.22); }
+.chip b { font-weight: 800; opacity: 0.72; margin-left: 0.25rem; }
+
+.switch { display: flex; align-items: center; gap: 0.55rem; margin-bottom: 0.55rem; font-size: 0.92rem; color: #334155; font-weight: 700; cursor: pointer; }
+.switch input { width: auto; min-height: 0; padding: 0; accent-color: var(--accent); transform: scale(1.2); }
+
+.warning {
+  margin: 0.3rem 0 0.9rem;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid var(--warning-border);
+  border-radius: var(--radius-sm);
+  background: var(--warning-bg);
+  color: var(--warning-text);
+  font-size: 0.9rem;
+}
+.ok-box {
+  margin: 0.3rem 0 0.9rem;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid #a7f3d0;
+  border-radius: var(--radius-sm);
+  background: #ecfdf5;
+  color: #065f46;
+  font-size: 0.9rem;
+}
+.action-row { display: flex; gap: 0.65rem; flex-wrap: wrap; margin-top: 0.4rem; }
+.button {
+  min-height: 2.55rem;
+  padding: 0.65rem 0.95rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(29, 78, 216, 0.2);
+  transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+.button:hover { background: var(--primary-strong); transform: translateY(-1px); }
+.button--ghost { border: 1px solid var(--line); background: #fff; color: var(--primary-strong); box-shadow: none; }
+.button--ghost:hover { background: #eff6ff; }
+.button--accent { background: var(--accent); box-shadow: 0 10px 22px rgba(15, 118, 110, 0.2); }
+.button--accent:hover { background: #115e59; }
+.button:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+.helper-card {
+  margin-top: 1rem;
+  padding: 0.95rem;
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+}
+.helper-card ul { margin: 0; padding-left: 1.15rem; color: var(--muted); font-size: 0.88rem; }
+.helper-card li + li { margin-top: 0.35rem; }
+.formats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; margin-top: 0.55rem; }
+.fmt { border: 1px solid var(--line); border-radius: 10px; padding: 0.4rem 0.3rem; text-align: center; font-size: 0.76rem; font-weight: 800; background: #fff; }
+.fmt[data-ok="1"] { border-color: #86efac; background: #f0fdf4; color: #166534; }
+.fmt[data-ok="0"] { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
+
+/* ------------------------------------------------------------- catálogo -- */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(196px, 1fr)); gap: 0.85rem; }
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+  overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.card:hover { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(15, 23, 42, 0.13); }
+.card[data-playing="1"] { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.18), 0 16px 34px rgba(15, 118, 110, 0.16); }
+.card__media { position: relative; aspect-ratio: 4 / 3; background: linear-gradient(135deg, #e2e8f0, #f1f5f9); }
+.card__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.card__media.noimg img { opacity: 0; }
+.card__ph {
+  position: absolute; inset: 0; display: none; place-items: center;
+  font-weight: 900; font-size: 1.9rem; color: #94a3b8;
+  background: repeating-linear-gradient(135deg, #eef2ff 0 10px, #e8eefc 10px 20px);
+}
+.card__media.noimg .card__ph { display: grid; }
+.play {
+  position: absolute; left: 0.55rem; bottom: 0.55rem;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  border: 0; border-radius: 999px; padding: 0.45rem 0.78rem 0.45rem 0.62rem;
+  background: rgba(255, 255, 255, 0.94); color: var(--primary-strong);
+  font-weight: 900; font-size: 0.84rem; cursor: pointer;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.22);
+  backdrop-filter: blur(6px);
+}
+.play:hover { background: #fff; transform: translateY(-1px); }
+.play svg { width: 15px; height: 15px; }
+.badge {
+  position: absolute; right: 0.5rem; top: 0.5rem;
+  padding: 0.22rem 0.46rem; border-radius: 999px;
+  background: rgba(23, 32, 51, 0.72); color: #fff;
+  font-size: 0.7rem; font-weight: 800; letter-spacing: 0.02em;
+  backdrop-filter: blur(4px);
+}
+.badge--warn { background: #b45309; }
+.badge--ok { background: #047857; }
+.card__body { padding: 0.7rem 0.75rem 0.8rem; }
+.card__name { margin: 0 0 0.1rem; font-weight: 800; font-size: 0.98rem; letter-spacing: -0.01em; }
+.card__sci { margin: 0 0 0.5rem; color: var(--muted); font-size: 0.78rem; font-style: italic; }
+.tags { display: flex; flex-wrap: wrap; gap: 0.28rem; }
+.tag { border: 1px solid var(--line); border-radius: 8px; background: #fff; color: #475569; font-size: 0.7rem; font-weight: 750; padding: 0.15rem 0.38rem; }
+.tag--som { color: var(--primary-strong); border-color: #bfdbfe; background: #eff6ff; }
+.eq { display: none; position: absolute; right: 0.55rem; bottom: 0.55rem; gap: 2px; align-items: flex-end; height: 20px; }
+.card[data-playing="1"] .eq { display: flex; }
+.eq i { width: 3px; background: var(--accent); border-radius: 2px; height: 40%; animation: eq 0.9s ease-in-out infinite; }
+.eq i:nth-child(2) { animation-duration: 0.7s; }
+.eq i:nth-child(3) { animation-duration: 1.1s; }
+.eq i:nth-child(4) { animation-duration: 0.55s; }
+@keyframes eq { 0%, 100% { height: 25%; } 50% { height: 100%; } }
+
+/* ------------------------------------------------------------- player --- */
+.player {
+  position: fixed; left: 50%; transform: translateX(-50%) translateY(140%);
+  bottom: 0.8rem; width: min(1180px, calc(100% - 1.4rem));
+  display: flex; align-items: center; gap: 0.85rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(15, 118, 110, 0.3);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.93);
+  box-shadow: 0 22px 50px rgba(15, 23, 42, 0.22);
+  backdrop-filter: blur(20px);
+  z-index: 40;
+  transition: transform 0.3s cubic-bezier(.2,.8,.2,1);
+}
+.player[data-open="1"] { transform: translateX(-50%) translateY(0); }
+.player__art { width: 54px; height: 54px; border-radius: 14px; object-fit: cover; background: #e2e8f0; flex: 0 0 auto; }
+.player__meta { min-width: 0; flex: 0 0 auto; width: 210px; }
+.player__meta strong { display: block; font-size: 0.95rem; }
+.player__meta span { display: block; color: var(--muted); font-size: 0.76rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player__mid { flex: 1 1 auto; min-width: 110px; }
+.seek { position: relative; height: 8px; border-radius: 999px; background: #e2e8f0; cursor: pointer; overflow: hidden; }
+.seek__fill { position: absolute; inset: 0 auto 0 0; width: 0%; border-radius: 999px; background: linear-gradient(90deg, var(--primary), var(--accent)); }
+.times { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.72rem; font-weight: 700; margin-top: 0.25rem; }
+.player__ctrl { display: flex; align-items: center; gap: 0.35rem; flex: 0 0 auto; }
+.iconbtn {
+  width: 38px; height: 38px; display: grid; place-items: center;
+  border: 1px solid var(--line); border-radius: 50%; background: #fff; color: var(--primary-strong);
+  cursor: pointer; transition: transform 0.15s ease, background 0.15s ease;
+}
+.iconbtn:hover { background: #eff6ff; transform: translateY(-1px); }
+.iconbtn--main { width: 44px; height: 44px; border: 0; background: var(--primary); color: #fff; box-shadow: 0 10px 22px rgba(29, 78, 216, 0.26); }
+.iconbtn--main:hover { background: var(--primary-strong); }
+.iconbtn svg { width: 17px; height: 17px; }
+.iconbtn[data-on="1"] { border-color: var(--accent); color: var(--accent); background: #f0fdfa; }
+
+/* ------------------------------------------------------------- ficha ---- */
+.study-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.85rem; }
+.study-card { min-height: 108px; padding: 0.95rem; border: 1px solid var(--line); border-radius: var(--radius-md); background: linear-gradient(180deg, #fff 0%, #f8fafc 100%); }
+.study-card__label { margin-bottom: 0.35rem; color: var(--muted); font-size: 0.76rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
+.study-card__value { font-weight: 650; word-break: break-word; }
+.ficha-head { display: flex; align-items: center; justify-content: space-between; gap: 0.85rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+.ficha-title { display: flex; align-items: center; gap: 0.7rem; }
+.ficha-title img { width: 46px; height: 46px; border-radius: 12px; object-fit: cover; background: #e2e8f0; }
+.ficha-title h2 { font-size: 1.35rem; }
+.ficha-title p { margin: 0; color: var(--muted); font-size: 0.85rem; font-style: italic; }
+.src-note { margin: 0.9rem 0 0; color: var(--muted); font-size: 0.84rem; }
+
+.footer { width: min(1180px, calc(100% - 2rem)); margin: 0 auto 2.5rem; color: var(--muted); text-align: center; font-size: 0.9rem; }
+.footer p { margin: 0.2rem 0; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+@media (max-width: 980px) {
+  .hero, .app-shell { grid-template-columns: 1fr; }
+  .controls-panel { position: static; }
+  .study-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .hero, .app-shell, .footer { width: min(100% - 1rem, 1180px); }
+  .hero { padding-top: 1.35rem; }
+  .panel, .hero__card { border-radius: 18px; }
+  .study-grid, .formats { grid-template-columns: 1fr; }
+  .formats { grid-template-columns: repeat(2, 1fr); }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .player { align-items: flex-start; flex-wrap: wrap; border-radius: 16px; }
+  .player__meta { width: calc(100% - 70px); }
+  .player__mid { order: 3; width: 100%; flex-basis: 100%; }
+  .player__ctrl { order: 2; margin-left: auto; }
+  body { padding-bottom: 190px; }
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div>
+    <p class="eyebrow">Catálogo interativo de bioacústica</p>
+    <h1>Fauna Sonora</h1>
+    <p class="hero__subtitle">
+      O canto, o rugido, o uivo e o zumbido reais de 61 animais. Nada é sintetizado: cada áudio é
+      uma gravação de campo hospedada no Wikimedia Commons, com foto verdadeira do bicho e a ficha técnica da vocalização.
+    </p>
+  </div>
+  <aside class="hero__card" aria-label="Dica de uso">
+    <strong>Use fones ou caixinha</strong>
+    <span>Gravações de campo têm volumes diferentes: comece baixo. Nada é baixado até você dar play. Os 29 registros em OGG tocam em Chrome, Firefox, Edge e Safari 17.4 ou mais novo.</span>
+  </aside>
+</header>
+
+<main class="app-shell">
+  <section class="panel controls-panel" aria-labelledby="controls-title">
+    <div class="section-heading">
+      <p class="eyebrow">Explorar</p>
+      <h2 id="controls-title">Busca e filtros</h2>
+    </div>
+
+    <label class="field" for="q">
+      <span>Procurar bicho</span>
+      <input id="q" type="search" placeholder="sabiá, coruja, onça, sapo…" autocomplete="off" />
+    </label>
+
+    <div class="field">
+      <span>Grupos</span>
+      <div class="chip-row" id="chips"></div>
+    </div>
+
+    <label class="field" for="sort">
+      <span>Ordenar por</span>
+      <select id="sort">
+        <option value="az">Nome (A–Z)</option>
+        <option value="za">Nome (Z–A)</option>
+        <option value="dur-desc">Canto mais longo</option>
+        <option value="dur-asc">Canto mais curto</option>
+        <option value="group">Grupo</option>
+      </select>
+    </label>
+
+    <label class="field" for="vol">
+      <span>Volume — <b id="volLabel">80%</b></span>
+      <input id="vol" type="range" min="0" max="100" value="80" />
+    </label>
+
+    <div class="field">
+      <span>Modo de audição</span>
+      <label class="switch"><input type="checkbox" id="autoNext" checked /> encadear o próximo da lista</label>
+      <label class="switch"><input type="checkbox" id="loop" /> repetir o mesmo áudio</label>
+      <label class="switch"><input type="checkbox" id="safeVol" checked /> partir 20% mais baixo em gravações sem compressão</label>
+    </div>
+
+    <div class="action-row">
+      <button class="button button--accent" id="playAll" type="button">Tocar a lista</button>
+      <button class="button button--ghost" id="stop" type="button">Parar</button>
+      <button class="button button--ghost" id="check" type="button">Testar os 61 áudios</button>
+    </div>
+
+    <div id="checkBox" class="ok-box" hidden></div>
+    <div id="warnBox" class="warning" role="status" aria-live="polite" hidden></div>
+
+    <div class="helper-card">
+      <h3>Compatibilidade do seu navegador</h3>
+      <p style="margin:0;color:var(--muted);font-size:0.85rem">
+        Os registros chegam em 4 formatos. Se algum estiver indisponível aqui, os cards do tipo correspondente
+        mostram um aviso antes de você clicar.
+      </p>
+      <div class="formats" id="formats"></div>
+    </div>
+
+    <div class="helper-card">
+      <h3>De onde vem o som</h3>
+      <ul>
+        <li>Passarinhos e aves: acervos do <b>Xeno-canto</b> publicados no Commons.</li>
+        <li>Mamíferos, anfíbios, insetos: registros de campo, zoológicos e arquivos da <b>Macaulay Library / Yle / PLoS</b>.</li>
+        <li>Fotos: Wikimedia Commons (domínio público ou CC BY / CC BY-SA).</li>
+        <li>O áudio só é requisitado quando você aperta o play (<code>preload="none"</code>).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="panel catalog-panel" aria-labelledby="catalog-title">
+    <div class="section-heading catalog-heading">
+      <div>
+        <p class="eyebrow">Coleção</p>
+        <h2 id="catalog-title">Catálogo de vozes animais</h2>
+      </div>
+      <span id="countBadge" class="formula-badge" aria-live="polite"></span>
+    </div>
+    <div class="grid" id="grid"></div>
+    <p class="src-note">
+      Clique no play de qualquer card para ouvir. A ficha técnica embaixo muda junto com o animal escolhido.
+    </p>
+  </section>
+
+  <section class="panel study-panel" aria-labelledby="study-title">
+    <div class="section-heading">
+      <p class="eyebrow">Ficha técnica</p>
+      <h2 id="study-title">Sobre a vocalização</h2>
+    </div>
+    <div class="ficha-head" id="fichaHead"></div>
+    <div id="studyCards" class="study-grid"></div>
+    <p class="src-note" id="srcNote"></p>
+  </section>
+</main>
+
+<footer class="footer">
+  <p>Fauna Sonora — HTML, CSS e JavaScript puros em arquivo único, sem bibliotecas externas.</p>
+  <p>Áudios e imagens: Wikimedia Commons (licenças CC / domínio público). Nenhum som foi gerado por IA.</p>
+  <p>Mesmo modelo visual de <a href="index.html">Funções — Visualizador Matemático</a>.</p>
+</footer>
+
+<div class="player" id="player" data-open="0" role="region" aria-label="Reprodutor de áudio">
+  <img class="player__art" id="pArt" alt="" />
+  <div class="player__meta">
+    <strong id="pName">—</strong>
+    <span id="pSci">—</span>
+  </div>
+  <div class="player__mid">
+    <div class="seek" id="seek" role="slider" tabindex="0" aria-label="Progresso do áudio" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="seek__fill" id="seekFill"></div>
+    </div>
+    <div class="times"><span id="tCur">0:00</span><span id="tDur">0:00</span></div>
+  </div>
+  <div class="player__ctrl">
+    <button class="iconbtn" id="btnPrev" type="button" title="Anterior (seta ←)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg></button>
+    <button class="iconbtn iconbtn--main" id="btnPlay" type="button" title="Play/pause (espaço)"><svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+    <button class="iconbtn" id="btnNext" type="button" title="Próximo (seta →)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg></button>
+    <button class="iconbtn" id="btnMute" type="button" title="Silenciar (m)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 9v6h4l5 4V5L8 9zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg></button>
+    <button class="iconbtn" id="btnClose" type="button" title="Fechar player"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m19 6.4-1.4-1.4-5.6 5.6-5.6-5.6L5 6.4 10.6 12 5 17.6l1.4 1.4 5.6-5.6 5.6 5.6 1.4-1.4L13.4 12z"/></svg></button>
+  </div>
+</div>
+
+<audio id="audio" preload="none"></audio>
+
+<script>
+const GROUP_LABELS = {"passarinhos":"Passarinhos","aves":"Aves grandes","terrestres":"Mamíferos terrestres","fazenda":"Fazenda","marinhos":"Vida marinha","herpetos":"Anfíbios e répteis","insetos":"Insetos"};
+const DATA = [{"n":"Sabiá-laranjeira","s":"Turdus rufiventris","c":"passarinhos","g":"Turdus rufiventris - Rufous-bellied Thrush XC112745.mp3","d":86,"i":"Turdus-rufiventris.jpg","t":"canto","h":"Bordas de mata, cerrado, pomares e jardins de toda a América do Sul.","prod":"Siringe (órgão vocal na base da traqueia); canta de poleiro alto, quase sempre ao amanhecer.","f":"É a ave-símbolo do Brasil. O macho repete cada frase do repertório de 2 a 4 vezes e conhece de 10 a 15 estrofes.","p":"f/fc","ip":"4/44"},{"n":"Bem-te-vi","s":"Pitangus sulphuratus","c":"passarinhos","g":"Pitangus sulphuratus - Great Kiskadee XC248805.mp3","d":10,"i":"Great kiskadee (70240).jpg","t":"chamado territorial","h":"Áreas abertas, beiras de estrada e cidades, do sul dos EUA à Argentina.","prod":"Três notas explosivas e metálicas emitidas pela siringe, muitas vezes durante um voo curto.","f":"O nome popular é onomatopeia do grito. Defende o território atacando até carcarás e gaviões maiores que ele.","p":"e/ec","ip":"9/94"},{"n":"Uirapuru-do-amazonas","s":"Cyphorhinus arada","c":"passarinhos","g":"Cyphorhinus arada - Musician Wren XC242525.mp3","d":20,"i":"Cyphorhinus arada arada - Musician wren, Pte. Figueiredo, Amazonas, Brazil.jpg","t":"canto flautado","h":"Sub-bosque úmido da Amazônia e de florestas da América Central.","prod":"Notas longas e flautadas, com duetos do casal ao amanhecer e no fim da tarde.","f":"É o pássaro das lendas caboclas: reza a história que quem escuta seu canto fica encantado e desiste da caça.","p":"7/7c","ip":"3/3d"},{"n":"Corruíra","s":"Troglodytes musculus","c":"passarinhos","g":"Troglodytes musculus - Southern House Wren, São Paulo, Brazil XC436932.mp3","d":49,"i":"Southern house wren (Troglodytes musculus) Santiago.jpg","t":"castoleio","h":"Cercas, telhados, jardins e capoeiras, do Panamá à Argentina.","prod":"Repertório raspante e acelerado, com notas imitadas de outras aves e até sons mecânicos.","f":"Com só 12 cm, canta perto de 90 dB a um metro de distância — volume de liquidificador ligado.","p":"8/89","ip":"f/fe"},{"n":"Tico-tico","s":"Zonotrichia capensis","c":"passarinhos","g":"Zonotrichia capensis - Rufous-collared Sparrow XC601007.mp3","d":98,"i":"Rufous-collared sparrow (Zonotrichia capensis costaricensis) 2.jpg","t":"trilo","h":"Campos, jardins e encostas andinas, do sul do México à Terra do Fogo.","prod":"Trilo final descendente produzido na siringe, seguido de notas secas e isoladas.","f":"As populações andinas têm dialetos diferentes: um tico-tico chileno não responde ao chamado de um colombiano.","p":"2/2d","ip":"5/50"},{"n":"Cardeal-da-américa-do-norte","s":"Cardinalis cardinalis","c":"passarinhos","g":"Cardinalis cardinalis - Northern Cardinal XC569289.mp3","d":198,"i":"Male northern cardinal in Central Park (52612).jpg","t":"assobio","h":"Bosques clareados, pântanos e quintais da América do Norte.","prod":"Notas lentas, puras e assobiadas, sempre repetidas de duas a quatro vezes do mesmo poleiro.","f":"Macho e fêmea trocam cantos para combinar a vez na incubação — e a fêmea costuma dar a última palavra.","p":"1/13","ip":"5/5c"},{"n":"Pintassilgo-europeu","s":"Carduelis carduelis","c":"passarinhos","g":"Carduelis carduelis - European Goldfinch XC503634.mp3","d":8,"i":"072 Wild European goldfinch at the Parc Jura vaudois Photo by Giles Laurent.jpg","t":"chilreado","h":"Campos com cardos, clareiras e pomares da Eurásia; introduzido na Austrália.","prod":"Chamados metálicos ‘tilití’ emitidos em bando, quase sempre durante o voo ondulante.","f":"O nome científico vem de carduus: vive das sementes do cardo, que abre com o bico fino.","p":"1/11","ip":"e/eb"},{"n":"Melro-preto","s":"Turdus merula","c":"passarinhos","g":"Turdus merula - Common Blackbird XC533751.mp3","d":63,"i":"Common Blackbird.jpg","t":"canto","h":"Parques, bosques e jardins da Europa e da Ásia; introduzido na Nova Zelândia.","prod":"Flautas graves e variadas, com pausas curtas entre as frases.","f":"Melros de cidade cantam em tom mais alto e até à noite para escapar do ruído do tráfego.","p":"b/b6","ip":"a/a9"},{"n":"Rouxinol-comum","s":"Luscinia megarhynchos","c":"passarinhos","g":"Luscinia megarhynchos - Common Nightingale XC138451.mp3","d":101,"i":"Luscinia megarhynchos - Common nightingale - Nachtegaal (cropped).jpg","t":"canto noturno","h":"Matas ciliares, sarçaais e bosques úmidos da Europa e do norte da África.","prod":"Siringe muito musculosa: alterna assobios, estalos e trilos sem repetir a mesma frase duas vezes.","f":"Canta de madrugada e também no escuro, empoleirado no chão. Chega a 320 frases por minuto.","p":"7/7d","ip":"f/f1"},{"n":"Pica-pau-de-cabelo-branco","s":"Dryobates pubescens","c":"passarinhos","g":"Dryobates pubescens - Downy Woodpecker XC134879.mp3","d":140,"i":"Dryobates pubescens UL 03.jpg","t":"chamado e tamborilar","h":"Florestas claras, bosques de galeria e parques suburbanos da América do Norte.","prod":"Chamado ‘pik’ nasal na siringe, somado à percussão do bico em madeira oca.","f":"O tamborilar não é voz: é ferramenta de comunicação, e cada indivíduo tem um ritmo reconhecível.","p":"5/53","ip":"1/13"},{"n":"Beija-flor-de-anna","s":"Calypte anna","c":"passarinhos","g":"Calypte anna - Anna's Hummingbird XC153035.mp3","d":41,"i":"Anna's hummingbird (Calypte anna) male in flight Campbell River.jpg","t":"canto e ruído de voo","h":"Jardins e bosques do oeste da América do Norte.","prod":"Frases agudas e robóticas na siringe; o zumbido é puro batimento de asas, até 50 vezes por segundo.","f":"Na corte, o mergulho de exibição produz estalo sônico com as penas da cauda, perto de 100 dB.","p":"1/1e","ip":"3/3e"},{"n":"Andorinha-comum","s":"Hirundo rustica","c":"passarinhos","g":"Hirundo rustica - Barn Swallow XC83449.mp3","d":19,"i":"Rauchschwalbe Hirundo rustica.jpg","t":"gorjeio de voo","h":"Celeiros, pontes e beiras de rio; migra entre a Europa e a África.","prod":"Ráfagas de chilreios emitidos em pleno voo, com trilo final arrastado.","f":"Percorre até 11 000 km por ano entre sítios de nidificação e invernada, voltando ao mesmo ninho.","p":"7/77","ip":"7/7d"},{"n":"Pardal-doméstico","s":"Passer domesticus","c":"passarinhos","g":"Passer domesticus - House Sparrow XC86749.mp3","d":11,"i":"House sparrow male in Prospect Park (53532).jpg","t":"piado de bando","h":"Centros urbanos do mundo inteiro, exceto florestas densas e desertos.","prod":"‘Cheep’ curto e repetitivo; o macho encadeia várias notas ao anunciar o poleiro.","f":"Um dos poucos pássaros que se deram melhor com a urbanização: perdeu o medo e ganhou o mundo.","p":"3/37","ip":"9/9b"},{"n":"Rolinha-dos-ceus","s":"Columba livia","c":"passarinhos","g":"Columba livia - Rock Dove XC539061.mp3","d":39,"i":"Columba livia (Rock Dove, wild), Duncansby Head, Caithness, Scotland 1.jpg","t":"arrulho","h":"Falésias nativas; hoje praças, cornijas e telhados do mundo inteiro.","prod":"O coo sai da parte superior da siringe inflando o terço inicial do esôfago — o papo funciona como caixa de ressonância.","f":"O arrulho tem cinco notas: a primeira anuncia, as do meio pedem atenção e a última confirma o par.","p":"1/1a","ip":"1/10"},{"n":"Codorniz-comum","s":"Coturnix coturnix","c":"passarinhos","g":"Coturnix coturnix - Common Quail XC476230.mp3","d":15,"i":"Coturnix coturnix, Fraunberg, Bayern, Deutschland 1, Ausschnitt.jpg","t":"canto de território","h":"Trigais, prados e campos de cultivo da Europa, África e Ásia ocidental.","prod":"Sequência de três notas silábicas — ‘cot-cot-cotcodiz’ — emitida do chão, escondida entre as espigas.","f":"O canto do macho era usado como isca sonora na caça; hoje é referência para monitorar a qualidade do campo.","p":"6/6e","ip":"4/4f"},{"n":"Quero-quero","s":"Vanellus chilensis","c":"aves","g":"Vanellus Chilensis.ogg","d":34,"i":"Southern Lapwing - Indaiatuba, SP, BR.jpg","t":"grito de alarme","h":"Campos abertos, pastagens e gramados de todo o Brasil.","prod":"Grito cortado ‘qué-ro-qüê’ emitido com a cabeça erguida e as asas semiabertas; tem vocalizações de alarme específicas para cada predador.","f":"Faz o avestruz-de-pau: finge asa quebrada para afastar predadores do ninho e ataca de bico na altura do olho.","p":"4/42","ip":"4/42"},{"n":"Seriema","s":"Cariama cristata","c":"aves","g":"Cariama cristata call.flac","d":31,"i":"174 Red-legged seriema in Encontro das Águas State Park Photo by Giles Laurent.jpg","t":"berrido em dueto","h":"Campos limpos, pastagens e cerrados da América do Sul central.","prod":"Berrido grave emitido em dueto pelo casal, muitas vezes com a cabeça apontada para o céu.","f":"Não voa bem, mas corre e salta; e costuma usar cupinzeiros como mirante para cantar.","p":"2/28","ip":"6/64"},{"n":"Tucano-toco","s":"Ramphastos toco","c":"aves","g":"Toco Toucan call (Ramphastos toco).ogg","d":11,"i":"006 Toco toucan in Encontro das Águas State Park Photo by Giles Laurent.jpg","t":"gridos roucos","h":"Cerrado, florestas de galeria e bordas de mata da América do Sul.","prod":"Crocantes guturais produzidos com a glote; o bico enorme não amplifica som, mas ajuda a dissipar calor.","f":"O som parece o de um sapo grande. Os filhotes fazem um chocalho interno pedindo comida durante semanas.","p":"a/a8","ip":"b/b0"},{"n":"Arara-de-fronte-castanha","s":"Ara severus","c":"aves","g":"Ara severus - Chestnut-fronted Macaw XC519607.mp3","d":19,"i":"Ara severus - Guacamaya cariseca - Chestnut-Fronted Macaw (7503884654).jpg","t":"grito rouco","h":"Florestas, palmeirais e bordas de rio da América Central e do Sul.","prod":"Gritos rasgados emitidos pela siringe com a traqueia alongada; usam-nos para manter o bando unido em voo.","f":"É a menor das araras do gênero Ara e uma das poucas que toleram áreas alteradas pelo homem.","p":"d/d6","ip":"8/82"},{"n":"Arara-vermelha","s":"Ara macao","c":"aves","g":"Scarlet macaw 01.wav","d":16,"i":"Scarlet macaw (Ara macao cyanopterus) Copan.jpg","t":"alarido","h":"Dossel de floresta amazônica e centro-americana, até 500 m.","prod":"Gritos metálicos e estridentes que atravessam quilômetros de mata fechada, pois a floresta filtra sons graves.","f":"Vive em casais fixos e alimenta-se de argila de barranco para neutralizar toxinas das sementes.","p":"8/89","ip":"4/47"},{"n":"Coruja-do-mato","s":"Strix aluco","c":"aves","g":"Strix aluco - Tawny Owl XC494801.mp3","d":42,"i":"Strix aluco 3 (Martin Mecnarowski).jpg","t":"uivo e chiado","h":"Florestas, parques e cemitéros arborizados da Europa e da Ásia Ocidental.","prod":"Assobio grave ‘hu-huu-huu’ do macho, respondido pela fêmea com nota mais alta e aguda.","f":"As penas serrilhadas cortam o ar sem turbulência: voa em silêncio absoluto, abaixo de 1 dB de ruído próprio.","p":"1/16","ip":"5/55"},{"n":"Coruja-das-torres","s":"Tyto alba","c":"aves","g":"Tyto alba - Western Barn Owl XC592539.mp3","d":65,"i":"Barn Owl, Lancashire.jpg","t":"grito e cliques das crias","h":"Celeiros, paióis e campos abertos de quase todos os continentes.","prod":"O ‘shaar’ estridente sai da siringe; os filhotes fazem estalos de pedido de comida audíveis a dezenas de metros.","f":"O disco facial funciona como antena parabólica e permite localizar uma presa no escuro só pelo som.","p":"1/15","ip":"1/17"},{"n":"Águia-careca","s":"Haliaeetus leucocephalus","c":"aves","g":"Yellowstone sound library - Bald Eagle - 003.mp3","d":10,"i":"Bald eagle about to fly in Alaska (2016).jpg","t":"chiados de contato","h":"Lagos, rios e costas com peixes da América do Norte.","prod":"Série de assobios curtos e rispidos usados para contato entre o casal e com as crias — nada do rugido cinematográfico.","f":"O grito real lembra mais o de uma gaivota; no cinema é trocado pelo do falcão-gerfalcon por soar mais imponente.","p":"7/73","ip":"d/db"},{"n":"Falcão-peregrino","s":"Falco peregrinus","c":"aves","g":"Halcón peregrino.ogg","d":15,"i":"Falco peregrinus m Humber Bay Park Toronto.jpg","t":"akak-akak","h":"Penhascos, arranha-céus e áreas abertas de todo o planeta.","prod":"Chamado ‘ak-ak-ak’ rápido emitido perto do ninho para advertir intrusos.","f":"No mergulho de caça passa de 320 km/h — o bicho mais rápido do planeta e o som do ar é audível na câmera lenta.","p":"c/ca","ip":"9/9c"},{"n":"Pavão-indiano","s":"Pavo cristatus","c":"aves","g":"MalePeacockCall.ogg","d":8,"i":"Peacock on tree (52077240794).jpg","t":"berrido e infrasom","h":"Bosques secos e margens de rio do subcontinente indiano; criado em parques do mundo todo.","prod":"Berrido metálico ‘may-awe’ e, durante a corte, sons abaixo de 20 Hz que os humanos quase não ouvem.","f":"A fêmea percebe as infrasons a centenas de metros; a cauda é vista, mas é o peito que faz o ruído.","p":"0/0f","ip":"7/7f"},{"n":"Galo-doméstico","s":"Gallus gallus domesticus","c":"aves","g":"Rooster crowing.ogg","d":4,"i":"Male and female chicken sitting together.jpg","t":"cocorocó","h":"Galpões, fazendas e quintais do mundo inteiro.","prod":"O canto começa com o animal inflando os sacos aéreos claviculares; o som sai pela siringe com a traqueia em ‘S’.","f":"Cora antes do amanhecer porque a retina é fotossensível: o relógio interno já está ligado horas antes da luz.","p":"c/c5","ip":"8/84"},{"n":"Pato-real","s":"Anas platyrhynchos","c":"aves","g":"Anas platyrhynchos - Mallard XC112828.mp3","d":17,"i":"Anas platyrhynchos male female quadrat.jpg","t":"quack e assobio","h":"Lagos, represas, lagoas costeiras e parques urbanos do Hemisfério Norte.","prod":"O ‘qua’ alto e vibrado da fêmea vem da siringe alongada; o macho tem a traqueia em forma de sino e assobia baixo.","f":"O mito de que o quack não gera eco veio do próprio dorso curvo do bico, que espalha o som para trás.","p":"2/28","ip":"b/bf"},{"n":"Martim-pescador","s":"Alcedo atthis","c":"aves","g":"Alcedo atthis - Common Kingfisher XC476785.mp3","d":18,"i":"Alcedo atthis -England-8 (cropped).jpg","t":"chilreio telegráfico","h":"Beiras de rio, lagoas e canais de água limpa da Eurásia e do norte da África.","prod":"Nota única, aguda e cortante, emitida em voo rente à água, repetida como um apito de trem.","f":"Voa a 40 km/h e mergulha com o mesmo rumo: o cérebro corrige a refração da água em milissegundos.","p":"a/a8","ip":"b/bc"},{"n":"Corvo-comum","s":"Corvus corax","c":"aves","g":"Corvus corax - Northern Raven XC488951.mp3","d":47,"i":"Corvus corax clarionensis, Point Reyes National Seashore.jpg","t":"graus e sons onomatopaicos","h":"Tundras, desertos, montanhas e cidades do Hemisfério Norte.","prod":"Vocabulário com mais de 30 emissões: ‘graah’ profundo, cliques, sons de sino e imitações de outros animais.","f":"É um dos poucos animais que usam o som para mentir: emite alarme falso para afastar o rival e roubar a carcaça.","p":"1/1c","ip":"9/91"},{"n":"Pinguim-pequeno","s":"Eudyptula minor","c":"aves","g":"20091121 Little Penguin calls at St Kilda Breakwater.ogg","d":85,"i":"Eudyptula minor Bruny 1.jpg","t":"latido de reconhecimento","h":"Costas rochosas do sul da Austrália, Tasmânia e Nova Zelândia.","prod":"Berrido ‘eek-eek-aahk’ emitido com a cabeça inclinada para trás; o casal reconhece as vozes entre milhares.","f":"É o menor pinguim do mundo (33 cm) e volta para a mesma toca, ao mesmo horário, há décadas na mesma colônia.","p":"5/5a","ip":"3/38"},{"n":"Leão","s":"Panthera leo","c":"terrestres","g":"Lionroar.wav","d":43,"i":"020 The lion king Snyggve in the Serengeti National Park Photo by Giles Laurent.jpg","t":"rugido","h":"Savanas e mosaicos de floresta da África Subsaariana; uma pequena população na Índia.","prod":"Rugido de baixa frequência que se propaga por até 8 km; a crina escura ajuda a amortecer o impacto nas brigas.","f":"Os leões rugem em coro para demarcar o território, e cada bando reconhece a composição do vizinho pelo som.","p":"d/d3","ip":"a/a6"},{"n":"Onça-pintada","s":"Panthera onca","c":"terrestres","g":"Jaguar saw.flac","d":1,"i":"Standing jaguar.jpg","t":"sawt (contato amigável)","h":"Amazônia, Pantanal, Cerrado e Mata Atlântica, do México à Argentina.","prod":"Grunhido nasal curto — o sawt — usado para reconhecimento a curta distância, emitido com a boca entreaberta.","f":"Ao contrário do leão e do tigre, a onça não ruge: o osso hioide é rígido, e o crânio é feito para perfurar casco.","p":"b/b4","ip":"0/0a"},{"n":"Tigre","s":"Panthera tigris","c":"terrestres","g":"439280 schots angry-tiger.wav","d":66,"i":"Bengal tiger (Panthera tigris tigris) female 3 crop.jpg","t":"rugido","h":"Florestas de tigre-de-bengala, taiga siberiana, manguezais de Sundarbans.","prod":"Rugido grave acompanhado de infrasom, que atravessa a mata densa sem perder energia.","f":"O tigre também prusten: um grunhido suave de saudação, emitido com a boca fechada, equivalente ao miau dos gatos.","p":"2/29","ip":"b/b0"},{"n":"Lobo-cinzento","s":"Canis lupus","c":"terrestres","g":"Wolf howls.ogg","d":28,"i":"Canis lupus 265b.jpg","t":"uivo coletivo","h":"Florestas boreais, tundra, montanhas e pradarias do Hemisfério Norte.","prod":"Ar forçado pelas pregas vocais com o focinho erguido; o uivo é modulável em pitch para contar quantos são.","f":"A matilha altera as notas de propósito, para dar a impressão de ser maior, e o coro é ouvido a 10 km.","p":"8/87","ip":"5/5a"},{"n":"Coiote","s":"Canis latrans","c":"terrestres","g":"Pack of coyotes howling.ogg","d":44,"i":"2009-Coyote-Yosemite.jpg","t":"yalos, uivos e latidos","h":"Pradarias, desertos, subúrbios e cidades da América do Norte e Central.","prod":"Três repertórios combinados: uivo longo, yowl de agressão e latido curto de alarme.","f":"Um casal pode preencher o território com um coro que parece uma alcateia inteira; é o que assusta vizinhos.","p":"6/67","ip":"9/9c"},{"n":"Cachorro","s":"Canis lupus familiaris","c":"terrestres","g":"Barking of a dog.ogg","d":3,"i":"Huskiesatrest.jpg","t":"latido","h":"Convívio humano há mais de 15 000 anos, em todo o planeta.","prod":"Latido é variação da frequência das pregas vocais, muitas vezes precedido de inspiração forçada — por isso soa áspero.","f":"Cachorros aprenderam a latir para humanos: latem mais que lobos, mesmo criados juntos, e usam o som para pedir.","p":"a/a2","ip":"7/7a"},{"n":"Gato","s":"Felis catus","c":"terrestres","g":"Felis silvestris catus meows.ogg","d":11,"i":"Cat August 2010-4.jpg","t":"miau e ronronar","h":"Ambientes domésticos em todos os continentes habitados.","prod":"O miau é modulado de propósito para imitar o choro de um bebê humano; o ronronar vem de contrações da laringe a 25 Hz.","f":"Adultos quase não miam entre si: o repertório foi desenvolvido para falar conosco.","p":"5/53","ip":"1/15"},{"n":"Raposa-vermelha","s":"Vulpes vulpes","c":"terrestres","g":"FuchsSchreit.mp3","d":39,"i":"Portrait of a red fox in Rautas fjällurskog (cropped).jpg","t":"uivo e ‘gobble’","h":"Do ártico às cidades: tundra, florestas, campos e subúrbios do Hemisfério Norte.","prod":"Grito ascendente de território (the scream) e um ‘gobble’ de disputa emitido por machos rivais.","f":"Usa o campo sonoro para caçar: consegue localizar uma presa sob 40 cm de neve pelo som dos passos.","p":"f/fd","ip":"d/d2"},{"n":"Elefante-africano","s":"Loxodonta africana","c":"terrestres","g":"Bee-Threat-Elicits-Alarm-Call-in-African-Elephants-pone.0010346.s001.ogg","d":5,"i":"178 Male African bush elephant in Etosha National Park Photo by Giles Laurent.jpg","t":"ronronar e infrarrugido","h":"Savanas, bosques e desertos da África Subsaariana.","prod":"Rumbles abaixo de 20 Hz produzidos na laringe; viajam quilômetros pelo solo e são sentidos pelas patas e pela tromba.","f":"Este registro é um alarme-grito provocado por abelhas: manadas que já sofreram picadas emitem o som e fogem.","p":"6/6b","ip":"9/94"},{"n":"Bugio","s":"Alouatta sp.","c":"terrestres","g":"Howler monkey.ogg","d":25,"i":"Mantled howler monkey and baby (81337)2.jpg","t":"rugido de território","h":"Mata Atlântica, florestas da América Central e do Sul, dossel contínuo.","prod":"O ar passa por um osso hioide enorme, que funciona como caixa de ressonância dentro do peito.","f":"É um dos animais mais altos da floresta: chega a 114 dB e é ouvido a 5 km, o que evita brigas físicas.","p":"b/b8","ip":"8/86"},{"n":"Urso-pardo","s":"Ursus arctos","c":"terrestres","g":"Yellowstone sound library - Grizzly Bears Roar - 001.mp3","d":11,"i":"2010-kodiak-bear-1.jpg","t":"grunhido e huff","h":"Florestas, montanhas e tundra da América do Norte, Europa e Ásia.","prod":"Grunhidos, estalos de lábios e huffing rítmico; crias fazem um murmúrio contínuo enquanto mamam.","f":"O huff-huff é normalmente aviso de desconforto, não ataque: é o urso pedindo distância antes de decidir.","p":"e/ef","ip":"7/71"},{"n":"Esquilo-cinzento","s":"Sciurus carolinensis","c":"terrestres","g":"Grey Squirrel (Sciurus carolinensis) (W1CDR0001470 BD12).ogg","d":66,"i":"EasternGraySquirrel GAm.jpg","t":"chuck e trillo","h":"Florestas de folha caduca e parques; introduzido na Europa.","prod":"Alarme ‘chuck-chuck’ seco e trillo de submissão emitido com a cauda erguida, sempre com saltos no galho.","f":"Finge que enterra nozes para enganar os observadores — e o som do enterro fazemos de propósito para plateia.","p":"d/d8","ip":"1/15"},{"n":"Morcego","s":"Eptesicus fuscus","c":"terrestres","g":"Bat feeding buzz.wav","d":7,"i":"Big-eared-townsend-fledermaus.jpg","t":"ecolocalização","h":"Cavernas, florestas, pontes e bairros de todo o mundo, exceto regiões polares.","prod":"Pulsos ultrassônicos emitidos pela laringe, 200 por segundo durante a perseguição (o feeding buzz).","f":"O arquivo é a gravação transposta para a faixa audível: no ar, os cliques ficam acima de 20 kHz.","p":"e/e7","ip":"7/77"},{"n":"Vaca","s":"Bos taurus","c":"fazenda","g":"Single Cow Moo.ogg","d":4,"i":"Cow (Fleckvieh breed) Oeschinensee Slaunger 2009-07-07.jpg","t":"mugido","h":"Pastagens, currais e fazendas leiteiras do mundo inteiro.","prod":"Mugido grave sustentado pela vibração das pregas vocais com pouca passagem de ar — por isso o som parece vindo do peito.","f":"Vacas chamam as crias pelo mugido individual e respondem ao próprio nome quando a ordenha é sempre no mesmo horário.","p":"a/a5","ip":"8/8c"},{"n":"Cavalo","s":"Equus caballus","c":"fazenda","g":"Wiehern.ogg","d":2,"i":"Nokota Horses cropped.jpg","t":"relincho","h":"Campos, estrebarias e rebanhos selvagens (mustangs) de áreas abertas.","prod":"Relincho agudo emitido com as narinas semi-fechadas; o nicker grave e roçado é o som de reconhecimento social.","f":"Cavalos distinguem pelo relincho quem são seus companheiros de baia e quem é estranho chegando.","p":"d/db","ip":"d/de"},{"n":"Burro","s":"Equus asinus","c":"fazenda","g":"157763 felix-blume a-donkey-is-braying-in-his-enclosure-in-south-of-france.wav","d":22,"i":"Donkey in Clovelly, North Devon, England.jpg","t":"zurrar","h":"Origem no asno-selvagem africano; hoje áreas áridas e trabalho rural no mundo todo.","prod":"O zurrar dura até 3 segundos por fase e usa duas emissões seguidas: uma alta, expirada, e outra baixa, inspirada.","f":"O burro usa o zurro para chamar o grupo em tempestade de areia, quando a visão não serve: é mais eficiente que o relincho.","p":"2/25","ip":"1/1a"},{"n":"Ovelha","s":"Ovis aries","c":"fazenda","g":"Sheep bleating.ogg","d":8,"i":"Flock of sheep.jpg","t":"balido","h":"Campos, montanhas e sistemas extensivos em todos os continentes.","prod":"Balido nasal de contato entre mãe e cordeiro, modulado pelo comprimento do trato vocal.","f":"Ovelhas reconhecem até 50 indivíduos pela voz por anos e lembram de quem as tratou bem.","p":"1/13","ip":"2/2c"},{"n":"Cabra","s":"Capra hircus","c":"fazenda","g":"Herd of goats bleating.ogg","d":43,"i":"Hausziege 04.jpg","t":"berro","h":"Terrenos rochosos, montanhas e sistemas familiares de criação; uma das primeiras espécies domesticadas.","prod":"Berro grave e vibrado que o bode emite durante a estação reprodutiva, sem parar, dia e noite.","f":"Cabras respondem ao próprio nome e usam o berro em três variações: contato, angústia e protesto.","p":"b/bc","ip":"b/b2"},{"n":"Porco","s":"Sus scrofa domesticus","c":"fazenda","g":"Wa Wanlin aclevaedje pourceas (I).ogg","d":291,"i":"Pig farm Vampula 1.jpg","t":"grunhido e guincho","h":"Chiqueiros, áreas alagadiças e matas; o javali é o ancestral selvagem.","prod":"Grunhidos de contato com frequência modulada por sacos laríngeos; leitões emitem guinchos agudos ao disputar a teta.","f":"Porcos têm mais de 20 vocalizações distintas e usam sons graves para localizar comida no escuro do chiqueiro.","p":"3/3a","ip":"3/3e"},{"n":"Baleia-jubarte","s":"Megaptera novaeangliae","c":"marinhos","g":"Humpback whale wheezeblow.ogg","d":61,"i":"Humpback whale breaching off Cabo San Lucas.jpg","t":"canto","h":"Oceanos polares e tropicais; migra até 8 000 km por ano.","prod":"Sem cordas vocais humanas: o ar circula entre sacos nasal e laríngeo, e por isso ela canta sem precisar inspirar.","f":"Os machos de uma mesma bacia cantam exatamente a mesma música, que evolui temporada a temporada.","p":"d/d4","ip":"d/d7"},{"n":"Orca","s":"Orcinus orca","c":"marinhos","g":"Killer whale.ogg","d":30,"i":"Killerwhales jumping.jpg","t":"chamado de reconhecimento","h":"Todos os oceanos, do Ártico à Antártida; caça em grupos familiares.","prod":"Ar comprimido entre os lábios fônicos no topo da cabeça, independente da respiração.","f":"Cada família tem dialeto próprio: a cria aprende o sotaque da mãe e o conserva a vida inteira.","p":"7/79","ip":"3/37"},{"n":"Elefante-marinho-do-sul","s":"Mirounga leonina","c":"marinhos","g":"AudioElleSeals.oga","d":8,"i":"See elefanten edit.jpg","t":"rugido de disputa","h":"Praias da Patagônia, Geórgia do Sul e arquipélagos subantárticos.","prod":"O pescoço inflável, que parece uma probóscide, funciona como ressonador e amplifica o latido grave.","f":"Durante a disputa, os machos pulsam o som a mais de 120 dB e conseguem ficar semanas sem beber água.","p":"3/36","ip":"d/d8"},{"n":"Sapo-comum","s":"Bufo bufo","c":"herpetos","g":"Bufo bufo call1.ogg","d":17,"i":"Common Toad Cornwall.jpeg","t":"grunhido de acasalamento","h":"Charcos, bosques e jardins da Europa e do norte da Ásia.","prod":"Empurra ar pelos pulmões enquanto a pele do topo da cabeça vibra; o gênero Bufo não tem saco vocal.","f":"Na migração reprodutiva, machos se agarram a qualquer coisa que pareça fêmea, inclusive paus e outros machos.","p":"0/09","ip":"1/18"},{"n":"Perereca-europeia","s":"Hyla arborea","c":"herpetos","g":"XN Hyla arborea 01.ogg","d":27,"i":"European tree frog (Hyla arborea) on hemp-agrimony (Eupatorium cannabinum).jpg","t":"coro noturno","h":"Vinhedos, salgueiros e lagoas da Europa; dorme de dia em folhas.","prod":"Dois sacos vocais laterais, inflados como bolhas, amplificam o ‘é-é-é’ a centenas de metros.","f":"O coro de pererecas passa de 90 dB — e há registros de gravações do canto delas feitas em disco desde 1911.","p":"5/53","ip":"a/a7"},{"n":"Rã-verde","s":"Pelophylax ridibundus","c":"herpetos","g":"Marsh frog (Pelophylax ridibundus) call.ogg","d":23,"i":"Marsh frog (Pelophylax ridibundus).jpg","t":"croc-croc","h":"Lagos, pântanos e canais da Eurásia; vive quase sempre na água.","prod":"Sacos vocais redondos e esbranquiçados nos cantos da boca, inflados enquanto a rã fica submersa.","f":"É uma das maiores rãs da Europa, com até 14 cm, e salta mais de um metro a partir da posição de espera.","p":"5/59","ip":"e/ea"},{"n":"Jacaré-americano","s":"Alligator mississippiensis","c":"herpetos","g":"Alligatorbellow1.ogg","d":24,"i":"American Alligator.jpg","t":"bramido com infrasom","h":"Pântanos, rios e lagos do sudeste dos Estados Unidos.","prod":"Com a glote fechada, o ar vibra e produz um bramido grave cheio de infrasom.","f":"No auge da estação o bramido é tão intenso que a água sobre as costas do animal salta em gotas.","p":"1/1a","ip":"0/03"},{"n":"Cascavel-diamante","s":"Crotalus atrox","c":"herpetos","g":"Rattlesnake.ogg","d":15,"i":"(Westliche Diamantklapperschlange) Crotalus atrox.jpg","t":"chocalho","h":"Desertos, caatingas e áreas rochosas do México e do sudoeste dos EUA.","prod":"Não vem da boca: são anéis córneos ocos na cauda vibrando em frequência que os mamíferos percebem muito bem.","f":"Cada muda de pele acrescenta um anel, e os anéis podem se soltar: por isso o chocalho não mede a idade.","p":"2/22","ip":"e/ec"},{"n":"Cigada-dos-campos","s":"Neotibicen sp.","c":"insetos","g":"Florida Cicada Song.ogg","d":86,"i":"Cicada - Neotibicen linnei, Woodbridge, Virginia.jpg","t":"zumbido de timbal","h":"Copas de árvores decíduas da América do Norte.","prod":"Músculos abdominais curvam e relaxam dois timbais de quitina centenas de vezes por segundo; o abdômen vazio é a câmara de ressonância.","f":"Passa de 95 dB. Cigadas periódicas emergem em ciclos de 13 ou 17 anos, números primos que dificultam a vida dos predadores.","p":"c/c3","ip":"a/a1"},{"n":"Grilo-campônio","s":"Gryllus campestris","c":"insetos","g":"Gryllus campestris - sound.ogg","d":32,"i":"Gryllus campestris 3.jpg","t":"estridulação","h":"Clareiras secas, muros e campos ensolarados da Europa central.","prod":"A lima de uma élitro é raspada na outra por um músculo; a forma das asas faz o papel de corneta.","f":"A frequência sobe com a temperatura ambiente: contando os chirps em 15 segundos e somando 5, estima-se a temperatura.","p":"9/9c","ip":"e/e9"},{"n":"Mamangava","s":"Bombus terrestris","c":"insetos","g":"Bombus buzz.ogg","d":11,"i":"Bombus lapidarius - Melilotus officinalis - Tallinn.jpg","t":"zumbido de voo","h":"Prados, hortas e bordas de campo da Europa; também usada em estufas.","prod":"Asas batendo cerca de 130 vezes por segundo, com o corpo peludo servindo de ressonador.","f":"Pratica polinização por vibração: emite um zumbido em torno de 400 Hz que derruba o pólen da flor.","p":"c/ca","ip":"c/c4"},{"n":"Gafanhoto-migratório","s":"Locusta migratoria","c":"insetos","g":"Grasshoppers.ogg","d":17,"i":"Locusta-migratoria-wanderheuschrecke.jpg","t":"crepitar de pernas","h":"Estepes, lavouras e dunas de todos os continentes, exceto a América.","prod":"O fêmur é raspado contra a série de cristas da asa; em bando, os estalos se fundem num chiado contínuo.","f":"Quando a população cresce, o inseto muda de cor, de apetite e de comportamento: nasce a praga.","p":"2/28","ip":"2/25"}];
+
+(() => {
+  'use strict';
+
+  const CDN = 'https://upload.wikimedia.org/wikipedia/commons/';
+  const DESC = 'https://commons.wikimedia.org/wiki/File:';
+  const enc = (name) => encodeURIComponent(name.replace(/ /g, '_'));
+  const audioUrl = (a) => CDN + a.p + '/' + enc(a.g);
+  const imgUrl = (a, w) => CDN + 'thumb/' + a.ip + '/' + enc(a.i) + '/' + w + 'px-' + enc(a.i);
+  const imgOrig = (a) => CDN + a.ip + '/' + enc(a.i);
+  // se o thumbnail falhar, tenta o arquivo original; se falhar de novo, mostra o placeholder
+  const imgChain = (a, w) => [imgUrl(a, w), imgOrig(a)];
+  const fmtOf = (name) => { const f = (name.split('.').pop() || '').toLowerCase(); return f === 'oga' ? 'ogg' : f; };
+  const mmss = (s) => { if (!isFinite(s) || s < 0) return '0:00'; s = Math.round(s); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+  const norm = (t) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  // ------------------------------------------------------ compatibilidade --
+  const probe = document.createElement('audio');
+  const FORMATS = {
+    mp3: ['audio/mpeg', 'MP3'],
+    ogg: ['audio/ogg; codecs="vorbis"', 'OGG'],
+    wav: ['audio/wav', 'WAV'],
+    flac: ['audio/flac', 'FLAC']
+  };
+  const SUPPORT = {};
+  Object.entries(FORMATS).forEach(([k, [mime, label]]) => {
+    let r = '';
+    try { r = probe.canPlayType(mime) || (k === 'wav' ? 'probably' : r); } catch (e) { r = ''; }
+    SUPPORT[k] = r !== '';
+    if (!SUPPORT[k] && k === 'flac') SUPPORT[k] = probe.canPlayType('audio/x-flac') !== '';
+  });
+
+  const els = {
+    q: document.getElementById('q'),
+    chips: document.getElementById('chips'),
+    sort: document.getElementById('sort'),
+    grid: document.getElementById('grid'),
+    badge: document.getElementById('countBadge'),
+    audio: document.getElementById('audio'),
+    player: document.getElementById('player'),
+    pArt: document.getElementById('pArt'),
+    pName: document.getElementById('pName'),
+    pSci: document.getElementById('pSci'),
+    seek: document.getElementById('seek'),
+    seekFill: document.getElementById('seekFill'),
+    tCur: document.getElementById('tCur'),
+    tDur: document.getElementById('tDur'),
+    btnPlay: document.getElementById('btnPlay'),
+    playIcon: document.getElementById('playIcon'),
+    btnPrev: document.getElementById('btnPrev'),
+    btnNext: document.getElementById('btnNext'),
+    btnMute: document.getElementById('btnMute'),
+    btnClose: document.getElementById('btnClose'),
+    vol: document.getElementById('vol'),
+    volLabel: document.getElementById('volLabel'),
+    autoNext: document.getElementById('autoNext'),
+    loop: document.getElementById('loop'),
+    safeVol: document.getElementById('safeVol'),
+    playAll: document.getElementById('playAll'),
+    stop: document.getElementById('stop'),
+    check: document.getElementById('check'),
+    checkBox: document.getElementById('checkBox'),
+    warn: document.getElementById('warnBox'),
+    formats: document.getElementById('formats'),
+    fichaHead: document.getElementById('fichaHead'),
+    studyCards: document.getElementById('studyCards'),
+    srcNote: document.getElementById('srcNote')
+  };
+
+  const state = { group: 'todos', text: '', sort: 'az', current: -1, list: [], checking: false, watchdog: 0 };
+  const VERIFY = new Map();
+
+  DATA.forEach((a, i) => { a.id = i; a.fmt = fmtOf(a.g); });
+
+  // --------------------------------------------------------------- filtros --
+  const GROUPS = { todos: 'Todos', ...GROUP_LABELS };
+  const counts = { todos: DATA.length };
+  Object.keys(GROUP_LABELS).forEach((g) => { counts[g] = DATA.filter((a) => a.c === g).length; });
+
+  els.chips.innerHTML = Object.entries(GROUPS).map(([g, label]) =>
+    `<button class="chip" type="button" data-group="${g}" aria-pressed="${g === 'todos' ? 'true' : 'false'}">${esc(label)}<b>${counts[g] || 0}</b></button>`
+  ).join('');
+
+  els.formats.innerHTML = Object.entries(FORMATS).map(([k, [, label]]) =>
+    `<div class="fmt" data-ok="${SUPPORT[k] ? 1 : 0}">${label}<br>${SUPPORT[k] ? 'ok' : 'sem suporte'}</div>`
+  ).join('');
+
+  function applyFilters() {
+    const t = norm(state.text.trim());
+    let list = DATA.filter((a) => {
+      if (state.group !== 'todos' && a.c !== state.group) return false;
+      if (!t) return true;
+      return norm(a.n + ' ' + a.s + ' ' + a.t + ' ' + (GROUP_LABELS[a.c] || '')).includes(t);
+    });
+    const by = {
+      az: (x, y) => x.n.localeCompare(y.n, 'pt-BR'),
+      za: (x, y) => y.n.localeCompare(x.n, 'pt-BR'),
+      'dur-desc': (x, y) => y.d - x.d,
+      'dur-asc': (x, y) => x.d - y.d,
+      group: (x, y) => (x.c.localeCompare(y.c) || x.n.localeCompare(y.n, 'pt-BR'))
+    }[state.sort];
+    state.list = list.slice().sort(by);
+    render();
+  }
+
+  function render() {
+    els.grid.innerHTML = state.list.map((a) => {
+      const v = VERIFY.get(a.id);
+      const bad = !SUPPORT[a.fmt];
+      const badge = bad ? '<span class="badge badge--warn" title="formato não suportado neste navegador">' + a.fmt + '</span>'
+        : v === 'ok' ? '<span class="badge badge--ok" title="arquivo respondeu ok">✓ ' + a.fmt + '</span>'
+        : v === 'fail' ? '<span class="badge badge--warn" title="não foi possível confirmar">? ' + a.fmt + '</span>'
+        : '<span class="badge">' + a.fmt + '</span>';
+      return `<article class="card" data-playing="0" data-id="${a.id}">
+        <div class="card__media" data-img>
+          <img src="${imgUrl(a, 480)}" data-alt="${imgOrig(a)}" alt="${esc(a.n)}" loading="lazy" decoding="async" />
+          <div class="card__ph">${esc(a.n[0])}</div>
+          ${badge}
+          <button class="play" type="button" data-play="${a.id}" aria-label="Tocar o som de ${esc(a.n)}">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <span>ouvir</span>
+          </button>
+          <div class="eq"><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="card__body">
+          <h3 class="card__name">${esc(a.n)}</h3>
+          <p class="card__sci">${esc(a.s)}</p>
+          <div class="tags">
+            <span class="tag tag--som">${esc(a.t)}</span>
+            <span class="tag">${mmss(a.d)}</span>
+          </div>
+        </div>
+      </article>`;
+    }).join('');
+
+    els.badge.textContent = state.list.length + (state.list.length === 1 ? ' espécie' : ' espécies');
+    state.list.forEach((a) => { if (a.id === state.current) markPlaying(a.id, true); });
+  }
+
+  function markPlaying(id, on) {
+    const card = els.grid.querySelector('.card[data-id="' + id + '"]');
+    if (card) card.dataset.playing = on ? '1' : '0';
+  }
+
+  // -------------------------------------------------------- ficha técnica --
+  function ficha(a) {
+    els.fichaHead.innerHTML = `<div class="ficha-title">
+        <img src="${imgUrl(a, 120)}" data-alt="${imgOrig(a)}" alt="" loading="lazy" />
+        <div><h2>${esc(a.n)}</h2><p>${esc(a.s)} · ${esc(GROUP_LABELS[a.c])}</p></div>
+      </div>
+      <a class="button button--ghost" style="text-decoration:none;display:inline-flex;align-items:center" href="${DESC + enc(a.g)}" target="_blank" rel="noopener">arquivo original ↗</a>`;
+    els.studyCards.innerHTML = [
+      ['O que ele está fazendo', a.t + ' gravado em campo, sem edição de timbre'],
+      ['Onde vive', a.h],
+      ['Como o som é produzido', a.prod],
+      ['Curiosidade', a.f]
+    ].map(([label, value]) => `<div class="study-card">
+        <p class="study-card__label">${esc(label)}</p>
+        <div class="study-card__value">${esc(value)}</div>
+      </div>`).join('');
+    els.srcNote.innerHTML = `Duração do registro: <b>${mmss(a.d)}</b> · formato <b>${a.fmt.toUpperCase()}</b> ·
+      fonte <a href="${DESC + enc(a.g)}" target="_blank" rel="noopener">Wikimedia Commons</a> ·
+      foto <a href="${DESC + enc(a.i)}" target="_blank" rel="noopener">aqui</a>.
+      ${SUPPORT[a.fmt] ? '' : '<b>Atenção:</b> seu navegador não suporta ' + a.fmt.toUpperCase() + '.'}`;
+  }
+
+  // --------------------------------------------------------------- player --
+  function setWarn(msg) {
+    els.warn.hidden = !msg;
+    els.warn.textContent = msg || '';
+  }
+
+  function play(id) {
+    const a = DATA[id];
+    if (!a) return;
+    setWarn('');
+    if (!SUPPORT[a.fmt]) {
+      setWarn('Seu navegador não consegue decodificar ' + a.fmt.toUpperCase() + '. Você pode abrir o arquivo direto no Commons pelo link da ficha técnica.');
+      ficha(a);
+      return;
+    }
+    state.current = id;
+    ficha(a);
+    els.player.dataset.open = '1';
+    els.pArt.dataset.alt = imgOrig(a);
+    delete els.pArt.dataset.tried;
+    els.pArt.src = imgUrl(a, 120);
+    els.pName.textContent = a.n;
+    els.pSci.textContent = a.s + ' · ' + a.t + ' · ' + mmss(a.d);
+    document.querySelectorAll('.card[data-playing="1"]').forEach((c) => { c.dataset.playing = '0'; });
+    markPlaying(id, true);
+
+    const au = els.audio;
+    au.pause();
+    au.src = audioUrl(a);
+    au.currentTime = 0;
+    au.loop = els.loop.checked;
+    au.playbackRate = 1;
+    const pad = els.safeVol.checked && a.fmt !== 'mp3' ? 0.8 : 1;
+    au.volume = Math.max(0, Math.min(1, (Number(els.vol.value) / 100) * pad));
+    const p = au.play();
+    if (p && p.catch) p.catch((err) => {
+      setWarn('O navegador bloqueou o início automático (' + (err.name || 'erro') + '). Toque no play do player para continuar.');
+      updatePlayIcon(false);
+    });
+    clearTimeout(state.watchdog);
+    state.watchdog = setTimeout(() => {
+      if (au.readyState < 3 && !au.paused) {
+        setWarn('A conexão com o Wikimedia Commons está lenta ou bloqueada nesta rede. Tente de novo ou abra o arquivo direto no link da ficha técnica.');
+      }
+    }, 12000);
+  }
+
+  function updatePlayIcon(playing) {
+    els.playIcon.innerHTML = playing
+      ? '<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>'
+      : '<path d="M8 5v14l11-7z"/>';
+  }
+
+  function toggle() {
+    const au = els.audio;
+    if (state.current < 0) { if (state.list[0]) play(state.list[0].id); return; }
+    if (au.paused) { if (au.ended) au.currentTime = 0; au.play(); } else au.pause();
+  }
+
+  function step(delta) {
+    if (!state.list.length) return;
+    let idx = state.list.findIndex((a) => a.id === state.current);
+    if (idx < 0) idx = delta > 0 ? -1 : 0;
+    const next = state.list[(idx + delta + state.list.length) % state.list.length];
+    play(next.id);
+  }
+
+  const au = els.audio;
+  au.addEventListener('playing', () => { setWarn(''); updatePlayIcon(true); clearTimeout(state.watchdog); });
+  au.addEventListener('pause', () => updatePlayIcon(false));
+  au.addEventListener('ended', () => {
+    updatePlayIcon(false);
+    if (els.autoNext.checked && !els.loop.checked) step(1);
+  });
+  au.addEventListener('timeupdate', () => {
+    const real = au.duration && isFinite(au.duration) ? au.duration : 0;
+    const est = DATA[state.current] ? DATA[state.current].d : 0;
+    const d = real || est;
+    const ratio = real ? au.currentTime / real : (est ? Math.min(1, au.currentTime / est) : 0);
+    els.tCur.textContent = mmss(au.currentTime);
+    els.tDur.textContent = mmss(d) + (real ? '' : '~');
+    const pct = ratio * 100;
+    els.seekFill.style.width = pct + '%';
+    els.seek.setAttribute('aria-valuenow', Math.round(pct));
+  });
+  au.addEventListener('error', () => {
+    const code = au.error ? au.error.code : 0;
+    const why = { 1: 'carregamento cancelado', 2: 'falha de rede', 3: 'decodificação falhou', 4: 'formato não suportado' }[code] || 'falha desconhecida';
+    const a = DATA[state.current];
+    setWarn('Não deu play (' + why + '). ' + (a ? 'Você pode abrir o registro no Commons pelo link da ficha técnica.' : '') + ' Verifique a conexão e tente de novo.');
+    updatePlayIcon(false);
+    clearTimeout(state.watchdog);
+  });
+
+  els.seek.addEventListener('click', (e) => {
+    const d = (au.duration && isFinite(au.duration)) ? au.duration : (DATA[state.current] ? DATA[state.current].d : 0);
+    if (!d) return;
+    const r = els.seek.getBoundingClientRect();
+    const frac = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+    if (au.duration && isFinite(au.duration)) au.currentTime = frac * d;
+    else { au.currentTime = frac * d; }
+  });
+  els.seek.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      au.currentTime = Math.max(0, au.currentTime + (e.key === 'ArrowRight' ? 5 : -5));
+    }
+  });
+  els.btnPlay.addEventListener('click', toggle);
+  els.btnPrev.addEventListener('click', () => step(-1));
+  els.btnNext.addEventListener('click', () => step(1));
+  els.btnClose.addEventListener('click', () => { au.pause(); els.player.dataset.open = '0'; });
+  els.btnMute.addEventListener('click', () => {
+    au.muted = !au.muted;
+    els.btnMute.dataset.on = au.muted ? '1' : '0';
+  });
+  els.vol.addEventListener('input', () => {
+    els.volLabel.textContent = els.vol.value + '%';
+    const cur = DATA[state.current];
+    const pad = els.safeVol.checked && cur && cur.fmt !== 'mp3' ? 0.8 : 1;
+    au.volume = Math.max(0, Math.min(1, (Number(els.vol.value) / 100) * pad));
+  });
+  els.loop.addEventListener('change', () => { au.loop = els.loop.checked; });
+  els.safeVol.addEventListener('change', () => els.vol.dispatchEvent({ type: 'input' }));
+  els.playAll.addEventListener('click', () => { if (state.list[0]) play(state.list[0].id); });
+  els.stop.addEventListener('click', () => { au.pause(); au.currentTime = 0; els.player.dataset.open = '0'; setWarn(''); });
+
+  els.q.addEventListener('input', () => { state.text = els.q.value; applyFilters(); });
+  els.sort.addEventListener('change', () => { state.sort = els.sort.value; applyFilters(); });
+  els.chips.addEventListener('click', (e) => {
+    const b = e.target.closest('.chip');
+    if (!b) return;
+    state.group = b.dataset.group;
+    els.chips.querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', String(c === b)));
+    applyFilters();
+  });
+
+  els.grid.addEventListener('click', (e) => {
+    const p = e.target.closest('[data-play]');
+    if (p) { play(Number(p.dataset.play)); return; }
+    const card = e.target.closest('.card');
+    if (card) { const a = DATA[Number(card.dataset.id)]; if (a) { ficha(a); card.scrollIntoView({ block: 'nearest' }); } }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (e.code === 'Space') { e.preventDefault(); toggle(); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+    else if (e.key === 'm') els.btnMute.click();
+  });
+
+  // ---------------------------------------------------------------- teste --
+  els.check.addEventListener('click', async () => {
+    if (state.checking) return;
+    state.checking = true;
+    els.check.disabled = true;
+    els.check.textContent = 'testando…';
+    els.checkBox.hidden = false;
+    els.checkBox.textContent = 'Consultando o CDN do Wikimedia Commons…';
+    const queue = DATA.slice();
+    let ok = 0, fail = 0, blocked = 0;
+    const worker = async () => {
+      while (queue.length) {
+        const a = queue.shift();
+        try {
+          const res = await fetch(audioUrl(a), { method: 'HEAD', mode: 'cors', cache: 'no-store' });
+          if (res.ok) { VERIFY.set(a.id, 'ok'); ok++; }
+          else { VERIFY.set(a.id, 'fail'); fail++; }
+        } catch (err) { VERIFY.set(a.id, 'unknown'); blocked++; }
+      }
+    };
+    await Promise.all([worker(), worker(), worker(), worker()]);
+    els.checkBox.textContent = ok + ' de ' + DATA.length + ' registros responderam no CDN'
+      + (fail ? ' · ' + fail + ' com resposta inesperada' : '')
+      + (blocked ? ' · ' + blocked + ' sem resposta por causa de bloqueio de CORS na rede (isso não impede o play)' : '')
+      + '. Toques individuais continuam sob demanda.';
+    render();
+    els.check.disabled = false;
+    els.check.textContent = 'Testar os ' + DATA.length + ' áudios';
+    state.checking = false;
+  });
+
+  // ------------------------------------------------------------- fallback --
+  document.addEventListener('error', (e) => {
+    const img = e.target;
+    if (!img || img.tagName !== 'IMG') return;
+    const next = img.dataset.alt;
+    if (next && !img.dataset.tried) { img.dataset.tried = '1'; img.src = next; return; }
+    const media = img.closest('.card__media');
+    if (media) { media.classList.add('noimg'); return; }
+    img.style.visibility = 'hidden';
+  }, true);
+
+  au.volume = 0.8;
+  applyFilters();
+  if (DATA.length) {
+    const hero = DATA.find((a) => a.n.indexOf('Sabi') === 0) || DATA[0];
+    ficha(hero);
+  }
+})();
+</script>
+</body>
+</html>

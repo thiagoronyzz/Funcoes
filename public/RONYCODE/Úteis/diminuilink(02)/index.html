@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encurtador de Links Pro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+        :root {
+            --bg-color: #f4f7fb;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --accent-blue: #2563eb;
+            --accent-blue-hover: #1d4ed8;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --danger: #ef4444;
+            --success: #22c55e;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container { max-width: 1200px; width: 100%; }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .header-text h3 {
+            color: var(--accent-blue);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-text h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box {
+            background: var(--card-bg);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            min-width: 240px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            height: fit-content;
+        }
+
+        .card-header {
+            font-size: 0.75rem;
+            color: var(--accent-blue);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group { margin-bottom: 1.5rem; }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 0.9rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        input:focus { border-color: var(--accent-blue); }
+
+        .btn-primary {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 0.9rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .btn-primary:hover { background-color: var(--accent-blue-hover); }
+        .btn-primary:disabled { background-color: var(--text-light); cursor: not-allowed; }
+
+        .result-card {
+            display: none;
+            background: #eff6ff;
+            border: 2px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .short-url-box {
+            background: white;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid #bfdbfe;
+            font-weight: 700;
+            color: var(--accent-blue);
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+            word-break: break-all;
+        }
+
+        .history-item {
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .history-link { font-weight: 700; color: var(--accent-blue); text-decoration: none; }
+        .history-orig { font-size: 0.75rem; color: var(--text-light); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 250px; }
+
+        .btn-copy-small {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            background: #f1f5f9;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        #status-msg { font-size: 0.85rem; margin-top: 0.6rem; font-weight: 600; display: none; }
+        .error { color: var(--danger); }
+        .loading { color: var(--text-light); }
+
+        @media (max-width: 768px) {
+            .main-content { grid-template-columns: 1fr; }
+            .header { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="header">
+        <div class="header-text">
+            <h3>Ferramenta Multi-Serviço</h3>
+            <h1>Encurtador Universal</h1>
+            <p>Se um servidor falhar, tentamos outro automaticamente para garantir seu link.</p>
+        </div>
+        <div class="info-box">
+            <h4>Meus Links</h4>
+            <p><span id="count" style="font-size: 1.5rem; font-weight: 800; color: var(--accent-blue);">0</span> criados</p>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <aside class="card">
+            <div class="card-header">Input</div>
+            <h2 class="card-title">Encurtar Link</h2>
+            <div class="form-group">
+                <label>URL Original</label>
+                <input type="text" id="url-input" placeholder="google.com.br" required>
+                <div id="status-msg"></div>
+            </div>
+            <button class="btn-primary" id="btn-action">Gerar Link Curto</button>
+        </aside>
+
+        <main class="card">
+            <div class="card-header">Resultado</div>
+            
+            <div id="result-area" class="result-card">
+                <p style="font-size: 0.75rem; font-weight: 800; color: #1e40af;">LINK PRONTO PARA USO:</p>
+                <div class="short-url-box" id="final-url"></div>
+                <button class="btn-primary" style="width: auto; height: 40px; padding: 0 20px;" onclick="copyText(document.getElementById('final-url').textContent, this)">Copiar Link</button>
+            </div>
+
+            <h2 class="card-title">Histórico Salvo</h2>
+            <div id="history-container"></div>
+        </main>
+    </div>
+</div>
+
+<script>
+    const urlInput = document.getElementById('url-input');
+    const btnAction = document.getElementById('btn-action');
+    const statusMsg = document.getElementById('status-msg');
+    const resultArea = document.getElementById('result-area');
+    const finalUrl = document.getElementById('final-url');
+    const historyContainer = document.getElementById('history-container');
+    const countLabel = document.getElementById('count');
+
+    let history = JSON.parse(localStorage.getItem('universal_links')) || [];
+
+    function renderHistory() {
+        countLabel.textContent = history.length;
+        historyContainer.innerHTML = history.length ? "" : "<p style='color:var(--text-light); font-size:0.9rem;'>Nenhum link gerado ainda.</p>";
+        history.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'history-item';
+            div.innerHTML = `
+                <div>
+                    <a href="${item.short}" target="_blank" class="history-link">${item.short}</a>
+                    <span class="history-orig">${item.original}</span>
+                </div>
+                <button class="btn-copy-small" onclick="copyText('${item.short}', this)">Copiar</button>
+            `;
+            historyContainer.appendChild(div);
+        });
+    }
+
+    async function shortenAttempt(url) {
+        // Lista de estratégias de backup (Proxies e APIs diferentes)
+        const strategies = [
+            // Estratégia 1: TinyURL via AllOrigins
+            async (u) => {
+                const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://tinyurl.com/api-create.php?url=' + u)}`);
+                const data = await res.json();
+                return data.contents;
+            },
+            // Estratégia 2: TinyURL via CorsProxy.io
+            async (u) => {
+                const res = await fetch(`https://corsproxy.io/?${encodeURIComponent('https://tinyurl.com/api-create.php?url=' + u)}`);
+                return await res.text();
+            },
+            // Estratégia 3: API 1pt (direta, costuma aceitar local)
+            async (u) => {
+                const res = await fetch(`https://1pt.co/api/alias?url=${encodeURIComponent(u)}`);
+                const data = await res.json();
+                return `https://1pt.co/${data.short}`;
+            }
+        ];
+
+        for (let i = 0; i < strategies.length; i++) {
+            try {
+                showStatus(`Tentando servidor ${i + 1}...`, 'loading');
+                const result = await strategies[i](url);
+                if (result && result.includes('http')) return result;
+            } catch (e) {
+                console.warn(`Estratégia ${i + 1} falhou, tentando próxima...`);
+            }
+        }
+        return null;
+    }
+
+    async function startShortening() {
+        let longUrl = urlInput.value.trim();
+        if (!longUrl) return;
+        if (!longUrl.startsWith('http')) longUrl = 'https://' + longUrl;
+
+        btnAction.disabled = true;
+        btnAction.textContent = "Aguarde...";
+        statusMsg.style.display = 'block';
+
+        const result = await shortenAttempt(longUrl);
+
+        if (result) {
+            finalUrl.textContent = result;
+            resultArea.style.display = 'block';
+            statusMsg.style.display = 'none';
+            
+            history.unshift({ original: longUrl, short: result });
+            if (history.length > 5) history.pop();
+            localStorage.setItem('universal_links', JSON.stringify(history));
+            
+            urlInput.value = "";
+            renderHistory();
+        } else {
+            showStatus("❌ Todos os servidores falharam. Verifique sua internet.", "error");
+        }
+
+        btnAction.disabled = false;
+        btnAction.textContent = "Gerar Link Curto";
+    }
+
+    function showStatus(msg, type) {
+        statusMsg.textContent = msg;
+        statusMsg.className = type;
+        statusMsg.style.display = 'block';
+    }
+
+    function copyText(text, btn) {
+        navigator.clipboard.writeText(text);
+        const original = btn.textContent;
+        btn.textContent = "Copiado!";
+        setTimeout(() => btn.textContent = original, 2000);
+    }
+
+    btnAction.onclick = startShortening;
+    urlInput.onkeypress = (e) => { if(e.key === 'Enter') startShortening(); };
+    renderHistory();
+</script>
+
+</body>
+</html>

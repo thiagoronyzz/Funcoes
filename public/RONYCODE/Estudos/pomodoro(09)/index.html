@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <!-- Importando a fonte Inter do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Variáveis de Cores e Estilos baseados no modelo anterior */
+        :root {
+            --bg-gradient-start: #eef2f8;
+            --bg-gradient-end: #f8fafc;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --primary-blue: #1d4ed8;
+            --primary-blue-hover: #1e3a8a;
+            --secondary-blue: #eff6ff;
+            --focus-color: #1d4ed8;
+            --break-color: #059669; /* Verde para descanso */
+            --border-color: #e2e8f0;
+            --info-bg: #f8fafc;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+            --font-family: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* Cabeçalho principal */
+        .header {
+            margin-bottom: 2rem;
+            max-width: 800px;
+        }
+
+        .eyebrow {
+            color: var(--primary-blue);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Layout Grid */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        /* Cartões (Cards) */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .section-label {
+            color: var(--primary-blue);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            display: block;
+            transition: color 0.3s;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Formulários */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-family: var(--font-family);
+            font-size: 0.875rem;
+            color: var(--text-dark);
+            transition: all 0.2s;
+        }
+
+        .input-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px var(--secondary-blue);
+        }
+
+        /* Botões */
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.6rem 1.25rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-align: center;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-blue-hover);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--info-bg);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Caixa de Informação (Dica) */
+        .info-box {
+            background-color: var(--info-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .info-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-list {
+            list-style-type: disc;
+            padding-left: 1.25rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Área do Timer */
+        .timer-container {
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .timer-status-badge {
+            background-color: var(--secondary-blue);
+            color: var(--primary-blue);
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.3s;
+        }
+
+        .timer-display {
+            font-size: 7rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            color: var(--text-dark);
+            line-height: 1;
+            font-variant-numeric: tabular-nums; /* Mantém os números alinhados */
+            margin-bottom: 1.5rem;
+        }
+
+        .cycle-count {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Classes para o modo Descanso (Verde) */
+        body.break-mode .eyebrow,
+        body.break-mode .section-label {
+            color: var(--break-color);
+        }
+        body.break-mode .btn-primary {
+            background-color: var(--break-color);
+        }
+        body.break-mode .btn-primary:hover {
+            background-color: #047857;
+        }
+        body.break-mode .timer-status-badge {
+            background-color: #d1fae5;
+            color: var(--break-color);
+        }
+        body.break-mode .input-control:focus {
+            border-color: var(--break-color);
+            box-shadow: 0 0 0 3px #d1fae5;
+        }
+
+        /* Responsividade */
+        @media (max-width: 900px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            .title {
+                font-size: 2.5rem;
+            }
+            .timer-display {
+                font-size: 5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header Principal -->
+        <header class="header">
+            <span class="eyebrow" id="topEyebrow">Ferramenta Interativa de Estudo</span>
+            <h1 class="title">Pomodoro</h1>
+            <p class="subtitle">Ajuste os tempos de foco e descanso. O timer irá guiar você automaticamente pelos ciclos de produtividade.</p>
+        </header>
+
+        <!-- Layout de Colunas -->
+        <main class="main-layout">
+            
+            <!-- Coluna Esquerda: Entrada de Dados -->
+            <aside class="card">
+                <span class="section-label">Configurações</span>
+                <h2 class="section-title">Tempos (minutos)</h2>
+
+                <div class="form-group">
+                    <label class="label" for="focusTime">Tempo de Foco</label>
+                    <input type="number" id="focusTime" class="input-control" value="25" min="1">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="label" for="shortBreakTime">Pausa Curta</label>
+                        <input type="number" id="shortBreakTime" class="input-control" value="5" min="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="label" for="longBreakTime">Pausa Longa</label>
+                        <input type="number" id="longBreakTime" class="input-control" value="15" min="1">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" id="startBtn" onclick="startTimer()">Iniciar</button>
+                    <button class="btn btn-secondary" id="pauseBtn" onclick="pauseTimer()" disabled>Pausar</button>
+                    <button class="btn btn-secondary" onclick="resetTimer()">Resetar</button>
+                </div>
+
+                <div class="info-box">
+                    <h3 class="info-title">Como funciona o Pomodoro?</h3>
+                    <ul class="info-list">
+                        <li>Foque na tarefa durante o tempo de foco (geralmente 25 min).</li>
+                        <li>Faça uma pausa curta para respirar.</li>
+                        <li>A cada 4 ciclos completos de foco, tire uma pausa longa para recarregar.</li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Coluna Direita: Visualização do Timer -->
+            <section class="card">
+                <span class="section-label">Tempo Real</span>
+                <h2 class="section-title" style="display: none;">Timer</h2>
+                
+                <div class="timer-container">
+                    <div class="timer-status-badge" id="statusBadge">Foco</div>
+                    <div class="timer-display" id="timeDisplay">25:00</div>
+                    <div class="cycle-count" id="cycleCount">Ciclos completados: 0/4</div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Script de Lógica do Pomodoro -->
+    <script>
+        let timerId = null;
+        let timeLeft = 25 * 60; // Em segundos
+        let isRunning = false;
+        let currentMode = 'focus'; // 'focus', 'shortBreak', 'longBreak'
+        let completedCycles = 0;
+
+        // Referências do DOM
+        const displayEl = document.getElementById('timeDisplay');
+        const statusBadgeEl = document.getElementById('statusBadge');
+        const cycleCountEl = document.getElementById('cycleCount');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        
+        // Inputs
+        const focusInput = document.getElementById('focusTime');
+        const shortInput = document.getElementById('shortBreakTime');
+        const longInput = document.getElementById('longBreakTime');
+
+        // Função para tocar um bipe quando o tempo acaba usando a API de Audio do Navegador
+        function playAlarm() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(800, audioCtx.currentTime); // Frequência do bipe
+                
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime); // Volume
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.start();
+                
+                // Padrão de bipe duplo
+                setTimeout(() => oscillator.stop(), 200);
+                setTimeout(() => {
+                    const osc2 = audioCtx.createOscillator();
+                    osc2.type = 'sine';
+                    osc2.frequency.setValueAtTime(800, audioCtx.currentTime);
+                    osc2.connect(gainNode);
+                    osc2.start();
+                    setTimeout(() => osc2.stop(), 200);
+                }, 300);
+            } catch (e) {
+                console.log("Áudio não suportado ou bloqueado no navegador.");
+            }
+        }
+
+        // Atualiza os minutos e segundos na tela
+        function updateDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            
+            const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            displayEl.textContent = formattedTime;
+            document.title = `${formattedTime} - Pomodoro`;
+        }
+
+        // Pega o tempo do input correto baseado no modo atual
+        function getTimeFromInput() {
+            let minutes = 25;
+            if (currentMode === 'focus') minutes = parseInt(focusInput.value) || 25;
+            if (currentMode === 'shortBreak') minutes = parseInt(shortInput.value) || 5;
+            if (currentMode === 'longBreak') minutes = parseInt(longInput.value) || 15;
+            return minutes * 60;
+        }
+
+        // Troca de Foco para Pausa e vice-versa
+        function switchMode() {
+            playAlarm();
+            
+            if (currentMode === 'focus') {
+                completedCycles++;
+                if (completedCycles % 4 === 0) {
+                    setMode('longBreak');
+                } else {
+                    setMode('shortBreak');
+                }
+            } else {
+                setMode('focus');
+            }
+            
+            cycleCountEl.textContent = `Ciclos completados: ${completedCycles % 4}/4`;
+            
+            // Auto-start no próximo ciclo
+            startTimer();
+        }
+
+        // Configura o visual e tempo do modo específico
+        function setMode(mode) {
+            currentMode = mode;
+            timeLeft = getTimeFromInput();
+            
+            if (mode === 'focus') {
+                statusBadgeEl.textContent = 'Foco';
+                document.body.classList.remove('break-mode');
+            } else if (mode === 'shortBreak') {
+                statusBadgeEl.textContent = 'Pausa Curta';
+                document.body.classList.add('break-mode');
+            } else if (mode === 'longBreak') {
+                statusBadgeEl.textContent = 'Pausa Longa';
+                document.body.classList.add('break-mode');
+            }
+            
+            updateDisplay();
+        }
+
+        // Lógica de decrementar o tempo
+        function tick() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                updateDisplay();
+            } else {
+                switchMode();
+            }
+        }
+
+        // Ações dos botões
+        function startTimer() {
+            if (isRunning) return;
+            
+            // Se estiver iniciando do zero, pega o tempo atualizado do input
+            if (timeLeft === 0 || (!isRunning && timeLeft === getTimeFromInput() && currentMode === 'focus')) {
+                timeLeft = getTimeFromInput();
+            }
+
+            isRunning = true;
+            timerId = setInterval(tick, 1000);
+            
+            startBtn.disabled = true;
+            pauseBtn.disabled = false;
+        }
+
+        function pauseTimer() {
+            if (!isRunning) return;
+            
+            isRunning = false;
+            clearInterval(timerId);
+            
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            completedCycles = 0;
+            cycleCountEl.textContent = `Ciclos completados: 0/4`;
+            setMode('focus');
+        }
+
+        // Se o usuário alterar o input enquanto pausado, atualiza o tempo
+        const inputs = [focusInput, shortInput, longInput];
+        inputs.forEach(input => {
+            input.addEventListener('change', () => {
+                if (!isRunning) {
+                    timeLeft = getTimeFromInput();
+                    updateDisplay();
+                }
+            });
+        });
+
+        // Inicialização
+        updateDisplay();
+    </script>
+</body>
+</html>
+```

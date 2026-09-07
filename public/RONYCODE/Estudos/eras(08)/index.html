@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Tabela interativa das eras geológicas: linha do tempo completa do Hadeano ao Holoceno, fichas com vida, clima, eventos e geologia do Brasil, extinções em massa e marcos da história da Terra." />
+  <title>Eras Geológicas — Linha do Tempo Interativa da Terra</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='%231d4ed8'/%3E%3Cpath d='M3 14c3-2 6 1 9-1s6 1 9-1' stroke='%23fde68a' stroke-width='2.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== Identidade visual (mesma do projeto) ===== */
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --text: #172033;
+      --muted: #64748b;
+      --line: #dbe3ef;
+      --primary: #1d4ed8;
+      --primary-strong: #1e40af;
+      --primary-soft: #dbeafe;
+      --accent: #0f766e;
+      --warning-bg: #fff7ed;
+      --warning-border: #fed7aa;
+      --warning-text: #9a3412;
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.09);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      /* Tema da unidade selecionada (via JS) */
+      --cell: #f04028;
+      --cell-strong: #b91c1c;
+      --cell-soft: #fee2e2;
+      --cell-ring: rgba(240, 64, 40, 0.3);
+      --tint-bg: #fef2f2;
+      --tint-border: #fecaca;
+      --tint-text: #b91c1c;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.14), transparent 34rem),
+        linear-gradient(180deg, #eef4ff 0%, var(--bg) 22rem);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    button { font: inherit; }
+
+    /* ===== Hero ===== */
+    .hero {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 3rem 0 1.2rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 1.4rem;
+      align-items: end;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.45rem;
+      color: var(--primary);
+      font-weight: 800;
+      font-size: 0.76rem;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, h4, p { margin-top: 0; }
+
+    h1 {
+      margin-bottom: 0.7rem;
+      font-size: clamp(2.2rem, 5.4vw, 4.4rem);
+      line-height: 0.92;
+      letter-spacing: -0.06em;
+    }
+
+    h2 {
+      margin-bottom: 0;
+      font-size: clamp(1.25rem, 2vw, 1.6rem);
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+    }
+
+    h3 { margin-bottom: 0.55rem; font-size: 1rem; }
+
+    h4 {
+      margin: 1.15rem 0 0.55rem;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .hero__subtitle {
+      max-width: 790px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.16rem);
+    }
+
+    .hero__card {
+      padding: 1.15rem;
+      border: 1px solid rgba(29, 78, 216, 0.18);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .hero__card strong, .hero__card span { display: block; }
+    .hero__card strong { margin-bottom: 0.35rem; color: var(--primary-strong); }
+    .hero__card span { color: var(--muted); font-size: 0.95rem; }
+
+    /* ===== Layout ===== */
+    .app-shell {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto 2rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      padding: 1.2rem;
+    }
+
+    .section-heading { margin-bottom: 1rem; }
+
+    /* ===== Filtros ===== */
+    .filter-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.9rem; }
+
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.48rem 0.85rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: #334155;
+      font-weight: 800;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+    }
+
+    .filter-chip .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--fc, var(--primary)); }
+
+    .filter-chip:hover { border-color: var(--cell); transform: translateY(-1px); }
+    .filter-chip.active { background: var(--cell); border-color: var(--cell); color: #fff; }
+    .filter-chip.active .dot { background: #fff; }
+
+    /* ===== Linha do tempo ===== */
+    .tl-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+
+    .tl-controls .spacer { flex: 1; }
+
+    .tl-note { color: var(--muted); font-size: 0.78rem; }
+
+    .tl-stage {
+      border: 1px solid #26334d;
+      border-radius: 16px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, #16213a 0%, #0b1222 100%);
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.35);
+      padding: 0.9rem 0.8rem 0.55rem;
+    }
+
+    .tl-row { margin-bottom: 0.42rem; }
+    .tl-row:last-child { margin-bottom: 0.2rem; }
+
+    .tl-label {
+      color: #8ea3c7;
+      font-size: 0.62rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin: 0 0 0.18rem;
+    }
+
+    .tl-track {
+      position: relative;
+      height: 30px;
+      border-radius: 7px;
+      background: rgba(148, 163, 184, 0.08);
+    }
+
+    .tl-track.tall { height: 34px; }
+
+    .tl-seg {
+      position: absolute;
+      top: 2px;
+      bottom: 2px;
+      border-radius: 5px;
+      border: 1px solid rgba(8, 13, 26, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+      padding: 0 3px;
+      transition: filter 0.15s ease, transform 0.12s ease;
+    }
+
+    .tl-seg:hover { filter: brightness(1.25); transform: translateY(-1px); z-index: 3; }
+    .tl-seg.dim { opacity: 0.28; }
+    .tl-seg.selected { box-shadow: 0 0 0 2px #fff, 0 0 0 5px var(--cell-ring); z-index: 2; }
+    .tl-seg.narrow span { display: none; }
+
+    .tl-seg span {
+      color: #10182b;
+      font-weight: 800;
+      font-size: 0.68rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      line-height: 1;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    .tl-seg.dark span { color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45); }
+
+    .tl-axis {
+      position: relative;
+      height: 22px;
+      margin-top: 0.5rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .tl-axis span {
+      position: absolute;
+      transform: translateX(-50%);
+      color: #8ea3c7;
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding-top: 0.3rem;
+    }
+
+    .legend-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.85rem; }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .legend-item .swatch { width: 11px; height: 11px; border-radius: 3px; border: 1px solid rgba(15, 23, 42, 0.25); }
+
+    /* ===== Ficha da unidade ===== */
+    .ficha-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; align-items: start; }
+
+    .info-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin: 0 0 0.75rem;
+      padding: 0.3rem 0.65rem;
+      border-radius: 999px;
+      background: var(--cell-soft);
+      color: var(--tint-text);
+      border: 1px solid var(--tint-border);
+      font-weight: 800;
+      font-size: 0.76rem;
+    }
+
+    .brief {
+      padding: 0.95rem 1.05rem;
+      border: 1px solid var(--tint-border);
+      border-radius: var(--radius-md);
+      background: var(--tint-bg);
+      color: #334155;
+      font-size: 0.93rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.7rem;
+    }
+
+    .info-card {
+      min-height: 80px;
+      padding: 0.85rem 0.95rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+    }
+
+    .info-card__label {
+      margin-bottom: 0.3rem;
+      color: var(--muted);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .info-card__value { font-weight: 760; font-size: 0.94rem; }
+
+    .list-card {
+      padding: 0.95rem 1.05rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: #fff;
+    }
+
+    .list-card h3 { display: flex; align-items: center; gap: 0.45rem; margin-bottom: 0.55rem; font-size: 0.92rem; }
+    .list-card h3 .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--cell); }
+
+    .fnc { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.45rem; }
+
+    .fnc li {
+      position: relative;
+      padding-left: 1.15rem;
+      color: #334155;
+      font-size: 0.9rem;
+    }
+
+    .fnc li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.42rem;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cell);
+    }
+
+    .brasil-card {
+      margin-top: 1rem;
+      padding: 0.95rem 1.05rem;
+      border: 1px solid #a7f3d0;
+      border-radius: var(--radius-md);
+      background: #ecfdf5;
+      color: #065f46;
+      font-size: 0.92rem;
+    }
+
+    .brasil-card strong { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.25rem; }
+
+    .curiosity {
+      margin-top: 1rem;
+      padding: 0.9rem 1rem;
+      border: 1px solid #fde68a;
+      border-radius: var(--radius-md);
+      background: #fffbeb;
+      color: #92400e;
+      font-size: 0.9rem;
+    }
+
+    .curiosity strong { display: block; margin-bottom: 0.2rem; }
+
+    /* ===== Tabela completa ===== */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: #fff;
+    }
+
+    .geo-table { width: 100%; min-width: 720px; border-collapse: collapse; font-size: 0.88rem; }
+
+    .geo-table thead th {
+      padding: 0.72rem 0.85rem;
+      background: #eef4ff;
+      color: var(--primary-strong);
+      text-align: left;
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .geo-table td {
+      padding: 0.5rem 0.85rem;
+      border-top: 1px solid var(--line);
+      color: #334155;
+    }
+
+    .geo-table tbody tr.click { cursor: pointer; transition: background 0.14s ease; }
+    .geo-table tbody tr.click:hover { background: var(--tint-bg); }
+    .geo-table tbody tr.selected { background: var(--tint-bg); }
+    .geo-table tbody tr.selected td:first-child { box-shadow: inset 3px 0 0 var(--cell); }
+
+    .geo-table .u-name { display: flex; align-items: center; gap: 0.55rem; font-weight: 750; }
+    .geo-table .u-dot { width: 13px; height: 13px; border-radius: 4px; border: 1px solid rgba(15, 23, 42, 0.28); flex: 0 0 auto; }
+    .geo-table .indent-1 { padding-left: 1.35rem; }
+    .geo-table .indent-2 { padding-left: 2.7rem; }
+    .geo-table .indent-3 { padding-left: 4.05rem; }
+
+    .geo-table .tipo-pill {
+      display: inline-block;
+      padding: 0.12rem 0.5rem;
+      border-radius: 999px;
+      background: #eef2f7;
+      color: #475569;
+      font-size: 0.72rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .geo-table .num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+    .geo-table tr.eon-row td {
+      background: var(--er, #eef2f7);
+      color: #fff;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      padding: 0.45rem 0.85rem;
+    }
+
+    .geo-table tr.eon-row td .eon-note { font-weight: 600; text-transform: none; letter-spacing: 0; opacity: 0.9; font-size: 0.76rem; }
+
+    /* ===== Extinções ===== */
+    .ext-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.7rem; }
+
+    .ext-card {
+      display: flex;
+      flex-direction: column;
+      padding: 0.95rem;
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--ec, var(--cell));
+      border-radius: var(--radius-md);
+      background: #fff;
+    }
+
+    .ext-card__rank { color: var(--muted); font-size: 0.68rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
+    .ext-card__nome { margin: 0.3rem 0 0.15rem; font-size: 0.98rem; font-weight: 800; line-height: 1.2; }
+    .ext-card__pct { font-size: 1.5rem; font-weight: 900; color: var(--ec, var(--cell)); letter-spacing: -0.03em; }
+    .ext-card__pct small { font-size: 0.72rem; font-weight: 700; color: var(--muted); letter-spacing: 0; }
+    .ext-card__txt { margin-top: 0.35rem; color: #475569; font-size: 0.8rem; line-height: 1.45; }
+
+    /* ===== Marcos ===== */
+    .marcos { position: relative; padding-left: 1.4rem; }
+    .marcos::before {
+      content: "";
+      position: absolute;
+      left: 0.45rem;
+      top: 0.4rem;
+      bottom: 0.4rem;
+      width: 2px;
+      background: var(--line);
+    }
+
+    .marco { position: relative; padding: 0 0 0.85rem 0.9rem; }
+    .marco:last-child { padding-bottom: 0; }
+
+    .marco::before {
+      content: "";
+      position: absolute;
+      left: -1.19rem;
+      top: 0.32rem;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--mc, var(--cell));
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 2px var(--mc, var(--cell));
+    }
+
+    .marco__tempo { color: var(--mc, var(--cell)); font-weight: 900; font-size: 0.8rem; }
+    .marco__txt { color: #334155; font-size: 0.9rem; }
+
+    .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; align-items: start; }
+
+    /* ===== Como medir ===== */
+    .how-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.7rem; }
+
+    .how-card {
+      padding: 0.95rem 1.05rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+    }
+
+    .how-card h3 { display: flex; align-items: center; gap: 0.5rem; font-size: 0.92rem; margin-bottom: 0.4rem; }
+    .how-card h3 .ic { font-size: 1.1rem; }
+    .how-card p { margin: 0; color: #475569; font-size: 0.86rem; }
+    .how-card code {
+      padding: 0.1rem 0.35rem;
+      border-radius: 0.45rem;
+      background: #eef2f7;
+      color: #334155;
+      font-size: 0.85em;
+    }
+
+    .helper-card {
+      margin-top: 1rem;
+      padding: 0.95rem;
+      border-radius: var(--radius-md);
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
+    }
+
+    .helper-card ul { margin: 0; padding-left: 1.15rem; color: var(--muted); font-size: 0.88rem; }
+    .helper-card li + li { margin-top: 0.35rem; }
+    .helper-card b { color: #334155; }
+
+    /* ===== Tooltip ===== */
+    .tooltip {
+      position: fixed;
+      z-index: 80;
+      max-width: 260px;
+      padding: 0.7rem 0.85rem;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      background: rgba(8, 13, 26, 0.95);
+      color: #e2e8f0;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      box-shadow: 0 18px 42px rgba(2, 6, 16, 0.55);
+      backdrop-filter: blur(6px);
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.12s ease, transform 0.12s ease;
+    }
+
+    .tooltip.show { opacity: 1; transform: none; }
+    .tooltip strong { display: block; color: #fff; font-size: 0.92rem; }
+    .tooltip .tip-sub { color: #94a3b8; font-size: 0.72rem; font-weight: 700; display: block; }
+    .tooltip .tip-row { color: #cbd5e1; }
+    .tooltip .tip-row b { color: #fff; }
+
+    .footer {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto 2.5rem;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 1020px) {
+      .hero { grid-template-columns: 1fr; }
+      .ficha-grid { grid-template-columns: 1fr; }
+      .ext-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .how-grid { grid-template-columns: 1fr; }
+      .two-col { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 700px) {
+      .hero, .app-shell, .footer { width: min(100% - 1rem, 1180px); }
+      .hero { padding-top: 1.35rem; }
+      .panel { border-radius: 18px; }
+      .info-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .ext-grid { grid-template-columns: 1fr; }
+      .tl-seg span { font-size: 0.56rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">Geologia • escala de tempo geológico</p>
+      <h1>Eras Geológicas</h1>
+      <p class="hero__subtitle">
+        4,6 bilhões de anos em uma tabela interativa: explore do <strong>Hadeano</strong> ao <strong>Holoceno</strong>
+        com linha do tempo, fichas completas de cada éon, era e período — vida, clima, eventos,
+        <strong>geologia do Brasil</strong> e as cinco grandes extinções em massa.
+      </p>
+    </div>
+    <aside class="hero__card" aria-label="Dica rápida">
+      <strong>Dica de estudo</strong>
+      <span>Passe o mouse nos blocos da linha do tempo, clique para abrir a ficha completa e compare as escalas “real” e “didática” — o Precambriano é maior do que parece.</span>
+    </aside>
+  </header>
+
+  <main class="app-shell">
+    <!-- ===== LINHA DO TEMPO ===== -->
+    <section class="panel" aria-labelledby="tl-title">
+      <div class="section-heading">
+        <p class="eyebrow">Linha do tempo interativa</p>
+        <h2 id="tl-title">Os 4,6 bilhões de anos da Terra</h2>
+      </div>
+
+      <div class="tl-controls">
+        <button class="filter-chip active" id="modoDidatica" type="button">Escala didática (Fanerozoico ampliado)</button>
+        <button class="filter-chip" id="modoReal" type="button">Escala real (proporcional)</button>
+        <span class="spacer"></span>
+        <span class="tl-note">Ma = milhões de anos atrás • Ga = bilhões de anos atrás</span>
+      </div>
+
+      <div class="tl-stage" id="tlStage">
+        <div class="tl-row">
+          <p class="tl-label">Éons</p>
+          <div class="tl-track tall" data-row="eons"></div>
+        </div>
+        <div class="tl-row">
+          <p class="tl-label">Eras</p>
+          <div class="tl-track" data-row="eras"></div>
+        </div>
+        <div class="tl-row">
+          <p class="tl-label">Períodos</p>
+          <div class="tl-track" data-row="periodos"></div>
+        </div>
+        <div class="tl-row">
+          <p class="tl-label">Épocas do Cenozoico</p>
+          <div class="tl-track" data-row="epocas"></div>
+        </div>
+        <div class="tl-axis" id="tlAxis"></div>
+        <div class="legend-row" id="tlLegend"></div>
+      </div>
+
+      <div class="helper-card">
+        <h3>Como ler</h3>
+        <ul>
+          <li><b>Passe o mouse</b> sobre qualquer bloco para ver o nome e as datas; <b>clique</b> para abrir a ficha completa abaixo.</li>
+          <li>No modo <b>didático</b>, o Fanerozoico (últimos ~540 Ma) é ampliado para caber os detalhes; no modo <b>real</b>, cada milímetro vale a mesma coisa — e o Precambriano engole a tela.</li>
+          <li>As cores seguem o <b>padrão internacional da ICS</b> (Comissão Internacional de Estratigrafia), o mesmo dos livros e mapas geológicos.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== FICHA ===== -->
+    <section class="panel" id="ficha" aria-labelledby="ficha-title">
+      <div class="section-heading">
+        <p class="eyebrow">Painel de estudo</p>
+        <h2 id="ficha-title">Ficha da unidade</h2>
+      </div>
+      <p class="info-tag" id="fichaTag">Unidade</p>
+      <div class="brief" id="fichaBrief"></div>
+      <div class="info-grid" id="fichaGrid" style="margin-top: 1rem;"></div>
+      <div class="ficha-grid" id="fichaLists" style="margin-top: 1rem;"></div>
+      <div id="fichaExtra"></div>
+    </section>
+
+    <!-- ===== TABELA COMPLETA ===== -->
+    <section class="panel" aria-labelledby="tabela-title">
+      <div class="section-heading">
+        <p class="eyebrow">Tabela completa</p>
+        <h2 id="tabela-title">Todas as unidades geológicas</h2>
+      </div>
+      <div class="filter-row" id="tabelaFiltros" role="group" aria-label="Filtrar por éon"></div>
+      <div class="table-wrap">
+        <table class="geo-table">
+          <caption class="sr-only">Tabela das unidades geocronológicas: éons, eras, períodos e épocas com datas de início, fim e duração</caption>
+          <thead>
+            <tr>
+              <th scope="col">Unidade</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Início (Ma)</th>
+              <th scope="col">Fim (Ma)</th>
+              <th scope="col">Duração (Ma)</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaBody"></tbody>
+        </table>
+      </div>
+      <p class="tl-note" style="margin-top: 0.7rem;">
+        Clique em qualquer linha com ficha para abri-la no painel de estudo. Datas conforme a Carta Cronoestratigráfica Internacional (ICS, v. 2023).
+      </p>
+    </section>
+
+    <!-- ===== EXTINÇÕES ===== -->
+    <section class="panel" aria-labelledby="ext-title">
+      <div class="section-heading">
+        <p class="eyebrow">As cinco grandes</p>
+        <h2 id="ext-title">Extinções em massa</h2>
+      </div>
+      <div class="ext-grid" id="extGrid"></div>
+      <div class="curiosity" style="margin-top: 1rem;">
+        <strong>Estamos na sexta?</strong>
+        Muitos cientistas defendem que vivemos a “sexta extinção”: as populações de vertebrados caíram ~70% desde 1970 e a taxa atual de extinção é 100–1.000× a média natural — desta vez, a causa é uma só: nós.
+      </div>
+    </section>
+
+    <!-- ===== MARCOS ===== -->
+    <section class="panel" aria-labelledby="marcos-title">
+      <div class="section-heading">
+        <p class="eyebrow">Linha do tempo da vida</p>
+        <h2 id="marcos-title">Marcos da história da Terra</h2>
+      </div>
+      <div class="two-col">
+        <div class="marcos" id="marcosA"></div>
+        <div class="marcos" id="marcosB"></div>
+      </div>
+    </section>
+
+    <!-- ===== COMO MEDIR ===== -->
+    <section class="panel" aria-labelledby="como-title">
+      <div class="section-heading">
+        <p class="eyebrow">Ferramentas do geólogo</p>
+        <h2 id="como-title">Como medir bilhões de anos</h2>
+      </div>
+      <div class="how-grid" id="comoGrid"></div>
+      <div class="curiosity" style="margin-top: 1rem;">
+        <strong>A Terra em 1 ano</strong>
+        Se os 4,6 bilhões de anos fossem um calendário: a Terra nasce em <b>1º de janeiro</b>, a vida aparece em <b>março</b>, a Explosão Cambriana em <b>18 de novembro</b>, os dinossauros dominam de <b>12 a 26 de dezembro</b>… e o <b>Homo sapiens</b> entra em cena às <b>23h26 de 31 de dezembro</b>. Toda a história escrita cabe nos <b>últimos ~35 segundos</b> do ano.
+      </div>
+    </section>
+  </main>
+
+  <div class="tooltip" id="tooltip" role="status" aria-hidden="true"></div>
+
+  <footer class="footer">
+    <p>
+      Feito em HTML5, CSS3 e JavaScript puro em um único arquivo — sem dependências externas.
+      Datas conforme a Carta Cronoestratigráfica Internacional (ICS, 2023); cores aproximadas do padrão oficial.
+      Conteúdo educacional.
+    </p>
+  </footer>
+
+  <script>
+    "use strict";
+
+    /* =========================================================
+       DADOS — unidades geocronológicas (ICS 2023, Ma)
+       ========================================================= */
+    const UNIDADES = [
+      /* ---------- ÉONS ---------- */
+      {
+        id: "hadeano", nome: "Hadeano", tipo: "Éon", pai: "—", inicio: 4567, fim: 4000, cor: "#b61743",
+        tagline: "A era do fogo: do oceano de magma à primeira gota de chuva.",
+        clima: "Planeta incandescente esfriando: atmosfera de vapor d’água, CO₂ e metano, sem oxigênio livre; ao fim do éon, a temperatura cai o bastante para condensar os primeiros oceanos.",
+        vida: ["Nenhuma evidência confirmada de vida", "Possíveis traços químicos contestados antes de 4,1 Ga", "Condições ainda incompatíveis com vida contínua"],
+        eventos: ["A Terra se forma pela acreção da nebulosa solar (~4,567 Ga)", "Impacto com o protoplaneta Theia forma a Lua (~4,51 Ga)", "Núcleo de ferro e manto se diferenciam; campo magnético inicia", "Oceanos condensam por volta de 4,4 Ga"],
+        brasil: "As rochas mais antigas do Brasil são um pouco mais jovens: núcleos do Cráton São Francisco, na Bahia (bloco Gavião), chegam a ~3,4 Ga — formados no éon seguinte.",
+        curiosidade: "Praticamente não existe rocha hadeana na Terra: o registro do éon é um punhado de grãos de zircão de Jack Hills (Austrália), com 4,4 Ga — que provam água líquida bem mais cedo do que se imaginava."
+      },
+      {
+        id: "arqueano", nome: "Arqueano", tipo: "Éon", pai: "—", inicio: 4000, fim: 2500, cor: "#f0047f",
+        tagline: "O éon dos primeiros continentes e dos primeiros seres vivos.",
+        clima: "Sol ~25% mais fraco, compensado por forte efeito estufa de metano e CO₂: oceanos mornos, céu alaranjado e sem oxigênio livre.",
+        vida: ["Primeiros fósseis amplamente aceitos: estromatólitos de 3,48 Ga (Pilbara, Austrália)", "Apenas procariotas: bactérias e arqueias", "Cianobactérias desenvolvem a fotossíntese oxigênica no fim do éon"],
+        eventos: ["Os primeiros crátons (núcleos continentais) se formam ~3,8–3,5 Ga", "Crescimento de arcos vulcânicos e greenstone belts", "Primeiro possível “inverno global” (glaciação de Pongola, ~2,9 Ga)", "Águas oceânicas ricas em ferro dissolvido"],
+        brasil: "Nascem os crátons Amazônico e São Francisco — as rochas mais antigas do país (Bahia, ~3,4 Ga). Greenstone belts arqueanos guardam o ouro de Minas Gerais (Quadrilátero Ferrífero) e do Gurupi (PA/MA).",
+        curiosidade: "Sem oxigênio, os oceanos arqueanos provavelmente eram verdes (com ferro dissolvido) e o céu, alaranjado (metano) — um planeta quase alienígena."
+      },
+      {
+        id: "proterozoico", nome: "Proterozoico", tipo: "Éon", pai: "—", inicio: 2500, fim: 538.8, cor: "#f74370",
+        tagline: "O éon do oxigênio, das Terra-bolas-de-neve e dos primeiros animais.",
+        clima: "Do primeiro grande inverno global (Huroniano, ~2,3 Ga) às duas glaciações totais do Criogeniano (720–635 Ma), quando gelo chegou ao Equador.",
+        vida: ["Grande Oxicitação envenena os anaeróbios e abre a era aeróbica", "Primeiras células eucariotas (~1,8–1,6 Ga)", "Primeiro registro de sexualidade: alga Bangiomorpha (~1,05 Ga)", "Primeiros animais: biota de Ediacara (~600–539 Ma)"],
+        eventos: ["Grande Oxicitação (GOE) ~2,4 Ga — o ferro se precipita como BIFs", "Supercontinente Rodínia se monta ~1,1 Ga", "Glaciações globais Sturtiana e Marinoana (Criogeniano)", "Ruptura de Rodínia e abertura de oceanos jovens"],
+        brasil: "As maiores jazidas de ferro do país — Quadrilátero Ferrífero (MG) e Carajás (PA) — se formam nos BIFs do Paleoproterozoico. No fim do éon, os fósseis de Cloudina em Corumbá (MS) registram os primeiros esqueletos do planeta.",
+        curiosidade: "O oxigênio foi o primeiro “poluente” da história: para a vida antiga, foi um desastre (a Catástrofe do Oxigênio) — mas preparou o caminho de toda a complexidade que veio depois."
+      },
+      {
+        id: "fanerozoico", nome: "Fanerozoico", tipo: "Éon", pai: "—", inicio: 538.8, fim: 0, cor: "#f04028",
+        tagline: "O éon da vida visível: explosão, conquistas e cinco grandes extinções.",
+        clima: "Grandes oscilações: estufas (Cambriano, Mesozoico, Paleoceno-Eoceno) e idades do gelo (Ordoviciano final, Carbonífero, Quaternário).",
+        vida: ["Explosão Cambriana origina quase todos os filos animais", "Plantas, artrópodes e vertebrados colonizam a terra firme", "Dinossauros, aves, flores, mamíferos e, por fim, humanos", "Cinco extinções em massa reescrevem a biosfera"],
+        eventos: ["Gondwana e depois Pangeia se montam e se fragmentam", "Abertura do Atlântico Sul separa Brasil e África", "Asteroide de Chicxulub encerra o Mesozoico (66 Ma)", "Glaciações do Quaternário moldam paisagens e distribuem as espécies"],
+        brasil: "Quase tudo o que definiu o território brasileiro acontece no Fanerozoico: as bacias sedimentares (Paraná, Parnaíba, margens), o carvão do sul, o petróleo do pré-sal, os dinossauros do RS/CE/PB e a megafauna das cavernas de Minas.",
+        curiosidade: "O Fanerozoico ocupa só ~12% do tempo planetário — e concentra praticamente tudo o que chamamos de “história da vida”."
+      },
+
+      /* ---------- ERAS DO ARQUEANO ---------- */
+      {
+        id: "eoarqueano", nome: "Eoarqueano", tipo: "Era", pai: "Arqueano", inicio: 4000, fim: 3600, cor: "#d40057",
+        tagline: "Os primeiros fragmentos de crosta continental.",
+        clima: "Ainda quente, mas com oceanos estáveis e céu sem oxigênio.",
+        vida: ["Traços químicos de carbono leve, possivelmente biogênico (Isua, Groenlândia, ~3,7 Ga, no limite seguinte)", "Nenhum fóssil corporal"],
+        eventos: ["Primeiros núcleos de crosta continental (proto-crátons)", "Hidrotermais intensas nos oceanos globais"],
+        brasil: "Os blocos mais antigos dos crátons brasileiros começam a se consolidar nesse intervalo.",
+        curiosidade: "Éon com o registro geológico mais escasso de todos — quase tudo que sabemos vem de poucos afloramentos no Canadá, Groenlândia e Austrália."
+      },
+      {
+        id: "paleoarqueano", nome: "Paleoarqueano", tipo: "Era", pai: "Arqueano", inicio: 3600, fim: 3200, cor: "#e0006b",
+        tagline: "A era dos estromatólitos mais antigos.",
+        clima: "Oceano global morno, atmosfera de metano e nitrogênio.",
+        vida: ["Estromatólitos de Pilbara (3,48 Ga): os fósseis mais antigos aceitos", "Microfósseis de filamentos bacterianos", "Ciclos de carbono com assinatura biológica"],
+        eventos: ["Crátons Kaapvaal (África) e Pilbara (Austrália) se estabilizam", "Primeiras bacias sedimentares"],
+        brasil: "Consolidação dos núcleos mais antigos do Cráton São Francisco (Bloco Gavião, Bahia, ~3,4 Ga).",
+        curiosidade: "Os estromatólitos são “tapetes” microbianos que aprisionam sedimento: a forma de vida dominante da Terra por ~3 bilhões de anos."
+      },
+      {
+        id: "mesoarqueano", nome: "Mesoarqueano", tipo: "Era", pai: "Arqueano", inicio: 3200, fim: 2800, cor: "#ec0f7f",
+        tagline: "Supergrupos de rochas e vida que já muda o planeta.",
+        clima: "Quente e úmido; oceanos com ferro, sem O₂.",
+        vida: ["Microfósseis diversificados (Pilbara craton)", "Prováveis cianobactérias já produzindo algum oxigênio"],
+        eventos: ["Crescimento continental acelerado", "Grandes derrames vulcânicos e primeiros BIFs expressivos"],
+        brasil: "Formação dos greenstone belts do Quadrilátero Ferrífero (~2,8 Ga) — berço do ouro e do itabirito mineiros.",
+        curiosidade: "No Mesoarqueano a tectônica de placas “moderna” já funcionava em linhas gerais — é o que indicam os primeiros ofiolitos (fragmentos de crosta oceânica emplacados em continentes)."
+      },
+      {
+        id: "neoarqueano", nome: "Neoarqueano", tipo: "Era", pai: "Arqueano", inicio: 2800, fim: 2500, cor: "#f73b93",
+        tagline: "Os continentes crescem e o oxigênio dá seus primeiros sinais.",
+        clima: "Quente; primeiras “borradas” de oxigênio localmente (pseudofósseis de oxidados).",
+        vida: ["Cianobactérias estabelecidas (estromatólitos abundantes)", "Metabolismo fotossintético consolidado"],
+        eventos: ["Montagem de grandes crátons (Superior, Yilgarn, São Francisco, Amazônico)", "Orogenias intensas; primeira grande geração de BIFs", "Primeiro supercontinente provável (Kenorland) em formação"],
+        brasil: "Crátons Amazônico e São Francisco amplamente formados; mineralizações de ouro-ferro do Quadrilátero Ferrífero (MG) e ouro de Carajás (PA) se formam nesse contexto.",
+        curiosidade: "No fim do Neoarqueano, a fotossíntese já funcionava há centenas de milhões de anos — faltava só o ferro dos oceanos acabar para o oxigênio transbordar na atmosfera."
+      },
+
+      /* ---------- ERAS DO PROTEROZOICO ---------- */
+      {
+        id: "paleoproterozoico", nome: "Paleoproterozoico", tipo: "Era", pai: "Proterozoico", inicio: 2500, fim: 1600, cor: "#f74370",
+        tagline: "A revolução do oxigênio e as maiores jazidas de ferro da história.",
+        clima: "Do aquecimento à glaciação Huroniana (~2,3 Ga), o primeiro inverno global conhecido.",
+        vida: ["Bactérias aeróbicas surgem com o novo oxigênio", "Primeiras evidências de células eucariotas (~1,8 Ga, gaboniontes — registro debatido)", "Estromatólitos em recifes gigantes"],
+        eventos: ["Grande Oxicitação (GOE) ~2,4 Ga: O₂ vira gás atmosférico", "Formações de Ferro Bandado (BIF) gigantes — os minérios de hoje", "Supercontinente Columbia/Nuna (~1,8 Ga)", "Orogens como Transamazônico moldam o Brasil"],
+        brasil: "É a era dos minérios brasileiros: itabiritos do Quadrilátero Ferrífero (MG) e jazidas gigantes de Carajás (PA). O Cinturão Transamazônico (~2,1–1,9 Ga) consolida boa parte do território nacional.",
+        curiosidade: "O O₂ lançado na atmosfera oxidou os oceanos inteirinhos: todo o ferro dissolvido precipitou como BIF — por isso 90% do ferro do mundo vem dessa janela de tempo."
+      },
+      {
+        id: "mesoproterozoico", nome: "Mesoproterozoico", tipo: "Era", pai: "Proterozoico", inicio: 1600, fim: 1000, cor: "#fa5f88",
+        tagline: "O “bilhão entediante” — que esconde a invenção do sexo.",
+        clima: "Estável e quente por ~600 Ma (o chamado “boring billion”).",
+        vida: ["Alga vermelha Bangiomorpha (~1,05 Ga): primeiro organismo com sexualidade e multicelularidade complexa", "Eucariotas diversificam lentamente", "Acritarcos (cistos de algas) como fósseis-guia"],
+        eventos: ["Montagem do supercontinente Rodínia (~1,1 Ga)", "Orogenia Grenville e equivalentes (Sunsás, no lado brasileiro)", "Macrobacias sedimentares estáveis"],
+        brasil: "Os crátons brasileiros se encaixam em Rodínia; faixas móveis do Sunsás (RO/MT) e o bom registro de rochas rapakivi (granitos anorogênicos de Rondônia, ~1,0 Ga) datam essa colagem.",
+        curiosidade: "Geólogos apelidaram o Mesoproterozoico de “bilhão entediante”: ecologia microbiana quase imutável — mas foi ali que o sexo apareceu, o maior salto da evolução."
+      },
+      {
+        id: "neoproterozoico", nome: "Neoproterozoico", tipo: "Era", pai: "Proterozoico", inicio: 1000, fim: 538.8, cor: "#fc86ab",
+        tagline: "A Terra-bola-de-neve e o amanhecer dos animais.",
+        clima: "As duas glaciações totais (Sturtiana ~717–660 Ma e Marinoana ~650–635 Ma) — gelo até os trópicos.",
+        vida: ["Biota de Ediacara (~600–539 Ma): primeiros animais (Dickinsonia, Charnia, Kimberella)", "Cloudina: primeiro esqueleto mineral (~550 Ma)", "Explosão de algas e protozoários após o degelo"],
+        eventos: ["Ruptura de Rodínia; oceanos se abrem", "Glaciações Sturtiana e Marinoana (Criogeniano)", "Aumento de O₂ para níveis “animais” (~10% do atual)", "Início da montagem de Gondwana"],
+        brasil: "Glaciações do Criogeniano registradas em GO, PE e MS (Urucum); os fósseis de Cloudina e Corumbella em Corumbá (MS) estão entre os primeiros esqueletos do mundo; o Grupo Bambuí e as faixas de dobramento (Brasília, Araçuaí) registram a montagem de Gondwana.",
+        curiosidade: "Na “Terra-bola-de-neve”, o gelo chegou ao Equador — e foram os vulcões, injetando CO₂ por milhões de anos, que derreteram o planeta de volta."
+      },
+
+      /* ---------- PERÍODOS DO NEOPROTEROZOICO ---------- */
+      {
+        id: "toniano", nome: "Tônio", tipo: "Período", pai: "Neoproterozoico", inicio: 1000, fim: 720, cor: "#fe8ec0",
+        tagline: "Calmaria antes da nevasca: vida multicelular se arruma.",
+        clima: "Quente e estável, com oceanos rasos abundantes.",
+        vida: ["Eucariotas multicelulares em expansão", "Possíveis amebas e fungos primitivos", "Últimos estromatólitos muito abundantes"],
+        eventos: ["Ruptura inicial de Rodínia", "Rifts e bacias de antepaís no futuro Gondwana"],
+        brasil: "Rifts tonianos preservados no Espírito Santo e na Bahia (Grupo Macaúbas começa a se formar).",
+        curiosidade: "O Tônio termina exatamente quando começa a glaciação Sturtiana: 280 milhões de anos de calmaria, e a Terra congela por inteiro."
+      },
+      {
+        id: "criogeniano", nome: "Criogeniano", tipo: "Período", pai: "Neoproterozoico", inicio: 720, fim: 635, cor: "#febedd",
+        tagline: "Snowball Earth: o planeta vira uma bola de gelo.",
+        clima: "Duas glaciações globais (Sturtiana e Marinoana); gelo equatorial, média de −50 °C nas latitudes médias.",
+        vida: ["Refúgios em oceanos sob o gelo e em vulcões quentes", "Colapso e renascimento de ecossistemas microbianos", "Pós-degelo: boom de O₂ e de nutrientes"],
+        eventos: ["Glaciação Sturtiana (~717–660 Ma)", "Glaciação Marinoana (~650–635 Ma)", "Cap carbonatos (calcários pós-gelo) no mundo todo"],
+        brasil: "Rochas glaciais do Jequitai/Macaúbas (MG), Bebedouro (BA) e Puga (MS) registram as calotas — com os “cap carbonatos” logo acima.",
+        curiosidade: "Uma Terra congelada deveria ser fatal — mas muitos cientistas acreditam que a pressão evolutiva das nevastacas acelerou a chegada dos animais."
+      },
+      {
+        id: "ediacarano", nome: "Ediacarano", tipo: "Período", pai: "Neoproterozoico", inicio: 635, fim: 538.8, cor: "#ffb7d5",
+        tagline: "A fauna perdida: os primeiros animais do planeta.",
+        clima: "Aquecimento pós-gelo; oceanos oxigenados em etapas.",
+        vida: ["Biota de Ediacara: Dickinsonia, Charnia, Spriggina, Kimberella", "Organismos de corpo mole, alguns sem analogia moderna", "Cloudina e Corumbella: primeiros esqueletos"],
+        eventos: ["Montagem final de Gondwana (orogenias Brasiliano-Pan-Africanas)", "Níveis crescentes de O₂", "Maturidade dos ecossistemas bentônicos"],
+        brasil: "Cloudina e Corumbella em Corumbá (MS) — os primeiros fósseis com esqueleto do planeta; icnofósseis e paleopraias da Formação Tamengo. As orogenias Brasiliano (Brasília, Araçuaí, Dom Feliciano) fecham o Gondwana.",
+        curiosidade: "A Dickinsonia, com até 1,4 m, foi confirmada como ANIMAL em 2018 pela análise de colesterol fossilizado — a molécula mais antiga já identificada como de um animal."
+      },
+
+      /* ---------- ERAS DO FANEROZOICO ---------- */
+      {
+        id: "paleozoico", nome: "Paleozoico", tipo: "Era", pai: "Fanerozoico", inicio: 538.8, fim: 251.902, cor: "#99c196",
+        tagline: "A vida sai do mar e toma as terras firmes.",
+        clima: "De estufa cambriana a idade do gelo carbonífera, voltando ao calor permiano.",
+        vida: ["Explosão Cambriana e reinos animais completos", "Plantas, florestas, insetos e tetrápodes conquistam a terra", "Duas das Big Five extinções (Ordoviciano final e Devoniano) e a maior de todas no fim (P-T)"],
+        eventos: ["Montagem e consolidação de Gondwana; depois Pangeia", "Glaciação permocarbonífera do Gondwana", "Formação das grandes bacias interiores (incluindo a do Paraná)"],
+        brasil: "Bacia do Paraná se inicia no Ordoviciano (Formação Rio Ivaí, com depósitos glaciais e marinhos); os primeiros mares siluriano-devonianos, a glaciação Carbonífera e o deserto de Botucatu registram a era no território brasileiro.",
+        curiosidade: "Em ~287 Ma de Paleozoico, a vida inventou olhos articulados, mandíbulas, vôo, florestas, ovos com casca e colunas vertebrais para andar fora d’água."
+      },
+      {
+        id: "mesozoico", nome: "Mesozoico", tipo: "Era", pai: "Fanerozoico", inicio: 251.902, fim: 66, cor: "#e8c6ff",
+        tagline: "A Era dos Dinossauros — e do nascimento do Atlântico.",
+        clima: "Estufa prolongada: sem gelo polar na maior parte da era, CO₂ alto, mares quentes e rasos.",
+        vida: ["Dinossauros dominam por ~165 Ma (do pequeno Staurikosaurus ao T. rex)", "Primeiras aves (~150 Ma) e primeiras flores (~125 Ma)", "Mamíferos pequenos convivem com os dinos", "No fim, a extinção de Chicxulub elimina os dinossauros não-aviários"],
+        eventos: ["Pangeia se fragmenta: Atlântico Norte e depois Sul se abrem", "Traps siberianos (início) e do Deccan (fim)", "Grandes transgressões marinhas cobrem continentes e formam recifes"],
+        brasil: "O Atlântico Sul abre e separa Brasil–África (~112 Ma); o pré-sal se deposita (~120–113 Ma); dinossauros do Ceará (Araripe) e do interior; deserto de Botucatu e depois derrames do Paraná (Serra Geral) cobrem o sul do país.",
+        curiosidade: "No início do Mesozoico os dias tinham ~22,5 horas: a Terra desacelera ~2 ms por século, e o Mesozoico inteiro “perdeu” mais de uma hora de rotação."
+      },
+      {
+        id: "cenozoico", nome: "Cenozoico", tipo: "Era", pai: "Fanerozoico", inicio: 66, fim: 0, cor: "#fdd780",
+        tagline: "A Era dos Mamíferos — a que estamos vivendo.",
+        clima: "De “casa de efeito estufa” (Paleoceno-Eoceno) à casa de gelo atual: Antártica congela em ~34 Ma, hemisfério norte em ~2,6 Ma.",
+        vida: ["Mamíferos e aves irradiam para todos os nichos", "Primatas modernos → macacos do Novo Mundo → grandes símios → homininos", "Gramíneas formam savanas e estepes", "Glaciações do Quaternário e megafauna"],
+        eventos: ["Impacto de Chicxulub abre a era (66 Ma)", "Aquecimento PETM (~56 Ma)", "Colisão Índia–Ásia ergue o Himalaia (~50–10 Ma)", "Elevação dos Andes inverte o rio Amazonas"],
+        brasil: "Macacos e roedores-cavia chegam “de jangada” da África (~35–40 Ma); os Andes sobem e o Amazonas muda de direção (Mioceno); megafauna do Pleistoceno (preguiça-gigante, gliptodonte) e os primeiros humanos (~20–12 ka).",
+        curiosidade: "O Cenozoico é a única era com gelo continental permanente nos dois polos ao mesmo tempo: vivemos, na verdade, numa era glacial — em um “interglacial quente”."
+      },
+
+      /* ---------- PERÍODOS DO PALEOZOICO ---------- */
+      {
+        id: "cambriano", nome: "Cambriano", tipo: "Período", pai: "Paleozoico", inicio: 538.8, fim: 486.85, cor: "#7fa056",
+        tagline: "A Explosão Cambriana: quase toda a zoologia em 25 milhões de anos.",
+        clima: "Estufa global; sem gelo continental; mares rasos e quentes invadindo continentes.",
+        vida: ["Explosão Cambriana: maioria dos filos animais aparece", "Trilobites dominam; Anomalocaris (predador de 1 m)", "Primeiros olhos complexos, conchas e espinhos", "Fóssilíssimo Folhelho Burgess (508 Ma) e Chengjiang"],
+        eventos: ["Nível do mar em alta; depósitos de arenitos e folhelhos", "O₂ atmosférico sobe para níveis “animais”", "Gondwana consolidado no hemisfério sul"],
+        brasil: "Registros raros: icnofósseis (rastros) no Grupo Camaquã (RS); as faixas de dobramento finais da montagem de Gondwana (Brasília, Paraguai-Araguaia) se estabilizam.",
+        curiosidade: "A explosão durou ~25 Ma — “rápido” em geologia, mas cada geração de trilobite teve tempo para evoluir milhares de vezes: a “explosão” é nossa impaciência de escala humana."
+      },
+      {
+        id: "ordoviciano", nome: "Ordoviciano", tipo: "Período", pai: "Paleozoico", inicio: 486.85, fim: 443.8, cor: "#009270",
+        tagline: "Diversificação gigantesca — encerrada pela primeira extinção em massa.",
+        clima: "Começa em estufa e termina em idade do gelo (glaciação Hirnantiana, 443,8 Ma).",
+        vida: ["Grande Diversificação do Ordoviciano (GOBE): explosão de famílias marinhas", "Cefalópodes gigantes (Cameroceras, ~9 m) reinam nos mares", "Primeiros vertebrados (peixes sem mandíbula)", "Primeiras plantas na terra firme (~470 Ma)"],
+        eventos: ["Recifes de briozoários e tabulados", "Glaciação Hirnantiana derruba o nível do mar", "1ª das Big Five: ~85% das espécies perdidas"],
+        brasil: "A calota polar hirnantiana alcança o norte do Gondwana: sedimentos glaciais da Formação Iapó (Bacia do Paraná) e do Grupo Amazonas registram o gelo no território brasileiro.",
+        curiosidade: "O O₂ de então era mais baixo que o de hoje, mas os mares estavam tão cheios de vida que o período é chamado de “a segunda explosão cambriana”."
+      },
+      {
+        id: "siluriano", nome: "Siluriano", tipo: "Período", pai: "Paleozoico", inicio: 443.8, fim: 419.2, cor: "#b3e1b6",
+        tagline: "A recuperação — e as primeiras plantas vasculares.",
+        clima: "Reaquecimento pós-gelo; mares rasos extensos; recifes tropicais até latitudes altas.",
+        vida: ["Primeiras plantas vasculares (Cooksonia)", "Peixes com mandíbula (acantódios) e placodermes", "Primeiros artrópodes terrestres (escorpiões e milípedes)", "Recifes de estromatóporoides e tabulados"],
+        eventos: ["Orogenia Caledônica (Báltico colide com Laurentia)", "Recuperação pós-extinção em ~5 Ma", "Grandes bacias epicontinentais e mares rasos produtivos"],
+        brasil: "Bacia do Paraná começa a operar: folhelhos da Formação Vila Maria (com graptólitos-guia) e arenitos da Formação Furnas (as “areias” do Guartelá, PR).",
+        curiosidade: "Os escorpiões-marinhos (euriptéridos) chegaram a 2,5 m: o Jaekelopterus é o maior artrópode que já existiu."
+      },
+      {
+        id: "devoniano", nome: "Devoniano", tipo: "Período", pai: "Paleozoico", inicio: 419.2, fim: 358.9, cor: "#cb8c37",
+        tagline: "A Era dos Peixes — e o passo gigante para fora da água.",
+        clima: "Quente no início, esfriando no fim; aridez interior de continentes agrupados.",
+        vida: ["Peixes dominam: placodermes (Dunkleosteus, 6 m), tubarões, peixes com pulmões", "Primeiras florestas (Archaeopteris, 30 m) criam solos", "Insetos e aranhas terrestres", "Tetrápodes: Tiktaalik (375 Ma) e Ichthyostega (365 Ma)"], 
+        eventos: ["Aumento do O₂ com as florestas", "2ª das Big Five no fim (Kellwasser/Hangenberg): ~75% das espécies", "Colisões formando Laurussia"],
+        brasil: "Mares devonianos cobrem a Bacia do Paraná: folhelhos e arenitos da Formação Ponta Grossa (PR) guardam trilobites, braquiópodes e peixes primitivos.",
+        curiosidade: "As primeiras florestas mudaram o planeta: os solos novos liberaram nutrientes que fertilizaram os oceanos — e podem ter contribuído para a anoxia da extinção devoniana."
+      },
+      {
+        id: "carbonifero", nome: "Carbonífero", tipo: "Período", pai: "Paleozoico", inicio: 358.9, fim: 298.9, cor: "#67a599",
+        tagline: "Florestas de samambaias gigantes, insetos monstros e o Brasil sob gelo.",
+        clima: "Estufa tropical no hemisfério norte + idade do gelo do Gondwana (glaciação Karoo) no sul.",
+        vida: ["Florestas pantanosas de licófitas (Lepidodendron, 40 m) — o carvão do mundo", "O₂ a 35%: Meganeura (libélula de 70 cm) e Arthropleura (2,6 m)", "Primeiros amniotas (~318 Ma): répteis e sinapsídeos se separam", "Tubarões e crinoides nos mares"],
+        eventos: ["Laurussia e Gondwana se aproximam: Pangeia se monta no fim do período", "Glaciação do Gondwana: calotas sobre o Brasil", "Acúmulo colossal de carvão (drena CO₂ → esfria)"],
+        brasil: "A glaciação permocarbonífera cobre grande parte do território: rochas glaciais do Grupo Itararé (varvitos de Cotia/SP e Itu, roches moutonnées no sul) — inclusive diamantes transportados por gelo em cascalheiras glaciais.",
+        curiosidade: "Praticamente todo o carvão mineral que moveu a Revolução Industrial se formou nas florestas tropicais do Carbonífero — o oxigênio alto permitia insetos gigantes, mas também queimava fácil."
+      },
+      {
+        id: "permiano", nome: "Permiano", tipo: "Período", pai: "Paleozoico", inicio: 298.9, fim: 251.902, cor: "#f04028",
+        tagline: "Pangeia, répteis pioneiros — e a maior extinção de todas.",
+        clima: "Árido no interior da Pangeia (desertos de Zechstein); polos ainda gelados no início.",
+        vida: ["Sinapsídeos dominam: Dimetrodon, gorgonopsídeos, dicinodontes", "Gimnospermas (coníferas) substituem as florestas úmidas", "Répteis marinhos e bivalves modernos", "Fim: extinção P-T elimina ~96% das espécies marinhas"],
+        eventos: ["Pangeia completa: mega-continente único", "Traps Siberianos (~2–3 milhões de km³ de lava) disparam a extinção", "Oceanos acidificam e anóxicos"],
+        brasil: "Formação Irati (folhelho pirobetuminoso) com o réptil Mesosaurus — a prova clássica de Wegener para o Gondwana; Formação Rio Bonito com o carvão do sul (Candiota, RS); rocha geradora de petróleo da Bacia do Paraná.",
+        curiosidade: "O Mesosaurus fóssil aparece só no Brasil e na África do Sul, em camadas idênticas — quando Wegener viu isso, a deriva continental deixou de ser hipótese e virou evidência."
+      },
+
+      /* ---------- PERÍODOS DO MESOZOICO ---------- */
+      {
+        id: "triassico", nome: "Triássico", tipo: "Período", pai: "Mesozoico", inicio: 251.902, fim: 201.4, cor: "#812b92",
+        tagline: "Do cenário devastado ao primeiro dinossauro — nascido no Brasil.",
+        clima: "Pangeia única: interior superárido, monções nas bordas; sem gelo polar.",
+        vida: ["Recuperação lenta (~5 Ma) pós-P-T", "Primeiros dinossauros (~233 Ma): pequenos e bípedes", "Primeiros mamíferos (~205 Ma, Morganucodon)", "Primeiros pterossauros; cinodontes e rincossauros abundantes"],
+        eventos: ["Abertura do Atlântico Central (rifts do CAMP)", "Extinção Triássico-Jurássico (~201 Ma, CAMP): 4ª das Big Five", "Primeiras coníferas modernas e ginkgos"],
+        brasil: "Os dinossauros mais antigos do mundo saem do RS: Staurikosaurus, Buriolestes e Bagualosaurus, da Formação Santa Maria (~233 Ma) — o berço dos dinossauros é brasileiro.",
+        curiosidade: "O Staurikosaurus, coletado em 1936 por Llewellyn Price no RS, descreveu um dos três dinossauros mais antigos conhecidos — junto com Eoraptor e Herrerasaurus, da Argentina."
+      },
+      {
+        id: "jurassico", nome: "Jurássico", tipo: "Período", pai: "Mesozoico", inicio: 201.4, fim: 145, cor: "#34b2c9",
+        tagline: "A era de ouro dos dinossauros gigantes.",
+        clima: "Estufa sem gelo polar; monções fortes; oceanos quentes e altos.",
+        vida: ["Saurópodes gigantes (Diplodocus, Brachiosaurus) e terópodes (Allosaurus)", "Archaeopteryx (~150 Ma): a “primeira ave” do Folhelho de Solnhofen", "Ictiossauros e plesiossauros nos mares", "Amonites como fósseis-guia perfeitos"],
+        eventos: ["Pangeia se abre: o Oceano Atlântico Norte nasce", "Grandes províncias ígneas e derrames vulcânicos", "Mares epicontinentais rasos cobrem a Europa"],
+        brasil: "Quase todo o Brasil é deserto: o erg de Botucatu (arenitos eólicos) depois vira o Aquífero Guarani. Pequenas bacias do nordeste (Iguatu, Sanfranciscana) guardam trilhas e peixes jurássicos.",
+        curiosidade: "O Archaeopteryx foi descrito em 1861, dois anos depois de “A Origem das Espécies” — e virou a evidência-perfeita da evolução que Darwin previa."
+      },
+      {
+        id: "cretaceo", nome: "Cretáceo", tipo: "Período", pai: "Mesozoico", inicio: 145, fim: 66, cor: "#7fc64e",
+        tagline: "Flores, gigantes finais — e o asteroide que mudou tudo.",
+        clima: "Estufa máxima do Mesozoico (~90 Ma): sem gelo, mares interiores, CO₂ 4–8× o atual.",
+        vida: ["Angiospermas (flores) explodem ~125 Ma — junto com abelhas", "Dinos icônicos: T. rex, Triceratops, Velociraptor, Spinosaurus", "Saurópodes máximos (Argentinosaurus, ~70 t) e pterossauros gigantes (Quetzalcoatlus, 10 m)", "Fim: Chicxulub extingue 76% das espécies e os dinos não-aviários"],
+        eventos: ["Atlântico Sul abre: Brasil e África se separam (~112 Ma)", "Derrames do Paraná (Serra Geral, ~134 Ma) e do Deccan (66 Ma)", "Cratera de Chicxulub (180 km, Yucatán) — 66 Ma"],
+        brasil: "O pré-sal se forma (~120–113 Ma: lagoas Rift do Atlântico nascente); Araripe (CE, Geopark UNESCO): Santana com pterossauros Tupandactylus e Tropeognathus, Crato com as flores mais antigas do Brasil; Vale dos Dinossauros (PB, Sousa): trilhas de ~120 Ma.",
+        curiosidade: "O pré-sal brasileiro é herança cretácica: quando o Atlântico Sul era só um vale de lagos salgados, matéria orgânica e camadas de sal selaram a “fábrica” de petróleo mais rica do país."
+      },
+
+      /* ---------- PERÍODOS DO CENOZOICO ---------- */
+      {
+        id: "paleogeno", nome: "Paleógeno", tipo: "Período", pai: "Cenozoico", inicio: 66, fim: 23.03, cor: "#fdb46c",
+        tagline: "Mamíferos herdam a Terra — e baleias voltam ao mar.",
+        clima: "Estufa quente (PETM ~56 Ma) esfriando até a glaciação antártica (~34 Ma).",
+        vida: ["Radiação explosiva dos mamíferos: baleias, cavalos, primatas", "Aves modernas se diversificam", "Florestas densas até os polos (Eoceno)", "Gramíneas expandem no Oligoceno"],
+        eventos: ["Recuperação pós-Chicxulub: biosfera se reorganiza em ~1–5 Ma", "Colisão Índia–Ásia ergue o Himalaia", "Antártica separa da Austrália e congela (~34 Ma)"],
+        brasil: "Bacias costeiras (Campos, Santos, Espírito Santo) acumulam o óleo do Terciário; macacos platirrinos e roedores-cavia (ancestrais da capivara) atravessam o Atlântico em jangadas de vegetação (~35–40 Ma).",
+        curiosidade: "Os primeiros “cavalos” tinham o tamanho de um cachorro pequeno — e os ancestrais das baleias eram ungulados terrestres do tamanho de um lobo (Pakicetus)."
+      },
+      {
+        id: "neogeno", nome: "Neógeno", tipo: "Período", pai: "Cenozoico", inicio: 23.03, fim: 2.58, cor: "#ffe619",
+        tagline: "Savanas, macacos — e os primeiros ancestrais humanos.",
+        clima: "Esfriamento contínuo; mar de Tétis se fecha (Mediterrâneo seca ~5,9 Ma).",
+        vida: ["Macacos africanos → primeiros homininos bípedes (Sahelanthropus ~7 Ma; Australopithecus ~4 Ma)", "Megafauna de mamíferos moderna se estrutura", "C4 grasslands: savanas e estepes globais"],
+        eventos: ["Andes sobem intensamente (Colômbia–Chile)", "Mediterrâneo seca (Crise Messiniana) e se enche de novo (Zanclean flood)", "Gelo do Ártico se forma no fim (~3 Ma)"],
+        brasil: "A elevação dos Andes inverte o rio Amazonas: ele passa a correr para o Atlântico (Mioceno) — e a maior floresta tropical do planeta se estrutura nessa época.",
+        curiosidade: "Quando o Mediterrâneo secou, virou um deserto com lagos de sal 3 km abaixo do nível do mar — até que o Estreito de Gibraltar rompeu e o encheu em centenas de anos (a maior inundação conhecida)."
+      },
+      {
+        id: "quaternario", nome: "Quaternário", tipo: "Período", pai: "Cenozoico", inicio: 2.58, fim: 0, cor: "#f9f97f",
+        tagline: "Idades do gelo, megafauna — e nós.",
+        clima: "Ciclos glaciais de ~100 ka (~20 glaciações); Último Máximo Glacial a 20 ka (mar 120 m mais baixo); aquecimento pós-11,7 ka.",
+        vida: ["Megafauna: mamutes, Megatherium, Smilodon, gliptodontes", "Homo sapiens surge (~300 ka), sai da África (~60 ka) e coloniza o planeta", "Extinção da megafauna (~12–10 ka): caça + clima", "Civilizações, agricultura, industrialização"],
+        eventos: ["Glaciações do Pleistoceno esculpem paisagens", "Primeiros humanos nas Américas (~20–15 ka)", "Holoceno (11,7 ka–hoje): interglacial estável da civilização", "Aquecimento antropogênico acelera"],
+        brasil: "Megafauna nas cavernas de Lagoa Santa (MG): preguiça-gigante, gliptodonte, toxodonte — e o homem de Lagoa Santa; Serra da Capivara (PI) reúne pinturas rupestres e sítios paleoindígenas debatidos (~20–30 ka ou mais); com o degelo, o litoral avança sobre a plataforma.",
+        curiosidade: "Na última glaciação, o nível do mar estava ~120 m mais baixo: dava para andar da França à Inglaterra e da Sibéria ao Alasca — por isso os humanos chegaram às Américas a pé."
+      },
+
+      /* ---------- ÉPOCAS DO CENOZOICO ---------- */
+      {
+        id: "paleoceno", nome: "Paleoceno", tipo: "Época", pai: "Paleógeno", inicio: 66, fim: 56, cor: "#fdb46c",
+        tagline: "A recuperação pós-asteroide.",
+        clima: "Quente e úmido, sem gelo polar; florestas até os polos.",
+        vida: ["Mamíferos pequenos se diversificam (primeiros primatas ~56 Ma)", "Aves e répteis reocupam nichos", "Mares cheios de peixes modernos"],
+        eventos: ["Recuperação da biosfera em ~1–5 Ma", "Atlântico Norte abre (Islândia começa)"],
+        brasil: "Bacias costeiras acumulam sedimentos; a fauna de mamíferos ainda é primitiva no continente.",
+        curiosidade: "Em ~10 Ma após o asteroide, a vida já tinha reconstruído ecossistemas florestais completos — com mamíferos no lugar dos dinossauros."
+      },
+      {
+        id: "eoceno", nome: "Eoceno", tipo: "Época", pai: "Paleógeno", inicio: 56, fim: 33.9, cor: "#f9c17d",
+        tagline: "“Amanhecer do recente”: a casa de efeito estufa dos mamíferos.",
+        clima: "Máximo Térmico do Paleoceno-Eoceno (PETM, 56 Ma): +5–8 °C em ~20 ka.",
+        vida: ["Baleias terrestres voltam ao mar (Pakicetus → Basilosaurus)", "Primatas modernos na Ásia/América do Norte", "Cavalos, morcegos e ungulados modernos"],
+        eventos: ["PETM: liberação gigante de carbono (análogo antigo ao hoje)", "Índia colide com a Ásia: o Himalaia começa a subir", "Esfriamento final: Antártica começa a congelar"],
+        brasil: "As travessias transatlânticas dos ancestrais dos macacos e capivaras (~35–40 Ma) provavelmente ocorrem no fim do Eoceno.",
+        curiosidade: "No PETM, com CO₂ alto e oceanos acidificados, os “piores cenários” atuais aconteceram de verdade — e a recuperação levou ~100 mil anos."
+      },
+      {
+        id: "oligoceno", nome: "Oligoceno", tipo: "Época", pai: "Paleógeno", inicio: 33.9, fim: 23.03, cor: "#ffd0a0",
+        tagline: "O mundo esfria e as savanas aparecem.",
+        clima: "Glaciação antártica estabelecida (~34 Ma); primeiro gelo polar permanente.",
+        vida: ["Mamíferos modernos (felinos, caninos, rinocerontes)", "Primatas declinam no norte, prosperam no sul", "Marsupiais dominam a América do Sul"],
+        eventos: ["Antártica isolada pela Corrente Circumpolar", "Orogenia alpina começa (Alpes, Andes ativos)"],
+        brasil: "Fauna de mamíferos sul-americanos (“brasilotheres”) evolui isolada: toxodontes, litopternos e marsupiais predadores.",
+        curiosidade: "A América do Sul ficou “ilha-continente” por dezenas de milhões de anos — sua fauna evoluiu em segredo até o Panamá conectar tudo (~3 Ma)."
+      },
+      {
+        id: "mioceno", nome: "Mioceno", tipo: "Época", pai: "Neógeno", inicio: 23.03, fim: 5.333, cor: "#ffe619",
+        tagline: "Savanas globais — e os homininos se separam dos chimpanzés.",
+        clima: "Quente no início, esfriando no fim; Mediterranean seca (~5,9 Ma).",
+        vida: ["Grandes símios na África/Ásia (~20 Ma)", "Primeiros homininos bípedes (~7 Ma, Sahelanthropus)", "Megafauna de mamíferos moderna se organiza"],
+        eventos: ["Andes sobem; Amazonas inverte (Mioceno médio)", "Messinian salinity crisis (~5,9 Ma)", "Calotas de gelo se formam no Ártico no fim do Mioceno"],
+        brasil: "A Amazônia se estrutura: o rio muda de direção, a bacia sedimentar se inunda (Pebas) e a floresta tropical vira a maior do mundo.",
+        curiosidade: "Os grandes símios já viveram na Europa (Ouranopithecus, na Grécia) — hoje sobram apenas na África e na Ásia tropical."
+      },
+      {
+        id: "plioceno", nome: "Plioceno", tipo: "Época", pai: "Neógeno", inicio: 5.333, fim: 2.58, cor: "#ffec80",
+        tagline: "O mundo “moderno” — com o Panamá fechando a conta.",
+        clima: "Similar ao atual; esfria no fim até o início das glaciações.",
+        vida: ["Australopithecus na África (~4 Ma)", "Megafauna sul-americana prospera", "Fauna moderna consolidada"],
+        eventos: ["Istmo do Panamá fecha (~3 Ma): troca faunística (Great American Biotic Interchange)", "Ártico congela por completo (~3 Ma)", "Mediterrâneo reenchido (Zanclean flood, ~5,3 Ma)"],
+        brasil: "A conexão do Panamá traz felinos-dente-de-sabre, camelídeos e outros táxons norte-americanos ao sul — e leva preguiças-gigantes e gliptodontes ao norte.",
+        curiosidade: "A Grande Intercâmbio Faunístico das Américas (~3 Ma) misturou duas faunas que evoluíram separadas por 100 Ma — e o tigre-dente-de-sabre Smilodon só chegou ao Brasil depois disso."
+      },
+      {
+        id: "pleistoceno", nome: "Pleistoceno", tipo: "Época", pai: "Quaternário", inicio: 2.58, fim: 0.0117, cor: "#f9f97f",
+        tagline: "A idade do gelo — da megafauna e dos primeiros humanos.",
+        clima: "~20 ciclos glaciais de 100 ka; LGM a 20 ka: gelo até o norte da Europa/América, mar −120 m.",
+        vida: ["Megafauna: mamutes, Megatherium, Smilodon, gliptodontes", "Homo sapiens (~300 ka) e saída da África (~60 ka)", "Pinturas rupestres, ferramentas, fogo controlado"],
+        eventos: ["Humanos chegam à Austrália (~65 ka) e às Américas (~20–15 ka)", "Extinção da megafauna mundial (~50–10 ka)", "Última deglaciação rápida (~11,7 ka)"],
+        brasil: "Megafauna em Lagoa Santa (MG) e em todo o interior; sambaquis no litoral (montes de conchas de 30 m!); Serra da Capivara (PI) com pinturas de ~12–25 ka e debates sobre presença humana ainda mais antiga.",
+        curiosidade: "Os sambaquis brasileiros são montes artificiais de conchas com até 30 m de altura — os maiores sítios pré-históricos das Américas, construídos ao longo de milênios."
+      },
+      {
+        id: "holoceno", nome: "Holoceno", tipo: "Época", pai: "Quaternário", inicio: 0.0117, fim: 0, cor: "#fee599",
+        tagline: "O interglacial da civilização — 11.700 anos até hoje.",
+        clima: "Interglacial estável e quente (a “quarta-estação” da geologia: a civilização inteira cabe aqui).",
+        vida: ["Domesticação de plantas e animais (~10 ka)", "Cidades, escrita, impérios, indústria", "8 bilhões de humanos; 6ª extinção em curso (proposta)"],
+        eventos: ["Agricultura nasce em vários centros (~10 ka)", "Revolução Industrial (1760): CO₂ sobe", "Clima e biosfera mudam por ação humana (Antropoceno proposto)"],
+        brasil: "Colonização tupi, sambaquis finais, colonização europeia (1500), desmatamento e cidades — a geologia do Antropoceno já é visível nas rochas urbanas e nos sedimentos de represas.",
+        curiosidade: "Toda a história escrita da humanidade (~5.000 anos) ocupa menos de 0,0001% do tempo geológico: se a Terra tivesse 46 anos, tudo o que conhecemos teria acontecido nas últimas 9 horas."
+      }
+    ];
+
+    /* ---------- Extinções em massa (Big Five) ---------- */
+    const EXTINCOES = [
+      { rank: "1ª", nome: "Ordoviciano-Siluriano", pct: 85, cor: "#009270", txt: "Há 443,8 Ma. Uma glaciação rápida derrubou o nível do mar e matou ~85% das espécies marinhas — quase todas as formas de vida então conhecidas viviam nos oceanos." },
+      { rank: "2ª", nome: "Devoniano Tardio", pct: 75, cor: "#cb8c37", txt: "Há ~372 Ma. Anoxia oceânica em eventos sucessivos (Kellwasser e Hangenberg), possivelmente ligados ao crescimento das primeiras florestas. Atacou os recifes e os peixes." },
+      { rank: "3ª", nome: "Permiano-Triássico", pct: 96, cor: "#f04028", txt: "Há 252 Ma. “A Grande Mortandade”: ~96% das espécies marinhas e ~70% dos vertebrados terrestres. Causa: os Traps Siberianos — milhões de km³ de lava, CO₂, metano e oceanos ácidos." },
+      { rank: "4ª", nome: "Triássico-Jurássico", pct: 80, cor: "#812b92", txt: "Há 201,4 Ma. O vulcanismo do CAMP, na abertura do Atlântico, eliminou ~80% das espécies — e limpou o caminho para o domínio dos dinossauros." },
+      { rank: "5ª", nome: "Cretáceo-Paleógeno", pct: 76, cor: "#7fc64e", txt: "Há 66 Ma. O asteroide de Chicxulub (10–15 km, cratera de 180 km) + os vulcões do Deccan encerraram os dinossauros não-aviários, amonites e pterossauros." }
+    ];
+
+    /* ---------- Marcos da vida ---------- */
+    const MARCOS = [
+      { t: "4.567 Ma", cor: "#b61743", txt: "A Terra se forma da nebulosa solar." },
+      { t: "4,51 Ga", cor: "#b61743", txt: "Impacto com Theia forma a Lua." },
+      { t: "~4,4 Ga", cor: "#b61743", txt: "Oceanos condensam; zircões registram água líquida." },
+      { t: "~3,7–3,5 Ga", cor: "#f0047f", txt: "Primeiros micro-organismos e estromatólitos." },
+      { t: "2,4 Ga", cor: "#f74370", txt: "Grande Oxicitação: O₂ vira atmosfera." },
+      { t: "~1,8 Ga", cor: "#f74370", txt: "Primeiras células eucariotas." },
+      { t: "~1,05 Ga", cor: "#fa5f88", txt: "Sexo: alga Bangiomorpha, o primeiro organismo sexual." },
+      { t: "720–635 Ma", cor: "#fc86ab", txt: "Terra-bola-de-neve: gelo até o Equador." },
+      { t: "~600 Ma", cor: "#ffb7d5", txt: "Primeiros animais (biota de Ediacara)." },
+      { t: "538,8 Ma", cor: "#7fa056", txt: "Explosão Cambriana: quase todos os filos animais." },
+      { t: "~470 Ma", cor: "#009270", txt: "Plantas conquistam a terra firme." },
+      { t: "443,8 Ma", cor: "#009270", txt: "1ª extinção em massa (85% das espécies)." },
+      { t: "~375 Ma", cor: "#cb8c37", txt: "Tetrápodes: Tiktaalik e os primeiros passos em terra." },
+      { t: "~318 Ma", cor: "#67a599", txt: "Amniotas: répteis rompem a dependência da água." },
+      { t: "252 Ma", cor: "#f04028", txt: "A maior extinção de todas (96% marinha)." },
+      { t: "~233 Ma", cor: "#812b92", txt: "Primeiros dinossauros — nascidos no Rio Grande do Sul." },
+      { t: "~205 Ma", cor: "#812b92", txt: "Primeiros mamíferos (Morganucodon)." },
+      { t: "~150 Ma", cor: "#34b2c9", txt: "Archaeopteryx: dinossauro-ave de Solnhofen." },
+      { t: "~125 Ma", cor: "#7fc64e", txt: "Flores (angiospermas) explodem com as abelhas." },
+      { t: "66 Ma", cor: "#7fc64e", txt: "Asteroide de Chicxulub encerra o Mesozoico." },
+      { t: "~50 Ma", cor: "#f9c17d", txt: "Baleias voltam ao mar; Himalaia se ergue." },
+      { t: "~7 Ma", cor: "#ffe619", txt: "Primeiros homininos bípedes na África." },
+      { t: "2,58 Ma", cor: "#f9f97f", txt: "Quaternário: ciclo de glaciações e megafauna." },
+      { t: "~0,3 Ma", cor: "#fee599", txt: "Homo sapiens surge na África." },
+      { t: "11,7 ka", cor: "#fee599", txt: "Holoceno: agricultura e civilização." }
+    ];
+
+    /* ---------- Como medir ---------- */
+    const COMO = [
+      { ic: "⏳", h: "As unidades", p: "A hierarquia segue do maior ao menor: <code>Éon → Era → Período → Época → Idade</code>. Nós vivemos no éon Fanerozoico, era Cenozoica, período Quaternário, época Holoceno, idade Megalayana." },
+      { ic: "📏", h: "Ma e Ga", p: "<code>Ma</code> = milhões de anos atrás (mega-annum); <code>Ga</code> = bilhões de anos atrás. “O dinossauro viveu há 66 Ma” = 66 milhões de anos no passado." },
+      { ic: "☢️", h: "Datação radiométrica", p: "Isótopos instáveis decaem em ritmo fixo (meia-vida): <code>U-Pb em zircões</code> mede até 4,4 Ga; <code>K-Ar</code> e <code>Ar-Ar</code> datam vulcânicas; <code>¹⁴C</code> cobre só os últimos ~50 ka." },
+      { ic: "🐚", h: "Fósseis-guia", p: "Espécies de vida curta e ampla distribuição (trilobites, amonites, graptólitos) “datam” camadas por associação — o princípio da sobreposição completa o método: o que está embaixo é mais velho." },
+      { ic: "🎨", h: "Cores oficiais (ICS)", p: "A Comissão Internacional de Estratigrafia define as cores da carta geológica usadas no mundo todo — as mesmas deste site (aproximadas), do Cambriano verde-oliva ao Quaternário amarelo." },
+      { ic: "🧭", h: "Como navegar", p: "Use os filtros por éon na tabela, clique em qualquer bloco da linha do tempo ou linha com ficha — o painel de estudo atualiza com vida, clima, eventos, geologia do Brasil e curiosidade." }
+    ];
+
+    /* =========================================================
+       ESTADO + ELEMENTOS
+       ========================================================= */
+    const state = {
+      selecionado: "quaternario",
+      filtro: "todos",
+      modo: "didatica"
+    };
+
+    const els = {
+      tooltip: document.getElementById("tooltip"),
+      tracks: {
+        eons: document.querySelector('[data-row="eons"]'),
+        eras: document.querySelector('[data-row="eras"]'),
+        periodos: document.querySelector('[data-row="periodos"]'),
+        epocas: document.querySelector('[data-row="epocas"]')
+      },
+      axis: document.getElementById("tlAxis"),
+      legend: document.getElementById("tlLegend"),
+      fichaTitle: document.getElementById("ficha-title"),
+      fichaTag: document.getElementById("fichaTag"),
+      fichaBrief: document.getElementById("fichaBrief"),
+      fichaGrid: document.getElementById("fichaGrid"),
+      fichaLists: document.getElementById("fichaLists"),
+      fichaExtra: document.getElementById("fichaExtra"),
+      tabelaBody: document.getElementById("tabelaBody"),
+      tabelaFiltros: document.getElementById("tabelaFiltros"),
+      extGrid: document.getElementById("extGrid"),
+      marcosA: document.getElementById("marcosA"),
+      marcosB: document.getElementById("marcosB"),
+      comoGrid: document.getElementById("comoGrid")
+    };
+
+    const U = Object.fromEntries(UNIDADES.map((u) => [u.id, u]));
+    const fmt = (n) => n.toLocaleString("pt-BR", { maximumFractionDigits: 2 });
+
+    /* Cor de texto adequada (luminância aproximada) */
+    function corTexto(hex) {
+      const h = hex.replace("#", "");
+      const r = parseInt(h.slice(0, 2), 16);
+      const g = parseInt(h.slice(2, 4), 16);
+      const b = parseInt(h.slice(4, 6), 16);
+      return 0.299 * r + 0.587 * g + 0.114 * b < 150 ? "dark" : "";
+    }
+
+    /* =========================================================
+       MAPEAMENTO DE TEMPO → LARGURA
+       ========================================================= */
+    const T_MAX = 4567;
+    const T_FAN = 538.8;
+    const PRECAMB_W = 46; /* % da largura para o Precambriano no modo didático */
+
+    function mapT(t) {
+      if (state.modo === "real") return ((T_MAX - t) / T_MAX) * 100;
+      if (t >= T_FAN) return ((T_MAX - t) / T_MAX) * PRECAMB_W; /* Precambriano (t mais antigo) */
+      return PRECAMB_W + ((T_FAN - t) / T_FAN) * (100 - PRECAMB_W); /* Fanerozoico ampliado */
+    }
+
+    function aplicarSeg(el, u) {
+      const x1 = mapT(u.inicio);
+      const x2 = mapT(u.fim);
+      const wBruto = Math.abs(x2 - x1);
+      el.style.left = Math.min(x1, x2) + "%";
+      el.style.width = Math.max(wBruto, 0.3) + "%"; /* mínimo visível/clicável */
+      el.style.background = u.cor;
+      if (corTexto(u.cor) === "dark") el.classList.add("dark");
+      if (wBruto < 4) el.classList.add("narrow"); /* rótulo oculto em segmentos estreitos */
+    }
+
+    /* =========================================================
+       LINHA DO TEMPO
+       ========================================================= */
+    function montarLinhaDoTempo() {
+      const rows = {
+        eons: UNIDADES.filter((u) => u.tipo === "Éon"),
+        eras: UNIDADES.filter((u) => u.tipo === "Era"),
+        periodos: UNIDADES.filter((u) => u.tipo === "Período"),
+        epocas: UNIDADES.filter((u) => u.tipo === "Época")
+      };
+
+      Object.keys(rows).forEach((row) => {
+        const track = els.tracks[row];
+        track.innerHTML = "";
+        rows[row]
+          .slice()
+          .sort((a, b) => b.inicio - a.inicio)
+          .forEach((u) => {
+            const seg = document.createElement("button");
+            seg.type = "button";
+            seg.className = "tl-seg";
+            seg.dataset.id = u.id;
+            aplicarSeg(seg, u);
+            const label = document.createElement("span");
+            label.textContent = u.nome;
+            seg.appendChild(label);
+            seg.title = u.nome;
+
+            seg.addEventListener("mouseenter", (ev) => mostrarTooltip(ev, u));
+            seg.addEventListener("mousemove", (ev) => posicionarTooltip(ev));
+            seg.addEventListener("mouseleave", ocultarTooltip);
+            seg.addEventListener("click", () => selecionar(u.id, false));
+
+            track.appendChild(seg);
+          });
+      });
+
+      /* Eixo */
+      const marcas = state.modo === "real"
+        ? [4567, 4000, 3500, 3000, 2500, 2000, 1500, 1000, 500, 0]
+        : [4567, 4000, 3000, 2500, 2000, 1000, 538.8, 400, 300, 200, 100, 50, 0];
+      els.axis.innerHTML = "";
+      marcas.forEach((t) => {
+        const s = document.createElement("span");
+        s.style.left = mapT(t) + "%";
+        s.textContent = t === 0 ? "Hoje" : t >= 1000 ? (t / 1000).toLocaleString("pt-BR") + " Ga" : Math.round(t) + " Ma";
+        els.axis.appendChild(s);
+      });
+
+      /* Legenda dos éons */
+      els.legend.innerHTML = "";
+      UNIDADES.filter((u) => u.tipo === "Éon").forEach((u) => {
+        const item = document.createElement("span");
+        item.className = "legend-item";
+        item.innerHTML = '<span class="swatch" style="background:' + u.cor + '"></span>' + u.nome +
+          " <span style='opacity:.7'>(" + fmt(u.inicio) + "–" + fmt(u.fim) + " Ma)</span>";
+        els.legend.appendChild(item);
+      });
+
+      atualizarDestaqueTimeline();
+    }
+
+    function atualizarDestaqueTimeline() {
+      document.querySelectorAll(".tl-seg").forEach((seg) => {
+        const u = U[seg.dataset.id];
+        seg.classList.toggle("selected", seg.dataset.id === state.selecionado);
+        const ok = state.filtro === "todos" || (u.pai === state.filtro || u.id === state.filtro || (u.contem && u.contem.includes(state.filtro)));
+        seg.classList.toggle("dim", !ok);
+      });
+    }
+
+    /* =========================================================
+       TOOLTIP
+       ========================================================= */
+    function mostrarTooltip(ev, u) {
+      const dur = u.inicio - u.fim;
+      els.tooltip.innerHTML =
+        "<strong>" + u.nome + "</strong>" +
+        '<span class="tip-sub">' + u.tipo + " do " + (u.pai === "—" ? "tempo geológico" : u.pai) + "</span>" +
+        '<div class="tip-row">Início: <b>há ' + fmt(u.inicio) + " Ma</b></div>" +
+        '<div class="tip-row">Fim: <b>há ' + fmt(u.fim) + " Ma</b></div>" +
+        '<div class="tip-row">Duração: <b>' + fmt(dur) + " milhões de anos</b></div>" +
+        '<div class="tip-row" style="margin-top:0.3rem;opacity:0.75">Clique para a ficha completa</div>';
+      els.tooltip.classList.add("show");
+      els.tooltip.setAttribute("aria-hidden", "false");
+      posicionarTooltip(ev);
+    }
+
+    function posicionarTooltip(ev) {
+      const tw = els.tooltip.offsetWidth;
+      const th = els.tooltip.offsetHeight;
+      let x = ev.clientX + 14;
+      let y = ev.clientY + 16;
+      if (x + tw > window.innerWidth - 10) x = ev.clientX - tw - 12;
+      if (y + th > window.innerHeight - 10) y = ev.clientY - th - 12;
+      els.tooltip.style.left = Math.max(8, x) + "px";
+      els.tooltip.style.top = Math.max(8, y) + "px";
+    }
+
+    function ocultarTooltip() {
+      els.tooltip.classList.remove("show");
+      els.tooltip.setAttribute("aria-hidden", "true");
+    }
+
+    /* =========================================================
+       TEMA — cor acompanha a unidade selecionada
+       ========================================================= */
+    function aplicarTema(u) {
+      const r = document.documentElement.style;
+      r.setProperty("--cell", u.cor);
+      r.setProperty("--cell-strong", u.cor);
+      r.setProperty("--cell-soft", u.cor + "33");
+      r.setProperty("--cell-ring", u.cor + "55");
+      r.setProperty("--tint-bg", u.cor + "14");
+      r.setProperty("--tint-border", u.cor + "44");
+      r.setProperty("--tint-text", "#334155");
+    }
+
+    /* =========================================================
+       FICHA
+       ========================================================= */
+    function cardLista(titulo, itens) {
+      const c = document.createElement("div");
+      c.className = "list-card";
+      c.innerHTML = '<h3><span class="dot" aria-hidden="true"></span>' + titulo + "</h3>";
+      const ul = document.createElement("ul");
+      ul.className = "fnc";
+      itens.forEach((i) => {
+        const li = document.createElement("li");
+        li.textContent = i;
+        ul.appendChild(li);
+      });
+      c.appendChild(ul);
+      return c;
+    }
+
+    function cardTexto(titulo, txt, classe) {
+      const c = document.createElement("div");
+      c.className = classe || "list-card";
+      const h = document.createElement("h3");
+      h.innerHTML = '<span class="dot" aria-hidden="true"></span>' + titulo;
+      c.appendChild(h);
+      const p = document.createElement("p");
+      p.style.cssText = "margin:0;color:#334155;font-size:0.9rem";
+      p.textContent = txt;
+      c.appendChild(p);
+      return c;
+    }
+
+    function selecionar(id, scrollar) {
+      const u = U[id];
+      if (!u) return;
+      state.selecionado = id;
+      aplicarTema(u);
+      ocultarTooltip();
+
+      const dur = u.inicio - u.fim;
+      els.fichaTitle.textContent = "Ficha — " + u.nome;
+      els.fichaTag.textContent = u.tipo + " do " + (u.pai === "—" ? "tempo geológico" : u.pai) + " • padrão ICS";
+      els.fichaBrief.textContent = u.tagline;
+
+      els.fichaGrid.innerHTML = "";
+      [
+        ["Início", "há " + fmt(u.inicio) + " Ma"],
+        ["Fim", u.fim === 0 ? "hoje" : "há " + fmt(u.fim) + " Ma"],
+        ["Duração", fmt(dur) + " milhões de anos"]
+      ].forEach(([r, v]) => {
+        const card = document.createElement("div");
+        card.className = "info-card";
+        card.innerHTML = '<p class="info-card__label">' + r + "</p>" + '<p class="info-card__value">' + v + "</p>";
+        els.fichaGrid.appendChild(card);
+      });
+
+      els.fichaLists.innerHTML = "";
+      els.fichaLists.appendChild(cardTexto("Clima", u.clima));
+      els.fichaLists.appendChild(cardLista("Vida", u.vida));
+      els.fichaLists.appendChild(cardLista("Eventos marcantes", u.eventos));
+
+      els.fichaExtra.innerHTML = "";
+      const brasilCard = document.createElement("div");
+      brasilCard.className = "brasil-card";
+      brasilCard.innerHTML = "<strong>🇧🇷 No Brasil</strong>" + u.brasil;
+      els.fichaExtra.appendChild(brasilCard);
+
+      const curio = document.createElement("div");
+      curio.className = "curiosity";
+      curio.innerHTML = "<strong>Curiosidade</strong>" + u.curiosidade;
+      els.fichaExtra.appendChild(curio);
+
+      atualizarDestaqueTimeline();
+      marcarLinhaTabela();
+
+      if (scrollar) {
+        document.getElementById("ficha").scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    /* =========================================================
+       TABELA COMPLETA
+       ========================================================= */
+    const FILTROS = [
+      { id: "todos", nome: "Todos", cor: "#1d4ed8" },
+      { id: "hadeano", nome: "Hadeano", cor: "#b61743" },
+      { id: "arqueano", nome: "Arqueano", cor: "#f0047f" },
+      { id: "proterozoico", nome: "Proterozoico", cor: "#f74370" },
+      { id: "fanerozoico", nome: "Fanerozoico", cor: "#f04028" }
+    ];
+
+    function montarTabela() {
+      FILTROS.forEach((f) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "filter-chip" + (f.id === "todos" ? " active" : "");
+        b.style.setProperty("--fc", f.cor);
+        b.dataset.filtro = f.id;
+        b.innerHTML = '<span class="dot" aria-hidden="true"></span>' + f.nome;
+        b.addEventListener("click", () => filtrarTabela(f.id));
+        els.tabelaFiltros.appendChild(b);
+      });
+
+      const eons = ["hadeano", "arqueano", "proterozoico", "fanerozoico"];
+      eons.forEach((eId) => {
+        const eon = U[eId];
+        const tr = document.createElement("tr");
+        tr.className = "eon-row";
+        tr.style.setProperty("--er", eon.cor);
+        tr.innerHTML =
+          '<td colspan="5">' + eon.nome + " <span class='eon-note'>• " + fmt(eon.inicio) + "–" + fmt(eon.fim) + " Ma • " +
+          (eon.id === "hadeano" || eon.id === "arqueano" || eon.id === "proterozoico"
+            ? "Precambriano"
+            : eon.id === "fanerozoico" ? "vida visível" : "") + "</span></td>";
+        els.tabelaBody.appendChild(tr);
+
+        const eras = UNIDADES.filter((u) => u.tipo === "Era" && eonOfEra(u) === eId);
+        eras.forEach((era) => {
+          addRow(era, 1);
+          UNIDADES
+            .filter((u) => u.pai === era.nome)
+            .sort((a, b) => b.inicio - a.inicio)
+            .forEach((per) => {
+              addRow(per, 2);
+              UNIDADES
+                .filter((u) => u.pai === per.nome)
+                .sort((a, b) => b.inicio - a.inicio)
+                .forEach((ep) => addRow(ep, 3));
+            });
+        });
+      });
+    }
+
+    function eonOfEra(era) {
+      const mapa = {
+        "eoarqueano": "arqueano", "paleoarqueano": "arqueano", "mesoarqueano": "arqueano", "neoarqueano": "arqueano",
+        "paleoproterozoico": "proterozoico", "mesoproterozoico": "proterozoico", "neoproterozoico": "proterozoico",
+        "paleozoico": "fanerozoico", "mesozoico": "fanerozoico", "cenozoico": "fanerozoico"
+      };
+      return mapa[era.id];
+    }
+
+    function addRow(u, nivel) {
+      const tr = document.createElement("tr");
+      tr.className = "click";
+      tr.dataset.id = u.id;
+      tr.dataset.filtro = eonOfEra(u) || u.id;
+      tr.innerHTML =
+        '<td><span class="u-name indent-' + nivel + '"><span class="u-dot" style="background:' + u.cor + '"></span>' + u.nome + "</span></td>" +
+        '<td><span class="tipo-pill">' + u.tipo + "</span></td>" +
+        '<td class="num">' + fmt(u.inicio) + "</td>" +
+        '<td class="num">' + (u.fim === 0 ? "hoje" : fmt(u.fim)) + "</td>" +
+        '<td class="num">' + fmt(u.inicio - u.fim) + "</td>";
+      tr.addEventListener("click", () => selecionar(u.id, true));
+      els.tabelaBody.appendChild(tr);
+    }
+
+    function filtrarTabela(id) {
+      state.filtro = id;
+      els.tabelaFiltros.querySelectorAll(".filter-chip").forEach((c) => {
+        c.classList.toggle("active", c.dataset.filtro === id);
+      });
+      els.tabelaBody.querySelectorAll("tr[data-id]").forEach((tr) => {
+        const u = U[tr.dataset.id];
+        tr.style.display = id === "todos" || tr.dataset.filtro === id ? "" : "none";
+      });
+      els.tabelaBody.querySelectorAll("tr.eon-row").forEach((tr) => {
+        tr.style.display = id === "todos" || tr.textContent.toLowerCase().includes(id) ? "" : "none";
+      });
+      atualizarDestaqueTimeline();
+    }
+
+    function marcarLinhaTabela() {
+      els.tabelaBody.querySelectorAll("tr[data-id]").forEach((tr) => {
+        tr.classList.toggle("selected", tr.dataset.id === state.selecionado);
+      });
+    }
+
+    /* =========================================================
+       EXTINÇÕES + MARCOS + COMO MEDIR
+       ========================================================= */
+    function montarExtincoes() {
+      EXTINCOES.forEach((e) => {
+        const c = document.createElement("div");
+        c.className = "ext-card";
+        c.style.setProperty("--ec", e.cor);
+        c.innerHTML =
+          '<span class="ext-card__rank">' + e.rank + " grande extinção</span>" +
+          '<h3 class="ext-card__nome">' + e.nome + "</h3>" +
+          '<div class="ext-card__pct">~' + e.pct + "% <small>das espécies</small></div>" +
+          '<p class="ext-card__txt">' + e.txt + "</p>";
+        els.extGrid.appendChild(c);
+      });
+    }
+
+    function montarMarcos() {
+      const metade = Math.ceil(MARCOS.length / 2);
+      [els.marcosA, els.marcosB].forEach((col, idx) => {
+        col.innerHTML = "";
+        MARCOS.slice(idx * metade, (idx + 1) * metade).forEach((m) => {
+          const d = document.createElement("div");
+          d.className = "marco";
+          d.style.setProperty("--mc", m.cor);
+          d.innerHTML = '<div class="marco__tempo">' + m.t + "</div>" + '<div class="marco__txt">' + m.txt + "</div>";
+          col.appendChild(d);
+        });
+      });
+    }
+
+    function montarComo() {
+      COMO.forEach((c) => {
+        const card = document.createElement("div");
+        card.className = "how-card";
+        card.innerHTML = '<h3><span class="ic" aria-hidden="true">' + c.ic + "</span>" + c.h + "</h3><p>" + c.p + "</p>";
+        els.comoGrid.appendChild(card);
+      });
+    }
+
+    /* =========================================================
+       EVENTOS + INICIALIZAÇÃO
+       ========================================================= */
+    function configurarEventos() {
+      document.getElementById("modoDidatica").addEventListener("click", () => trocarModo("didatica"));
+      document.getElementById("modoReal").addEventListener("click", () => trocarModo("real"));
+    }
+
+    function trocarModo(modo) {
+      state.modo = modo;
+      document.getElementById("modoDidatica").classList.toggle("active", modo === "didatica");
+      document.getElementById("modoReal").classList.toggle("active", modo === "real");
+      montarLinhaDoTempo();
+    }
+
+    montarLinhaDoTempo();
+    montarTabela();
+    montarExtincoes();
+    montarMarcos();
+    montarComo();
+    configurarEventos();
+    selecionar("quaternario", false);
+  </script>
+</body>
+</html>

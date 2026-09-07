@@ -1,0 +1,469 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Function Plotter</title>
+    
+    <!-- Fonte Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Plotly.js para o Gráfico 3D e Math.js para interpretar as fórmulas -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
+
+    <style>
+        /* Paleta de Cores e Identidade Visual (Baseada na imagem) */
+        :root {
+            --bg-gradient-start: #eef2f8;
+            --bg-gradient-end: #f8fafc;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --primary-blue: #1d4ed8;
+            --primary-blue-hover: #1e3a8a;
+            --secondary-blue: #eff6ff;
+            --border-color: #e2e8f0;
+            --info-bg: #f8fafc;
+            --danger: #ef4444;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+            --font-family: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-family);
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container { max-width: 1300px; width: 100%; }
+
+        .header {
+            margin-bottom: 2rem;
+            max-width: 800px;
+        }
+
+        .eyebrow {
+            color: var(--primary-blue);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 1.5rem;
+            align-items: start;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .section-label {
+            color: var(--primary-blue);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Formulários */
+        .form-group { margin-bottom: 1.25rem; }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .input-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-family: var(--font-family);
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            transition: all 0.2s;
+            background: #fff;
+        }
+
+        .input-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px var(--secondary-blue);
+        }
+
+        /* Fonte monoespaçada para a fórmula */
+        .input-math {
+            font-family: monospace;
+            font-size: 1rem;
+            color: var(--primary-blue);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        /* Botões */
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.25rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-align: center;
+        }
+
+        .btn-primary { background-color: var(--primary-blue); color: white; }
+        .btn-primary:hover { background-color: var(--primary-blue-hover); }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+        }
+        .btn-secondary:hover { background-color: var(--info-bg); }
+
+        /* Caixas de Informação/Erro */
+        .info-box {
+            background-color: var(--info-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .info-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-list {
+            list-style-type: none;
+            padding-left: 0;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        
+        .info-list li { margin-bottom: 0.5rem; }
+        .info-list code {
+            background: #e2e8f0;
+            padding: 0.1rem 0.3rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+            color: var(--primary-blue);
+        }
+
+        #errorMsg {
+            color: var(--danger);
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        /* Container do Gráfico */
+        .plot-container {
+            width: 100%;
+            height: 600px;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 19px,
+                rgba(0, 0, 0, 0.02) 19px,
+                rgba(0, 0, 0, 0.02) 20px
+            ),
+            repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 19px,
+                rgba(0, 0, 0, 0.02) 19px,
+                rgba(0, 0, 0, 0.02) 20px
+            );
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Customizando botões do plotly (modebar) */
+        .js-plotly-plot .plotly .modebar {
+            background: transparent !important;
+        }
+
+        @media (max-width: 900px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .title { font-size: 2.5rem; }
+            .plot-container { height: 400px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <span class="eyebrow">Ferramenta Interativa de Estudo</span>
+            <h1 class="title">Superfícies 3D</h1>
+            <p class="subtitle">Escreva uma função matemática f(x, y), ajuste os limites dos eixos e interaja com o gráfico tridimensional gerado em tempo real. Use o mouse para rotacionar e dar zoom.</p>
+        </header>
+
+        <main class="main-layout">
+            
+            <!-- Controles (Esquerda) -->
+            <aside class="card">
+                <span class="section-label">Entrada</span>
+                <h2 class="section-title">Configuração da função</h2>
+
+                <div class="form-group">
+                    <label class="label" for="functionInput">Função Z = f(x, y)</label>
+                    <input type="text" id="functionInput" class="input-control input-math" value="sin(sqrt(x^2 + y^2))">
+                    <div id="errorMsg">Expressão inválida. Verifique a sintaxe.</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="label" for="xMin">X mínimo</label>
+                        <input type="number" id="xMin" class="input-control" value="-10" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="label" for="xMax">X máximo</label>
+                        <input type="number" id="xMax" class="input-control" value="10" step="1">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="label" for="yMin">Y mínimo</label>
+                        <input type="number" id="yMin" class="input-control" value="-10" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="label" for="yMax">Y máximo</label>
+                        <input type="number" id="yMax" class="input-control" value="10" step="1">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="renderPlot()">Plotar Gráfico</button>
+                    <button class="btn btn-secondary" onclick="resetDefaults()">Valores Padrão</button>
+                </div>
+
+                <div class="info-box">
+                    <h3 class="info-title">Notação aceita</h3>
+                    <ul class="info-list">
+                        <li>• Operações básicas: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>^</code> (potência)</li>
+                        <li>• Funções trigonométricas: <code>sin(x)</code>, <code>cos(y)</code>, <code>tan(x)</code></li>
+                        <li>• Outras: <code>sqrt(x)</code>, <code>exp(x)</code>, <code>log(x)</code>, <code>abs(x)</code></li>
+                        <li>• Exemplo (Sombreiro): <code>sin(sqrt(x^2 + y^2))</code></li>
+                        <li>• Exemplo (Sela): <code>x^2 - y^2</code></li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Área do Gráfico (Direita) -->
+            <section class="card">
+                <span class="section-label">Visualização</span>
+                <h2 class="section-title">Gráfico interativo</h2>
+                
+                <div id="plotContainer" class="plot-container"></div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // Configurações do Grid de renderização
+        // 50x50 é um excelente balanço entre qualidade visual e performance no navegador
+        const GRID_RESOLUTION = 50; 
+
+        function renderPlot() {
+            const funcStr = document.getElementById('functionInput').value;
+            const xMin = parseFloat(document.getElementById('xMin').value);
+            const xMax = parseFloat(document.getElementById('xMax').value);
+            const yMin = parseFloat(document.getElementById('yMin').value);
+            const yMax = parseFloat(document.getElementById('yMax').value);
+            const errorMsg = document.getElementById('errorMsg');
+
+            // Validações básicas
+            if (isNaN(xMin) || isNaN(xMax) || isNaN(yMin) || isNaN(yMax) || xMin >= xMax || yMin >= yMax) {
+                errorMsg.textContent = "Limites inválidos. Certifique-se de que o mínimo é menor que o máximo.";
+                errorMsg.style.display = "block";
+                return;
+            }
+
+            let compiledFunc;
+            try {
+                // Compila a string para uma árvore matemática executável (Math.js)
+                compiledFunc = math.compile(funcStr);
+                
+                // Teste rápido para ver se a função quebra imediatamente
+                compiledFunc.evaluate({x: 1, y: 1});
+                
+                errorMsg.style.display = "none";
+                document.getElementById('functionInput').style.borderColor = "var(--border-color)";
+            } catch (err) {
+                errorMsg.textContent = "Expressão matemática inválida.";
+                errorMsg.style.display = "block";
+                document.getElementById('functionInput').style.borderColor = "var(--danger)";
+                return;
+            }
+
+            // Gerando as matrizes de dados (Z depende de X e Y)
+            let zData = [];
+            let xData = [];
+            let yData = [];
+
+            // Criar eixos X e Y
+            for (let i = 0; i < GRID_RESOLUTION; i++) {
+                xData.push(xMin + (xMax - xMin) * (i / (GRID_RESOLUTION - 1)));
+                yData.push(yMin + (yMax - yMin) * (i / (GRID_RESOLUTION - 1)));
+            }
+
+            // Calcular matriz Z (Linhas = Y, Colunas = X para o Plotly)
+            for (let i = 0; i < GRID_RESOLUTION; i++) {
+                let zRow = [];
+                let currentY = yData[i];
+                for (let j = 0; j < GRID_RESOLUTION; j++) {
+                    let currentX = xData[j];
+                    try {
+                        let z = compiledFunc.evaluate({x: currentX, y: currentY});
+                        
+                        // Evita que números complexos (ex: raiz de negativo) quebrem o plot
+                        if (typeof z === 'object' && z.im) { z = NaN; }
+                        
+                        // Previne picos ao infinito em assíntotas (ex: 1/x)
+                        if (!isFinite(z)) { z = NaN; }
+                        
+                        zRow.push(z);
+                    } catch (err) {
+                        zRow.push(NaN);
+                    }
+                }
+                zData.push(zRow);
+            }
+
+            // Configuração dos dados para o Plotly
+            const data = [{
+                z: zData,
+                x: xData,
+                y: yData,
+                type: 'surface',
+                // Criando uma escala de cores que combine com o design UI (Do claro ao azul escuro)
+                colorscale: [
+                    ['0.0', '#eff6ff'],
+                    ['0.3', '#93c5fd'],
+                    ['0.7', '#3b82f6'],
+                    ['1.0', '#1e3a8a']
+                ],
+                showscale: false, // Esconde a barra de cores lateral para um visual mais limpo
+                contours: {
+                    z: { show: true, usecolormap: true, highlightcolor: "#ffffff", project: { z: true } }
+                }
+            }];
+
+            // Configuração do layout 3D (Câmera, grades, fundos transparentes)
+            const layout = {
+                margin: { l: 0, r: 0, b: 0, t: 0 }, // Tira margens do container
+                paper_bgcolor: 'rgba(0,0,0,0)', // Container transparente
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                scene: {
+                    xaxis: { title: 'X', gridcolor: '#e2e8f0', zerolinecolor: '#94a3b8' },
+                    yaxis: { title: 'Y', gridcolor: '#e2e8f0', zerolinecolor: '#94a3b8' },
+                    zaxis: { title: 'f(x,y)', gridcolor: '#e2e8f0', zerolinecolor: '#94a3b8' },
+                    bgcolor: 'rgba(0,0,0,0)',
+                    camera: {
+                        eye: { x: 1.5, y: 1.5, z: 1.2 } // Ângulo inicial agradável
+                    }
+                }
+            };
+
+            const config = {
+                responsive: true,
+                displayModeBar: false // Esconde a barra de ferramentas do Plotly para visual limpo
+            };
+
+            // Renderiza
+            Plotly.newPlot('plotContainer', data, layout, config);
+        }
+
+        function resetDefaults() {
+            document.getElementById('functionInput').value = "sin(sqrt(x^2 + y^2))";
+            document.getElementById('xMin').value = "-10";
+            document.getElementById('xMax').value = "10";
+            document.getElementById('yMin').value = "-10";
+            document.getElementById('yMax').value = "10";
+            document.getElementById('errorMsg').style.display = "none";
+            document.getElementById('functionInput').style.borderColor = "var(--border-color)";
+            
+            renderPlot();
+        }
+
+        // Renderiza o gráfico inicial assim que a página carrega
+        window.onload = renderPlot;
+
+        // Adiciona evento de "Enter" no input de função
+        document.getElementById('functionInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                renderPlot();
+            }
+        });
+    </script>
+</body>
+</html>

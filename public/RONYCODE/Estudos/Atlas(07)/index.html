@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atlas Interativo Vetorial</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-gradient-start: #eef2f8;
+            --bg-gradient-end: #f8fafc;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --primary-blue: #1d4ed8;
+            --primary-blue-hover: #1e3a8a;
+            --secondary-blue: #eff6ff;
+            --border-color: #e2e8f0;
+            --info-bg: #f8fafc;
+            --highlight: #f59e0b; /* Cor para o highlight de continentes/regiões */
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+            --font-family: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-family);
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container { max-width: 1400px; width: 100%; }
+
+        .header {
+            margin-bottom: 2rem;
+            max-width: 800px;
+        }
+
+        .eyebrow {
+            color: var(--primary-blue);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 400px 1fr; /* Coluna da esquerda ligeiramente maior */
+            gap: 1.5rem;
+            align-items: start;
+            margin-bottom: 4rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.75rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .section-label {
+            color: var(--primary-blue);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Botões de Filtro */
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid var(--border-color);
+            background: white;
+            color: var(--text-dark);
+            font-family: var(--font-family);
+        }
+
+        .filter-btn:hover { background: var(--info-bg); }
+        
+        .filter-btn.active {
+            background-color: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        /* Container do Mapa Vetorial */
+        .map-wrapper {
+            width: 100%;
+            background: #e0f2fe; /* Cor sutil de oceano */
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            position: relative;
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Estilos dos vetores (paths) */
+        .country, .state {
+            fill: #94a3b8;
+            stroke: #ffffff;
+            stroke-width: 0.5;
+            transition: fill 0.2s, opacity 0.3s;
+            cursor: pointer;
+        }
+
+        .country:hover, .state:hover {
+            fill: var(--primary-blue) !important;
+        }
+
+        /* Camada de Continentes (invisível até ser ativada) */
+        .continent-overlay {
+            fill: var(--highlight);
+            opacity: 0;
+            pointer-events: none; /* Para não bloquear os cliques nos países */
+            transition: opacity 0.4s;
+        }
+
+        .map-dimmed .country {
+            opacity: 0.3; /* Esmaece todos os países quando um continente é filtrado */
+        }
+
+        /* Painel de detalhes lateral (Melhorado e maior) */
+        .details-panel {
+            min-height: 450px;
+        }
+
+        .details-empty {
+            color: var(--text-muted);
+            font-size: 1rem;
+            text-align: center;
+            padding: 3rem 1rem;
+            border: 2px dashed var(--border-color);
+            border-radius: 0.5rem;
+            background: var(--info-bg);
+        }
+
+        .details-content h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+            color: var(--primary-blue);
+        }
+
+        .details-content .location {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-item {
+            background: var(--info-bg);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-item .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-item .stat-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        /* Descrição AUMENTADA e mais legível */
+        .description-text {
+            font-size: 1.1rem; /* Aumentado consideravelmente */
+            line-height: 1.7;  /* Mais respiro entre as linhas */
+            color: var(--text-dark);
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Tooltip Customizado que segue o mouse */
+        #tooltip {
+            position: absolute;
+            background: var(--text-dark);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-family: var(--font-family);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transform: translate(-50%, -120%);
+        }
+
+        #tooltip h4 { margin-bottom: 0.2rem; font-size: 1rem; font-weight: 700;}
+        #tooltip p { font-size: 0.85rem; font-weight: 400; opacity: 0.9; }
+
+        .loading {
+            padding: 2rem;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="tooltip">
+        <h4 id="tt-title">País</h4>
+        <p id="tt-subtitle">Info</p>
+    </div>
+
+    <div class="container">
+        <!-- ============ MUNDO ============ -->
+        <header class="header">
+            <span class="eyebrow">Atlas Geográfico Proporcional</span>
+            <h1 class="title">Mapa Mundial</h1>
+            <p class="subtitle">Este mapa utiliza a projeção <b>Equal Earth</b>, que mostra os continentes em seus tamanhos reais (sem distorções). Use os filtros para ver como países como a Rússia se dividem entre a Europa e a Ásia.</p>
+        </header>
+
+        <main class="main-layout">
+            <aside class="card">
+                <span class="section-label">Controles & Informações</span>
+                <h2 class="section-title">Dados do País</h2>
+                
+                <div class="filter-group" id="continentFilters">
+                    <button class="filter-btn active" data-cont="all">Todo o Mundo</button>
+                    <button class="filter-btn" data-cont="South America">América do Sul</button>
+                    <button class="filter-btn" data-cont="North America">América do Norte</button>
+                    <button class="filter-btn" data-cont="Europe">Europa</button>
+                    <button class="filter-btn" data-cont="Asia">Ásia</button>
+                    <button class="filter-btn" data-cont="Africa">África</button>
+                    <button class="filter-btn" data-cont="Oceania">Oceania</button>
+                </div>
+
+                <div id="worldDetails" class="details-panel">
+                    <div class="details-empty">
+                        🌍<br><br>
+                        Clique em qualquer país no mapa para visualizar os dados completos.
+                    </div>
+                </div>
+            </aside>
+
+            <section class="card">
+                <span class="section-label">Sem marca d'água</span>
+                <h2 class="section-title">Visualização Interativa</h2>
+                <div id="worldMapContainer" class="map-wrapper">
+                    <div class="loading" id="loadingWorld">Carregando mapa mundial vetorial...</div>
+                </div>
+            </section>
+        </main>
+
+        <!-- ============ BRASIL ============ -->
+        <header class="header">
+            <span class="eyebrow">Divisão Geopolítica</span>
+            <h1 class="title">Mapa do Brasil</h1>
+            <p class="subtitle">Filtre pelas 5 regiões brasileiras. O mapa vetorial destaca perfeitamente os limites de cada estado.</p>
+        </header>
+
+        <main class="main-layout">
+            <aside class="card">
+                <span class="section-label">Filtros</span>
+                <h2 class="section-title">Dados do Estado</h2>
+                
+                <div class="filter-group" id="regionFilters">
+                    <button class="filter-btn active" data-reg="all">Brasil Completo</button>
+                    <button class="filter-btn" data-reg="Norte">Norte</button>
+                    <button class="filter-btn" data-reg="Nordeste">Nordeste</button>
+                    <button class="filter-btn" data-reg="Centro-Oeste">Centro-Oeste</button>
+                    <button class="filter-btn" data-reg="Sudeste">Sudeste</button>
+                    <button class="filter-btn" data-reg="Sul">Sul</button>
+                </div>
+
+                <div id="brazilDetails" class="details-panel">
+                    <div class="details-empty">
+                        🇧🇷<br><br>
+                        Clique em qualquer estado no mapa para visualizar a cultura e história local.
+                    </div>
+                </div>
+            </aside>
+
+            <section class="card">
+                <span class="section-label">Vetor Nacional</span>
+                <h2 class="section-title">Mapa Interativo</h2>
+                <div id="brazilMapContainer" class="map-wrapper">
+                    <div class="loading" id="loadingBrazil">Carregando mapa do Brasil...</div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Bibliotecas D3.js e TopoJSON (Para mapas sem marca d'água) -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/topojson-client@3"></script>
+
+    <script>
+        // ==========================================
+        // DADOS ENRIQUECIDOS (TEXTOS MAIORES)
+        // ==========================================
+        const countryData = {
+            "Brazil": { name: "Brasil", capital: "Brasília", pop: "215 milhões", area: "8.515.767 km²", lang: "Português", curr: "Real (BRL)", desc: "O Brasil é o maior país da América do Sul e da região da América Latina, sendo o quinto maior do mundo em área territorial. Sua bacia amazônica abriga um ecossistema incrivelmente diverso. Economicamente forte, é mundialmente reconhecido pela sua cultura vibrante, música, esportes e biodiversidade inigualável." },
+            "United States": { name: "Estados Unidos", capital: "Washington, D.C.", pop: "331 milhões", area: "9.833.520 km²", lang: "Inglês", curr: "Dólar (USD)", desc: "Uma república constitucional federal composta por 50 estados. Possui a maior economia mundial. Sua influência cultural e tecnológica atravessa fronteiras, sendo pioneira em inovação, entretenimento (Hollywood) e ciência aeroespacial." },
+            "Russia": { name: "Rússia", capital: "Moscou", pop: "144 milhões", area: "17.098.242 km²", lang: "Russo", curr: "Rublo (RUB)", desc: "O maior país do planeta em extensão territorial, cobrindo um oitavo da área terrestre habitada. A Rússia é uma nação transcontinental, estendendo-se por toda a extensão do norte da Ásia e sobre grande parte da Europa Oriental. Isso significa que, geograficamente, o país pertence a dois continentes distintos, divididos pelos Montes Urais." },
+            "China": { name: "China", capital: "Pequim", pop: "1.41 bilhão", area: "9.596.961 km²", lang: "Mandarim", curr: "Yuan (CNY)", desc: "Sendo um dos berços da civilização humana, a China moderna emergiu como a principal potência manufatureira do mundo. Com uma cultura milenar que inclui a Grande Muralha e inovações históricas, hoje é protagonista em tecnologia global." },
+            "India": { name: "Índia", capital: "Nova Délhi", pop: "1.42 bilhão", area: "3.287.263 km²", lang: "Hindi, Inglês", curr: "Rupia (INR)", desc: "A maior democracia do mundo abriga uma diversidade linguística e religiosa impressionante. Com rápido crescimento econômico, a Índia mistura antigas tradições espirituais com centros globais de tecnologia e software." },
+            "Argentina": { name: "Argentina", capital: "Buenos Aires", pop: "46 milhões", area: "2.780.400 km²", lang: "Espanhol", curr: "Peso (ARS)", desc: "Conhecida mundialmente pelo tango, por sua rica gastronomia baseada em carnes e paixão profunda pelo futebol. Possui paisagens espetaculares que vão das planícies dos Pampas até as geleiras exuberantes da Patagônia." },
+            "France": { name: "França", capital: "Paris", pop: "68 milhões", area: "643.801 km²", lang: "Francês", curr: "Euro (EUR)", desc: "Centro global de arte, ciência e filosofia. A França é o destino turístico mais popular do mundo, mantendo uma influência cultural, arquitetônica e culinária que moldou a sociedade ocidental moderna." },
+            "Egypt": { name: "Egito", capital: "Cairo", pop: "104 milhões", area: "1.001.450 km²", lang: "Árabe", curr: "Libra Egípcia", desc: "Outro clássico país transcontinental, ligando o nordeste da África ao Oriente Médio. O Egito é famoso por sua antiga civilização e alguns dos monumentos mais famosos do mundo, incluindo as Pirâmides de Gizé, o Grande Esfinge e o imponente Rio Nilo." },
+            "Australia": { name: "Austrália", capital: "Camberra", pop: "26 milhões", area: "7.692.024 km²", lang: "Inglês", curr: "Dólar Australiano", desc: "A Austrália é o único país que também é um continente. Famosa pela Ópera de Sydney, a Grande Barreira de Corais e o vasto deserto do Outback, abriga espécies animais que não existem em nenhum outro lugar do planeta." },
+            "Turkey": { name: "Turquia", capital: "Ancara", pop: "85 milhões", area: "783.562 km²", lang: "Turco", curr: "Lira Turca", desc: "A Turquia é um país transcontinental localizado na ponte geográfica e cultural entre a Europa e a Ásia. Istambul, sua maior cidade, fica literalmente dividida entre os dois continentes pelo Estreito de Bósforo." }
+        };
+
+        const defaultCountry = { name: "País", capital: "-", pop: "-", area: "-", lang: "-", curr: "-", desc: "Para manter o exemplo rápido e funcional, alguns países não possuem a descrição detalhada carregada nesta demonstração. Porém, o mapa exibe corretamente as divisões." };
+
+        const brazilStates = {
+            "AC": { name: "Acre", region: "Norte", capital: "Rio Branco", pop: "906 mil", area: "164.173 km²", desc: "Localizado no extremo oeste do país, o Acre é símbolo da preservação amazônica e da exploração sustentável da borracha, marcada historicamente pela luta do seringueiro Chico Mendes." },
+            "BA": { name: "Bahia", region: "Nordeste", capital: "Salvador", pop: "14.1 milhões", area: "564.733 km²", desc: "Maior economia do Nordeste e berço do Brasil (onde os portugueses chegaram em 1500). A Bahia tem a maior herança africana do país, manifestada no Carnaval, no acarajé, na capoeira e nas religiões de matriz africana." },
+            "DF": { name: "Distrito Federal", region: "Centro-Oeste", capital: "Brasília", pop: "3.1 milhões", area: "5.760 km²", desc: "Abriga Brasília, a capital nacional construída em 1960. O plano piloto, desenhado em formato de avião por Lúcio Costa com prédios de Oscar Niemeyer, é tombado como Patrimônio Cultural da Humanidade." },
+            "SP": { name: "São Paulo", region: "Sudeste", capital: "São Paulo", pop: "44.4 milhões", area: "248.219 km²", desc: "Motor econômico do Brasil. São Paulo é o estado mais rico e populoso, possuindo um polo industrial e financeiro que atrai pessoas do mundo inteiro, consolidando uma cultura cosmopolita riquíssima." },
+            "RS": { name: "Rio Grande do Sul", region: "Sul", capital: "Porto Alegre", pop: "11.4 milhões", area: "281.707 km²", desc: "Marcado por uma forte identidade regional (o gaúcho), influências de imigrantes alemães e italianos, e pelo frio rigoroso para os padrões brasileiros. Famoso pelo chimarrão, churrasco e produção de vinhos." },
+            "AM": { name: "Amazonas", region: "Norte", capital: "Manaus", pop: "4.2 milhões", area: "1.559.146 km²", desc: "O maior estado do Brasil, quase integralmente coberto pela floresta tropical. Manaus se destaca como polo industrial e pelo histórico ciclo da borracha, evidenciado pelo majestoso Teatro Amazonas." }
+        };
+        const defaultState = { name: "Estado", capital: "-", pop: "-", area: "-", desc: "Explore os principais estados clicando neles para ler informações culturais detalhadas e demográficas." };
+
+        // Variáveis globais para os SVGs e Tooltip
+        const tooltip = document.getElementById("tooltip");
+        const ttTitle = document.getElementById("tt-title");
+        const ttSubtitle = document.getElementById("tt-subtitle");
+
+        function showTooltip(evt, title, subtitle) {
+            ttTitle.innerText = title;
+            ttSubtitle.innerText = subtitle;
+            tooltip.style.opacity = 1;
+            tooltip.style.left = (evt.pageX) + "px";
+            tooltip.style.top = (evt.pageY) + "px";
+        }
+        function hideTooltip() { tooltip.style.opacity = 0; }
+        
+        // Formata o nome dos continentes
+        const contMap = {
+            "South America": "América do Sul",
+            "North America": "América do Norte",
+            "Europe": "Europa",
+            "Asia": "Ásia",
+            "Africa": "África",
+            "Oceania": "Oceania"
+        };
+
+        // ==========================================
+        // MAPA MUNDIAL COM D3.JS (Projeção Equal Earth)
+        // ==========================================
+        async function buildWorldMap() {
+            const width = 900, height = 500;
+            
+            // Remove loading
+            document.getElementById("loadingWorld").style.display = "none";
+
+            const svg = d3.select("#worldMapContainer")
+                .append("svg")
+                .attr("viewBox", `0 0 ${width} ${height}`);
+
+            // Projeção Proporcional Excelente
+            const projection = d3.geoEqualEarth().scale(170).translate([width / 2, height / 2]);
+            const path = d3.geoPath().projection(projection);
+
+            const gCountries = svg.append("g").attr("class", "countries-layer");
+            const gContinents = svg.append("g").attr("class", "continents-layer");
+
+            try {
+                // 1. Carrega os Países
+                const world = await d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json");
+                const countries = topojson.feature(world, world.objects.countries).features;
+
+                // 2. Carrega os Continentes (Para o efeito visual de separação exata, como os Montes Urais na Rússia)
+                // Usando um GeoJSON simples de continentes reais
+                const continentsData = await d3.json("https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json");
+                
+                // Desenhar países
+                gCountries.selectAll("path")
+                    .data(countries)
+                    .enter().append("path")
+                    .attr("class", "country")
+                    .attr("d", path)
+                    .attr("id", d => d.properties.name)
+                    .on("mousemove", (event, d) => {
+                        const name = d.properties.name;
+                        showTooltip(event, name, "Clique para detalhes");
+                    })
+                    .on("mouseout", hideTooltip)
+                    .on("click", (event, d) => {
+                        const name = d.properties.name;
+                        const data = countryData[name] || { ...defaultCountry, name: name };
+                        updateWorldDetails(data);
+                    });
+
+                // Lógica mágica de filtro de Continente:
+                // Em vez de ocultar/mostrar países inteiros (o que deixaria a Rússia inteira azul ao clicar em Europa),
+                // nós aplicamos uma sobreposição geométrica.
+                document.querySelectorAll("#continentFilters .filter-btn").forEach(btn => {
+                    btn.addEventListener("click", async function() {
+                        // UI Ativa
+                        document.querySelectorAll("#continentFilters .filter-btn").forEach(b => b.classList.remove("active"));
+                        this.classList.add("active");
+                        
+                        const selectedCont = this.getAttribute("data-cont");
+                        
+                        if (selectedCont === "all") {
+                            svg.classed("map-dimmed", false);
+                            gContinents.selectAll("path").remove();
+                        } else {
+                            // Diminui a opacidade de todos os países
+                            svg.classed("map-dimmed", true);
+                            
+                            // Buscar geometria APENAS do continente específico para sobrepor
+                            // Isso desenhará a "Europa", que corta a Rússia no meio geograficamente!
+                            const contUrl = `https://raw.githubusercontent.com/deldersveld/topojson/master/continents/${selectedCont.toLowerCase().replace(' ', '-')}.json`;
+                            
+                            try {
+                                const contRaw = await d3.json(contUrl);
+                                const contGeo = topojson.feature(contRaw, Object.values(contRaw.objects)[0]).features;
+                                
+                                // Limpa continente anterior e desenha o novo como um overlay
+                                gContinents.selectAll("path").remove();
+                                gContinents.selectAll("path")
+                                    .data(contGeo)
+                                    .enter().append("path")
+                                    .attr("class", "continent-overlay")
+                                    .attr("d", path)
+                                    .style("opacity", 1); // Animação de entrada
+                            } catch (e) {
+                                // Fallback se URL falhar
+                                gContinents.selectAll("path").remove();
+                            }
+                        }
+                    });
+                });
+
+            } catch (error) {
+                console.error("Erro carregando mapa:", error);
+            }
+        }
+
+        function updateWorldDetails(data) {
+            const panel = document.getElementById("worldDetails");
+            panel.innerHTML = `
+                <div class="details-content">
+                    <h3>${data.name}</h3>
+                    <div class="location">País Selecionado</div>
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Capital</div>
+                            <div class="stat-value">${data.capital}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">População</div>
+                            <div class="stat-value">${data.pop}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Área Territorial</div>
+                            <div class="stat-value">${data.area}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Moeda Local</div>
+                            <div class="stat-value">${data.curr}</div>
+                        </div>
+                    </div>
+                    <p class="description-text">${data.desc}</p>
+                </div>
+            `;
+        }
+
+
+        // ==========================================
+        // MAPA DO BRASIL COM D3.JS
+        // ==========================================
+        async function buildBrazilMap() {
+            const width = 800, height = 700;
+            
+            document.getElementById("loadingBrazil").style.display = "none";
+
+            const svg = d3.select("#brazilMapContainer")
+                .append("svg")
+                .attr("viewBox", `0 0 ${width} ${height}`);
+
+            // Projeção focada no Brasil
+            const projection = d3.geoMercator().center([-52, -15]).scale(850).translate([width / 2, height / 2]);
+            const path = d3.geoPath().projection(projection);
+
+            const gStates = svg.append("g");
+
+            try {
+                // Carrega GeoJSON dos estados
+                const raw = await d3.json("https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/brazil-states.geojson");
+                const states = raw.features;
+
+                // Extrair região do banco local
+                states.forEach(d => {
+                    const sigla = d.properties.sigla;
+                    if(brazilStates[sigla]) {
+                        d.properties.region = brazilStates[sigla].region;
+                    } else {
+                        // Fallbacks lógicos
+                        if(["AC","AM","RR","RO","PA","AP","TO"].includes(sigla)) d.properties.region = "Norte";
+                        if(["MA","PI","CE","RN","PB","PE","AL","SE","BA"].includes(sigla)) d.properties.region = "Nordeste";
+                        if(["MT","MS","GO","DF"].includes(sigla)) d.properties.region = "Centro-Oeste";
+                        if(["SP","RJ","MG","ES"].includes(sigla)) d.properties.region = "Sudeste";
+                        if(["PR","SC","RS"].includes(sigla)) d.properties.region = "Sul";
+                    }
+                });
+
+                gStates.selectAll("path")
+                    .data(states)
+                    .enter().append("path")
+                    .attr("class", "state")
+                    .attr("d", path)
+                    .attr("data-region", d => d.properties.region)
+                    .on("mousemove", (event, d) => {
+                        const name = d.properties.name;
+                        const sigla = d.properties.sigla;
+                        showTooltip(event, `${name} (${sigla})`, `Região ${d.properties.region}`);
+                    })
+                    .on("mouseout", hideTooltip)
+                    .on("click", (event, d) => {
+                        const sigla = d.properties.sigla;
+                        const data = brazilStates[sigla] || { ...defaultState, name: d.properties.name };
+                        updateBrazilDetails(data, sigla);
+                    });
+
+                // Lógica do Filtro de Regiões
+                document.querySelectorAll("#regionFilters .filter-btn").forEach(btn => {
+                    btn.addEventListener("click", function() {
+                        document.querySelectorAll("#regionFilters .filter-btn").forEach(b => b.classList.remove("active"));
+                        this.classList.add("active");
+                        
+                        const selectedReg = this.getAttribute("data-reg");
+                        
+                        gStates.selectAll(".state").each(function(d) {
+                            if (selectedReg === "all" || d.properties.region === selectedReg) {
+                                d3.select(this).style("fill", "#94a3b8").style("opacity", "1");
+                            } else {
+                                d3.select(this).style("fill", "#e2e8f0").style("opacity", "0.4");
+                            }
+                        });
+                    });
+                });
+
+            } catch (error) {
+                console.error("Erro carregando Brasil:", error);
+            }
+        }
+
+        function updateBrazilDetails(data, sigla) {
+            const panel = document.getElementById("brazilDetails");
+            panel.innerHTML = `
+                <div class="details-content">
+                    <h3>${data.name}</h3>
+                    <div class="location">Região ${data.region || "-"} • UF: ${sigla}</div>
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Capital</div>
+                            <div class="stat-value">${data.capital}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">População</div>
+                            <div class="stat-value">${data.pop}</div>
+                        </div>
+                        <div class="stat-item" style="grid-column: 1 / -1;">
+                            <div class="stat-label">Área Geográfica</div>
+                            <div class="stat-value">${data.area}</div>
+                        </div>
+                    </div>
+                    <p class="description-text">${data.desc}</p>
+                </div>
+            `;
+        }
+
+        // Inicializar
+        buildWorldMap();
+        buildBrazilMap();
+    </script>
+</body>
+</html>

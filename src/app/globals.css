@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@theme {
+  --color-stone-50: #faf9f7;
+  --color-stone-100: #f2efe9;
+  --color-stone-200: #e5e0d7;
+  --color-stone-300: #d0c8bb;
+  --color-stone-400: #b5a99a;
+  --color-stone-500: #9a8b79;
+  --color-stone-600: #7d6e5e;
+  --color-stone-700: #5e5146;
+  --color-stone-800: #3d352c;
+  --color-stone-900: #1e1a15;
+  --color-gold-400: #c9a84c;
+  --color-gold-500: #b8920a;
+  --color-gold-600: #9a7a08;
+  --color-terra-400: #c0614e;
+  --color-terra-500: #a8503f;
+  --color-parchment: #f5f0e8;
+  --font-family-serif: Georgia, "Times New Roman", serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #faf9f7;
+  color: #1e1a15;
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ornamental divider */
+.ornament-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #b5a99a;
+}
+
+.ornament-divider::before,
+.ornament-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d0c8bb, transparent);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f2efe9;
+}
+::-webkit-scrollbar-thumb {
+  background: #d0c8bb;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b5a99a;
+}
+
+/* Focus ring */
+*:focus-visible {
+  outline: 2px solid #c9a84c;
+  outline-offset: 2px;
+}
+
+/* Smooth transitions */
+button,
+a {
+  transition: all 0.15s ease;
+}

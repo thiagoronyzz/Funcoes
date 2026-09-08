@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atlas Interativo Vetorial</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <style>
         :root {
             --bg-gradient-start: #eef2f8;
@@ -122,7 +122,7 @@
         }
 
         .filter-btn:hover { background: var(--info-bg); }
-        
+
         .filter-btn.active {
             background-color: var(--primary-blue);
             color: white;
@@ -289,7 +289,7 @@
             <aside class="card">
                 <span class="section-label">Controles & Informações</span>
                 <h2 class="section-title">Dados do País</h2>
-                
+
                 <div class="filter-group" id="continentFilters">
                     <button class="filter-btn active" data-cont="all">Todo o Mundo</button>
                     <button class="filter-btn" data-cont="South America">América do Sul</button>
@@ -302,7 +302,7 @@
 
                 <div id="worldDetails" class="details-panel">
                     <div class="details-empty">
-                        🌍<br><br>
+                        Mundo<br><br>
                         Clique em qualquer país no mapa para visualizar os dados completos.
                     </div>
                 </div>
@@ -328,7 +328,7 @@
             <aside class="card">
                 <span class="section-label">Filtros</span>
                 <h2 class="section-title">Dados do Estado</h2>
-                
+
                 <div class="filter-group" id="regionFilters">
                     <button class="filter-btn active" data-reg="all">Brasil Completo</button>
                     <button class="filter-btn" data-reg="Norte">Norte</button>
@@ -340,7 +340,7 @@
 
                 <div id="brazilDetails" class="details-panel">
                     <div class="details-empty">
-                        🇧🇷<br><br>
+                        [BR]<br><br>
                         Clique em qualquer estado no mapa para visualizar a cultura e história local.
                     </div>
                 </div>
@@ -402,7 +402,7 @@
             tooltip.style.top = (evt.pageY) + "px";
         }
         function hideTooltip() { tooltip.style.opacity = 0; }
-        
+
         // Formata o nome dos continentes
         const contMap = {
             "South America": "América do Sul",
@@ -418,7 +418,7 @@
         // ==========================================
         async function buildWorldMap() {
             const width = 900, height = 500;
-            
+
             // Remove loading
             document.getElementById("loadingWorld").style.display = "none";
 
@@ -441,7 +441,7 @@
                 // 2. Carrega os Continentes (Para o efeito visual de separação exata, como os Montes Urais na Rússia)
                 // Usando um GeoJSON simples de continentes reais
                 const continentsData = await d3.json("https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json");
-                
+
                 // Desenhar países
                 gCountries.selectAll("path")
                     .data(countries)
@@ -468,24 +468,24 @@
                         // UI Ativa
                         document.querySelectorAll("#continentFilters .filter-btn").forEach(b => b.classList.remove("active"));
                         this.classList.add("active");
-                        
+
                         const selectedCont = this.getAttribute("data-cont");
-                        
+
                         if (selectedCont === "all") {
                             svg.classed("map-dimmed", false);
                             gContinents.selectAll("path").remove();
                         } else {
                             // Diminui a opacidade de todos os países
                             svg.classed("map-dimmed", true);
-                            
+
                             // Buscar geometria APENAS do continente específico para sobrepor
                             // Isso desenhará a "Europa", que corta a Rússia no meio geograficamente!
                             const contUrl = `https://raw.githubusercontent.com/deldersveld/topojson/master/continents/${selectedCont.toLowerCase().replace(' ', '-')}.json`;
-                            
+
                             try {
                                 const contRaw = await d3.json(contUrl);
                                 const contGeo = topojson.feature(contRaw, Object.values(contRaw.objects)[0]).features;
-                                
+
                                 // Limpa continente anterior e desenha o novo como um overlay
                                 gContinents.selectAll("path").remove();
                                 gContinents.selectAll("path")
@@ -542,7 +542,7 @@
         // ==========================================
         async function buildBrazilMap() {
             const width = 800, height = 700;
-            
+
             document.getElementById("loadingBrazil").style.display = "none";
 
             const svg = d3.select("#brazilMapContainer")
@@ -598,9 +598,9 @@
                     btn.addEventListener("click", function() {
                         document.querySelectorAll("#regionFilters .filter-btn").forEach(b => b.classList.remove("active"));
                         this.classList.add("active");
-                        
+
                         const selectedReg = this.getAttribute("data-reg");
-                        
+
                         gStates.selectAll(".state").each(function(d) {
                             if (selectedReg === "all" || d.properties.region === selectedReg) {
                                 d3.select(this).style("fill", "#94a3b8").style("opacity", "1");

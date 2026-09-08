@@ -189,7 +189,7 @@ export default function PostCard({ post, onVoteChange, onLoginRequired }: PostCa
             onClick={() => setImgOpen(false)}
             className="absolute top-4 right-4 text-white text-2xl font-bold"
           >
-            ✕
+            Fechar
           </button>
         </div>
       )}

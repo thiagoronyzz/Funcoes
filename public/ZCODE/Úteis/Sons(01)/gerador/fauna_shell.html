@@ -577,7 +577,7 @@ __DATA__
       const v = VERIFY.get(a.id);
       const bad = !SUPPORT[a.fmt];
       const badge = bad ? '<span class="badge badge--warn" title="formato não suportado neste navegador">' + a.fmt + '</span>'
-        : v === 'ok' ? '<span class="badge badge--ok" title="arquivo respondeu ok">✓ ' + a.fmt + '</span>'
+        : v === 'ok' ? '<span class="badge badge--ok" title="arquivo respondeu ok">OK ' + a.fmt + '</span>'
         : v === 'fail' ? '<span class="badge badge--warn" title="não foi possível confirmar">? ' + a.fmt + '</span>'
         : '<span class="badge">' + a.fmt + '</span>';
       return `<article class="card" data-playing="0" data-id="${a.id}">

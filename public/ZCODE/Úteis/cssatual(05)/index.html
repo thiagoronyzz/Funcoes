@@ -254,7 +254,7 @@
 <body>
 
 <header>
-    <h1>⚡ Gerador de Gradiente CSS</h1>
+    <h1>Energia Gerador de Gradiente CSS</h1>
     <p>Crie, personalize e copie gradientes modernos instantaneamente</p>
 </header>
 
@@ -301,8 +301,8 @@
             <div class="section-title">Código CSS</div>
             <div class="output-box" id="cssOutput"></div>
             <div class="actions-row" style="margin-top:12px;">
-                <button class="btn btn-primary" id="copyBtn">📋 Copiar CSS</button>
-                <button class="btn btn-secondary" id="randomBtn">🎲 Aleatório</button>
+                <button class="btn btn-primary" id="copyBtn">Copiar Copiar CSS</button>
+                <button class="btn btn-secondary" id="randomBtn">Dado Aleatório</button>
             </div>
         </div>
     </div>
@@ -325,7 +325,7 @@
     </div>
 </div>
 
-<div class="toast" id="toast">Copiado para a área de transferência! ✓</div>
+<div class="toast" id="toast">Copiado para a área de transferência! OK</div>
 
 <script>
 /* ================= ESTADO ================= */
@@ -525,7 +525,7 @@ function renderStopsList(){
         if (stops.length > 2){
             const rm = document.createElement('button');
             rm.className = 'btn-icon';
-            rm.textContent = '✕';
+            rm.textContent = 'Fechar';
             rm.title = 'Remover';
             rm.addEventListener('click', () => {
                 if (picker.stopId === stop.id) closePicker();

@@ -12,8 +12,8 @@ const ZDIR = path.join(ROOT, "public", "ZCODE");
 const CAT_DIR = { estudos: "Estudos", jogos: "Jogos", uteis: "Úteis" };
 
 let falhas = 0;
-function fail(msg) { falhas++; console.error("  ✗", msg); }
-function ok(msg) { console.log("  ✓", msg); }
+function fail(msg) { falhas++; console.error("  Não", msg); }
+function ok(msg) { console.log("  OK", msg); }
 
 /* ── 1. catálogo ────────────────────────────────────────── */
 console.log("1) Catálogo");
@@ -128,5 +128,5 @@ for (const l of links) {
 ok(`${links.length - linkFail} links verificados (100×3 + social)`);
 
 /* ── resultado ───────────────────────────────────────────── */
-console.log(falhas === 0 ? "\n✅ TODOS OS TESTES PASSARAM" : `\n❌ ${falhas} falha(s)`);
+console.log(falhas === 0 ? "\nOK TODOS OS TESTES PASSARAM" : `\nNão ${falhas} falha(s)`);
 process.exit(falhas === 0 ? 0 : 1);

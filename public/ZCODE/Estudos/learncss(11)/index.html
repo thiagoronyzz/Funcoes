@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSS Clone Challenge</title>
-    
+
     <!-- Fonte Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <style>
         /* Variáveis da Identidade Visual */
         :root {
@@ -25,7 +25,7 @@
             --border-color: #e2e8f0;
             --info-bg: #f8fafc;
             --success: #10b981;
-            --code-bg: #1e293b; 
+            --code-bg: #1e293b;
             --code-text: #f8fafc;
             --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
             --font-family: 'Inter', sans-serif;
@@ -136,7 +136,7 @@
             cursor: pointer;
             transition: transform 0.1s;
         }
-        
+
         .color-item:hover { transform: scale(1.05); }
 
         .color-swatch {
@@ -299,7 +299,7 @@
         </header>
 
         <main class="main-layout">
-            
+
             <!-- Controles (Esquerda) -->
             <aside class="card">
                 <span class="section-label" id="levelDisplay">Nível 1 de 5</span>
@@ -311,7 +311,7 @@
                 </div>
 
                 <span class="section-label">Seu Código CSS</span>
-                
+
                 <div class="editor-wrapper">
                     <div class="code-syntax"><span>#shape</span> {</div>
                     <textarea id="cssInput" class="code-textarea" spellcheck="false" placeholder="width: 100px;"></textarea>
@@ -322,25 +322,25 @@
 
             <!-- Área Visual (Direita) -->
             <section class="card" style="padding: 1rem;">
-                
+
                 <div class="battle-arena">
                     <!-- Palco do Alvo -->
                     <div class="stage">
-                        <div class="stage-label">🎯 Alvo</div>
+                        <div class="stage-label">Alvo Alvo</div>
                         <div id="target-shape"></div>
                     </div>
 
                     <!-- Palco do Jogador -->
                     <div class="stage">
-                        <div class="stage-label">✨ Seu Desenho</div>
+                        <div class="stage-label"> Seu Desenho</div>
                         <div id="player-shape"></div>
                     </div>
                 </div>
 
                 <!-- Tela de Vitória -->
                 <div class="success-overlay" id="successScreen">
-                    <h2>100% Igual! 🎉</h2>
-                    <button class="btn-next" onclick="nextLevel()">Próxima Fase ➔</button>
+                    <h2>100% Igual! Concluído</h2>
+                    <button class="btn-next" onclick="nextLevel()">Próxima Fase </button>
                 </div>
 
             </section>
@@ -383,7 +383,7 @@
         ];
 
         let currentLevelIndex = 0;
-        
+
         const cssInput = document.getElementById('cssInput');
         const targetStyles = document.getElementById('target-styles');
         const playerStyles = document.getElementById('player-styles');
@@ -397,18 +397,18 @@
 
         // Propriedades CSS que o "Juiz" vai verificar para dar 100%
         const propertiesToCheck = [
-            'width', 'height', 'backgroundColor', 
-            'borderTopLeftRadius', 'borderTopRightRadius', 
+            'width', 'height', 'backgroundColor',
+            'borderTopLeftRadius', 'borderTopRightRadius',
             'borderBottomRightRadius', 'borderBottomLeftRadius'
         ];
 
         function loadLevel() {
             const level = levels[currentLevelIndex];
             levelDisplay.innerText = `Fase ${currentLevelIndex + 1} de ${levels.length}`;
-            
+
             // Injeta o CSS perfeito no Alvo
             targetStyles.innerHTML = `#target-shape { ${level.css} }`;
-            
+
             // Renderiza as cores clicáveis
             colorPalette.innerHTML = '';
             level.colors.forEach(color => {

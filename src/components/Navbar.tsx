@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { categorias } from "../data/apps";
 import { cn } from "../utils/cn";
 import { BotaoBaixarApp } from "./InstallApp";
@@ -22,12 +22,14 @@ export default function Navbar() {
   useEffect(() => {
     const observador = new IntersectionObserver(
       (entradas) =>
-        entradas.forEach((e) => e.isIntersecting && setAtivo(e.target.id)),
+        entradas.forEach((entrada) => {
+          if (entrada.isIntersecting) setAtivo(entrada.target.id);
+        }),
       { rootMargin: "-25% 0px -65% 0px" }
     );
-    categorias.forEach((c) => {
-      const el = document.getElementById(c.id);
-      if (el) observador.observe(el);
+    categorias.forEach((categoria) => {
+      const elemento = document.getElementById(categoria.id);
+      if (elemento) observador.observe(elemento);
     });
     return () => observador.disconnect();
   }, []);
@@ -35,58 +37,48 @@ export default function Navbar() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-500",
+        "fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300",
         rolado
-          ? "bg-paper/80 shadow-[0_1px_0_0_rgba(148,158,210,0.12)] backdrop-blur-xl"
-          : "bg-transparent"
+          ? "border-line bg-paper/95 backdrop-blur-sm"
+          : "border-transparent bg-paper/90"
       )}
     >
-      <nav className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-5 md:h-20 md:px-8">
-        <a href="#topo" className="group flex items-center gap-2.5">
-          <span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-acc-cyan font-display text-base font-bold text-white shadow-[0_10px_24px_-8px_rgba(124,92,255,0.6)] transition-transform duration-500 group-hover:-rotate-6">
-            Z
-          </span>
-          <span className="font-display text-lg font-bold tracking-tight">
-            ZCODE<span className="text-brand-400">.</span>
+      <nav className="mx-auto flex h-[4.5rem] w-full max-w-7xl items-center justify-between px-5 md:h-20 md:px-8">
+        <a href="#topo" className="group flex items-baseline gap-3">
+          <span className="font-display text-2xl tracking-[-0.04em]">Zcode</span>
+          <span className="hidden font-mono text-[9px] uppercase tracking-[0.22em] text-ink/45 sm:inline">
+            catálogo de aplicativos
           </span>
         </a>
 
-        <ul className="hidden items-center gap-1 md:flex">
-          {categorias.map((c) => (
-            <li key={c.id}>
+        <ul className="hidden items-center gap-6 md:flex">
+          {categorias.map((categoria) => (
+            <li key={categoria.id}>
               <a
-                href={`#${c.id}`}
+                href={`#${categoria.id}`}
                 className={cn(
-                  "relative rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-[0.18em] transition-colors duration-300",
-                  ativo === c.id ? "text-brand-300" : "text-ink/50 hover:text-ink"
+                  "border-b pb-1 font-mono text-[10px] uppercase tracking-[0.18em] transition-colors",
+                  ativo === categoria.id
+                    ? "border-brand-600 text-brand-700"
+                    : "border-transparent text-ink/55 hover:border-ink/35 hover:text-ink"
                 )}
               >
-                {ativo === c.id && (
-                  <motion.span
-                    layoutId="nav-pill"
-                    className="absolute inset-0 rounded-full bg-surface2 ring-1 ring-line"
-                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                  />
-                )}
-                <span className="relative">{c.titulo}</span>
+                {categoria.titulo}
               </a>
             </li>
           ))}
         </ul>
 
         <div className="flex items-center gap-3">
-          <a
-            href="#estudos"
-            className="group hidden items-center gap-2 rounded-full bg-brand-500 px-5 py-2.5 font-display text-sm font-semibold text-white transition-colors duration-300 hover:bg-brand-400 md:inline-flex"
-          >
-            Explorar apps
-            <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-          </a>
-          <BotaoBaixarApp variante="escuro" className="hidden md:inline-flex" />
+          <BotaoBaixarApp
+            variante="escuro"
+            rotulo="Instalar"
+            className="hidden md:inline-flex"
+          />
           <button
             onClick={() => setAberto(!aberto)}
-            className="grid size-10 place-items-center rounded-xl bg-surface ring-1 ring-line md:hidden"
-            aria-label="Abrir menu"
+            className="grid size-10 place-items-center border border-line bg-surface md:hidden"
+            aria-label={aberto ? "Fechar menu" : "Abrir menu"}
           >
             {aberto ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
@@ -99,30 +91,30 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="overflow-hidden border-t border-line bg-paper/95 backdrop-blur-xl md:hidden"
+            transition={{ duration: 0.25 }}
+            className="overflow-hidden border-t border-line bg-paper md:hidden"
           >
-            <ul className="space-y-1 px-5 py-4">
-              {categorias.map((c, i) => (
-                <li key={c.id}>
+            <ul className="divide-y divide-line px-5">
+              {categorias.map((categoria, index) => (
+                <li key={categoria.id}>
                   <a
-                    href={`#${c.id}`}
+                    href={`#${categoria.id}`}
                     onClick={() => setAberto(false)}
-                    className="flex items-center justify-between rounded-2xl px-4 py-3 font-display text-2xl font-semibold tracking-tight transition-colors hover:bg-surface2"
+                    className="flex items-center justify-between py-4 font-display text-2xl"
                   >
-                    {c.titulo}
-                    <span className="font-mono text-xs font-medium text-brand-400">
-                      0{i + 1}
+                    {categoria.titulo}
+                    <span className="font-mono text-[10px] tracking-[0.2em] text-ink/45">
+                      0{index + 1}
                     </span>
                   </a>
                 </li>
               ))}
             </ul>
             {!instalado && (
-              <div className="px-5 pb-5">
+              <div className="px-5 pb-5 pt-4">
                 <BotaoBaixarApp
                   variante="primario"
-                  rotulo="Baixar aplicativo"
+                  rotulo="Instalar aplicativo"
                   className="w-full justify-center"
                 />
               </div>

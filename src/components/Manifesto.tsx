@@ -1,86 +1,56 @@
 import { motion } from "framer-motion";
-import { Gauge, RefreshCw } from "lucide-react";
 
 const pilares = [
   {
-    Icone: Gauge,
-    titulo: "Leve e rápido",
-    texto: "Tudo roda direto no navegador: abriu, funcionou. Sem instalação.",
+    numero: "01",
+    titulo: "Clareza",
+    texto: "Cada aplicativo resolve uma tarefa específica sem excesso de etapas.",
   },
   {
-    Icone: RefreshCw,
-    titulo: "Sempre vivo",
-    texto: "Novos aplicativos e melhorias entram na plataforma o tempo todo.",
+    numero: "02",
+    titulo: "Acesso",
+    texto: "Tudo funciona no navegador, sem cadastro obrigatório ou instalação.",
   },
-];
-
-const linhas = [
-  { texto: "Tudo o que eu", azul: false },
-  { texto: "construo, mora", azul: false },
-  { texto: "aqui.", azul: true },
+  {
+    numero: "03",
+    titulo: "Continuidade",
+    texto: "A coleção cresce de forma gradual, com espaço para novas ideias.",
+  },
 ];
 
 export default function Manifesto() {
   return (
-    <section id="sobre" className="relative scroll-mt-20 overflow-hidden py-24 md:py-36">
-      <div className="absolute -left-40 top-1/3 size-[28rem] rounded-full bg-brand-200/40 blur-[120px]" />
-
-      <div className="relative mx-auto w-full max-w-7xl px-5 md:px-8">
+    <section id="sobre" className="relative scroll-mt-20 py-24 md:py-36">
+      <div className="mx-auto w-full max-w-7xl px-5 md:px-8">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7 }}
-          className="mb-10 flex items-center gap-3"
+          transition={{ duration: 0.6 }}
+          className="mb-10 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.25em] text-ink/50"
         >
-          <span className="size-2 rounded-full bg-brand-600" />
-          <span className="font-mono text-[11px] uppercase tracking-[0.32em] text-ink/50">
-            Sobre a plataforma
-          </span>
+          <span className="text-brand-700">Nota de abertura</span>
+          <span className="h-px w-12 bg-brand-600" />
+          Sobre a plataforma
         </motion.div>
 
-        <h2 className="font-display font-bold uppercase leading-[0.95] tracking-[-0.035em]">
-          {linhas.map((linha, i) => (
-            <span key={linha.texto} className="block overflow-hidden pb-1">
-              <motion.span
-                initial={{ y: "110%" }}
-                whileInView={{ y: "0%" }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{
-                  duration: 0.95,
-                  ease: [0.16, 1, 0.3, 1],
-                  delay: i * 0.12,
-                }}
-                className={`block text-[clamp(2.6rem,7.5vw,6.5rem)] ${
-                  linha.azul ? "text-brand-400" : ""
-                }`}
-              >
-                {linha.texto}
-              </motion.span>
-            </span>
-          ))}
+        <h2 className="max-w-5xl font-display text-[clamp(3rem,7vw,6.8rem)] leading-[0.92] tracking-[-0.045em]">
+          Ferramentas bem pensadas deixam mais espaço para o que importa.
         </h2>
 
-        <div className="mt-16 grid gap-px overflow-hidden rounded-[1.75rem] bg-ink/10 ring-1 ring-ink/10 md:mt-20 md:grid-cols-2">
-          {pilares.map((p, i) => (
+        <div className="mt-16 grid border-y border-ink/25 md:mt-20 md:grid-cols-3 md:divide-x md:divide-line">
+          {pilares.map((pilar, index) => (
             <motion.div
-              key={p.titulo}
-              initial={{ opacity: 0, y: 24 }}
+              key={pilar.numero}
+              initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.7, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              data-hover
-              className="group flex flex-col gap-4 bg-surface p-8 transition-colors duration-500 hover:bg-brand-600 md:p-10"
+              transition={{ duration: 0.55, delay: index * 0.08 }}
+              className="flex flex-col gap-5 border-b border-line py-7 last:border-b-0 md:border-b-0 md:px-8 md:py-9 md:first:pl-0 md:last:pr-0"
             >
-              <span className="grid size-12 place-items-center rounded-2xl bg-surface2 text-brand-300 ring-1 ring-line transition-colors duration-500 group-hover:bg-white/10 group-hover:text-white group-hover:ring-white/20">
-                <p.Icone className="size-5" strokeWidth={1.8} />
-              </span>
-              <h3 className="font-display text-xl font-bold tracking-tight transition-colors duration-500 group-hover:text-white">
-                {p.titulo}
-              </h3>
-              <p className="text-sm leading-relaxed text-ink/55 transition-colors duration-500 group-hover:text-white/75">
-                {p.texto}
-              </p>
+              <span className="font-mono text-[10px] tracking-[0.2em] text-brand-700">{pilar.numero}</span>
+              <h3 className="font-display text-3xl tracking-tight">{pilar.titulo}</h3>
+              <p className="max-w-xs text-sm leading-relaxed text-ink/60">{pilar.texto}</p>
             </motion.div>
           ))}
         </div>

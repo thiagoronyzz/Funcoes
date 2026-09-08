@@ -1,26 +1,34 @@
 import { motion } from "framer-motion";
-import {
-  ArrowUpRight,
-  Gamepad2,
-  GraduationCap,
-  MessagesSquare,
-  Wrench,
-} from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import type { AppItem, CategoriaId } from "../data/apps";
 import { cn } from "../utils/cn";
-
-const ICONES = {
-  estudos: GraduationCap,
-  jogos: Gamepad2,
-  uteis: Wrench,
-  social: MessagesSquare,
-} as const;
 
 const ROTULOS: Record<CategoriaId, string> = {
   estudos: "Estudos",
   jogos: "Jogos",
   uteis: "Úteis",
   social: "Social",
+};
+
+const IMAGENS_EDITORIAIS: Record<CategoriaId, string[]> = {
+  estudos: [
+    "/images/editorial/study-desk.jpg",
+    "/images/editorial/study-notes.jpg",
+    "/images/editorial/library.jpg",
+  ],
+  jogos: [
+    "/images/editorial/chess-board.jpg",
+    "/images/editorial/chess-pieces.jpg",
+  ],
+  uteis: [
+    "/images/editorial/study-notes.jpg",
+    "/images/editorial/study-night.jpg",
+    "/images/editorial/study-desk.jpg",
+  ],
+  social: [
+    "/images/editorial/meeting.jpg",
+    "/images/editorial/community.jpg",
+  ],
 };
 
 interface Props {
@@ -31,8 +39,8 @@ interface Props {
 }
 
 export default function AppCard({ app, categoria, indice, destaque }: Props) {
-  const Icone = ICONES[categoria];
   const externo = app.link.startsWith("http");
+  const imagem = IMAGENS_EDITORIAIS[categoria][indice % IMAGENS_EDITORIAIS[categoria].length];
 
   return (
     <motion.a
@@ -40,81 +48,60 @@ export default function AppCard({ app, categoria, indice, destaque }: Props) {
       target={externo ? "_blank" : undefined}
       rel={externo ? "noreferrer" : undefined}
       data-hover
-      initial={{ opacity: 0, y: 34 }}
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{
-        duration: 0.75,
-        ease: [0.16, 1, 0.3, 1],
-        delay: (indice % 3) * 0.09,
-      }}
+      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: (indice % 3) * 0.06 }}
       className={cn(
-        "group relative flex flex-col overflow-hidden rounded-[1.75rem] bg-surface ring-1 ring-line transition-all duration-500",
-        "hover:-translate-y-2 hover:shadow-[0_38px_70px_-28px_rgba(124,92,255,0.45)] hover:ring-brand-400/40",
+        "group relative flex flex-col overflow-hidden border border-line bg-surface",
+        "hover:-translate-y-1 hover:border-ink/45 hover:shadow-[0_18px_36px_-24px_rgba(37,36,34,0.65)]",
         destaque && "md:col-span-2 lg:col-span-3 lg:grid lg:grid-cols-[1.15fr_1fr]"
       )}
     >
-      {/* imagem / placeholder */}
       <div
         className={cn(
-          "relative overflow-hidden",
+          "relative overflow-hidden bg-surface2",
           destaque ? "aspect-[16/10] lg:aspect-auto lg:min-h-[22rem]" : "aspect-[16/10]"
         )}
       >
-        {app.imagem ? (
-          <img
-            src={app.imagem}
-            alt={`Capa do aplicativo ${app.nome}`}
-            loading="lazy"
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-brand-800 via-brand-600 to-brand-400 transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]">
-            <div className="bg-dots-light absolute inset-0 opacity-60" />
-            <Icone
-              strokeWidth={1}
-              className="absolute left-1/2 top-1/2 size-24 -translate-x-1/2 -translate-y-1/2 text-white/25 transition-transform duration-700 group-hover:scale-110 group-hover:-rotate-6"
-            />
-            <span className="absolute bottom-4 left-5 font-mono text-[10px] uppercase tracking-[0.28em] text-white/70">
-              zcode — app
-            </span>
-          </div>
-        )}
+        <img
+          src={imagem}
+          alt=""
+          loading="lazy"
+          className="editorial-image absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+        />
         {destaque && (
-          <span className="absolute left-5 top-5 rounded-full bg-brand-600 px-3.5 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-white shadow-[0_10px_24px_-8px_rgba(124,92,255,0.7)]">
-            Destaque
+          <span className="absolute left-4 top-4 border border-white/60 bg-black/65 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.2em] text-white">
+            Seleção editorial
           </span>
         )}
       </div>
 
-      {/* conteúdo */}
       <div
         className={cn(
-          "flex flex-1 flex-col gap-3 p-6",
-          destaque && "lg:justify-center lg:gap-4 lg:p-11"
+          "flex flex-1 flex-col gap-3 p-5 md:p-6",
+          destaque && "lg:justify-center lg:gap-4 lg:p-10"
         )}
       >
-        <div className="flex items-center gap-2 font-mono text-[10px] font-medium uppercase tracking-[0.25em] text-brand-300">
-          <Icone className="size-3.5" strokeWidth={2.2} />
-          {ROTULOS[categoria]}
+        <div className="flex items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[0.22em] text-brand-700">
+          <span>{ROTULOS[categoria]}</span>
+          <span className="text-ink/40">{String(indice + 1).padStart(2, "0")}</span>
         </div>
         <h3
           className={cn(
-            "font-display font-bold tracking-tight",
+            "font-display tracking-tight",
             destaque ? "text-3xl md:text-4xl" : "text-2xl"
           )}
         >
           {app.nome}
         </h3>
-        <p className="text-sm leading-relaxed text-ink/55 md:text-[15px]">
-          {app.descricao}
-        </p>
-        <div className="mt-auto flex items-center justify-between pt-5">
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/40 transition-colors duration-300 group-hover:text-brand-300">
-            Abrir app
+        <p className="text-sm leading-relaxed text-ink/60 md:text-[15px]">{app.descricao}</p>
+        <div className="mt-auto flex items-center justify-between border-t border-line pt-4">
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/45 transition-colors group-hover:text-brand-700">
+            Abrir aplicativo
           </span>
-          <span className="grid size-11 place-items-center rounded-full ring-1 ring-line transition-all duration-500 group-hover:rotate-45 group-hover:bg-brand-500 group-hover:ring-brand-500">
-            <ArrowUpRight className="size-4 transition-colors duration-500 group-hover:text-white" />
+          <span className="grid size-9 place-items-center border border-line transition-colors group-hover:border-brand-600 group-hover:bg-brand-600 group-hover:text-white">
+            <ArrowUpRight className="size-4" />
           </span>
         </div>
       </div>

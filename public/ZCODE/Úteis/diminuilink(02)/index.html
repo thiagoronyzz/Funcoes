@@ -94,7 +94,7 @@
         }
 
         .form-group { margin-bottom: 1.5rem; }
-        
+
         input[type="text"] {
             width: 100%;
             padding: 0.9rem;
@@ -210,7 +210,7 @@
 
         <main class="card">
             <div class="card-header">Resultado</div>
-            
+
             <div id="result-area" class="result-card">
                 <p style="font-size: 0.75rem; font-weight: 800; color: #1e40af;">LINK PRONTO PARA USO:</p>
                 <div class="short-url-box" id="final-url"></div>
@@ -300,15 +300,15 @@
             finalUrl.textContent = result;
             resultArea.style.display = 'block';
             statusMsg.style.display = 'none';
-            
+
             history.unshift({ original: longUrl, short: result });
             if (history.length > 5) history.pop();
             localStorage.setItem('universal_links', JSON.stringify(history));
-            
+
             urlInput.value = "";
             renderHistory();
         } else {
-            showStatus("❌ Todos os servidores falharam. Verifique sua internet.", "error");
+            showStatus("Não Todos os servidores falharam. Verifique sua internet.", "error");
         }
 
         btnAction.disabled = false;

@@ -20,9 +20,9 @@ export function cor({ nome, sub }) {
   <span class="zlabel">Tons (claro → escuro)</span>
   <div class="row mb" id="tons" style="gap:6px"></div>
   <div class="row" style="justify-content:center;gap:10px">
-    <button class="zbtn" id="aleatorio" type="button">🎲 Cor aleatória</button>
+    <button class="zbtn" id="aleatorio" type="button">Dado Cor aleatória</button>
     <button class="zbtn ghost" id="complementar" type="button">Complementar</button>
-    <button class="zbtn ghost" id="copiar" type="button">📋 Copiar</button>
+    <button class="zbtn ghost" id="copiar" type="button">Copiar Copiar</button>
   </div>
 </div>`;
   const js = `
@@ -132,7 +132,7 @@ export function contraste({ nome, sub }) {
     $id("amostra").style.color = fg;
     $id("amostra").style.background = bg;
     $id("razao").textContent = Z.fmt(razao, 2) + " : 1";
-    var marc = function(el, ok){ el.textContent = ok ? "✅ Passa" : "❌ Falha"; el.style.color = ok ? "var(--z-lime)" : "var(--z-red)" };
+    var marc = function(el, ok){ el.textContent = ok ? "OK Passa" : "Não Falha"; el.style.color = ok ? "var(--z-lime)" : "var(--z-red)" };
     marc($id("aa"), razao >= 4.5);
     marc($id("aaa"), razao >= 7);
     marc($id("aag"), razao >= 3);
@@ -176,7 +176,7 @@ export function mediaPond({ nome, sub }) {
       var d = document.createElement("div");
       d.className = "zcard row between";
       d.style.cssText = "padding:10px 14px;margin-bottom:8px";
-      d.innerHTML = "<span>#" + (i + 1) + ": nota <b class='mono acc'>" + it.nota + "</b> · peso <b class='mono'>" + it.peso + "</b></span><button class='zbtn sm danger' data-i='" + i + "'>✕</button>";
+      d.innerHTML = "<span>#" + (i + 1) + ": nota <b class='mono acc'>" + it.nota + "</b> · peso <b class='mono'>" + it.peso + "</b></span><button class='zbtn sm danger' data-i='" + i + "'>Fechar</button>";
       box.appendChild(d);
       d.querySelector("button").addEventListener("click", function(){
         items.splice(parseInt(this.dataset.i, 10), 1);
@@ -188,7 +188,7 @@ export function mediaPond({ nome, sub }) {
     if(pn > 0){
       var m = s / pn;
       $id("media").textContent = Z.fmt(m, 2);
-      $id("situacao").textContent = m >= 7 ? "🎉 Aprovado!" : m >= 5 ? "⚖️ Na beirada…" : "😬 Reprovado — vale a recuperação";
+      $id("situacao").textContent = m >= 7 ? "Concluído Aprovado!" : m >= 5 ? "Balança Na beirada…" : "Desconforto Reprovado — vale a recuperação";
     } else {
       $id("media").textContent = "—";
       $id("situacao").textContent = "";
@@ -238,7 +238,7 @@ export function comparador({ nome, sub }) {
     $id("maior").textContent = a >= b ? Z.fmt(Math.max(a, b), 6) : Z.fmt(Math.max(a, b), 6);
     $id("menor").textContent = Z.fmt(Math.min(a, b), 6);
     if(s === "="){
-      $id("frase").textContent = "São iguais! 🎯";
+      $id("frase").textContent = "São iguais! Alvo";
       $id("diff").textContent = "";
     } else {
       var d = Math.abs(a - b);

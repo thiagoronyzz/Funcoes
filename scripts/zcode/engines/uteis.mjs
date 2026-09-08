@@ -201,7 +201,7 @@ export function cronometro({ nome, sub, voltas }) {
   <div class="row" style="justify-content:center;gap:12px;margin-bottom:14px">
     <button class="zbtn big" id="inicio" type="button">▶ Iniciar</button>
     <button class="zbtn ghost big" id="zerar" type="button">Zerar</button>
-    ${voltas ? '<button class="zbtn ghost big" id="volta" type="button">🏁 Volta</button>' : ""}
+    ${voltas ? '<button class="zbtn ghost big" id="volta" type="button">Fim Volta</button>' : ""}
   </div>
   <div class="col hidden" id="voltas" style="text-align:left"></div>
 </div>`;
@@ -325,7 +325,7 @@ export function timer({ nome, sub }) {
       restante = Math.max(0, Math.round((fim - Date.now()) / 1000));
       $id("restante").textContent = fmt(restante);
       $id("barra").style.width = (restante / total * 100) + "%";
-      document.title = fmt(restante) + " ⏱ ${nome}";
+      document.title = fmt(restante) + " Tempo ${nome}";
       if(restante <= 0){
         parar();
         Z.snd(880, 0.4, "sine", 0.07);
@@ -538,7 +538,7 @@ export function nivel({ nome, sub }) {
     $id("gx").textContent = (e.gamma || 0).toFixed(1) + "°";
     $id("gy").textContent = (e.beta || 0).toFixed(1) + "°";
     var plano = Math.abs(e.gamma || 0) < 3 && Math.abs((e.beta || 0) - 0) < 3;
-    $id("ok").textContent = plano ? "Nivelado ✓" : "Ajuste";
+    $id("ok").textContent = plano ? "Nivelado OK" : "Ajuste";
     $id("ok").style.color = plano ? "var(--z-lime)" : "var(--z-amber)";
   };
   if("DeviceOrientationEvent" in window){
@@ -565,12 +565,12 @@ export function lousa({ nome, sub }) {
 <div class="zhero"><h1>${nome}</h1><p>${sub}</p></div>
 <div class="row mb wrap" style="justify-content:center;gap:8px">
   ${["#edf0ff", "#29e0ff", "#ff4d8f", "#7dff6a", "#ffd166", "#7c5cff"].map((c) => `<button class="zbtn sm" data-cor="${c}" type="button" style="background:${c};width:34px;height:34px;padding:0;border-radius:50%"></button>`).join("")}
-  <button class="zbtn sm ghost" data-cor="apagar" type="button">🧹 Borracha</button>
+  <button class="zbtn sm ghost" data-cor="apagar" type="button">Limpeza Borracha</button>
 </div>
 <div class="row mb wrap" style="justify-content:center;gap:8px">
   <span class="zchip">Traço: <b class="acc" id="tamV">4</b>px</span>
   <input type="range" id="tam" min="1" max="30" value="4" style="width:160px">
-  <button class="zbtn sm ghost" id="limpar" type="button">🗑 Limpar tudo</button>
+  <button class="zbtn sm ghost" id="limpar" type="button">Lixeira Limpar tudo</button>
   <button class="zbtn sm" id="baixar" type="button">⬇ PNG</button>
 </div>
 <div style="max-width:760px;margin:0 auto">
@@ -670,7 +670,7 @@ export function todo({ nome, sub }) {
       if(filtro === "feitas") return t.feita;
       return true;
     });
-    if(!visiveis.length) box.innerHTML = "<p class='dim center'>Nada por aqui. ✨</p>";
+    if(!visiveis.length) box.innerHTML = "<p class='dim center'>Nada por aqui. </p>";
     visiveis.forEach(function(t){
       var d = document.createElement("div");
       d.className = "zcard row between wrap";
@@ -680,7 +680,7 @@ export function todo({ nome, sub }) {
       var chk = document.createElement("button");
       chk.className = "zbtn sm ghost";
       chk.style.cssText = "width:32px;justify-content:center";
-      chk.textContent = t.feita ? "✓" : "○";
+      chk.textContent = t.feita ? "OK" : "○";
       chk.addEventListener("click", function(){ t.feita = !t.feita; salvar(); render() });
       var span = document.createElement("span");
       span.textContent = t.txt;
@@ -688,7 +688,7 @@ export function todo({ nome, sub }) {
       esq.appendChild(chk); esq.appendChild(span);
       var del = document.createElement("button");
       del.className = "zbtn sm danger";
-      del.textContent = "✕";
+      del.textContent = "Fechar";
       del.addEventListener("click", function(){ itens = itens.filter(function(x){ return x !== t }); salvar(); render() });
       d.appendChild(esq); d.appendChild(del);
       box.appendChild(d);
@@ -747,7 +747,7 @@ export function habitos({ nome, sub }) {
   var CHAVES = chaves7();
   function render(){
     var box = $id("lista"); box.innerHTML = "";
-    if(!habitos.length) box.innerHTML = "<p class='dim center'>Crie seu primeiro hábito acima. 💧</p>";
+    if(!habitos.length) box.innerHTML = "<p class='dim center'>Crie seu primeiro hábito acima. Água</p>";
     habitos.forEach(function(h){
       var d = document.createElement("div");
       d.className = "zcard";
@@ -759,7 +759,7 @@ export function habitos({ nome, sub }) {
       nome.textContent = h.nome;
       var del = document.createElement("button");
       del.className = "zbtn sm danger";
-      del.textContent = "✕";
+      del.textContent = "Fechar";
       del.addEventListener("click", function(){ habitos = habitos.filter(function(x){ return x !== h }); salvar(); render() });
       top.appendChild(nome); top.appendChild(del);
       var dias = document.createElement("div");

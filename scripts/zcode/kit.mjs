@@ -13,19 +13,19 @@
    ══════════════════════════════════════════════════════════════════ */
 
 export const PALETA = {
-  bg: "#05070f",
-  bg2: "#0a0d1a",
-  surface: "#0e1322",
-  surface2: "#151c33",
-  line: "rgba(148,158,210,0.14)",
-  text: "#edf0ff",
-  muted: "#97a0c4",
-  brand: "#7c5cff",
-  cyan: "#29e0ff",
-  pink: "#ff4d8f",
-  lime: "#7dff6a",
-  amber: "#ffb347",
-  red: "#ff5c5c",
+  bg: "#f3f0ea",
+  bg2: "#fbfaf7",
+  surface: "#fffefa",
+  surface2: "#e9e4dc",
+  line: "rgba(37,36,34,0.16)",
+  text: "#252422",
+  muted: "#746e66",
+  brand: "#873f32",
+  cyan: "#64716f",
+  pink: "#9f5140",
+  lime: "#8b8b64",
+  amber: "#b88b4a",
+  red: "#9f5140",
 };
 
 export const CATEGORIAS = {
@@ -39,25 +39,22 @@ const FAVICON =
   "data:image/svg+xml," +
   encodeURIComponent(
     "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>" +
-      "<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>" +
-      "<stop offset='0' stop-color='#7c5cff'/><stop offset='1' stop-color='#29e0ff'/>" +
-      "</linearGradient></defs>" +
-      "<rect width='64' height='64' rx='14' fill='url(#g)'/>" +
-      "<path d='M20 18h24L20 46h24' fill='none' stroke='white' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/>" +
+      "<rect width='64' height='64' fill='#f3f0ea'/>" +
+      "<path d='M20 18h24L20 46h24' fill='none' stroke='#252422' stroke-width='7' stroke-linecap='square'/>" +
       "</svg>"
   );
 
 export const KIT_CSS = `
 :root{
-  --z-bg:#05070f; --z-bg2:#0a0d1a; --z-surface:#0e1322; --z-surface2:#151c33;
-  --z-line:rgba(148,158,210,.14); --z-line2:rgba(148,158,210,.28);
-  --z-text:#edf0ff; --z-muted:#97a0c4;
-  --z-brand:#7c5cff; --z-brand-soft:rgba(124,92,255,.16);
-  --z-cyan:#29e0ff; --z-pink:#ff4d8f; --z-lime:#7dff6a; --z-amber:#ffb347;
-  --z-red:#ff5c5c; --z-radius:18px;
-  --z-fd:"Space Grotesk",system-ui,sans-serif;
-  --z-f:"Inter",system-ui,sans-serif;
-  --z-fm:"JetBrains Mono",ui-monospace,monospace;
+  --z-bg:#f3f0ea; --z-bg2:#fbfaf7; --z-surface:#fffefa; --z-surface2:#e9e4dc;
+  --z-line:rgba(37,36,34,.16); --z-line2:rgba(37,36,34,.3);
+  --z-text:#252422; --z-muted:#746e66;
+  --z-brand:#873f32; --z-brand-soft:rgba(135,63,50,.12);
+  --z-cyan:#64716f; --z-pink:#9f5140; --z-lime:#8b8b64; --z-amber:#b88b4a;
+  --z-red:#9f5140; --z-radius:4px;
+  --z-fd:"DM Serif Display",Georgia,serif;
+  --z-f:"DM Sans",system-ui,sans-serif;
+  --z-fm:"IBM Plex Mono",ui-monospace,monospace;
   --z-acc:var(--z-brand);
 }
 html[data-cat="estudos"]{--z-acc:var(--z-cyan)}
@@ -67,10 +64,7 @@ html[data-cat="social"]{--z-acc:var(--z-amber)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
-  background:
-    radial-gradient(1100px 500px at 85% -10%, rgba(124,92,255,.14), transparent 60%),
-    radial-gradient(900px 420px at -10% 110%, rgba(41,224,255,.08), transparent 60%),
-    var(--z-bg);
+  background:var(--z-bg);
   color:var(--z-text); font-family:var(--z-f); font-size:15px; line-height:1.55;
   min-height:100dvh; -webkit-font-smoothing:antialiased;
 }
@@ -89,12 +83,9 @@ h1,h2,h3,.fd{font-family:var(--z-fd);letter-spacing:-.02em}
 .ztop{
   position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;
   height:54px;padding:0 16px;border-bottom:1px solid var(--z-line);
-  background:rgba(5,7,15,.78);backdrop-filter:blur(14px);
+  background:rgba(243,240,234,.96);backdrop-filter:blur(8px);
 }
-.zlogo{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;
-  background:linear-gradient(135deg,#7c5cff,#29e0ff);color:#fff;
-  font-family:var(--z-fd);font-weight:700;font-size:19px;text-decoration:none;
-  box-shadow:0 6px 18px -6px rgba(124,92,255,.65);flex:none}
+.ztop-brand{color:var(--z-text);font-family:var(--z-fd);font-size:21px;line-height:1;text-decoration:none;letter-spacing:-.04em;flex:none}
 .ztop-mid{min-width:0}
 .ztop-mid strong{display:block;font-family:var(--z-fd);font-size:14.5px;letter-spacing:-.01em;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -102,9 +93,9 @@ h1,h2,h3,.fd{font-family:var(--z-fd);letter-spacing:-.02em}
   letter-spacing:.14em;text-transform:uppercase;color:var(--z-acc);
   background:color-mix(in srgb,var(--z-acc) 12%, transparent);
   border:1px solid color-mix(in srgb,var(--z-acc) 34%, transparent);
-  padding:2px 9px;border-radius:99px;white-space:nowrap}
+  padding:2px 9px;border-radius:var(--z-radius);white-space:nowrap}
 .zback{margin-left:auto;font-family:var(--z-fm);font-size:11.5px;text-decoration:none;
-  color:var(--z-muted);border:1px solid var(--z-line2);border-radius:99px;padding:7px 13px;
+  color:var(--z-muted);border:1px solid var(--z-line2);border-radius:var(--z-radius);padding:7px 13px;
   transition:.2s;white-space:nowrap}
 .zback:hover{color:var(--z-text);border-color:var(--z-acc)}
 
@@ -135,7 +126,7 @@ h1,h2,h3,.fd{font-family:var(--z-fd);letter-spacing:-.02em}
 /* ── botões / campos ──────────────────────────────────── */
 .zbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
   font-family:var(--z-fd);font-weight:600;font-size:14.5px;letter-spacing:-.01em;
-  color:#04060d;background:var(--z-acc);border:1px solid transparent;border-radius:13px;
+  color:#04060d;background:var(--z-acc);border:1px solid transparent;border-radius:var(--z-radius);
   padding:11px 20px;transition:.18s;text-decoration:none;user-select:none}
 .zbtn:hover{filter:brightness(1.12);transform:translateY(-1px)}
 .zbtn:active{transform:translateY(0)}
@@ -147,7 +138,7 @@ h1,h2,h3,.fd{font-family:var(--z-fd);letter-spacing:-.02em}
 .zbtn.big{padding:14px 28px;font-size:16px;border-radius:15px}
 .zbtn.w{width:100%}
 .zinput,.zselect,.ztextarea{width:100%;background:var(--z-surface2);border:1px solid var(--z-line2);
-  color:var(--z-text);border-radius:12px;padding:11px 14px;font-family:var(--z-f);font-size:15px;
+  color:var(--z-text);border-radius:var(--z-radius);padding:11px 14px;font-family:var(--z-f);font-size:15px;
   outline:none;transition:.18s}
 .zinput:focus,.zselect:focus,.ztextarea:focus{border-color:var(--z-acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--z-acc) 22%,transparent)}
 .ztextarea{min-height:130px;resize:vertical;font-family:var(--z-fm);font-size:13px;line-height:1.5}
@@ -159,7 +150,7 @@ h1,h2,h3,.fd{font-family:var(--z-fd);letter-spacing:-.02em}
 /* ── opções (quiz) ────────────────────────────────────── */
 .zopty{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
   background:var(--z-surface2);color:var(--z-text);border:1px solid var(--z-line2);
-  border-radius:14px;padding:13px 16px;font-family:var(--z-f);font-size:15px;transition:.16s}
+  border-radius:var(--z-radius);padding:13px 16px;font-family:var(--z-f);font-size:15px;transition:.16s}
 .zopty:hover:not(:disabled){border-color:var(--z-acc);transform:translateX(3px)}
 .zopty i{font-style:normal;font-family:var(--z-fm);font-size:11px;color:var(--z-muted);
   width:24px;height:24px;border-radius:8px;display:grid;place-items:center;
@@ -169,16 +160,16 @@ h1,h2,h3,.fd{font-family:var(--z-fd);letter-spacing:-.02em}
 .zopty:disabled{cursor:default}
 
 /* ── barra / progresso / toast / modal ────────────────── */
-.zprog{height:8px;border-radius:99px;background:var(--z-surface2);overflow:hidden}
+.zprog{height:8px;border-radius:var(--z-radius);background:var(--z-surface2);overflow:hidden}
 .zprog i{display:block;height:100%;border-radius:99px;background:var(--z-acc);transition:width .3s}
 .ztoast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);z-index:99;
   background:var(--z-text);color:#04060d;font-weight:600;font-size:13.5px;padding:10px 20px;
-  border-radius:99px;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 14px 34px -10px rgba(0,0,0,.6)}
+  border-radius:var(--z-radius);opacity:0;pointer-events:none;transition:.25s;box-shadow:0 14px 34px -10px rgba(0,0,0,.6)}
 .ztoast.on{opacity:1;transform:translate(-50%,0)}
 .zmodal{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;
   background:rgba(3,4,10,.72);backdrop-filter:blur(6px)}
 .zbox{width:min(460px,100%);background:var(--z-surface);border:1px solid var(--z-line2);
-  border-radius:22px;padding:26px;text-align:center}
+  border-radius:var(--z-radius);padding:26px;text-align:center}
 .zbox h3{font-size:24px;margin-bottom:8px}
 .zbox p{color:var(--z-muted);margin-bottom:18px}
 .zkbd{font-family:var(--z-fm);font-size:11px;border:1px solid var(--z-line2);border-bottom-width:2px;
@@ -291,14 +282,14 @@ window.Z=(function(){
 export function appShell(o) {
   const cat = CATEGORIAS[o.cat];
   const audio = o.audio ? `
-    <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">🔊</button>` : "";
+    <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>` : "";
   const body = o.body;
   const js = o.js || "";
   const css = o.css ? `\n${o.css}` : "";
   const audioJs = o.audio
     ? `
 var zm=document.getElementById("zmute");
-if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"🔇":"🔊"})}`
+if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}`
     : "";
   return `<!doctype html>
 <html lang="pt-BR" data-cat="${o.cat}">
@@ -312,12 +303,12 @@ if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"🔇":"�
 <link rel="icon" href="${FAVICON}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>${KIT_CSS}${css}</style>
 </head>
 <body data-app="${o.slug}">
 <header class="ztop">
-  <a class="zlogo" href="/" aria-label="Zcode">Z</a>
+  <a class="ztop-brand" href="/" aria-label="Zcode">Zcode</a>
   <div class="ztop-mid">
     <strong>${o.nome}</strong>
   </div>

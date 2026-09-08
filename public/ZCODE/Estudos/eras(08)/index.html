@@ -951,7 +951,7 @@
         id: "devoniano", nome: "Devoniano", tipo: "Período", pai: "Paleozoico", inicio: 419.2, fim: 358.9, cor: "#cb8c37",
         tagline: "A Era dos Peixes — e o passo gigante para fora da água.",
         clima: "Quente no início, esfriando no fim; aridez interior de continentes agrupados.",
-        vida: ["Peixes dominam: placodermes (Dunkleosteus, 6 m), tubarões, peixes com pulmões", "Primeiras florestas (Archaeopteris, 30 m) criam solos", "Insetos e aranhas terrestres", "Tetrápodes: Tiktaalik (375 Ma) e Ichthyostega (365 Ma)"], 
+        vida: ["Peixes dominam: placodermes (Dunkleosteus, 6 m), tubarões, peixes com pulmões", "Primeiras florestas (Archaeopteris, 30 m) criam solos", "Insetos e aranhas terrestres", "Tetrápodes: Tiktaalik (375 Ma) e Ichthyostega (365 Ma)"],
         eventos: ["Aumento do O₂ com as florestas", "2ª das Big Five no fim (Kellwasser/Hangenberg): ~75% das espécies", "Colisões formando Laurussia"],
         brasil: "Mares devonianos cobrem a Bacia do Paraná: folhelhos e arenitos da Formação Ponta Grossa (PR) guardam trilobites, braquiópodes e peixes primitivos.",
         curiosidade: "As primeiras florestas mudaram o planeta: os solos novos liberaram nutrientes que fertilizaram os oceanos — e podem ter contribuído para a anoxia da extinção devoniana."
@@ -1140,11 +1140,11 @@
     /* ---------- Como medir ---------- */
     const COMO = [
       { ic: "⏳", h: "As unidades", p: "A hierarquia segue do maior ao menor: <code>Éon → Era → Período → Época → Idade</code>. Nós vivemos no éon Fanerozoico, era Cenozoica, período Quaternário, época Holoceno, idade Megalayana." },
-      { ic: "📏", h: "Ma e Ga", p: "<code>Ma</code> = milhões de anos atrás (mega-annum); <code>Ga</code> = bilhões de anos atrás. “O dinossauro viveu há 66 Ma” = 66 milhões de anos no passado." },
-      { ic: "☢️", h: "Datação radiométrica", p: "Isótopos instáveis decaem em ritmo fixo (meia-vida): <code>U-Pb em zircões</code> mede até 4,4 Ga; <code>K-Ar</code> e <code>Ar-Ar</code> datam vulcânicas; <code>¹⁴C</code> cobre só os últimos ~50 ka." },
-      { ic: "🐚", h: "Fósseis-guia", p: "Espécies de vida curta e ampla distribuição (trilobites, amonites, graptólitos) “datam” camadas por associação — o princípio da sobreposição completa o método: o que está embaixo é mais velho." },
-      { ic: "🎨", h: "Cores oficiais (ICS)", p: "A Comissão Internacional de Estratigrafia define as cores da carta geológica usadas no mundo todo — as mesmas deste site (aproximadas), do Cambriano verde-oliva ao Quaternário amarelo." },
-      { ic: "🧭", h: "Como navegar", p: "Use os filtros por éon na tabela, clique em qualquer bloco da linha do tempo ou linha com ficha — o painel de estudo atualiza com vida, clima, eventos, geologia do Brasil e curiosidade." }
+      { ic: "", h: "Ma e Ga", p: "<code>Ma</code> = milhões de anos atrás (mega-annum); <code>Ga</code> = bilhões de anos atrás. “O dinossauro viveu há 66 Ma” = 66 milhões de anos no passado." },
+      { ic: "Risco", h: "Datação radiométrica", p: "Isótopos instáveis decaem em ritmo fixo (meia-vida): <code>U-Pb em zircões</code> mede até 4,4 Ga; <code>K-Ar</code> e <code>Ar-Ar</code> datam vulcânicas; <code>¹⁴C</code> cobre só os últimos ~50 ka." },
+      { ic: "", h: "Fósseis-guia", p: "Espécies de vida curta e ampla distribuição (trilobites, amonites, graptólitos) “datam” camadas por associação — o princípio da sobreposição completa o método: o que está embaixo é mais velho." },
+      { ic: "Arte", h: "Cores oficiais (ICS)", p: "A Comissão Internacional de Estratigrafia define as cores da carta geológica usadas no mundo todo — as mesmas deste site (aproximadas), do Cambriano verde-oliva ao Quaternário amarelo." },
+      { ic: "Bússola", h: "Como navegar", p: "Use os filtros por éon na tabela, clique em qualquer bloco da linha do tempo ou linha com ficha — o painel de estudo atualiza com vida, clima, eventos, geologia do Brasil e curiosidade." }
     ];
 
     /* =========================================================
@@ -1397,7 +1397,7 @@
       els.fichaExtra.innerHTML = "";
       const brasilCard = document.createElement("div");
       brasilCard.className = "brasil-card";
-      brasilCard.innerHTML = "<strong>🇧🇷 No Brasil</strong>" + u.brasil;
+      brasilCard.innerHTML = "<strong>[BR] No Brasil</strong>" + u.brasil;
       els.fichaExtra.appendChild(brasilCard);
 
       const curio = document.createElement("div");

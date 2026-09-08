@@ -34,9 +34,9 @@ export default function Leaderboard({ isOpen, onClose }: LeaderboardProps) {
   }, []);
 
   const getRankIcon = (index: number) => {
-    if (index === 0) return "🥇";
-    if (index === 1) return "🥈";
-    if (index === 2) return "🥉";
+    if (index === 0) return "1º";
+    if (index === 1) return "2º";
+    if (index === 2) return "3º";
     return `${index + 1}º`;
   };
 
@@ -44,11 +44,11 @@ export default function Leaderboard({ isOpen, onClose }: LeaderboardProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div 
+      <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      
+
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
         <div className="p-6 border-b border-gray-100">
           <div className="flex items-center justify-between">
@@ -97,7 +97,7 @@ export default function Leaderboard({ isOpen, onClose }: LeaderboardProps) {
                   key={entry.id}
                   className={`
                     flex items-center gap-4 p-4 rounded-xl
-                    ${index < 3 ? "bg-gradient-to-r from-yellow-50 to-orange-50" : "bg-gray-50"}
+                    ${index < 3 ? "border border-yellow-200 bg-yellow-50" : "bg-gray-50"}
                   `}
                 >
                   <div className={`

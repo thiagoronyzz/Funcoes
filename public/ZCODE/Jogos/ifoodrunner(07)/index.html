@@ -199,24 +199,24 @@
     <canvas id="gameCanvas"></canvas>
 
     <div id="ui">
-        <div class="ui-box" id="scoreDisplay">🏆 0</div>
-        <div class="ui-box" id="speedDisplay">⚡ 1x</div>
+        <div class="ui-box" id="scoreDisplay">Vitória 0</div>
+        <div class="ui-box" id="speedDisplay">Energia 1x</div>
     </div>
 
     <div id="overlay">
-        <h1>🏍️ IFood Rider</h1>
+        <h1>Moto IFood Rider</h1>
         <h2>Corrida Infinita</h2>
         <p class="subtitle">Você está ATRASADO pro serviço! Desvie dos obstáculos e entregue o máximo de pedidos!</p>
-        <p>🕳️ Buracos na rua</p>
-        <p>🚗 Carros parados</p>
-        <p>🛒 Carrinhos de compras</p>
-        <p>🚧 Cones e barreiras</p>
-        <p>🐕 Cachorros na rua</p>
-        <p>🍔 Colete entregas para bônus!</p>
+        <p>Buraco Buracos na rua</p>
+        <p>Carro Carros parados</p>
+        <p>Carrinho Carrinhos de compras</p>
+        <p>Obra Cones e barreiras</p>
+        <p>Cão Cachorros na rua</p>
+        <p>Hambúrguer Colete entregas para bônus!</p>
         <div class="controls-info">
-            <div class="control-key">⬅️ A / ←</div>
-            <div class="control-key">➡️ D / →</div>
-            <div class="control-key">⬆️ W / ↑ Turbo</div>
+            <div class="control-key">⬅ A / ←</div>
+            <div class="control-key"> D / →</div>
+            <div class="control-key">⬆ W / ↑ Turbo</div>
         </div>
         <button class="btn" id="startBtn">COMEÇAR TURNO</button>
     </div>
@@ -805,7 +805,7 @@ function drawBonus(item) {
     ctx.font = '14px Arial';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('🍔', 0, 0);
+    ctx.fillText('Hambúrguer', 0, 0);
     ctx.fillStyle = '#2ecc71';
     ctx.font = 'bold 10px Arial';
     ctx.fillText('+$', 0, -18 + bob);
@@ -882,7 +882,7 @@ function drawHUD() {
     ctx.font = 'bold 14px Arial';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
-    ctx.fillText(`📦 ${deliveries} entregas`, 18, GAME_HEIGHT - 22);
+    ctx.fillText(`Caixa ${deliveries} entregas`, 18, GAME_HEIGHT - 22);
 }
 
 // ====== UPDATE ======
@@ -1031,8 +1031,8 @@ function update() {
     }
 
     // UI
-    scoreDisplay.textContent = `🏆 ${score.toLocaleString()}`;
-    speedDisplay.textContent = `⚡ ${(speed / baseSpeed).toFixed(1)}x`;
+    scoreDisplay.textContent = `Vitória ${score.toLocaleString()}`;
+    speedDisplay.textContent = `Energia ${(speed / baseSpeed).toFixed(1)}x`;
     speedDisplay.style.color = turbo ? '#ff6600' : 'white';
 }
 
@@ -1144,11 +1144,11 @@ function endGame() {
 
     overlay.classList.remove('hidden');
     overlay.innerHTML = `
-        <h1>💥 BATEU!</h1>
+        <h1>Impacto BATEU!</h1>
         <h2>Turno encerrado</h2>
         <div class="score-final">${score.toLocaleString()}</div>
-        <p>📦 ${deliveries} entregas realizadas</p>
-        <p class="record">🏆 Recorde: ${highScore.toLocaleString()}</p>
+        <p>Caixa ${deliveries} entregas realizadas</p>
+        <p class="record">Vitória Recorde: ${highScore.toLocaleString()}</p>
         <p class="subtitle">Nível de dificuldade alcançado: ${difficultyLevel}</p>
         <button class="btn" onclick="resetGame()">TENTAR DE NOVO</button>
     `;

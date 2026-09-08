@@ -1,4 +1,3 @@
-import Cursor from "./components/Cursor";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Marquee from "./components/Marquee";
@@ -11,9 +10,7 @@ import { categorias } from "./data/apps";
 
 export default function App() {
   return (
-    <div className="relative min-h-screen overflow-x-clip bg-paper font-body text-ink">
-      <div className="grain" aria-hidden />
-      <Cursor />
+    <div className="min-h-screen overflow-x-clip bg-paper font-body text-ink">
       <Navbar />
       <main>
         <Hero />

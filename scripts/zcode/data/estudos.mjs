@@ -619,7 +619,7 @@ function primosAté(n) {
 
 /* ── Pares (8 temas) ─────────────────────────────────────── */
 export const PARES = {
-  animais: [["🐶", "Cão"], ["🐱", "Gato"], ["🐦", "Pássaro"], ["🐟", "Peixe"], ["🐢", "Tartaruga"], ["🐘", "Elefante"], ["🦁", "Leão"], ["🐸", "Sapo"]],
+  animais: [["Cachorro", "Cão"], ["Gato", "Gato"], ["Pássaro", "Pássaro"], ["Peixe", "Peixe"], ["Tartaruga", "Tartaruga"], ["Elefante", "Elefante"], ["Leão", "Leão"], ["Sapo", "Sapo"]],
   capitais: [["Brasil", "Brasília"], ["França", "Paris"], ["Japão", "Tóquio"], ["Canadá", "Ottawa"], ["Egito", "Cairo"], ["México", "Cidade do México"], ["Alemanha", "Berlim"], ["Argentina", "Buenos Aires"]],
   elementos: [["Ouro", "Au"], ["Prata", "Ag"], ["Ferro", "Fe"], ["Cálcio", "Ca"], ["Sódio", "Na"], ["Cobre", "Cu"], ["Zinco", "Zn"], ["Mercúrio", "Hg"]],
   sinonimos: [["feliz", "contente"], ["correr", "sprintar"], ["grande", "enorme"], ["belo", "lindo"], ["triste", "melancólico"], ["falar", "dizer"], ["comprar", "adquirir"], ["casa", "moradia"]],
@@ -661,22 +661,22 @@ export const TRIG = [
 
 /* ── Bandeiras (emoji) ──────────────────────────────────── */
 export const BANDEIRAS = [
-  ["🇧🇷", "Brasil", ["Argentina", "Peru", "Brasil", "Chile"]],
-  ["🇫🇷", "França", ["França", "Itália", "Bélgica", "Holanda"]],
-  ["🇯🇵", "Japão", ["China", "Japão", "Coreia", "Mongólia"]],
-  ["🇺🇸", "Estados Unidos", ["México", "Canadá", "Estados Unidos", "Colômbia"]],
-  ["🇦🇷", "Argentina", ["Argentina", "Chile", "Uruguai", "Paraguai"]],
-  ["🇩🇪", "Alemanha", ["Áustria", "Alemanha", "Suíça", "Polônia"]],
-  ["🇮🇹", "Itália", ["Irlanda", "Itália", "Nigéria", "México"]],
-  ["🇪🇸", "Espanha", ["Espanha", "Portugal", "Gibraltar", "Marrocos"]],
-  ["🇵🇹", "Portugal", ["Brasil", "Portugal", "Angola", "Moçambique"]],
-  ["🇲🇽", "México", ["México", "Peru", "Equador", "Bolívia"]],
-  ["🇬🇧", "Reino Unido", ["Irlanda", "Reino Unido", "Escócia", "Gales"]],
-  ["🇨🇦", "Canadá", ["Canadá", "EUA", "Austrália", "Nova Zelândia"]],
-  ["🇦🇺", "Austrália", ["Nova Zelândia", "Austrália", "Fiji", "Papua-Nova Guiné"]],
-  ["🇮🇳", "Índia", ["Índia", "Paquistão", "Bangladesh", "Nepal"]],
-  ["🇷🇺", "Rússia", ["Rússia", "Polônia", "Ucrânia", "Bielorrússia"]],
-  ["🇰🇷", "Coreia do Sul", ["China", "Coreia do Norte", "Coreia do Sul", "Japão"]],
+  ["[BR]", "Brasil", ["Argentina", "Peru", "Brasil", "Chile"]],
+  ["[FR]", "França", ["França", "Itália", "Bélgica", "Holanda"]],
+  ["[JP]", "Japão", ["China", "Japão", "Coreia", "Mongólia"]],
+  ["[US]", "Estados Unidos", ["México", "Canadá", "Estados Unidos", "Colômbia"]],
+  ["[AR]", "Argentina", ["Argentina", "Chile", "Uruguai", "Paraguai"]],
+  ["[DE]", "Alemanha", ["Áustria", "Alemanha", "Suíça", "Polônia"]],
+  ["[IT]", "Itália", ["Irlanda", "Itália", "Nigéria", "México"]],
+  ["[ES]", "Espanha", ["Espanha", "Portugal", "Gibraltar", "Marrocos"]],
+  ["[PT]", "Portugal", ["Brasil", "Portugal", "Angola", "Moçambique"]],
+  ["[MX]", "México", ["México", "Peru", "Equador", "Bolívia"]],
+  ["[GB]", "Reino Unido", ["Irlanda", "Reino Unido", "Escócia", "Gales"]],
+  ["[CA]", "Canadá", ["Canadá", "EUA", "Austrália", "Nova Zelândia"]],
+  ["[AU]", "Austrália", ["Nova Zelândia", "Austrália", "Fiji", "Papua-Nova Guiné"]],
+  ["[IN]", "Índia", ["Índia", "Paquistão", "Bangladesh", "Nepal"]],
+  ["[RU]", "Rússia", ["Rússia", "Polônia", "Ucrânia", "Bielorrússia"]],
+  ["[KR]", "Coreia do Sul", ["China", "Coreia do Norte", "Coreia do Sul", "Japão"]],
 ];
 
 /* ── Tradução PT→EN ─────────────────────────────────────── */

@@ -264,7 +264,7 @@ input[type=range]{accent-color:var(--blood);width:150px;}
     <div class="select-head">
       <div class="select-title">ESCOLHA SEU LUTADOR</div>
       <div class="select-sub" id="selectMode"></div>
-      <div class="arena-chip" id="arenaChip" title="Clique para trocar a arena">🏟 Arena: aleatória</div>
+      <div class="arena-chip" id="arenaChip" title="Clique para trocar a arena">Arena Arena: aleatória</div>
     </div>
     <div class="select-body">
       <div class="side-panel" id="panelP1">
@@ -322,7 +322,7 @@ input[type=range]{accent-color:var(--blood);width:150px;}
         <button class="mbtn" data-act="resume">CONTINUAR <small>Esc</small></button>
         <button class="mbtn" data-act="quit">ABANDONAR LUTA</button>
       </div>
-      <div class="hint">Não vale pausar para ver o comando da Fatality... 😈</div>
+      <div class="hint">Não vale pausar para ver o comando da Fatality... Inimigo</div>
     </div>
   </div>
 
@@ -362,7 +362,7 @@ input[type=range]{accent-color:var(--blood);width:150px;}
       <div class="hint">SPECIAL: digite a sequência de direção + botão (ex.: ▼▼▲? não, usa ▼→▼ + soco). Veja os comandos de cada
         personagem na tela de seleção.</div>
       <div class="hint">FATALITY: com barra cheia (100), derrote o oponente, ele ficará de joelhos — digite a sequência
-        mostrada na tela dentro de 5 segundos antes do anúncio "FINISH HIM/HER!" acabar. 👿</div>
+        mostrada na tela dentro de 5 segundos antes do anúncio "FINISH HIM/HER!" acabar. Inimigo</div>
       <div class="menu-list"><button class="mbtn" data-act="back">VOLTAR</button></div>
     </div>
   </div>
@@ -374,7 +374,7 @@ input[type=range]{accent-color:var(--blood);width:150px;}
       <p style="line-height:2;color:#cfc4b2">Jogo de luta 2.5D inspirado na série <b>Mortal Kombat</b>.<br/>
       Feito 100% em um único arquivo HTML — Canvas, CSS e JavaScript puro.<br/>
       Personagens, arenas, sons, música e vozes gerados proceduralmente no navegador.<br/>
-      Sem bibliotecas externas. Funciona offline. 🐉</p>
+      Sem bibliotecas externas. Funciona offline. Dragão</p>
       <div class="menu-list"><button class="mbtn" data-act="back">VOLTAR</button></div>
     </div>
   </div>
@@ -1517,7 +1517,7 @@ class MKGame{
     if(blocked){
       const chip=Math.max(1,Math.round(dmg*.2));
       def.hp=Math.max(0,def.hp-chip);
-      def.blockstun=.18; def.dmgTaken+=chip; 
+      def.blockstun=.18; def.dmgTaken+=chip;
       def.vx=att.facing*m.kb*.3*-1;
       att.energy=Math.min(100,att.energy+2);
       def.energy=Math.min(100,def.energy+4);
@@ -1769,7 +1769,7 @@ class MKGame{
       const l=this.opponent(w);
       const flawless=l.dmgTaken<=0&&!viaFatality;
       UI.announce(w.name+" VENCE","","",2.2);
-      if(flawless)UI.toast("FLAWLESS VICTORY! ✨");
+      if(flawless)UI.toast("FLAWLESS VICTORY! ");
       Sound.say(w.name+" wins");
     } else {
       UI.announce("EMPATE","ninguém leva o round","",2);
@@ -2052,7 +2052,7 @@ const UI={
     const hint=$("hudHint");
     if(game.phase==="finish"&&game.finisher&&!game.finisher.isCPU){
       const w=game.finisher;
-      hint.textContent=`⚡ Digite ${fatCmd(w)} — ${Math.ceil(game.finishT)}s restantes`;
+      hint.textContent=`Energia Digite ${fatCmd(w)} — ${Math.ceil(game.finishT)}s restantes`;
     } else if(game.phase==="finish"){
       hint.textContent="A CPU está tentando a FATALITY…";
     } else if(game.phase==="fight"){
@@ -2064,8 +2064,8 @@ const UI={
     this.showScreen("screen-menu");
     const st=STATS;
     $("menuStats").textContent=`
-      🏆 Vitórias: P1 ${st.wins.p1||0} · P2 ${st.wins.p2||0} · CPU ${st.wins.cpu||0} ·
-      💀 Fatalities: ${st.fatalities||0}`;
+      Vitória Vitórias: P1 ${st.wins.p1||0} · P2 ${st.wins.p2||0} · CPU ${st.wins.cpu||0} ·
+      Derrota Fatalities: ${st.fatalities||0}`;
     Sound.startMusic("menu");
     Sound.setVol();
   },
@@ -2125,7 +2125,7 @@ const UI={
     const s=statsFor(def);
     stats.innerHTML=Object.keys(s).map(k=>
       `<div class="stat-row"><b>${k.toUpperCase()}</b><div class="stat-bar"><i style="width:${clamp(s[k],0,1)*100}%"></i></div></div>`).join("");
-    ready.textContent=readyFlag?"✔ PRONTO!":"";
+    ready.textContent=readyFlag?"OK PRONTO!":"";
     ready.className="ready"+(readyFlag?" ok":"");
   },
   moveCursor(which,dx,dy){
@@ -2318,7 +2318,7 @@ $("arenaChip").addEventListener("click",()=>{
   let next=cur;
   do{ next=ARENAS[irand(0,ARENAS.length-1)]; }while(next===cur);
   UI.select.arenaChoice=next;
-  $("arenaChip").textContent="🏟 Arena: "+ARENA_NAMES[next];
+  $("arenaChip").textContent="Arena Arena: "+ARENA_NAMES[next];
   Sound.hover();
 });
 /* opções */

@@ -47,15 +47,15 @@ function wrapperHtml({ nome, desc, page, rotulo, cor }) {
 <title>${nome} — Zcode</title>
 <meta name="description" content="${desc}">
 <meta name="theme-color" content="${PALETA.bg}">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2305070f'/%3E%3Cpath d='M18 20h28L18 46h28' stroke='%237c5cff' stroke-width='8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23f3f0ea'/%3E%3Cpath d='M20 18h24L20 46h24' fill='none' stroke='%23252422' stroke-width='7' stroke-linecap='square'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700&display=swap" rel="stylesheet">
 <style>
-html,body{margin:0;height:100%;background:${PALETA.bg};font-family:'Space Grotesk',system-ui,sans-serif}
+html,body{margin:0;height:100%;background:${PALETA.bg};font-family:'DM Sans',system-ui,sans-serif}
 header{position:sticky;top:0;z-index:9;display:flex;align-items:center;gap:12px;height:56px;padding:0 14px;background:${PALETA.bg2};border-bottom:1px solid ${PALETA.line};color:${PALETA.text}}
-.zlogo{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#7c5cff,#29e0ff);color:#05070f;font-weight:700;font-size:19px;text-decoration:none;flex:0 0 auto}
+.ztop-brand{color:${PALETA.text};font-family:Georgia,serif;font-size:21px;letter-spacing:-.04em;text-decoration:none;flex:0 0 auto}
 header strong{font-size:15px;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.chip{margin-left:auto;font-size:11.5px;color:${cor || PALETA.cyan};border:1px solid ${PALETA.line};padding:4px 10px;border-radius:99px;flex:0 0 auto}
+.chip{margin-left:auto;font-size:11.5px;color:${cor || PALETA.cyan};border:1px solid ${PALETA.line};padding:4px 10px;border-radius:4px;flex:0 0 auto}
 .back{color:${PALETA.muted};text-decoration:none;font-size:13.5px;flex:0 0 auto}
 .back:hover{color:${PALETA.text}}
 iframe{display:block;width:100%;height:calc(100% - 56px);border:0}
@@ -63,7 +63,7 @@ iframe{display:block;width:100%;height:calc(100% - 56px);border:0}
 </head>
 <body>
 <header>
-  <a class="zlogo" href="/">Z</a>
+  <a class="ztop-brand" href="/">Zcode</a>
   <strong>${nome}</strong>
   <span class="chip">${rotulo}</span>
   <a class="back" href="/">← Zcode</a>
@@ -94,9 +94,9 @@ function landingHtml(catId) {
 <title>${info.titulo} — Zcode</title>
 <meta name="description" content="100 apps de ${info.titulo.toLowerCase()} da plataforma Zcode.">
 <meta name="theme-color" content="${PALETA.bg}">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2305070f'/%3E%3Cpath d='M18 20h28L18 46h28' stroke='%237c5cff' stroke-width='8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23f3f0ea'/%3E%3Cpath d='M20 18h24L20 46h24' fill='none' stroke='%23252422' stroke-width='7' stroke-linecap='square'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>${KIT_CSS}
 .lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:16px}
 .c{display:flex;flex-direction:column;gap:6px;background:var(--z-surface);border:1px solid var(--z-line);border-radius:16px;padding:14px 16px;text-decoration:none;color:var(--z-text);transition:transform .15s,border-color .15s}
@@ -108,7 +108,7 @@ function landingHtml(catId) {
 </head>
 <body>
 <header class="ztop">
-  <a class="zlogo" href="/">Z</a>
+  <a class="ztop-brand" href="/">Zcode</a>
   <div class="ztop-mid"><strong>${info.titulo} — Zcode</strong></div>
   <a class="zback" href="/">← Home</a>
 </header>
@@ -142,9 +142,9 @@ document.getElementById("busca").addEventListener("input", function(){
 
 /* ── apps.ts (hub React) ────────────────────────────────── */
 const SOCIAL_APPS = [
-  { nome: "Romanov", descricao: "Rede social para filósofos.", imagem: "/apps/social-1.jpg", link: "shorturl.sh/romanov" },
-  { nome: "Meus Links", descricao: "Todos os meus perfis e redes sociais em uma página só.", imagem: "/apps/social-2.jpg", link: "#" },
-  { nome: "Comenta Aí", descricao: "Mural aberto para deixar recados e sugestões de apps.", imagem: "/apps/social-3.jpg", link: "#" },
+  { nome: "Romanov", descricao: "Rede social para filósofos.", imagem: "/images/editorial/meeting.jpg", link: "shorturl.sh/romanov" },
+  { nome: "Meus Links", descricao: "Todos os meus perfis e redes sociais em uma página só.", imagem: "/images/editorial/community.jpg", link: "#" },
+  { nome: "Comenta Aí", descricao: "Mural aberto para deixar recados e sugestões de apps.", imagem: "/images/editorial/meeting.jpg", link: "#" },
 ];
 const CAT_META = {
   estudos: { rotulo: "Categoria.01", titulo: "Estudos", descricao: "Ferramentas para aprender melhor: foco, revisão, quizzes e tudo que ajuda na hora de estudar." },

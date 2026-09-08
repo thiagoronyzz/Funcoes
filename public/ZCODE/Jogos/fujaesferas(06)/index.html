@@ -236,25 +236,25 @@
 <!-- HUD -->
 <div id="hud">
   <div class="hud-tile" id="hudTimer"><span id="hudTimeVal">0.00</span><small>SEGUNDOS VIVOS</small></div>
-  <div class="hud-tile" id="hudSpheres">🌀 ESFERAS: <span id="hudSpheresVal">0</span></div>
-  <div class="hud-tile" id="hudSpeed">⚡ <span id="hudSpeedVal">1.0×</span></div>
+  <div class="hud-tile" id="hudSpheres">Ciclo ESFERAS: <span id="hudSpheresVal">0</span></div>
+  <div class="hud-tile" id="hudSpeed">Energia <span id="hudSpeedVal">1.0×</span></div>
   <button class="hud-btn" id="btnPause" title="Pausar (P)">⏸</button>
-  <button class="hud-btn" id="btnMute" title="Som">🔊</button>
+  <button class="hud-btn" id="btnMute" title="Som">Som ligado</button>
   <div id="hudHint">Use <b>W</b> <b>A</b> <b>S</b> <b>D</b> para fugir das esferas!</div>
 </div>
 
 <!-- MENU -->
 <div class="overlay" id="overlayMenu">
   <div class="card">
-    <div class="game-title"><span class="swirl">🌀</span> FUJA DAS ESFERAS</div>
+    <div class="game-title"><span class="swirl">Ciclo</span> FUJA DAS ESFERAS</div>
     <p class="tagline">Fuja. Sobreviva. Bata recordes.</p>
 
     <div class="howto">
-      <p>🎮 Mova-se com <span class="kbd">W</span><span class="kbd">A</span><span class="kbd">S</span><span class="kbd">D</span> (ou setas).</p>
-      <p>🔵 As esferas se espalham e cercam você — não deixe o anel fechar!</p>
-      <p>⚡ Elas ficam mais rápidas que você com o tempo. Use <b>curvas e mudanças de direção</b> para escapar.</p>
-      <p>⚠️ Cada nova esfera avisa onde vai nascer.</p>
-      <p>⏸️ <span class="kbd">P</span> ou <span class="kbd">Esc</span> pausa o jogo.</p>
+      <p>Jogo Mova-se com <span class="kbd">W</span><span class="kbd">A</span><span class="kbd">S</span><span class="kbd">D</span> (ou setas).</p>
+      <p> As esferas se espalham e cercam você — não deixe o anel fechar!</p>
+      <p>Energia Elas ficam mais rápidas que você com o tempo. Use <b>curvas e mudanças de direção</b> para escapar.</p>
+      <p>Atenção Cada nova esfera avisa onde vai nascer.</p>
+      <p>⏸ <span class="kbd">P</span> ou <span class="kbd">Esc</span> pausa o jogo.</p>
     </div>
 
     <div class="btn-row">
@@ -263,8 +263,8 @@
 
     <div class="lb-wrap">
       <div class="lb-head">
-        <h2>🏆 TOP 10</h2>
-        <div class="lb-status" id="lbStatusTop">📴 Salvo só neste computador</div>
+        <h2>Vitória TOP 10</h2>
+        <div class="lb-status" id="lbStatusTop">Desligado Salvo só neste computador</div>
       </div>
       <ul class="lb-list" id="lbListMenu"></ul>
 
@@ -297,7 +297,7 @@
 
     <div class="name-row" id="goNameRow">
       <input id="goName" maxlength="14" placeholder="Seu nome..." />
-      <button class="btn" id="btnSave">💾 Salvar</button>
+      <button class="btn" id="btnSave">Salvar Salvar</button>
     </div>
 
     <div class="mini-list" id="goListWrap">
@@ -315,7 +315,7 @@
 <div class="overlay hidden" id="overlayPause">
   <div class="card">
     <div class="game-title" style="font-size:38px;">PAUSADO</div>
-    <p class="tagline">As esferas esperam por você… 👀</p>
+    <p class="tagline">As esferas esperam por você… </p>
     <div class="btn-row">
       <button class="btn" id="btnResume">▶ CONTINUAR</button>
       <button class="btn btn--ghost" id="btnQuitPause">SAIR PARA O MENU</button>
@@ -497,11 +497,11 @@ async function fetchWithTimeout(url, opts = {}, ms = 9000) {
 let syncing = false, lastSyncAt = 0;
 async function syncRemote(force = false) {
   if (syncing) return;
-  if (!remoteCode) { setLbStatus("top", "📴 Salvo só neste computador", ""); return; }
+  if (!remoteCode) { setLbStatus("top", "Desligado Salvo só neste computador", ""); return; }
   const now = Date.now();
   if (!force && now - lastSyncAt < 30000) return;
   syncing = true; lastSyncAt = now;
-  setLbStatus("top", "🔄 Sincronizando placar online…", "on");
+  setLbStatus("top", "Atualizar Sincronizando placar online…", "on");
   try {
     const prov = providerFor(remoteCode.prefix);
     if (!prov) throw new Error("provedor desconhecido");
@@ -521,11 +521,11 @@ async function syncRemote(force = false) {
     }
     mergedScores = united;
     pendingRetry = false;
-    setLbStatus("top", "🌐 Placar online conectado (" + prov.name + ")", "on");
+    setLbStatus("top", "Rede Placar online conectado (" + prov.name + ")", "on");
     renderLeaderboards();
   } catch (e) {
     mergedScores = mergeScores([...localScores, ...lastRemoteDates]);
-    setLbStatus("top", "⚠️ Sem conexão agora — salvo localmente, reenvio automático depois", "err");
+    setLbStatus("top", "Atenção Sem conexão agora — salvo localmente, reenvio automático depois", "err");
     renderLeaderboards();
   } finally {
     syncing = false;
@@ -778,7 +778,7 @@ function showGameOver() {
   $("goTime").textContent = fmtTime(t);
   const rankBtn = $("btnSave");
   rankBtn.disabled = false;
-  rankBtn.textContent = "💾 Salvar";
+  rankBtn.textContent = "Salvar Salvar";
   const arr = mergedScores;
   const better = arr.filter(e => e.time < t).length;
   const rank = BetterRank(t, arr);
@@ -786,7 +786,7 @@ function showGameOver() {
   const isTop = rank <= 10;
   const pb = arr.length && t < arr[0].time;
   if (isTop && t >= 500) {
-    rankEl.textContent = "🏆 " + ordinal(rank) + " lugar no TOP 10!" + (pb ? " — NOVO RECORDE!" : "");
+    rankEl.textContent = "Vitória " + ordinal(rank) + " lugar no TOP 10!" + (pb ? " — NOVO RECORDE!" : "");
     if (pb) { Sound.record(); rankEl.classList.add("glitch"); } else rankEl.classList.remove("glitch");
   } else {
     rankEl.textContent = "Você aguentou " + fmtTime(t) + " — tente bater o top 10!";
@@ -818,16 +818,16 @@ function saveScore() {
   persistLocal();
   mergedScores = mergeScores([...localScores, ...lastRemoteDates]);
   $("btnSave").disabled = true;
-  $("btnSave").textContent = "✓ Salvo!";
+  $("btnSave").textContent = "OK Salvo!";
   Sound.save();
   renderLeaderboards();
   renderMiniList(t);
   if (remoteCode) {
     syncRemote(true).then(() => {
-      toast(pendingRetry ? "Salvo localmente — sincroniza quando a internet voltar 🙂" : "💾 Recorde salvo no placar online!");
+      toast(pendingRetry ? "Salvo localmente — sincroniza quando a internet voltar Neutro" : "Salvar Recorde salvo no placar online!");
     });
   } else {
-    toast("💾 Recorde salvo neste navegador. Crie um placar online para compartilhar!");
+    toast("Salvar Recorde salvo neste navegador. Crie um placar online para compartilhar!");
   }
 }
 
@@ -867,7 +867,7 @@ function renderLeaderboards() {
   const arr = mergedScores;
   const el = $("lbListMenu");
   if (!arr.length) {
-    el.innerHTML = '<li class="lb-empty">Nenhum recorde ainda. Seja o primeiro! 🚀</li>';
+    el.innerHTML = '<li class="lb-empty">Nenhum recorde ainda. Seja o primeiro! Nave</li>';
   } else {
     el.innerHTML = arr.map((e, i) => rowHTML(e, i, null)).join("");
   }
@@ -1016,7 +1016,7 @@ function update(dt) {
     game.surgeActive = 3000;
     game.surgeNext += 15000;
     game.shake = Math.max(game.shake, 6);
-    floatText(game.player.x, game.player.y - 46, "⚡ SURTO DE VELOCIDADE!", "#ffd76a", 17);
+    floatText(game.player.x, game.player.y - 46, "Energia SURTO DE VELOCIDADE!", "#ffd76a", 17);
     Sound.surge();
   }
   if (game.surgeActive > 0) game.surgeActive -= dt * 1000;
@@ -1338,10 +1338,10 @@ $("btnPause").addEventListener("click", togglePause);
 $("btnMute").addEventListener("click", () => {
   Sound.muted = !Sound.muted;
   saveJSON(LS_MUTE, Sound.muted);
-  $("btnMute").textContent = Sound.muted ? "🔇" : "🔊";
+  $("btnMute").textContent = Sound.muted ? "Som desligado" : "Som ligado";
   if (!Sound.muted) Sound.click();
 });
-$("btnMute").textContent = Sound.muted ? "🔇" : "🔊";
+$("btnMute").textContent = Sound.muted ? "Som desligado" : "Som ligado";
 $("goName").addEventListener("keydown", (e) => {
   e.stopPropagation();
   if (e.key === "Enter") { e.preventDefault(); saveScore(); }
@@ -1350,7 +1350,7 @@ $("goName").addEventListener("keydown", (e) => {
 /* Conectar / criar placar online */
 $("btnLbConnect").addEventListener("click", async () => {
   const code = parseCode($("lbCodeInput").value);
-  if (!code) { toast("⚠️ Código inválido. Use o código gerado no botão “Criar”."); return; }
+  if (!code) { toast("Atenção Código inválido. Use o código gerado no botão “Criar”."); return; }
   Sound.click();
   const prev = remoteCode;
   remoteCode = code;
@@ -1358,10 +1358,10 @@ $("btnLbConnect").addEventListener("click", async () => {
   $("lbCodeInput").value = "";
   mergedScores = mergeScores([...localScores, ...lastRemoteDates]);
   renderLeaderboards();
-  toast("🌐 Conectando ao placar…", 1600);
+  toast("Rede Conectando ao placar…", 1600);
   await syncRemote(true);
   if (remoteCode) {
-    toast("✅ Placar conectado! Agora vocês compartilham o mesmo TOP 10.");
+    toast("OK Placar conectado! Agora vocês compartilham o mesmo TOP 10.");
   } else {
     remoteCode = prev; saveJSON(LS_REMOTE, prev); renderLeaderboards();
   }
@@ -1383,11 +1383,11 @@ $("btnLbCreate").addEventListener("click", async () => {
     saveJSON(LS_REMOTE, remoteCode);
     mergedScores = mergeScores([...localScores, ...lastRemoteDates]);
     renderLeaderboards();
-    toast("🎉 Placar criado! Compartilhe o código ou o link com seus amigos.", 4200);
+    toast("Concluído Placar criado! Compartilhe o código ou o link com seus amigos.", 4200);
     await syncRemote(true);
     copyText(codeToString(remoteCode));
   } catch (e) {
-    toast("⚠️ Não foi possível criar o placar online agora. Seus recordes seguem salvos localmente.", 4200);
+    toast("Atenção Não foi possível criar o placar online agora. Seus recordes seguem salvos localmente.", 4200);
   } finally {
     btn.disabled = false;
     btn.textContent = "＋ Criar";
@@ -1395,7 +1395,7 @@ $("btnLbCreate").addEventListener("click", async () => {
 });
 
 function copyText(text) {
-  const done = () => toast("📋 Copiado: " + text, 2400);
+  const done = () => toast("Copiar Copiado: " + text, 2400);
   try {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
@@ -1432,7 +1432,7 @@ $("btnCopyLink").addEventListener("click", () => {
       remoteCode = code;
       saveJSON(LS_REMOTE, remoteCode);
       try { history.replaceState(null, "", location.pathname); } catch (e) { /* file:// pode bloquear */ }
-      toast("🌐 Conectando ao placar " + codeToString(code) + "…", 1800);
+      toast("Rede Conectando ao placar " + codeToString(code) + "…", 1800);
     }
   }
   renderLeaderboards();

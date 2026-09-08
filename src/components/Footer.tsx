@@ -1,4 +1,4 @@
-import { ArrowUp, ArrowUpRight, Mail, Terminal } from "lucide-react";
+import { ArrowUp, ArrowUpRight, Mail } from "lucide-react";
 import { motion } from "framer-motion";
 import { categorias } from "../data/apps";
 
@@ -6,7 +6,7 @@ export default function Footer() {
   const ano = new Date().getFullYear();
 
   return (
-    <footer className="relative overflow-hidden bg-ink text-white">
+    <footer className="relative overflow-hidden bg-[#04060c] text-white">
       <div className="bg-dots-light absolute inset-0 opacity-20" />
       <div className="absolute -top-40 left-1/3 size-[30rem] rounded-full bg-brand-600/30 blur-[140px]" />
 
@@ -28,8 +28,8 @@ export default function Footer() {
             </h2>
           </div>
           <a
-            href="mailto:contato@ronycode.dev?subject=Ideia%20de%20app%20para%20a%20RONYCODE"
-            className="group inline-flex w-fit items-center gap-3 rounded-full bg-brand-600 px-7 py-4 font-display text-sm font-semibold text-white transition-colors duration-300 hover:bg-white hover:text-ink"
+            href="mailto:contato@zcode.dev?subject=Ideia%20de%20app%20para%20a%20Zcode"
+            className="group inline-flex w-fit items-center gap-3 rounded-full bg-brand-500 px-7 py-4 font-display text-sm font-semibold text-white transition-colors duration-300 hover:bg-brand-400"
           >
             <Mail className="size-4" />
             Mandar sugestão
@@ -40,11 +40,11 @@ export default function Footer() {
         {/* meio */}
         <div className="flex flex-col gap-10 border-t border-white/10 pt-10 md:flex-row md:items-center md:justify-between">
           <a href="#topo" className="flex items-center gap-2.5">
-            <span className="grid size-9 place-items-center rounded-xl bg-brand-600 text-white">
-              <Terminal className="size-4" strokeWidth={2.5} />
+            <span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-acc-cyan font-display text-base font-bold text-white">
+              Z
             </span>
             <span className="font-display text-lg font-bold tracking-tight">
-              RONY<span className="text-brand-400">CODE</span>
+              ZCODE<span className="text-brand-400">.</span>
             </span>
           </a>
 
@@ -75,13 +75,13 @@ export default function Footer() {
           aria-hidden
           className="text-stroke-white pointer-events-none mt-16 select-none whitespace-nowrap text-center font-display text-[13.5vw] font-bold uppercase leading-[0.82] tracking-[-0.02em] md:mt-20"
         >
-          RONYCODE
+          ZCODE
         </div>
 
         {/* barra final */}
         <div className="mt-2 flex flex-col items-center justify-between gap-3 border-t border-white/10 pb-2 pt-6 md:flex-row">
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40">
-            © {ano} RonyCode — Todos os direitos reservados
+            © {ano} Zcode — Todos os direitos reservados
           </p>
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/40">
             React + Tailwind — pt-BR

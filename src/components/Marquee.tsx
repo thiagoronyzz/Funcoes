@@ -7,7 +7,7 @@ export default function Marquee() {
 
   return (
     <div className="relative z-10 -my-2 overflow-hidden py-6" aria-hidden>
-      <div className="-rotate-[1.3deg] scale-[1.03] bg-brand-600 shadow-[0_24px_60px_-24px_rgba(10,61,255,0.55)]">
+      <div className="-rotate-[1.3deg] scale-[1.03] bg-brand-600 shadow-[0_24px_60px_-24px_rgba(124,92,255,0.55)]">
         <div className="flex w-max animate-marquee items-center">
           {[0, 1].map((dup) => (
             <div key={dup} className="flex items-center gap-10 py-4 pr-10 md:py-5">

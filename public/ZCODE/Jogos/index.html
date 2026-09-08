@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="pt-BR" data-cat="jogos">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Jogos — Zcode</title>
+<meta name="description" content="100 apps de jogos da plataforma Zcode.">
+<meta name="theme-color" content="#05070f">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2305070f'/%3E%3Cpath d='M18 20h28L18 46h28' stroke='%237c5cff' stroke-width='8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --z-bg:#05070f; --z-bg2:#0a0d1a; --z-surface:#0e1322; --z-surface2:#151c33;
+  --z-line:rgba(148,158,210,.14); --z-line2:rgba(148,158,210,.28);
+  --z-text:#edf0ff; --z-muted:#97a0c4;
+  --z-brand:#7c5cff; --z-brand-soft:rgba(124,92,255,.16);
+  --z-cyan:#29e0ff; --z-pink:#ff4d8f; --z-lime:#7dff6a; --z-amber:#ffb347;
+  --z-red:#ff5c5c; --z-radius:18px;
+  --z-fd:"Space Grotesk",system-ui,sans-serif;
+  --z-f:"Inter",system-ui,sans-serif;
+  --z-fm:"JetBrains Mono",ui-monospace,monospace;
+  --z-acc:var(--z-brand);
+}
+html[data-cat="estudos"]{--z-acc:var(--z-cyan)}
+html[data-cat="jogos"]{--z-acc:var(--z-pink)}
+html[data-cat="uteis"]{--z-acc:var(--z-lime)}
+html[data-cat="social"]{--z-acc:var(--z-amber)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:
+    radial-gradient(1100px 500px at 85% -10%, rgba(124,92,255,.14), transparent 60%),
+    radial-gradient(900px 420px at -10% 110%, rgba(41,224,255,.08), transparent 60%),
+    var(--z-bg);
+  color:var(--z-text); font-family:var(--z-f); font-size:15px; line-height:1.55;
+  min-height:100dvh; -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--z-acc);color:#04060d}
+a{color:var(--z-acc)}
+h1,h2,h3,.fd{font-family:var(--z-fd);letter-spacing:-.02em}
+.mono{font-family:var(--z-fm)}
+.dim{color:var(--z-muted)} .acc{color:var(--z-acc)}
+.center{text-align:center} .row{display:flex;gap:10px;align-items:center}
+.wrap{flex-wrap:wrap} .between{justify-content:space-between}
+.col{display:flex;flex-direction:column;gap:10px}
+.mt{margin-top:14px} .mb{margin-bottom:14px} .grow{flex:1}
+.hidden{display:none!important}
+
+/* ── topo ─────────────────────────────────────────────── */
+.ztop{
+  position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;
+  height:54px;padding:0 16px;border-bottom:1px solid var(--z-line);
+  background:rgba(5,7,15,.78);backdrop-filter:blur(14px);
+}
+.zlogo{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;
+  background:linear-gradient(135deg,#7c5cff,#29e0ff);color:#fff;
+  font-family:var(--z-fd);font-weight:700;font-size:19px;text-decoration:none;
+  box-shadow:0 6px 18px -6px rgba(124,92,255,.65);flex:none}
+.ztop-mid{min-width:0}
+.ztop-mid strong{display:block;font-family:var(--z-fd);font-size:14.5px;letter-spacing:-.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.zchip{display:inline-flex;align-items:center;gap:6px;font-family:var(--z-fm);font-size:10px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--z-acc);
+  background:color-mix(in srgb,var(--z-acc) 12%, transparent);
+  border:1px solid color-mix(in srgb,var(--z-acc) 34%, transparent);
+  padding:2px 9px;border-radius:99px;white-space:nowrap}
+.zback{margin-left:auto;font-family:var(--z-fm);font-size:11.5px;text-decoration:none;
+  color:var(--z-muted);border:1px solid var(--z-line2);border-radius:99px;padding:7px 13px;
+  transition:.2s;white-space:nowrap}
+.zback:hover{color:var(--z-text);border-color:var(--z-acc)}
+
+/* ── layout ───────────────────────────────────────────── */
+.zmain{max-width:980px;margin:0 auto;padding:26px 16px 70px}
+.zhero{margin-bottom:22px}
+.zhero h1{font-size:clamp(26px,4.5vw,40px);font-weight:700;line-height:1.05}
+.zhero h1 em{font-style:normal;color:var(--z-acc)}
+.zhero p{color:var(--z-muted);margin-top:8px;max-width:640px}
+.zfoot{border-top:1px solid var(--z-line);padding:18px 16px 26px;text-align:center;
+  font-family:var(--z-fm);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--z-muted)}
+.zfoot b{color:var(--z-text);font-weight:600}
+
+/* ── cartões / painéis ────────────────────────────────── */
+.zcard{background:var(--z-surface);border:1px solid var(--z-line);
+  border-radius:var(--z-radius);padding:18px}
+.zcard.pad{padding:24px}
+.zgrid{display:grid;gap:12px}
+.zg2{grid-template-columns:repeat(2,1fr)}
+.zg3{grid-template-columns:repeat(3,1fr)}
+.zg4{grid-template-columns:repeat(4,1fr)}
+.zbig{font-family:var(--z-fd);font-size:clamp(40px,9vw,72px);font-weight:700;line-height:1;
+  font-variant-numeric:tabular-nums}
+.zstat{display:flex;flex-direction:column;gap:2px}
+.zstat span{font-family:var(--z-fm);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--z-muted)}
+.zstat b{font-family:var(--z-fd);font-size:20px;font-weight:700}
+
+/* ── botões / campos ──────────────────────────────────── */
+.zbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+  font-family:var(--z-fd);font-weight:600;font-size:14.5px;letter-spacing:-.01em;
+  color:#04060d;background:var(--z-acc);border:1px solid transparent;border-radius:13px;
+  padding:11px 20px;transition:.18s;text-decoration:none;user-select:none}
+.zbtn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.zbtn:active{transform:translateY(0)}
+.zbtn:disabled{opacity:.45;cursor:not-allowed;transform:none;filter:none}
+.zbtn.ghost{background:transparent;color:var(--z-text);border-color:var(--z-line2)}
+.zbtn.ghost:hover{border-color:var(--z-acc);color:var(--z-acc)}
+.zbtn.danger{background:var(--z-red);color:#fff}
+.zbtn.sm{padding:7px 13px;font-size:12.5px;border-radius:10px}
+.zbtn.big{padding:14px 28px;font-size:16px;border-radius:15px}
+.zbtn.w{width:100%}
+.zinput,.zselect,.ztextarea{width:100%;background:var(--z-surface2);border:1px solid var(--z-line2);
+  color:var(--z-text);border-radius:12px;padding:11px 14px;font-family:var(--z-f);font-size:15px;
+  outline:none;transition:.18s}
+.zinput:focus,.zselect:focus,.ztextarea:focus{border-color:var(--z-acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--z-acc) 22%,transparent)}
+.ztextarea{min-height:130px;resize:vertical;font-family:var(--z-fm);font-size:13px;line-height:1.5}
+.zselect{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--z-muted) 50%),linear-gradient(135deg,var(--z-muted) 50%,transparent 50%);
+  background-position:calc(100% - 18px) 55%,calc(100% - 13px) 55%;background-size:5px 5px;background-repeat:no-repeat;padding-right:38px}
+.zlabel{display:block;font-family:var(--z-fm);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--z-muted);margin-bottom:6px}
+
+/* ── opções (quiz) ────────────────────────────────────── */
+.zopty{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
+  background:var(--z-surface2);color:var(--z-text);border:1px solid var(--z-line2);
+  border-radius:14px;padding:13px 16px;font-family:var(--z-f);font-size:15px;transition:.16s}
+.zopty:hover:not(:disabled){border-color:var(--z-acc);transform:translateX(3px)}
+.zopty i{font-style:normal;font-family:var(--z-fm);font-size:11px;color:var(--z-muted);
+  width:24px;height:24px;border-radius:8px;display:grid;place-items:center;
+  background:rgba(148,158,210,.1);flex:none}
+.zopty.ok{border-color:var(--z-lime);background:color-mix(in srgb,var(--z-lime) 14%, var(--z-surface2));color:var(--z-lime)}
+.zopty.err{border-color:var(--z-red);background:color-mix(in srgb,var(--z-red) 14%, var(--z-surface2));color:var(--z-red)}
+.zopty:disabled{cursor:default}
+
+/* ── barra / progresso / toast / modal ────────────────── */
+.zprog{height:8px;border-radius:99px;background:var(--z-surface2);overflow:hidden}
+.zprog i{display:block;height:100%;border-radius:99px;background:var(--z-acc);transition:width .3s}
+.ztoast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);z-index:99;
+  background:var(--z-text);color:#04060d;font-weight:600;font-size:13.5px;padding:10px 20px;
+  border-radius:99px;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 14px 34px -10px rgba(0,0,0,.6)}
+.ztoast.on{opacity:1;transform:translate(-50%,0)}
+.zmodal{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;
+  background:rgba(3,4,10,.72);backdrop-filter:blur(6px)}
+.zbox{width:min(460px,100%);background:var(--z-surface);border:1px solid var(--z-line2);
+  border-radius:22px;padding:26px;text-align:center}
+.zbox h3{font-size:24px;margin-bottom:8px}
+.zbox p{color:var(--z-muted);margin-bottom:18px}
+.zkbd{font-family:var(--z-fm);font-size:11px;border:1px solid var(--z-line2);border-bottom-width:2px;
+  border-radius:7px;padding:2px 7px;background:var(--z-surface2)}
+canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-line);
+  background:var(--z-bg2);touch-action:none}
+@media (max-width:560px){
+  .zg3,.zg4{grid-template-columns:repeat(2,1fr)}
+  .zmain{padding-top:18px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:16px}
+.c{display:flex;flex-direction:column;gap:6px;background:var(--z-surface);border:1px solid var(--z-line);border-radius:16px;padding:14px 16px;text-decoration:none;color:var(--z-text);transition:transform .15s,border-color .15s}
+.c:hover{transform:translateY(-2px);border-color:var(--z-acc)}
+.c b{font-family:var(--z-fd);font-size:15.5px;color:var(--z-text)}
+.c span{font-size:12.5px;color:var(--z-muted);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#busca{width:100%;max-width:420px;margin-top:18px}
+</style>
+</head>
+<body>
+<header class="ztop">
+  <a class="zlogo" href="/">Z</a>
+  <div class="ztop-mid"><strong>Jogos — Zcode</strong></div>
+  <a class="zback" href="/">← Home</a>
+</header>
+<main class="zmain">
+  <div class="zhero">
+    <h1>Jogos</h1>
+    <p>100 aplicativos · escolha o seu</p>
+    <input class="zinput" id="busca" placeholder="Buscar neste catálogo…" autocomplete="off">
+  </div>
+  <div class="lgrid" id="grid">
+<a class="c" href="jogopaises(01)/zcode.html"><b class="fd">Bandeiras do Mundo</b><span>Adivinhe o país pela bandeira.</span></a>
+<a class="c" href="rodafortuna(02)/zcode.html"><b class="fd">Roleta da Fortuna</b><span>Gire a roleta e acerte as perguntas.</span></a>
+<a class="c" href="minicraft(03)/zcode.html"><b class="fd">TRcraft</b><span>Mundo voxel infinito para explorar e construir.</span></a>
+<a class="c" href="estilhacos(04)/zcode.html"><b class="fd">Hunterz</b><span>A caçada na floresta: desvie e sobreviva.</span></a>
+<a class="c" href="mortalkombat(05)/zcode.html"><b class="fd">MK: Ultimate Arena</b><span>Jogo de luta com golpes especiais.</span></a>
+<a class="c" href="fujaesferas(06)/zcode.html"><b class="fd">Fuja das Esferas</b><span>Corra e fuja das esferas que te perseguem.</span></a>
+<a class="c" href="ifoodrunner(07)/zcode.html"><b class="fd">IFood Rider</b><span>Corrida infinita entregando sem capotar.</span></a>
+<a class="c" href="snake-neon/index.html"><b class="fd">Snake Neon</b><span>O clássico da cobrinha em neon. Coma e cresça!</span></a>
+<a class="c" href="snake-retro/index.html"><b class="fd">Snake Retrô</b><span>Cobrinha verde estilo arcade dos anos 80.</span></a>
+<a class="c" href="snake-rosa/index.html"><b class="fd">Snake Rosa</b><span>A cobrinha rosa. Mesmas regras, outro charme.</span></a>
+<a class="c" href="snake-violeta/index.html"><b class="fd">Snake Violeta</b><span>Cobrinha violeta para quem gosta de roxo.</span></a>
+<a class="c" href="snake-amarelo/index.html"><b class="fd">Snake Amarelo</b><span>Cobrinha amarela bem visível no escuro.</span></a>
+<a class="c" href="snake-ciano/index.html"><b class="fd">Snake Ciano</b><span>Cobrinha ciana, rápida e fria.</span></a>
+<a class="c" href="turbo-snake/index.html"><b class="fd">Turbo Snake</b><span>Snake duas vezes mais rápido. Só para corajosos.</span></a>
+<a class="c" href="snake-sem-muro/index.html"><b class="fd">Snake Sem Muro</b><span>Atravesse as bordas do tabuleiro e saia do outro lado.</span></a>
+<a class="c" href="2048-classico/index.html"><b class="fd">2048 Clássico</b><span>Junte os blocos e chegue à tile 2048.</span></a>
+<a class="c" href="1024-compacto/index.html"><b class="fd">1024 Compacto</b><span>Mesma mecânica, meta mais curta: chegue a 1024.</span></a>
+<a class="c" href="512-mini/index.html"><b class="fd">512 Mini</b><span>Grade 3×3 e meta de 512. Aperte o raciocínio.</span></a>
+<a class="c" href="2048-xl/index.html"><b class="fd">2048 XL</b><span>Grade 5×5 com muito mais espaço para manobrar.</span></a>
+<a class="c" href="4096-extremo/index.html"><b class="fd">4096 Extremo</b><span>Para quem não se contenta com 2048.</span></a>
+<a class="c" href="8192-lendario/index.html"><b class="fd">8192 Lendário</b><span>O desafio lendário: alcance a tile 8192.</span></a>
+<a class="c" href="memoria-frutas/index.html"><b class="fd">Memória: Frutas</b><span>Encontre os pares de frutas no menor número de jogadas.</span></a>
+<a class="c" href="memoria-animais/index.html"><b class="fd">Memória: Animais</b><span>Encontre os pares de animais no menor número de jogadas.</span></a>
+<a class="c" href="memoria-esportes/index.html"><b class="fd">Memória: Esportes</b><span>Encontre os pares de esportes no menor número de jogadas.</span></a>
+<a class="c" href="memoria-espaco/index.html"><b class="fd">Memória: Espaço</b><span>Encontre os pares de espaço no menor número de jogadas.</span></a>
+<a class="c" href="memoria-comida/index.html"><b class="fd">Memória: Comida</b><span>Encontre os pares de comida no menor número de jogadas.</span></a>
+<a class="c" href="memoria-natureza/index.html"><b class="fd">Memória: Natureza</b><span>Encontre os pares de natureza no menor número de jogadas.</span></a>
+<a class="c" href="memoria-objetos/index.html"><b class="fd">Memória: Objetos</b><span>Encontre os pares de objetos no menor número de jogadas.</span></a>
+<a class="c" href="memoria-coracoes/index.html"><b class="fd">Memória: Corações</b><span>Encontre os pares de corações no menor número de jogadas.</span></a>
+<a class="c" href="memoria-musica/index.html"><b class="fd">Memória: Música</b><span>Encontre os pares de música no menor número de jogadas.</span></a>
+<a class="c" href="memoria-clima/index.html"><b class="fd">Memória: Clima</b><span>Encontre os pares de clima no menor número de jogadas.</span></a>
+<a class="c" href="memoria-festas/index.html"><b class="fd">Memória: Festas</b><span>Encontre os pares de festas no menor número de jogadas.</span></a>
+<a class="c" href="memoria-carros/index.html"><b class="fd">Memória: Carros</b><span>Encontre os pares de carros no menor número de jogadas.</span></a>
+<a class="c" href="velha-vs-cpu/index.html"><b class="fd">Velha vs CPU</b><span>Jogo da velha contra o computador.</span></a>
+<a class="c" href="velha-a-dois/index.html"><b class="fd">Velha a Dois</b><span>Jogo da velha para dois jogadores no mesmo aparelho.</span></a>
+<a class="c" href="campo-minado-facil/index.html"><b class="fd">Campo Minado: Fácil</b><span>Tabuleiro 8×8 com 8 minas.</span></a>
+<a class="c" href="campo-minado-classico/index.html"><b class="fd">Campo Minado: Clássico</b><span>O clássico 9×9 com 10 minas.</span></a>
+<a class="c" href="campo-minado-medio/index.html"><b class="fd">Campo Minado: Médio</b><span>12×12 com 20 minas. Cuidado!</span></a>
+<a class="c" href="campo-minado-dificil/index.html"><b class="fd">Campo Minado: Difícil</b><span>14×14 com 30 minas. Só experts.</span></a>
+<a class="c" href="campo-minado-expert/index.html"><b class="fd">Campo Minado: Expert</b><span>16×16 com 40 minas. Boa sorte.</span></a>
+<a class="c" href="pong-neon/index.html"><b class="fd">Pong Neon</b><span>Pong em neon contra a CPU.</span></a>
+<a class="c" href="pong-classico/index.html"><b class="fd">Pong Clássico</b><span>Pong estilo original, sem neons.</span></a>
+<a class="c" href="simon-diz/index.html"><b class="fd">Simon Diz</b><span>Repita a sequência de luzes e sons.</span></a>
+<a class="c" href="simon-turbo/index.html"><b class="fd">Simon Turbo</b><span>Simon com sequências mais rápidas.</span></a>
+<a class="c" href="reflexos-tempo/index.html"><b class="fd">Reflexos: Tempo</b><span>Clique quando aparecer o verde o mais rápido possível.</span></a>
+<a class="c" href="reflexos-turbo/index.html"><b class="fd">Reflexos: Turbo</b><span>Versão turbo: o verde aparece mais rápido e imprevisível.</span></a>
+<a class="c" href="reflexos-pare-no-meio/index.html"><b class="fd">Reflexos: Pare no Meio</b><span>Mova o cursor e pare o mais perto possível do centro.</span></a>
+<a class="c" href="reflexos-cores/index.html"><b class="fd">Reflexos: Cores</b><span>Memorize a cor e clique no nome dela em 30 segundos.</span></a>
+<a class="c" href="caca-frutas/index.html"><b class="fd">Caça-Frutas</b><span>Pegue os itens que caem antes que saiam da tela. 30 segundos.</span></a>
+<a class="c" href="caca-doce/index.html"><b class="fd">Caça-Doce</b><span>Pegue os itens que caem antes que saiam da tela. 30 segundos.</span></a>
+<a class="c" href="caca-ferramentas/index.html"><b class="fd">Caça-Ferramentas</b><span>Pegue os itens que caem antes que saiam da tela. 30 segundos.</span></a>
+<a class="c" href="caca-simbolos/index.html"><b class="fd">Caça-Símbolos</b><span>Pegue os itens que caem antes que saiam da tela. 30 segundos.</span></a>
+<a class="c" href="caca-moedas/index.html"><b class="fd">Caça-Moedas</b><span>Pegue os itens que caem antes que saiam da tela. 30 segundos.</span></a>
+<a class="c" href="forca-animais/index.html"><b class="fd">Forca: Animais</b><span>Palavras paraenses… digo, de bichos!</span></a>
+<a class="c" href="forca-frutas/index.html"><b class="fd">Forca: Frutas</b><span>Adivinhe a fruta antes de completar o boneco.</span></a>
+<a class="c" href="forca-profissoes/index.html"><b class="fd">Forca: Profissões</b><span>Palavras de quem trabalha para você passar.</span></a>
+<a class="c" href="forca-lugares/index.html"><b class="fd">Forca: Lugares</b><span>Cidades, países e lugares do Brasil e do mundo.</span></a>
+<a class="c" href="forca-palavras-longas/index.html"><b class="fd">Forca: Palavras Longas</b><span>Para quem já domina a forca: só palavras longas.</span></a>
+<a class="c" href="adivinhe-o-numero-100/index.html"><b class="fd">Adivinhe o Número (100)</b><span>O número está entre 1 e 100. Acerte em poucas tentativas.</span></a>
+<a class="c" href="adivinhe-o-numero-500/index.html"><b class="fd">Adivinhe o Número (500)</b><span>Entre 1 e 500: pense em busca binária!</span></a>
+<a class="c" href="adivinhe-o-numero-1000/index.html"><b class="fd">Adivinhe o Número (1000)</b><span>Entre 1 e 1000. O logaritmo é seu amigo.</span></a>
+<a class="c" href="sudoku-4-4/index.html"><b class="fd">Sudoku 4×4</b><span>Sudoku de entrada: grade 4×4.</span></a>
+<a class="c" href="sudoku-6-6/index.html"><b class="fd">Sudoku 6×6</b><span>Sudoku intermediário: grade 6×6.</span></a>
+<a class="c" href="sudoku-9-9/index.html"><b class="fd">Sudoku 9×9</b><span>O clássico: grade 9×9.</span></a>
+<a class="c" href="sudoku-9-9-dificil/index.html"><b class="fd">Sudoku 9×9: Difícil</b><span>Grade 9×9 com poucos números iniciais.</span></a>
+<a class="c" href="quebra-cabeca-8/index.html"><b class="fd">Quebra-Cabeça 8</b><span>Ordene as peças 1 a 8 (grade 3×3).</span></a>
+<a class="c" href="quebra-cabeca-15/index.html"><b class="fd">Quebra-Cabeça 15</b><span>Ordene as peças 1 a 15 (grade 4×4).</span></a>
+<a class="c" href="asteroides-neon/index.html"><b class="fd">Asteroides Neon</b><span>Destroie asteroides em estilo neon.</span></a>
+<a class="c" href="asteroides-classico/index.html"><b class="fd">Asteroides Clássico</b><span>Astrominado estilo arcade original.</span></a>
+<a class="c" href="invasores-espaciais/index.html"><b class="fd">Invasores Espaciais</b><span>Defenda a Terra das fileiras de invasores.</span></a>
+<a class="c" href="invasores-turbo/index.html"><b class="fd">Invasores Turbo</b><span>Invasores mais rápidos e sem piedade.</span></a>
+<a class="c" href="flappy-pipa/index.html"><b class="fd">Flappy Pipa</b><span>Toque para voar. A pipa verde não para.</span></a>
+<a class="c" href="flappy-lua/index.html"><b class="fd">Flappy Lua</b><span>A pipa atravessa a noite lunar.</span></a>
+<a class="c" href="runner-neon/index.html"><b class="fd">Runner Neon</b><span>Corra e pule obstáculos em cenário neon.</span></a>
+<a class="c" href="runner-dino/index.html"><b class="fd">Runner Dino</b><span>O clássico dinossauro em versão Zcode.</span></a>
+<a class="c" href="runner-lua/index.html"><b class="fd">Runner Lua</b><span>Corrida noturna em ritmo de sátiro… de lua.</span></a>
+<a class="c" href="runner-neo/index.html"><b class="fd">Runner Neo</b><span>Corrida em roxo cyberpunk.</span></a>
+<a class="c" href="alvo-movel/index.html"><b class="fd">Alvo Móvel</b><span>Acerte o alvo antes que ele mude de lugar.</span></a>
+<a class="c" href="alvo-turbo/index.html"><b class="fd">Alvo Turbo</b><span>O alvo não fica parado: versão turbo.</span></a>
+<a class="c" href="pilha-de-blocos/index.html"><b class="fd">Pilha de Blocos</b><span>Empilhe blocos sem deixar cair. Quanto mais alto, melhor.</span></a>
+<a class="c" href="pilha-neon/index.html"><b class="fd">Pilha Neon</b><span>O empilhador em estilo neon.</span></a>
+<a class="c" href="jogo-stroop/index.html"><b class="fd">Jogo Stroop</b><span>Diga a COR da tinta, não a palavra.</span></a>
+<a class="c" href="stroop-turbo/index.html"><b class="fd">Stroop Turbo</b><span>Stroop com tempo encurtado.</span></a>
+<a class="c" href="boliche/index.html"><b class="fd">Boliche</b><span>Arraste a bola e derrube as 10 pinos.</span></a>
+<a class="c" href="duelo-do-7/index.html"><b class="fd">Duelo do 7</b><span>Vence quem chegar primeiro a somar 7 com dois dados.</span></a>
+<a class="c" href="duelo-do-12/index.html"><b class="fd">Duelo do 12</b><span>A soma máxima: chegue a 12 primeiro.</span></a>
+<a class="c" href="blackjack-21/index.html"><b class="fd">Blackjack 21</b><span>Pegue até 21 sem estourar. Contra o dealer.</span></a>
+<a class="c" href="labirinto-9/index.html"><b class="fd">Labirinto 9</b><span>Encontre a saída no labirinto 9×9.</span></a>
+<a class="c" href="labirinto-13/index.html"><b class="fd">Labirinto 13</b><span>Labirinto 13×13, sem pressa — mas com paredes.</span></a>
+<a class="c" href="labirinto-11-com-fantasma/index.html"><b class="fd">Labirinto 11 com Fantasma</b><span>Saia do labirinto antes que o fantasma te pegue.</span></a>
+<a class="c" href="labirinto-17-com-fantasma/index.html"><b class="fd">Labirinto 17 com Fantasma</b><span>Labirinto grande, fantasma ágil. Sorte!</span></a>
+<a class="c" href="bolhas/index.html"><b class="fd">Bolhas</b><span>Estoure todas as bolhas antes do tempo acabar.</span></a>
+<a class="c" href="bolhas-turbo/index.html"><b class="fd">Bolhas Turbo</b><span>Bolhas mais rápidas: reflexo afiado.</span></a>
+<a class="c" href="esquiva/index.html"><b class="fd">Esquiva</b><span>Desvie dos blocos que caem do topo.</span></a>
+<a class="c" href="esquiva-neon/index.html"><b class="fd">Esquiva Neon</b><span>A esquiva em neons psicodélicos.</span></a>
+<a class="c" href="pintor-6-6/index.html"><b class="fd">Pintor 6×6</b><span>Repita o padrão de cores célula por célula.</span></a>
+<a class="c" href="pintor-8-8/index.html"><b class="fd">Pintor 8×8</b><span>Padrão 8×8: memória de cores em grau avançado.</span></a>
+<a class="c" href="tap-tempo/index.html"><b class="fd">Tap Tempo</b><span>Toque no ritmo exato do metrônomo. Precisão!</span></a>
+<a class="c" href="pega-frutas/index.html"><b class="fd">Pega Frutas</b><span>Gire a cesta e pegue as frutas que caem.</span></a>
+<a class="c" href="pega-frutas-noite/index.html"><b class="fd">Pega Frutas: Noite</b><span>O mesmo jogo, agora no escuro. Cuidado com as bombas.</span></a>
+  </div>
+</main>
+<footer class="zfoot"><b>Zcode</b> · 300 aplicativos em 3 categorias</footer>
+<script>
+
+if (typeof CanvasRenderingContext2D !== "undefined" && CanvasRenderingContext2D.prototype && !CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+    if (typeof r === "number") r = [r, r, r, r];
+    if (!r) r = [0, 0, 0, 0];
+    this.beginPath();
+    this.moveTo(x + r[0], y);
+    this.arcTo(x + w, y, x + w, y + h, r[1]);
+    this.arcTo(x + w, y + h, x, y + h, r[2]);
+    this.arcTo(x, y + h, x, y, r[3]);
+    this.arcTo(x, y, x + w, y, r[0]);
+    this.closePath();
+    return this;
+  };
+}
+window.Z=(function(){
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var toastTimer=null;
+  function toast(msg,ms){
+    var t=$("#ztoast");
+    if(!t){t=document.createElement("div");t.id="ztoast";t.className="ztoast";document.body.appendChild(t)}
+    t.textContent=msg;t.classList.add("on");
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(function(){t.classList.remove("on")},ms||2200);
+  }
+  var store={
+    get:function(k,d){try{var v=localStorage.getItem("zcode:"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
+    set:function(k,v){try{localStorage.setItem("zcode:"+k,JSON.stringify(v))}catch(e){}},
+    best:function(k){return store.get("best:"+k,0)},
+    setBest:function(k,v){if(v>store.best(k))store.set("best:"+k,v)}
+  };
+  var actx=null,muted=false;
+  function ensureCtx(){
+    try{
+      var AC=window.AudioContext||window.webkitAudioContext;
+      if(!AC)return null;
+      if(!actx)actx=new AC();
+      if(actx.state==="suspended")actx.resume();
+      return actx;
+    }catch(e){return null}
+  }
+  function snd(freq,dur,type,vol){
+    if(muted)return;
+    var c=ensureCtx();if(!c)return;
+    try{
+      var o=c.createOscillator(),g=c.createGain();
+      o.type=type||"sine";o.frequency.value=freq||520;
+      g.gain.value=vol||0.05;
+      g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+(dur||0.09));
+      o.connect(g);g.connect(c.destination);
+      o.start();o.stop(c.currentTime+(dur||0.09));
+    }catch(e){}
+  }
+  function onKey(map){
+    document.addEventListener("keydown",function(e){
+      var k=e.key,low=k.length===1?k.toLowerCase():k;
+      if(map[k]||map[low]){e.preventDefault();(map[k]||map[low])()}
+    });
+  }
+  function rnd(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+  function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
+  function shuffle(arr){
+    var a=arr.slice(),i,j,t;
+    for(i=a.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=a[i];a[i]=a[j];a[j]=t}
+    return a;
+  }
+  function copy(t){
+    toast("Copiado!");
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).catch(function(){fallback()});
+    }else fallback();
+    function fallback(){
+      var ta=document.createElement("textarea");ta.value=t;
+      document.body.appendChild(ta);ta.select();
+      try{document.execCommand("copy")}catch(e){}
+      ta.remove();
+    }
+  }
+  function fmt(n,d){
+    try{return Number(n).toLocaleString("pt-BR",{minimumFractionDigits:d||0,maximumFractionDigits:d==null?3:(d||0)})}
+    catch(e){return String(n)}
+  }
+  function el(tag,cls,html){
+    var e=document.createElement(tag);
+    if(cls)e.className=cls;
+    if(html!=null)e.innerHTML=html;
+    return e;
+  }
+  return {$:$,$$:$$,toast:toast,store:store,snd:snd,onKey:onKey,rnd:rnd,pick:pick,shuffle:shuffle,copy:copy,fmt:fmt,el:el,
+    mute:function(){muted=!muted;return muted}};
+})();
+
+var D = [{"n":"Bandeiras do Mundo","d":"Adivinhe o país pela bandeira.","h":"jogopaises(01)/zcode.html"},{"n":"Roleta da Fortuna","d":"Gire a roleta e acerte as perguntas.","h":"rodafortuna(02)/zcode.html"},{"n":"TRcraft","d":"Mundo voxel infinito para explorar e construir.","h":"minicraft(03)/zcode.html"},{"n":"Hunterz","d":"A caçada na floresta: desvie e sobreviva.","h":"estilhacos(04)/zcode.html"},{"n":"MK: Ultimate Arena","d":"Jogo de luta com golpes especiais.","h":"mortalkombat(05)/zcode.html"},{"n":"Fuja das Esferas","d":"Corra e fuja das esferas que te perseguem.","h":"fujaesferas(06)/zcode.html"},{"n":"IFood Rider","d":"Corrida infinita entregando sem capotar.","h":"ifoodrunner(07)/zcode.html"},{"n":"Snake Neon","d":"O clássico da cobrinha em neon. Coma e cresça!","h":"snake-neon/index.html"},{"n":"Snake Retrô","d":"Cobrinha verde estilo arcade dos anos 80.","h":"snake-retro/index.html"},{"n":"Snake Rosa","d":"A cobrinha rosa. Mesmas regras, outro charme.","h":"snake-rosa/index.html"},{"n":"Snake Violeta","d":"Cobrinha violeta para quem gosta de roxo.","h":"snake-violeta/index.html"},{"n":"Snake Amarelo","d":"Cobrinha amarela bem visível no escuro.","h":"snake-amarelo/index.html"},{"n":"Snake Ciano","d":"Cobrinha ciana, rápida e fria.","h":"snake-ciano/index.html"},{"n":"Turbo Snake","d":"Snake duas vezes mais rápido. Só para corajosos.","h":"turbo-snake/index.html"},{"n":"Snake Sem Muro","d":"Atravesse as bordas do tabuleiro e saia do outro lado.","h":"snake-sem-muro/index.html"},{"n":"2048 Clássico","d":"Junte os blocos e chegue à tile 2048.","h":"2048-classico/index.html"},{"n":"1024 Compacto","d":"Mesma mecânica, meta mais curta: chegue a 1024.","h":"1024-compacto/index.html"},{"n":"512 Mini","d":"Grade 3×3 e meta de 512. Aperte o raciocínio.","h":"512-mini/index.html"},{"n":"2048 XL","d":"Grade 5×5 com muito mais espaço para manobrar.","h":"2048-xl/index.html"},{"n":"4096 Extremo","d":"Para quem não se contenta com 2048.","h":"4096-extremo/index.html"},{"n":"8192 Lendário","d":"O desafio lendário: alcance a tile 8192.","h":"8192-lendario/index.html"},{"n":"Memória: Frutas","d":"Encontre os pares de frutas no menor número de jogadas.","h":"memoria-frutas/index.html"},{"n":"Memória: Animais","d":"Encontre os pares de animais no menor número de jogadas.","h":"memoria-animais/index.html"},{"n":"Memória: Esportes","d":"Encontre os pares de esportes no menor número de jogadas.","h":"memoria-esportes/index.html"},{"n":"Memória: Espaço","d":"Encontre os pares de espaço no menor número de jogadas.","h":"memoria-espaco/index.html"},{"n":"Memória: Comida","d":"Encontre os pares de comida no menor número de jogadas.","h":"memoria-comida/index.html"},{"n":"Memória: Natureza","d":"Encontre os pares de natureza no menor número de jogadas.","h":"memoria-natureza/index.html"},{"n":"Memória: Objetos","d":"Encontre os pares de objetos no menor número de jogadas.","h":"memoria-objetos/index.html"},{"n":"Memória: Corações","d":"Encontre os pares de corações no menor número de jogadas.","h":"memoria-coracoes/index.html"},{"n":"Memória: Música","d":"Encontre os pares de música no menor número de jogadas.","h":"memoria-musica/index.html"},{"n":"Memória: Clima","d":"Encontre os pares de clima no menor número de jogadas.","h":"memoria-clima/index.html"},{"n":"Memória: Festas","d":"Encontre os pares de festas no menor número de jogadas.","h":"memoria-festas/index.html"},{"n":"Memória: Carros","d":"Encontre os pares de carros no menor número de jogadas.","h":"memoria-carros/index.html"},{"n":"Velha vs CPU","d":"Jogo da velha contra o computador.","h":"velha-vs-cpu/index.html"},{"n":"Velha a Dois","d":"Jogo da velha para dois jogadores no mesmo aparelho.","h":"velha-a-dois/index.html"},{"n":"Campo Minado: Fácil","d":"Tabuleiro 8×8 com 8 minas.","h":"campo-minado-facil/index.html"},{"n":"Campo Minado: Clássico","d":"O clássico 9×9 com 10 minas.","h":"campo-minado-classico/index.html"},{"n":"Campo Minado: Médio","d":"12×12 com 20 minas. Cuidado!","h":"campo-minado-medio/index.html"},{"n":"Campo Minado: Difícil","d":"14×14 com 30 minas. Só experts.","h":"campo-minado-dificil/index.html"},{"n":"Campo Minado: Expert","d":"16×16 com 40 minas. Boa sorte.","h":"campo-minado-expert/index.html"},{"n":"Pong Neon","d":"Pong em neon contra a CPU.","h":"pong-neon/index.html"},{"n":"Pong Clássico","d":"Pong estilo original, sem neons.","h":"pong-classico/index.html"},{"n":"Simon Diz","d":"Repita a sequência de luzes e sons.","h":"simon-diz/index.html"},{"n":"Simon Turbo","d":"Simon com sequências mais rápidas.","h":"simon-turbo/index.html"},{"n":"Reflexos: Tempo","d":"Clique quando aparecer o verde o mais rápido possível.","h":"reflexos-tempo/index.html"},{"n":"Reflexos: Turbo","d":"Versão turbo: o verde aparece mais rápido e imprevisível.","h":"reflexos-turbo/index.html"},{"n":"Reflexos: Pare no Meio","d":"Mova o cursor e pare o mais perto possível do centro.","h":"reflexos-pare-no-meio/index.html"},{"n":"Reflexos: Cores","d":"Memorize a cor e clique no nome dela em 30 segundos.","h":"reflexos-cores/index.html"},{"n":"Caça-Frutas","d":"Pegue os itens que caem antes que saiam da tela. 30 segundos.","h":"caca-frutas/index.html"},{"n":"Caça-Doce","d":"Pegue os itens que caem antes que saiam da tela. 30 segundos.","h":"caca-doce/index.html"},{"n":"Caça-Ferramentas","d":"Pegue os itens que caem antes que saiam da tela. 30 segundos.","h":"caca-ferramentas/index.html"},{"n":"Caça-Símbolos","d":"Pegue os itens que caem antes que saiam da tela. 30 segundos.","h":"caca-simbolos/index.html"},{"n":"Caça-Moedas","d":"Pegue os itens que caem antes que saiam da tela. 30 segundos.","h":"caca-moedas/index.html"},{"n":"Forca: Animais","d":"Palavras paraenses… digo, de bichos!","h":"forca-animais/index.html"},{"n":"Forca: Frutas","d":"Adivinhe a fruta antes de completar o boneco.","h":"forca-frutas/index.html"},{"n":"Forca: Profissões","d":"Palavras de quem trabalha para você passar.","h":"forca-profissoes/index.html"},{"n":"Forca: Lugares","d":"Cidades, países e lugares do Brasil e do mundo.","h":"forca-lugares/index.html"},{"n":"Forca: Palavras Longas","d":"Para quem já domina a forca: só palavras longas.","h":"forca-palavras-longas/index.html"},{"n":"Adivinhe o Número (100)","d":"O número está entre 1 e 100. Acerte em poucas tentativas.","h":"adivinhe-o-numero-100/index.html"},{"n":"Adivinhe o Número (500)","d":"Entre 1 e 500: pense em busca binária!","h":"adivinhe-o-numero-500/index.html"},{"n":"Adivinhe o Número (1000)","d":"Entre 1 e 1000. O logaritmo é seu amigo.","h":"adivinhe-o-numero-1000/index.html"},{"n":"Sudoku 4×4","d":"Sudoku de entrada: grade 4×4.","h":"sudoku-4-4/index.html"},{"n":"Sudoku 6×6","d":"Sudoku intermediário: grade 6×6.","h":"sudoku-6-6/index.html"},{"n":"Sudoku 9×9","d":"O clássico: grade 9×9.","h":"sudoku-9-9/index.html"},{"n":"Sudoku 9×9: Difícil","d":"Grade 9×9 com poucos números iniciais.","h":"sudoku-9-9-dificil/index.html"},{"n":"Quebra-Cabeça 8","d":"Ordene as peças 1 a 8 (grade 3×3).","h":"quebra-cabeca-8/index.html"},{"n":"Quebra-Cabeça 15","d":"Ordene as peças 1 a 15 (grade 4×4).","h":"quebra-cabeca-15/index.html"},{"n":"Asteroides Neon","d":"Destroie asteroides em estilo neon.","h":"asteroides-neon/index.html"},{"n":"Asteroides Clássico","d":"Astrominado estilo arcade original.","h":"asteroides-classico/index.html"},{"n":"Invasores Espaciais","d":"Defenda a Terra das fileiras de invasores.","h":"invasores-espaciais/index.html"},{"n":"Invasores Turbo","d":"Invasores mais rápidos e sem piedade.","h":"invasores-turbo/index.html"},{"n":"Flappy Pipa","d":"Toque para voar. A pipa verde não para.","h":"flappy-pipa/index.html"},{"n":"Flappy Lua","d":"A pipa atravessa a noite lunar.","h":"flappy-lua/index.html"},{"n":"Runner Neon","d":"Corra e pule obstáculos em cenário neon.","h":"runner-neon/index.html"},{"n":"Runner Dino","d":"O clássico dinossauro em versão Zcode.","h":"runner-dino/index.html"},{"n":"Runner Lua","d":"Corrida noturna em ritmo de sátiro… de lua.","h":"runner-lua/index.html"},{"n":"Runner Neo","d":"Corrida em roxo cyberpunk.","h":"runner-neo/index.html"},{"n":"Alvo Móvel","d":"Acerte o alvo antes que ele mude de lugar.","h":"alvo-movel/index.html"},{"n":"Alvo Turbo","d":"O alvo não fica parado: versão turbo.","h":"alvo-turbo/index.html"},{"n":"Pilha de Blocos","d":"Empilhe blocos sem deixar cair. Quanto mais alto, melhor.","h":"pilha-de-blocos/index.html"},{"n":"Pilha Neon","d":"O empilhador em estilo neon.","h":"pilha-neon/index.html"},{"n":"Jogo Stroop","d":"Diga a COR da tinta, não a palavra.","h":"jogo-stroop/index.html"},{"n":"Stroop Turbo","d":"Stroop com tempo encurtado.","h":"stroop-turbo/index.html"},{"n":"Boliche","d":"Arraste a bola e derrube as 10 pinos.","h":"boliche/index.html"},{"n":"Duelo do 7","d":"Vence quem chegar primeiro a somar 7 com dois dados.","h":"duelo-do-7/index.html"},{"n":"Duelo do 12","d":"A soma máxima: chegue a 12 primeiro.","h":"duelo-do-12/index.html"},{"n":"Blackjack 21","d":"Pegue até 21 sem estourar. Contra o dealer.","h":"blackjack-21/index.html"},{"n":"Labirinto 9","d":"Encontre a saída no labirinto 9×9.","h":"labirinto-9/index.html"},{"n":"Labirinto 13","d":"Labirinto 13×13, sem pressa — mas com paredes.","h":"labirinto-13/index.html"},{"n":"Labirinto 11 com Fantasma","d":"Saia do labirinto antes que o fantasma te pegue.","h":"labirinto-11-com-fantasma/index.html"},{"n":"Labirinto 17 com Fantasma","d":"Labirinto grande, fantasma ágil. Sorte!","h":"labirinto-17-com-fantasma/index.html"},{"n":"Bolhas","d":"Estoure todas as bolhas antes do tempo acabar.","h":"bolhas/index.html"},{"n":"Bolhas Turbo","d":"Bolhas mais rápidas: reflexo afiado.","h":"bolhas-turbo/index.html"},{"n":"Esquiva","d":"Desvie dos blocos que caem do topo.","h":"esquiva/index.html"},{"n":"Esquiva Neon","d":"A esquiva em neons psicodélicos.","h":"esquiva-neon/index.html"},{"n":"Pintor 6×6","d":"Repita o padrão de cores célula por célula.","h":"pintor-6-6/index.html"},{"n":"Pintor 8×8","d":"Padrão 8×8: memória de cores em grau avançado.","h":"pintor-8-8/index.html"},{"n":"Tap Tempo","d":"Toque no ritmo exato do metrônomo. Precisão!","h":"tap-tempo/index.html"},{"n":"Pega Frutas","d":"Gire a cesta e pegue as frutas que caem.","h":"pega-frutas/index.html"},{"n":"Pega Frutas: Noite","d":"O mesmo jogo, agora no escuro. Cuidado com as bombas.","h":"pega-frutas-noite/index.html"}];
+var g = document.getElementById("grid");
+document.getElementById("busca").addEventListener("input", function(){
+  var t = this.value.trim().toLowerCase();
+  var cs = g.children;
+  for(var i = 0; i < cs.length; i++){
+    var d = D[i];
+    cs[i].style.display = (!t || (d.n + " " + d.d).toLowerCase().indexOf(t) >= 0) ? "" : "none";
+  }
+});
+</script>
+</body>
+</html>

@@ -42,7 +42,7 @@ export default function CategorySection({ categoria, indice }: Props) {
           className="mb-12 flex flex-col gap-7 md:mb-16"
         >
           <div className="flex items-center gap-4">
-            <span className="grid size-12 place-items-center rounded-2xl bg-brand-600 text-white shadow-[0_16px_36px_-12px_rgba(10,61,255,0.55)]">
+            <span className="grid size-12 place-items-center rounded-2xl bg-brand-600 text-white shadow-[0_16px_36px_-12px_rgba(124,92,255,0.55)]">
               <Icone className="size-6" strokeWidth={1.8} />
             </span>
             <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-ink/50">
@@ -54,7 +54,7 @@ export default function CategorySection({ categoria, indice }: Props) {
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <h2 className="font-display text-5xl font-bold uppercase leading-[0.92] tracking-[-0.03em] md:text-7xl">
               {categoria.titulo}
-              <span className="text-brand-600">.</span>
+              <span className="text-brand-400">.</span>
             </h2>
             <p className="max-w-sm text-sm leading-relaxed text-ink/55 md:text-right md:text-base">
               {categoria.descricao}

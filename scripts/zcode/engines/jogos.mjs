@@ -196,7 +196,7 @@ export function jogo2048({ nome, sub, n, alvo }) {
   function checar(){
     var ganhou = grid.some(function(v){ return v >= ALVO });
     if(ganhou || !pode()){
-      var msg = ganhou ? "🏆 Você chegou a " + ALVO + "!" : "Sem mais jogadas!";
+      var msg = ganhou ? "Vitória Você chegou a " + ALVO + "!" : "Sem mais jogadas!";
       Z.toast(msg, 3000);
     }
   }
@@ -234,12 +234,12 @@ export function memoria({ nome, sub, emoji, cols }) {
   const body = `
 <div class="row mb" style="justify-content:center;gap:8px;flex-wrap:wrap">
   <span class="zchip" id="moves">Jogadas: 0</span>
-  <span class="zchip" id="tempo">⏱ 0s</span>
+  <span class="zchip" id="tempo">Tempo 0s</span>
   <span class="zchip" id="best">Recorde: ${n * 2} jogadas</span>
 </div>
 <div class="zgrid" id="tabuleiro" style="grid-template-columns:repeat(${cols},1fr);max-width:480px;margin:0 auto;gap:9px"></div>
 <div class="zcard pad center hidden" id="fim">
-  <div class="zbig acc">🏆</div>
+  <div class="zbig acc">Vitória</div>
   <h3>Completou em <span class="acc" id="fimMoves">0</span> jogadas</h3>
   <p class="dim" id="fimTempo"></p>
   <button class="zbtn" id="reinicia" type="button">Jogar de novo</button>
@@ -254,7 +254,7 @@ export function memoria({ nome, sub, emoji, cols }) {
   function novo(){
     moves = 0; achados = 0; seg = 0; first = null; travado = false;
     clearInterval(tick);
-    tick = setInterval(function(){ seg++; $id("tempo").textContent = "⏱ " + seg + "s" }, 1000);
+    tick = setInterval(function(){ seg++; $id("tempo").textContent = "Tempo " + seg + "s" }, 1000);
     $id("fim").classList.add("hidden");
     var cards = Z.shuffle(EMO.concat(EMO));
     var box = $id("tabuleiro"); box.innerHTML = "";
@@ -262,7 +262,7 @@ export function memoria({ nome, sub, emoji, cols }) {
       var b = document.createElement("button");
       b.className = "zopty";
       b.style.cssText = "min-height:78px;justify-content:center;font-size:34px;padding:8px";
-      b.textContent = "✦";
+      b.textContent = "";
       b.dataset.e = e;
       b.addEventListener("click", function(){ virar(b) });
       box.appendChild(b);
@@ -284,7 +284,7 @@ export function memoria({ nome, sub, emoji, cols }) {
         Z.snd(880, 0.07, "sine");
       } else {
         a.classList.remove("ok"); b.classList.remove("ok");
-        a.textContent = "✦"; b.textContent = "✦";
+        a.textContent = ""; b.textContent = "";
         Z.snd(180, 0.1, "sawtooth", 0.03);
       }
       travado = false;
@@ -313,7 +313,7 @@ export function memoria({ nome, sub, emoji, cols }) {
 export function velha({ nome, sub, cpu }) {
   const body = `
 <div class="zcard pad" style="max-width:380px;margin:0 auto">
-  <p class="zchip center mb" style="display:block;margin-left:auto;margin-right:auto" id="turno">Vez de: ✕</p>
+  <p class="zchip center mb" style="display:block;margin-left:auto;margin-right:auto" id="turno">Vez de: Fechar</p>
   <div class="zgrid" id="tabuleiro" style="grid-template-columns:repeat(3,1fr);gap:8px"></div>
   <div class="row mt" style="justify-content:center">
     <button class="zbtn ghost sm" id="reinicia" type="button">Reiniciar</button>
@@ -322,13 +322,13 @@ export function velha({ nome, sub, cpu }) {
   const js = `
 (function(){
   var CPU = ${cpu ? "true" : "false"};
-  var t = [], jogador = "✕", travado = false;
+  var t = [], jogador = "Fechar", travado = false;
   function $id(x){return document.getElementById(x)}
   var L = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
   function novo(){
     t = [null,null,null,null,null,null,null,null,null];
-    jogador = "✕"; travado = false;
-    $id("turno").textContent = "Vez de: ✕";
+    jogador = "Fechar"; travado = false;
+    $id("turno").textContent = "Vez de: Fechar";
     var box = $id("tabuleiro"); box.innerHTML = "";
     for(var i = 0; i < 9; i++){
       var b = document.createElement("button");
@@ -355,13 +355,13 @@ export function velha({ nome, sub, cpu }) {
     Z.snd(600, 0.05, "sine");
     var w = vencedor();
     if(w) return fim(w);
-    jogador = jogador === "✕" ? "○" : "✕";
+    jogador = jogador === "Fechar" ? "○" : "Fechar";
     $id("turno").textContent = "Vez de: " + jogador;
     if(CPU && jogador === "○") setTimeout(cpuJoga, 420);
   }
   function cpuJoga(){
     var v = achar("○");
-    if(v == null) v = achar("✕");
+    if(v == null) v = achar("Fechar");
     if(v == null && !t[4]) v = 4;
     if(v == null){
       var cantos = [0,2,6,8].filter(function(i){ return !t[i] });
@@ -376,8 +376,8 @@ export function velha({ nome, sub, cpu }) {
     Z.snd(440, 0.05, "sine");
     var w = vencedor();
     if(w) return fim(w);
-    jogador = "✕";
-    $id("turno").textContent = "Vez de: ✕";
+    jogador = "Fechar";
+    $id("turno").textContent = "Vez de: Fechar";
   }
   function achar(v){
     for(var k = 0; k < L.length; k++){
@@ -393,7 +393,7 @@ export function velha({ nome, sub, cpu }) {
   function fim(w){
     travado = true;
     if(w.linha) w.linha.forEach(function(i){ $id("tabuleiro").children[i].classList.add("ok") });
-    $id("turno").textContent = w.v === "=" ? "Empate! 🤝" : "Venceu: " + w.v + (CPU ? (w.v === "✕" ? " 🎉" : " 🤖") : " 🎉");
+    $id("turno").textContent = w.v === "=" ? "Empate! Acordo" : "Venceu: " + w.v + (CPU ? (w.v === "Fechar" ? " Concluído" : " Computador") : " Concluído");
     Z.snd(w.v === "=" ? 300 : 900, 0.2, "triangle", 0.05);
   }
   $id("reinicia").addEventListener("click", novo);
@@ -407,11 +407,11 @@ export function velha({ nome, sub, cpu }) {
 export function minas({ nome, sub, rows, cols, bombs }) {
   const body = `
 <div class="row mb" style="justify-content:center;gap:8px">
-  <span class="zchip" id="minas">💣 ${bombs}</span>
-  <span class="zchip" id="tempo">⏱ 0s</span>
+  <span class="zchip" id="minas">Bomba ${bombs}</span>
+  <span class="zchip" id="tempo">Tempo 0s</span>
 </div>
 <div class="zgrid" id="tabuleiro" style="grid-template-columns:repeat(${cols},1fr);max-width:${cols > 12 ? 560 : 440}px;margin:0 auto;gap:4px"></div>
-<p class="dim center mt" style="font-size:12px">Botão direito (ou toque longo) para bandeiara 🚩</p>
+<p class="dim center mt" style="font-size:12px">Botão direito (ou toque longo) para bandeiara Marcador</p>
 <div class="row mt center" style="justify-content:center"><button class="zbtn" id="reinicia" type="button">Novo jogo</button></div>`;
   const js = `
 (function(){
@@ -422,8 +422,8 @@ export function minas({ nome, sub, rows, cols, bombs }) {
   function novo(){
     g = []; started = false; over = false; seg = 0; abertas = 0;
     clearInterval(tick);
-    $id("tempo").textContent = "⏱ 0s";
-    tick = setInterval(function(){ seg++; $id("tempo").textContent = "⏱ " + seg + "s" }, 1000);
+    $id("tempo").textContent = "Tempo 0s";
+    tick = setInterval(function(){ seg++; $id("tempo").textContent = "Tempo " + seg + "s" }, 1000);
     for(var r = 0; r < R; r++){ g.push([]); for(var c = 0; c < C; c++) g[r].push({m: 0, ab: 0, f: 0, n: 0}) }
     var box = $id("tabuleiro"); box.innerHTML = "";
     for(var r2 = 0; r2 < R; r2++) for(var c2 = 0; c2 < C; c2++){
@@ -501,7 +501,7 @@ export function minas({ nome, sub, rows, cols, bombs }) {
     var cel2 = g[r][c];
     if(cel2.ab) return;
     cel2.f = cel2.f ? 0 : 1;
-    b.textContent = cel2.f ? "🚩" : "";
+    b.textContent = cel2.f ? "Marcador" : "";
     Z.snd(cel2.f ? 700 : 300, 0.04, "sine");
   }
   function perder(r, c){
@@ -509,17 +509,17 @@ export function minas({ nome, sub, rows, cols, bombs }) {
     clearInterval(tick);
     for(var r2 = 0; r2 < R; r2++) for(var c2 = 0; c2 < C; c2++){
       var el = cel(r2, c2);
-      if(g[r2][c2].m){ el.textContent = "💣"; el.style.background = "rgba(255,92,92,0.25)" }
+      if(g[r2][c2].m){ el.textContent = "Bomba"; el.style.background = "rgba(255,92,92,0.25)" }
     }
     cel(r, c).style.background = "var(--z-red)";
     Z.snd(120, 0.4, "sawtooth", 0.06);
-    Z.toast("Bum! 💥", 1600);
+    Z.toast("Bum! Impacto", 1600);
   }
   function checarVitoria(){
     if(abertas === R*C - B){
       over = true;
       clearInterval(tick);
-      Z.toast("🏆 Você venceu em " + seg + "s!", 3000);
+      Z.toast("Vitória Você venceu em " + seg + "s!", 3000);
       Z.snd(1040, 0.3, "triangle", 0.06);
     }
   }
@@ -601,8 +601,8 @@ export function pong({ nome, sub, neon }) {
       bola.vy += (bola.y - pb.y) * 0.08;
       Z.snd(440, 0.04, "sine");
     }
-    if(bola.x < -20){ p2++; hud(); Z.snd(200, 0.15, "sawtooth", 0.04); if(p2 >= 5) return fimJogo("CPU venceu! 🤖"); servir() }
-    if(bola.x > W + 20){ p1++; hud(); Z.snd(800, 0.1, "sine"); if(p1 >= 5) return fimJogo("Você venceu! 🎉"); servir() }
+    if(bola.x < -20){ p2++; hud(); Z.snd(200, 0.15, "sawtooth", 0.04); if(p2 >= 5) return fimJogo("CPU venceu! Computador"); servir() }
+    if(bola.x > W + 20){ p1++; hud(); Z.snd(800, 0.1, "sine"); if(p1 >= 5) return fimJogo("Você venceu! Concluído"); servir() }
     desenha();
     requestAnimationFrame(loop);
   }
@@ -634,10 +634,10 @@ export function simon({ nome, sub, turbo }) {
   </div>
   <p class="dim mb" id="status">Toque em iniciar</p>
   <div class="zgrid" style="grid-template-columns:repeat(2,1fr);gap:12px">
-    <button class="zopty" data-i="0" style="min-height:130px;background:#123c2b;border-color:#1f5c40;font-size:30px" id="q0">🌿</button>
-    <button class="zopty" data-i="1" style="min-height:130px;background:#4a1020;border-color:#7c1f3a;font-size:30px" id="q1">🌸</button>
-    <button class="zopty" data-i="2" style="min-height:130px;background:#101f4a;border-color:#1f3a7c;font-size:30px" id="q2">🫐</button>
-    <button class="zopty" data-i="3" style="min-height:130px;background:#4a3d10;border-color:#7c6a1f;font-size:30px" id="q3">🌻</button>
+    <button class="zopty" data-i="0" style="min-height:130px;background:#123c2b;border-color:#1f5c40;font-size:30px" id="q0">Folha</button>
+    <button class="zopty" data-i="1" style="min-height:130px;background:#4a1020;border-color:#7c1f3a;font-size:30px" id="q1">Flor</button>
+    <button class="zopty" data-i="2" style="min-height:130px;background:#101f4a;border-color:#1f3a7c;font-size:30px" id="q2">Mirtilo</button>
+    <button class="zopty" data-i="3" style="min-height:130px;background:#4a3d10;border-color:#7c6a1f;font-size:30px" id="q3">Girassol</button>
   </div>
   <div class="row mt" style="justify-content:center">
     <button class="zbtn" id="inicio" type="button">Iniciar</button>
@@ -763,14 +763,14 @@ export function reflexos({ nome, sub, modo }) {
       } else if(estado === "wait"){
         Z.snd(150, 0.25, "sawtooth", 0.05);
         pararArena();
-        arena.textContent = "Antes da hora! 😅";
+        arena.textContent = "Antes da hora! Tensão";
         $id("status").textContent = "Você clicou cedo. Toque para tentar de novo.";
       } else if(estado === "go"){
         var ms = Math.round(performance.now() - startT);
         pararArena();
         arena.style.boxShadow = "";
         arena.textContent = ms + " ms";
-        $id("status").textContent = ms < 250 ? "🚀 Reflexo de super-herói!" : ms < 400 ? "⚡ Muito rápido!" : "🙂 Bom! Toque para tentar de novo.";
+        $id("status").textContent = ms < 250 ? "Nave Reflexo de super-herói!" : ms < 400 ? "Energia Muito rápido!" : "Neutro Bom! Toque para tentar de novo.";
         Z.snd(900, 0.1, "sine");
         if(!best || ms < best){ best = ms; Z.store.setBest("ref-" + MODO, best); $id("best").textContent = recTxt() }
       }
@@ -870,7 +870,7 @@ export function cacador({ nome, sub, emoji, turbo }) {
   const body = `
 <div class="row mb" style="justify-content:center;gap:8px">
   <span class="zchip" id="score">Pontos: 0</span>
-  <span class="zchip" id="tempo">⏱ 30s</span>
+  <span class="zchip" id="tempo">Tempo 30s</span>
   <span class="zchip" id="best">Recorde: 0</span>
 </div>
 <div class="zgrid" id="buracos" style="grid-template-columns:repeat(3,1fr);max-width:420px;margin:0 auto;gap:12px"></div>`;
@@ -920,7 +920,7 @@ export function cacador({ nome, sub, emoji, turbo }) {
   }
   var tick = setInterval(function(){
     tempo--;
-    document.getElementById("tempo").textContent = "⏱ " + tempo + "s";
+    document.getElementById("tempo").textContent = "Tempo " + tempo + "s";
     if(tempo <= 0){
       over = true;
       clearInterval(tick);
@@ -940,7 +940,7 @@ export function forca({ nome, sub, palavras }) {
   const body = `
 <div class="row" style="justify-content:center;gap:20px;flex-wrap:wrap">
   <div class="zcard pad center" style="min-width:220px">
-    <div id="boneco" style="font-size:52px;min-height:120px;display:grid;place-items:center">🪵</div>
+    <div id="boneco" style="font-size:52px;min-height:120px;display:grid;place-items:center">Madeira</div>
     <p class="dim" id="erros">Erros: 0/6</p>
   </div>
   <div class="zcard pad" style="flex:1;min-width:260px;max-width:420px">
@@ -954,7 +954,7 @@ export function forca({ nome, sub, palavras }) {
 (function(){
   var PAL = ${JSON.stringify(palavras)};
 
-  var STAGE = ["🪵", "🪵", "⭕", "⭕", "🦾🦵", "⭕🦵🦶", "💀"];
+  var STAGE = ["Madeira", "Madeira", "⭕", "⭕", "BraçoPerna", "⭕PernaPé", "Derrota"];
   var ABECEDARIO = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
   var palavra, reveladas, erros, fim;
   var $id = function(x){return document.getElementById(x)};
@@ -999,14 +999,14 @@ export function forca({ nome, sub, palavras }) {
   }
   function ganhar(){
     fim = true;
-    $id("boneco").textContent = "🎉";
+    $id("boneco").textContent = "Concluído";
     $id("boneco").style.color = "var(--z-lime)";
     Z.toast("Você ganhou! " + palavra, 3500);
     Z.snd(1040, 0.3, "triangle", 0.06);
   }
   function perder(){
     fim = true;
-    $id("boneco").textContent = "💀";
+    $id("boneco").textContent = "Derrota";
     $id("boneco").style.color = "var(--z-red)";
     Z.toast("Era: " + palavra, 3500);
     Z.snd(120, 0.5, "sawtooth", 0.06);
@@ -1068,12 +1068,12 @@ export function adivinhe({ nome, sub, max }) {
     tent++;
     $id("tent").textContent = "Tentativas: " + tent;
     if(v === alvo){
-      $id("resposta").textContent = "🎉 Acertou em " + tent + " tentativa(s)!";
+      $id("resposta").textContent = "Concluído Acertou em " + tent + " tentativa(s)!";
       $id("campo").disabled = true; $id("ok").disabled = true;
       Z.snd(1040, 0.25, "triangle", 0.06);
       if(!best || tent < best){ best = tent; Z.store.setBest("adv-" + MAX, best); document.getElementById("best").textContent = "Recorde: " + best + " tentativas" }
     } else {
-      $id("resposta").textContent = v < alvo ? "📈 É maior que " + v : "📉 É menor que " + v;
+      $id("resposta").textContent = v < alvo ? "Alta É maior que " + v : "Baixa É menor que " + v;
       Z.snd(v < alvo ? 660 : 330, 0.06, "sine");
     }
     $id("campo").value = "";
@@ -1090,13 +1090,13 @@ export function adivinhe({ nome, sub, max }) {
 export function sudoku({ nome, sub, n, buracos }) {
   const body = `
 <div class="row mb" style="justify-content:center;gap:8px">
-  <span class="zchip" id="tempo">⏱ 0s</span>
+  <span class="zchip" id="tempo">Tempo 0s</span>
   <span class="zchip" id="faltam">Faltam: 0</span>
 </div>
 <div class="zgrid" id="tabuleiro" style="grid-template-columns:repeat(${n},1fr);max-width:460px;margin:0 auto;gap:5px"></div>
 <div class="zgrid mt" id="pad" style="grid-template-columns:repeat(5,1fr);max-width:460px;margin:0 auto;gap:5px"></div>
 <div class="row mt center" style="justify-content:center;gap:10px">
-  <button class="zbtn ghost sm" id="dica" type="button">💡 Dica</button>
+  <button class="zbtn ghost sm" id="dica" type="button">Ideia Dica</button>
   <button class="zbtn sm" id="nova" type="button">Novo jogo</button>
 </div>`;
   const js = `
@@ -1147,7 +1147,7 @@ export function sudoku({ nome, sub, n, buracos }) {
     clearInterval(tick);
     t0 = Date.now();
     tick = setInterval(function(){
-      document.getElementById("tempo").textContent = "⏱ " + Math.floor((Date.now() - t0) / 1000) + "s";
+      document.getElementById("tempo").textContent = "Tempo " + Math.floor((Date.now() - t0) / 1000) + "s";
     }, 1000);
     render();
   }
@@ -1185,7 +1185,7 @@ export function sudoku({ nome, sub, n, buracos }) {
   function vencer(){
     clearInterval(tick);
     var ok = jogo.join(",") === sol.join(",");
-    Z.toast(ok ? "🏆 Resolvido em " + Math.floor((Date.now() - t0) / 1000) + "s!" : "Confira as células vermelhas!", 3500);
+    Z.toast(ok ? "Vitória Resolvido em " + Math.floor((Date.now() - t0) / 1000) + "s!" : "Confira as células vermelhas!", 3500);
   }
   function pad(){
     var box = $id("pad"); box.innerHTML = "";
@@ -1204,7 +1204,7 @@ export function sudoku({ nome, sub, n, buracos }) {
       box.appendChild(b);
     }
     var ap = document.createElement("button");
-    ap.className = "zbtn sm ghost"; ap.textContent = "✕";
+    ap.className = "zbtn sm ghost"; ap.textContent = "Fechar";
     ap.addEventListener("click", function(){ if(sel >= 0) jogo[sel] = 0; render() });
     box.appendChild(ap);
   }
@@ -1214,7 +1214,7 @@ export function sudoku({ nome, sub, n, buracos }) {
     if(!vazios.length){ Z.toast("Tabuleiro cheio"); return }
     var i = vazios[Z.rnd(0, vazios.length - 1)];
     jogo[i] = sol[i];
-    Z.toast("Dica revelada 💡", 1500);
+    Z.toast("Dica revelada Ideia", 1500);
     render();
   });
   $id("nova").addEventListener("click", novo);
@@ -1286,7 +1286,7 @@ export function quinze({ nome, sub, n }) {
   }
   function checar(){
     for(var i = 0; i < TOTAL - 1; i++) if(t[i] !== i + 1) return;
-    Z.toast("🏆 Resolvido em " + moves + " movimentos!", 3500);
+    Z.toast("Vitória Resolvido em " + moves + " movimentos!", 3500);
     Z.snd(1040, 0.3, "triangle", 0.06);
     if(!best || moves < best){ best = moves; Z.store.setBest("15-" + N, best); document.getElementById("best").textContent = "Recorde: " + best + " mov." }
   }
@@ -1303,7 +1303,7 @@ export function asteroides({ nome, sub, neon }) {
   const body = `
 <div class="row mb" style="justify-content:center;gap:8px">
   <span class="zchip" id="score">Pontos: 0</span>
-  <span class="zchip" id="vidas">❤️ 3</span>
+  <span class="zchip" id="vidas">Vermelho 3</span>
 </div>
 <div style="max-width:400px;margin:0 auto;position:relative">
   <canvas class="zc" id="cv" width="360" height="440"></canvas>
@@ -1337,7 +1337,7 @@ export function asteroides({ nome, sub, neon }) {
   }
   function hud(){
     document.getElementById("score").textContent = "Pontos: " + score;
-    document.getElementById("vidas").textContent = "❤️ " + vidas;
+    document.getElementById("vidas").textContent = "Vermelho " + vidas;
   }
   Z.onKey({ArrowUp: function(){ teclas.up = true }, ArrowDown: function(){ teclas.down = false }, ArrowLeft: function(){ teclas.l = true }, ArrowRight: function(){ teclas.r = true }, " ": function(){ teclas.fire = true }});
   document.addEventListener("keyup", function(e){
@@ -1544,11 +1544,11 @@ export function invasores({ nome, sub, turbo }) {
     inimigos.forEach(function(a){
       if(!a.vivo) return;
       ctx.font = "20px sans-serif";
-      ctx.fillText("👾", a.x - 12, a.y + 7);
+      ctx.fillText("Invasor", a.x - 12, a.y + 7);
     });
     ctx.fillStyle = "#7dff6a";
     ctx.font = "24px sans-serif";
-    ctx.fillText("🚀", jogador.x - 12, H - 20);
+    ctx.fillText("Nave", jogador.x - 12, H - 20);
     ctx.fillStyle = "#ffd166";
     ctx.fillRect(W/2 - 60, H - 4, 120, 4);
     ctx.fillStyle = "#fff";
@@ -1774,7 +1774,7 @@ export function alvo({ nome, sub, turbo }) {
   const body = `
 <div class="row mb" style="justify-content:center;gap:8px">
   <span class="zchip" id="score">Acertos: 0</span>
-  <span class="zchip" id="tempo">⏱ 30s</span>
+  <span class="zchip" id="tempo">Tempo 30s</span>
   <span class="zchip" id="best">Recorde: 0</span>
 </div>
 <div id="arena" style="position:relative;height:380px;max-width:560px;margin:0 auto;border-radius:16px;border:1px solid var(--z-line);background:radial-gradient(600px 200px at 50% 120%, rgba(124,92,255,0.12), transparent),var(--z-bg2);cursor:crosshair;overflow:hidden">
@@ -1803,13 +1803,13 @@ export function alvo({ nome, sub, turbo }) {
   });
   var tick = setInterval(function(){
     tempo--;
-    document.getElementById("tempo").textContent = "⏱ " + tempo + "s";
+    document.getElementById("tempo").textContent = "Tempo " + tempo + "s";
     if(TURBO && tempo % 3 === 0) mover();
     if(tempo <= 0){
       over = true;
       clearInterval(tick);
       if(score > best){ best = score; Z.store.setBest("alvo-" + (TURBO ? "t" : "n"), best); document.getElementById("best").textContent = "Recorde: " + best }
-      Z.toast("Fim! " + score + " acertos 🎯", 3000);
+      Z.toast("Fim! " + score + " acertos Alvo", 3000);
       Z.snd(1000, 0.3, "triangle", 0.06);
     }
   }, 1000);
@@ -1917,7 +1917,7 @@ export function stroop({ nome, sub, turbo }) {
   const body = `
 <div class="row mb" style="justify-content:center;gap:8px">
   <span class="zchip" id="score">Acertos: 0</span>
-  <span class="zchip" id="tempo">⏱ 30s</span>
+  <span class="zchip" id="tempo">Tempo 30s</span>
   <span class="zchip" id="best">Recorde: 0</span>
 </div>
 <div class="zcard pad center" style="max-width:480px;margin:0 auto">
@@ -1961,7 +1961,7 @@ export function stroop({ nome, sub, turbo }) {
   }
   var tick = setInterval(function(){
     tempo--;
-    document.getElementById("tempo").textContent = "⏱ " + tempo + "s";
+    document.getElementById("tempo").textContent = "Tempo " + tempo + "s";
     if(tempo <= 0){
       over = true;
       clearInterval(tick);
@@ -1993,7 +1993,7 @@ export function boliche({ nome, sub }) {
   <div class="col">
     <div><span class="zlabel">Angulação: <b class="acc" id="angV">0°</b></span><input type="range" id="ang" min="-30" max="30" value="0" style="width:100%"></div>
     <div><span class="zlabel">Força: <b class="acc" id="forV">70%</b></span><input type="range" id="for" min="40" max="100" value="70" style="width:100%"></div>
-    <button class="zbtn" id="atirar" type="button" disabled>🎳 Atirar bola</button>
+    <button class="zbtn" id="atirar" type="button" disabled>Boliche Atirar bola</button>
   </div>
 </div>`;
   const js = `
@@ -2116,25 +2116,25 @@ export function dadoDuelo({ nome, sub, alvo }) {
   <div class="zgrid" style="grid-template-columns:1fr 1fr;gap:14px">
     <div class="zcard center" style="border-color:var(--z-acc)">
       <p class="fd acc" style="font-size:20px">Você</p>
-      <div class="zbig" id="d1">⚀</div>
+      <div class="zbig" id="d1">1</div>
       <p class="dim">Total: <b class="acc" id="t1">0</b> / ${alvo}</p>
     </div>
     <div class="zcard center" style="border-color:rgba(255,92,92,0.4)">
       <p class="fd" style="font-size:20px;color:var(--z-red)">CPU</p>
-      <div class="zbig" id="d2">⚀</div>
+      <div class="zbig" id="d2">1</div>
       <p class="dim">Total: <b style="color:var(--z-red)" id="t2">0</b> / ${alvo}</p>
     </div>
   </div>
   <p class="center mt fd" id="msg" style="font-size:19px;min-height:30px">Sua vez — role o dado!</p>
   <div class="row mt" style="justify-content:center">
-    <button class="zbtn" id="rolar" type="button">🎲 Rolar</button>
+    <button class="zbtn" id="rolar" type="button">Dado Rolar</button>
     <button class="zbtn ghost" id="reinicia" type="button">Reiniciar</button>
   </div>
 </div>`;
   const js = `
 (function(){
   var ALVO = ${alvo};
-  var FACES = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
+  var FACES = ["1", "2", "3", "4", "5", "6"];
   var t1 = 0, t2 = 0, vez = "p", travado = false;
   function $id(x){return document.getElementById(x)}
   function atualizar(){
@@ -2164,8 +2164,8 @@ export function dadoDuelo({ nome, sub, alvo }) {
       else { t2 += v; $id("msg").textContent = "CPU tirou " + v + "!" }
       atualizar();
       Z.snd(600, 0.06, "square", 0.04);
-      if(t1 >= ALVO){ $id("msg").textContent = "🎉 Você venceu!"; Z.snd(1040, 0.3, "triangle", 0.06); travado = true; return }
-      if(t2 >= ALVO){ $id("msg").textContent = "🤖 CPU venceu!"; Z.snd(140, 0.4, "sawtooth", 0.05); travado = true; return }
+      if(t1 >= ALVO){ $id("msg").textContent = "Concluído Você venceu!"; Z.snd(1040, 0.3, "triangle", 0.06); travado = true; return }
+      if(t2 >= ALVO){ $id("msg").textContent = "Computador CPU venceu!"; Z.snd(140, 0.4, "sawtooth", 0.05); travado = true; return }
       travado = false;
     });
   }
@@ -2179,7 +2179,7 @@ export function dadoDuelo({ nome, sub, alvo }) {
   });
   $id("reinicia").addEventListener("click", function(){
     t1 = 0; t2 = 0; vez = "p"; travado = false;
-    $id("d1").textContent = "⚀"; $id("d2").textContent = "⚀";
+    $id("d1").textContent = "1"; $id("d2").textContent = "1";
     atualizar();
     $id("msg").textContent = "Sua vez — role o dado!";
   });
@@ -2209,7 +2209,7 @@ export function blackjack({ nome, sub }) {
   <div class="row wrap" style="justify-content:center;gap:10px">
     <button class="zbtn sm" id="baixar" type="button" disabled>−5</button>
     <button class="zbtn sm" id="subir" type="button" disabled>+5</button>
-    <button class="zbtn" id="dar" type="button" disabled>🃏 Dar carta</button>
+    <button class="zbtn" id="dar" type="button" disabled>Coringa Dar carta</button>
     <button class="zbtn ghost" id="parar" type="button" disabled>Parar</button>
     <button class="zbtn ghost" id="nova" type="button" disabled>Nova mão</button>
   </div>
@@ -2217,7 +2217,7 @@ export function blackjack({ nome, sub }) {
   const js = `
 (function(){
   var CH = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
-  var SU = ["♠", "♥", "♦", "♣"];
+  var SU = ["Espadas", "Coração", "Ouros", "Paus"];
   var baralho = [], jogador = [], dealer = [], chips = 100, aposta = 10, jogando = false, fimMao = false;
   function $id(x){return document.getElementById(x)}
   function montar(){
@@ -2242,7 +2242,7 @@ export function blackjack({ nome, sub }) {
     mao.forEach(function(c, i){
       var d = document.createElement("span");
       var escondida = oculta && i === 0;
-      d.style.cssText = "font-family:var(--z-fm);font-weight:700;font-size:17px;background:var(--z-surface2);border:1px solid var(--z-line2);border-radius:8px;padding:8px 10px;color:" + (c[1] === "♥" || c[1] === "♦" ? "#ff5c5c" : "#edf0ff");
+      d.style.cssText = "font-family:var(--z-fm);font-weight:700;font-size:17px;background:var(--z-surface2);border:1px solid var(--z-line2);border-radius:8px;padding:8px 10px;color:" + (c[1] === "Coração" || c[1] === "Ouros" ? "#ff5c5c" : "#edf0ff");
       d.textContent = escondida ? "?" : c;
       el.appendChild(d);
     });
@@ -2284,7 +2284,7 @@ export function blackjack({ nome, sub }) {
     if(!jogando) return;
     puxar(jogador);
     atualizar(true);
-    if(valor(jogador) > 21) fim(false, "💥 Estourou! A aposta vai embora.", 0);
+    if(valor(jogador) > 21) fim(false, "Impacto Estourou! A aposta vai embora.", 0);
   });
   $id("parar").addEventListener("click", function(){
     if(!jogando) return;
@@ -2299,9 +2299,9 @@ export function blackjack({ nome, sub }) {
       }
       var vd = valor(dealer);
       var vj = valor(jogador);
-      if(vd > 21) fim(true, "🎉 Dealer estourou! Você leva " + aposta * 2 + " chips.", aposta * 2);
-      else if(vj > vd) fim(true, "🎉 Você vence com " + vj + "!" , aposta * 2);
-      else if(vj === vd) fim(false, "🤝 Empate — a aposta volta pra você.", aposta);
+      if(vd > 21) fim(true, "Concluído Dealer estourou! Você leva " + aposta * 2 + " chips.", aposta * 2);
+      else if(vj > vd) fim(true, "Concluído Você vence com " + vj + "!" , aposta * 2);
+      else if(vj === vd) fim(false, "Acordo Empate — a aposta volta pra você.", aposta);
       else fim(false, "Dealer vence com " + vd + ". Até a próxima!", 0);
     }
     dealerJoga();
@@ -2309,7 +2309,7 @@ export function blackjack({ nome, sub }) {
   $id("nova").addEventListener("click", function(){
     if(chips <= 0){
       chips = 100;
-      Z.toast("Chips repostados! 💰", 2500);
+      Z.toast("Chips repostados! Moeda", 2500);
     }
     if(baralho.length < 40) montar();
     jogador = []; dealer = [];
@@ -2332,10 +2332,10 @@ export function labirinto({ nome, sub, n, perseguido }) {
   const body = `
 <div class="row mb" style="justify-content:center;gap:8px">
   <span class="zchip" id="moves">Passos: 0</span>
-  <span class="zchip" id="status">🎯 Encontre a saída</span>
+  <span class="zchip" id="status">Alvo Encontre a saída</span>
 </div>
 <div class="zgrid" id="maze" style="grid-template-columns:repeat(${n},1fr);max-width:${n * 18}px;margin:0 auto;gap:2px"></div>
-<p class="dim center mt" style="font-size:12.5px">Use as setas ou WASD${perseguido ? " · cuidado com 👻" : ""}</p>
+<p class="dim center mt" style="font-size:12.5px">Use as setas ou WASD${perseguido ? " · cuidado com Fantasma" : ""}</p>
 <div class="row mt center" style="justify-content:center"><button class="zbtn sm" id="novo" type="button">Novo labirinto</button></div>`;
   const js = `
 (function(){
@@ -2370,9 +2370,9 @@ export function labirinto({ nome, sub, n, perseguido }) {
       var d = document.createElement("div");
       var fundo = walls[r][c] ? "#151c33" : "var(--z-bg2)";
       d.style.cssText = "aspect-ratio:1;background:" + fundo + ";border-radius:3px;display:grid;place-items:center;font-size:11px";
-      if(r === py && c === px) d.textContent = "🧑";
-      if(r === N-2 && c === N-2 && !(r === py && c === px)) d.textContent = "🚩";
-      if(ghost && ghost.r === r && ghost.c === c) d.textContent = "👻";
+      if(r === py && c === px) d.textContent = "Pessoa";
+      if(r === N-2 && c === N-2 && !(r === py && c === px)) d.textContent = "Marcador";
+      if(ghost && ghost.r === r && ghost.c === c) d.textContent = "Fantasma";
       box.appendChild(d);
     }
   }
@@ -2387,14 +2387,14 @@ export function labirinto({ nome, sub, n, perseguido }) {
       if(moves % 2 === 0) moverGhost();
       if(ghost && ghost.r === py && ghost.c === px){
         over = true;
-        $id("status").textContent = "👻 Foi pego!";
+        $id("status").textContent = "Fantasma Foi pego!";
         Z.snd(140, 0.4, "sawtooth", 0.06);
         return;
       }
     }
     if(py === N-2 && px === N-2){
       over = true;
-      $id("status").textContent = "🏆 Você saiu em " + moves + " passos!";
+      $id("status").textContent = "Vitória Você saiu em " + moves + " passos!";
       Z.snd(1040, 0.3, "triangle", 0.06);
     }
     render();
@@ -2426,7 +2426,7 @@ export function labirinto({ nome, sub, n, perseguido }) {
     px = 1; py = 1;
     ghost = null;
     $id("moves").textContent = "Passos: 0";
-    $id("status").textContent = "🎯 Encontre a saída";
+    $id("status").textContent = "Alvo Encontre a saída";
     gerar();
     render();
   }
@@ -2443,7 +2443,7 @@ export function bolhas({ nome, sub, turbo }) {
 <div class="row mb" style="justify-content:center;gap:8px">
   <span class="zchip" id="score">Pontos: 0</span>
   <span class="zchip" id="combo">Combo x1</span>
-  <span class="zchip" id="tempo">⏱ 45s</span>
+  <span class="zchip" id="tempo">Tempo 45s</span>
   <span class="zchip" id="best">Recorde: 0</span>
 </div>
 <div id="arena" style="position:relative;height:420px;max-width:520px;margin:0 auto;border-radius:16px;border:1px solid var(--z-line);background:linear-gradient(180deg,#0a1230,#05070f);overflow:hidden">
@@ -2482,13 +2482,13 @@ export function bolhas({ nome, sub, turbo }) {
   var tickSpawn = setInterval(spawn, ${turbo ? "480" : "700"});
   var tick = setInterval(function(){
     tempo--;
-    document.getElementById("tempo").textContent = "⏱ " + tempo + "s";
+    document.getElementById("tempo").textContent = "Tempo " + tempo + "s";
     if(tempo <= 0){
       over = true;
       clearInterval(tick); clearInterval(tickSpawn);
       bolhas.forEach(function(x){ x.el.remove() });
       if(score > best){ best = score; Z.store.setBest("bolhas-" + ${JSON.stringify(nome)}, best); document.getElementById("best").textContent = "Recorde: " + best }
-      Z.toast("Fim! " + score + " pontos 🫧", 3000);
+      Z.toast("Fim! " + score + " pontos Bolha", 3000);
     }
   }, 1000);
   var raf = null;
@@ -2518,7 +2518,7 @@ export function esquiva({ nome, sub, neon }) {
   const body = `
 <div class="row mb" style="justify-content:center;gap:8px">
   <span class="zchip" id="score">Pontos: 0</span>
-  <span class="zchip" id="vidas">❤️❤️❤️</span>
+  <span class="zchip" id="vidas">VermelhoVermelhoVermelho</span>
 </div>
 <div id="arena" style="position:relative;height:440px;max-width:340px;margin:0 auto;border-radius:16px;border:1px solid var(--z-line);background:linear-gradient(180deg,var(--z-bg2),#0b0f1f);overflow:hidden">
   <div style="position:absolute;left:33.33%;top:0;bottom:0;width:1px;background:var(--z-line)"></div>
@@ -2570,7 +2570,7 @@ export function esquiva({ nome, sub, neon }) {
         o.el.remove();
         obst = obst.filter(function(x){ return x !== o });
         vidas--;
-        document.getElementById("vidas").textContent = "❤️".repeat(vidas) || "💔";
+        document.getElementById("vidas").textContent = "Vermelho".repeat(vidas) || "Perda";
         J.style.boxShadow = "0 0 30px #ff5c5c";
         setTimeout(function(){ J.style.boxShadow = "0 0 20px " + corJ }, 200);
         Z.snd(180, 0.2, "sawtooth", 0.05);
@@ -2648,7 +2648,7 @@ export function pintor({ nome, sub, n }) {
     var pct = Math.round(ok / (N * N) * 100);
     $id("pct").textContent = pct + "%";
     if(pct === 100){
-      Z.toast("🏆 Quadro perfeito!", 3000);
+      Z.toast("Vitória Quadro perfeito!", 3000);
       Z.snd(1040, 0.3, "triangle", 0.06);
     }
   }
@@ -2683,7 +2683,7 @@ export function tapTempo({ nome, sub }) {
     <div class="zstat"><span>Precisão</span><b id="prec">—</b></div>
     <div class="zstat"><span>Toques</span><b id="n">0</b></div>
   </div>
-  <button class="zbtn big mt" id="tap" type="button" style="width:200px">🥁 TAP</button>
+  <button class="zbtn big mt" id="tap" type="button" style="width:200px">Bateria TAP</button>
   <div class="row mt center" style="justify-content:center"><button class="zbtn ghost sm" id="zerar" type="button">Zerar</button></div>
 </div>`;
   const js = `
@@ -2728,7 +2728,7 @@ export function pegaQuedas({ nome, sub, noite }) {
   const body = `
 <div class="row mb" style="justify-content:center;gap:8px">
   <span class="zchip" id="score">Frutas: 0</span>
-  <span class="zchip" id="vidas">❤️❤️❤️</span>
+  <span class="zchip" id="vidas">VermelhoVermelhoVermelho</span>
 </div>
 <div style="max-width:380px;margin:0 auto;position:relative">
   <canvas class="zc" id="cv" width="340" height="420"></canvas>
@@ -2736,7 +2736,7 @@ export function pegaQuedas({ nome, sub, noite }) {
     <div class="zbox"><h3>Fim de jogo</h3><p>Frutas: <b class="acc" id="fimScore">0</b></p><button class="zbtn" id="reinicia" type="button">Jogar de novo</button></div>
   </div>
 </div>
-<p class="dim center mt" style="font-size:12.5px">← → ou arraste o dedo · pegue 🍎 🍌, fuja de 💣</p>`;
+<p class="dim center mt" style="font-size:12.5px">← → ou arraste o dedo · pegue Maçã Banana, fuja de Bomba</p>`;
   const js = `
 (function(){
   var cv = document.getElementById("cv");
@@ -2752,7 +2752,7 @@ export function pegaQuedas({ nome, sub, noite }) {
   }
   function hud(){
     document.getElementById("score").textContent = "Frutas: " + score;
-    document.getElementById("vidas").textContent = "❤️".repeat(vidas) || "💔";
+    document.getElementById("vidas").textContent = "Vermelho".repeat(vidas) || "Perda";
   }
   Z.onKey({ArrowLeft: function(){ teclas.l = true }, ArrowRight: function(){ teclas.r = true }});
   document.addEventListener("keyup", function(e){
@@ -2809,11 +2809,11 @@ export function pegaQuedas({ nome, sub, noite }) {
     ctx.font = "26px sans-serif";
     ctx.textAlign = "center";
     itens.forEach(function(it){
-      var emo = it.tipo === "bomba" ? "💣" : it.tipo === "banana" ? "🍌" : "🍎";
+      var emo = it.tipo === "bomba" ? "Bomba" : it.tipo === "banana" ? "Banana" : "Maçã";
       ctx.fillText(emo, it.x, it.y + 10);
     });
     ctx.font = "30px sans-serif";
-    ctx.fillText("🧺", cx, H - 14);
+    ctx.fillText("Cesta", cx, H - 14);
     ctx.textAlign = "left";
   }
   document.getElementById("reinicia").addEventListener("click", novo);

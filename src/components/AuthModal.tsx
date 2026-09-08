@@ -112,7 +112,7 @@ export default function AuthModal({ onClose, defaultTab = "login" }: AuthModalPr
             onClick={onClose}
             className="text-stone-400 hover:text-stone-700 text-xl font-light"
           >
-            ✕
+            Fechar
           </button>
         </div>
 

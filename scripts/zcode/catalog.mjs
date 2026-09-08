@@ -36,17 +36,17 @@ const E = [];
 const leg = (nome, desc, dir, page, imagem, destaque) =>
   E.push({ nome, desc, legacy: dir, page, imagem, destaque: !!destaque });
 
-leg("Funções", "Visualizador matemático interativo de funções.", "funcoes(01)", "index.html", "apps/estudos-1.jpg", true);
-leg("Calculadora", "Calculadora de estudo para resolver expressões.", "calculadorabasica(02)", "index.html", "apps/estudos-calculadora.jpg");
-leg("Tabela Periódica", "Tabela periódica interativa dos elementos.", "tabelaperiodica(03)", "index.html", "apps/tabela-periodica.jpg");
-leg("Fórmulas", "Biblioteca de fórmulas das ciências da natureza.", "formulas(04)", "index.html", "apps/estudos-formulas.jpg");
-leg("Citologia", "Explorador interativo das partes da célula.", "citologia(05)", "index.html", "apps/estudos-citologia.jpg");
-leg("Sistemas do Corpo", "Atlas interativo dos sistemas do corpo humano.", "sistemas(06)", "index.html", "apps/estudos-sistemas.jpg");
-leg("Atlas Interativo", "Mapa vetorial interativo para estudar geografia.", "Atlas(07)", "index.html", "apps/estudos-atlas.jpg");
-leg("Eras Geológicas", "Linha do tempo interativa da Terra.", "eras(08)", "index.html", "apps/estudos-eras.jpg");
-leg("Pomodoro", "Cronômetro de foco para sessões de estudo.", "pomodoro(09)", "index.html", "apps/estudos-pomodoro.jpg");
-leg("Plotter 3D", "Plotter de funções em três dimensões.", "geometria(10)", "index.html", "apps/estudos-geometria.jpg");
-leg("CSS Challenge", "Clone de designs famosos para treinar CSS.", "learncss(11)", "index.html", "apps/estudos-learncss.jpg");
+leg("Funções", "Visualizador matemático interativo de funções.", "funcoes(01)", "index.html", "images/editorial/study-desk.jpg", true);
+leg("Calculadora", "Calculadora de estudo para resolver expressões.", "calculadorabasica(02)", "index.html", "images/editorial/study-desk.jpg");
+leg("Tabela Periódica", "Tabela periódica interativa dos elementos.", "tabelaperiodica(03)", "index.html", "images/editorial/study-desk.jpg");
+leg("Fórmulas", "Biblioteca de fórmulas das ciências da natureza.", "formulas(04)", "index.html", "images/editorial/study-desk.jpg");
+leg("Citologia", "Explorador interativo das partes da célula.", "citologia(05)", "index.html", "images/editorial/study-desk.jpg");
+leg("Sistemas do Corpo", "Atlas interativo dos sistemas do corpo humano.", "sistemas(06)", "index.html", "images/editorial/study-desk.jpg");
+leg("Atlas Interativo", "Mapa vetorial interativo para estudar geografia.", "Atlas(07)", "index.html", "images/editorial/study-desk.jpg");
+leg("Eras Geológicas", "Linha do tempo interativa da Terra.", "eras(08)", "index.html", "images/editorial/study-desk.jpg");
+leg("Pomodoro", "Cronômetro de foco para sessões de estudo.", "pomodoro(09)", "index.html", "images/editorial/study-desk.jpg");
+leg("Plotter 3D", "Plotter de funções em três dimensões.", "geometria(10)", "index.html", "images/editorial/study-desk.jpg");
+leg("CSS Challenge", "Clone de designs famosos para treinar CSS.", "learncss(11)", "index.html", "images/editorial/study-desk.jpg");
 
 const app = (nome, desc, engine, params, destaque) =>
   E.push({ nome, desc, engine, params, imagem: "", destaque: !!destaque });
@@ -310,13 +310,13 @@ const J = [];
 const jleg = (nome, desc, dir, page, imagem, destaque) =>
   J.push({ nome, desc, legacy: dir, page, imagem, destaque: !!destaque });
 
-jleg("Bandeiras do Mundo", "Adivinhe o país pela bandeira.", "jogopaises(01)", "index.html", "apps/jogo-paises.jpg", true);
-jleg("Roleta da Fortuna", "Gire a roleta e acerte as perguntas.", "rodafortuna(02)", "index.html", "apps/roleta-fortuna.jpg");
-jleg("TRcraft", "Mundo voxel infinito para explorar e construir.", "minicraft(03)", "craft.html", "apps/jogos-minicraft.jpg", true);
-jleg("Hunterz", "A caçada na floresta: desvie e sobreviva.", "estilhacos(04)", "index.html", "apps/jogos-hunterz.jpg");
-jleg("MK: Ultimate Arena", "Jogo de luta com golpes especiais.", "mortalkombat(05)", "index.html", "apps/jogos-mortalkombat.jpg");
-jleg("Fuja das Esferas", "Corra e fuja das esferas que te perseguem.", "fujaesferas(06)", "index.html", "apps/jogos-fujaesferas.jpg");
-jleg("IFood Rider", "Corrida infinita entregando sem capotar.", "ifoodrunner(07)", "index.html", "apps/jogos-ifoodrider.jpg");
+jleg("Bandeiras do Mundo", "Adivinhe o país pela bandeira.", "jogopaises(01)", "index.html", "images/editorial/chess-board.jpg", true);
+jleg("Roleta da Fortuna", "Gire a roleta e acerte as perguntas.", "rodafortuna(02)", "index.html", "images/editorial/chess-board.jpg");
+jleg("TRcraft", "Mundo voxel infinito para explorar e construir.", "minicraft(03)", "craft.html", "images/editorial/chess-board.jpg", true);
+jleg("Hunterz", "A caçada na floresta: desvie e sobreviva.", "estilhacos(04)", "index.html", "images/editorial/chess-board.jpg");
+jleg("MK: Ultimate Arena", "Jogo de luta com golpes especiais.", "mortalkombat(05)", "index.html", "images/editorial/chess-board.jpg");
+jleg("Fuja das Esferas", "Corra e fuja das esferas que te perseguem.", "fujaesferas(06)", "index.html", "images/editorial/chess-board.jpg");
+jleg("IFood Rider", "Corrida infinita entregando sem capotar.", "ifoodrunner(07)", "index.html", "images/editorial/chess-board.jpg");
 
 const japp = (nome, desc, engine, params, destaque) =>
   J.push({ nome, desc, engine, params, imagem: "", destaque: !!destaque });
@@ -341,18 +341,18 @@ japp("8192 Lendário", "O desafio lendário: alcance a tile 8192.", "jogo2048", 
 
 /* memoria ×12 */
 const MEM = [
-  ["Frutas", ["🍎", "", "🍓", "🍍", "🥑"], true],
-  ["Animais", ["🐶", "🐱", "🐭", "", "🐰"], false],
-  ["Esportes", ["⚽", "🏀", "🎾", "", ""], false],
-  ["Espaço", ["🚀", "🌍", "🌙", "⭐", "☄️"], false],
-  ["Comida", ["🍕", "🍔", "🍟", "", ""], false],
-  ["Natureza", ["🌲", "🌵", "🌻", "🍄", ""], false],
-  ["Objetos", ["🎒", "🔑", "⌚", "", ""], false],
-  ["Corações", ["❤️", "🧡", "💛", "💚", "💙"], false],
-  ["Música", ["🎸", "🎹", "🎺", "", "🥁"], false],
-  ["Clima", ["☀️", "❄️", "⚡", "🌈", "🌩️"], false],
-  ["Festas", ["🎉", "🎁", "🎈", "🎂", ""], false],
-  ["Carros", ["🚗", "🚕", "", "🚌", "🏎️"], false],
+  ["Frutas", ["Maçã", "", "Morango", "Abacaxi", "Abacate"], true],
+  ["Animais", ["Cachorro", "Gato", "Rato", "", "Coelho"], false],
+  ["Esportes", ["Bola", "Basquete", "Tênis", "", ""], false],
+  ["Espaço", ["Nave", "Mundo", "Lua", "⭐", "Cometa"], false],
+  ["Comida", ["Pizza", "Hambúrguer", "Batata", "", ""], false],
+  ["Natureza", ["Pinheiro", "Cacto", "Girassol", "Cogumelo", ""], false],
+  ["Objetos", ["Mochila", "Chave", "⌚", "", ""], false],
+  ["Corações", ["Vermelho", "Laranja", "Amarelo", "Verde", "Azul"], false],
+  ["Música", ["Violão", "Piano", "Trompete", "", "Bateria"], false],
+  ["Clima", ["Sol", "Neve", "Energia", "Arco-íris", "Tempestade"], false],
+  ["Festas", ["Concluído", "Presente", "Balão", "Bolo", ""], false],
+  ["Carros", ["Carro", "", "", "", "Carro"], false],
 ];
 for (const [t, emo, d] of MEM) japp("Memória: " + t, "Encontre os pares de " + t.toLowerCase() + " no menor número de jogadas.", "memoria", { emoji: emo, cols: 3 }, d);
 
@@ -383,11 +383,11 @@ japp("Reflexos: Cores", "Memorize a cor e clique no nome dela em 30 segundos.", 
 
 /* cacador ×5 */
 const CAC = [
-  ["Caça-Frutas", ["🍎", ""], false],
-  ["Caça-Doce", ["🍩", "🍬"], false],
-  ["Caça-Ferramentas", ["🔨", "🔧"], false],
-  ["Caça-Símbolos", ["⭐", "💎"], false],
-  ["Caça-Moedas", ["🪙", "💰"], false],
+  ["Caça-Frutas", ["Maçã", ""], false],
+  ["Caça-Doce", ["Rosquinha", "Doce"], false],
+  ["Caça-Ferramentas", ["Martelo", "Ferramenta"], false],
+  ["Caça-Símbolos", ["⭐", "Cristal"], false],
+  ["Caça-Moedas", ["Moeda", "Moeda"], false],
 ];
 for (const [t, emo, d] of CAC) japp(t, "Pegue os itens que caem antes que saiam da tela. 30 segundos.", "cacador", { emoji: emo }, d);
 
@@ -493,11 +493,11 @@ const U = [];
 const uleg = (nome, desc, dir, page, imagem, destaque) =>
   U.push({ nome, desc, legacy: dir, page, imagem, destaque: !!destaque });
 
-uleg("Fauna Sonora", "Ouça o canto real dos animais.", "Sons(01)", "fauna.html", "apps/sons-animais.jpg", true);
-uleg("Encurtador de Links", "Encurte e acompanhe seus links.", "diminuilink(02)", "index.html", "apps/encurtador-link.jpg");
-uleg("Lançador de Dados", "D3, D6, D20 e mais em 3D.", "dados(03)", "index.html", "apps/uteis-dados.jpg");
-uleg("Sorteador de Grupos", "Divida pessoas em grupos aleatórios.", "sorteargrupos(04)", "index.html", "apps/uteis-sorteargrupos.jpg");
-uleg("Gerador de Gradiente", "Crie gradientes CSS e copie o código.", "cssatual(05)", "index.html", "apps/uteis-gradiente.jpg");
+uleg("Fauna Sonora", "Ouça o canto real dos animais.", "Sons(01)", "fauna.html", "images/editorial/study-notes.jpg", true);
+uleg("Encurtador de Links", "Encurte e acompanhe seus links.", "diminuilink(02)", "index.html", "images/editorial/study-notes.jpg");
+uleg("Lançador de Dados", "D3, D6, D20 e mais em 3D.", "dados(03)", "index.html", "images/editorial/study-notes.jpg");
+uleg("Sorteador de Grupos", "Divida pessoas em grupos aleatórios.", "sorteargrupos(04)", "index.html", "images/editorial/study-notes.jpg");
+uleg("Gerador de Gradiente", "Crie gradientes CSS e copie o código.", "cssatual(05)", "index.html", "images/editorial/study-notes.jpg");
 
 const uapp = (nome, desc, engine, params, destaque) =>
   U.push({ nome, desc, engine, params, imagem: "", destaque: !!destaque });

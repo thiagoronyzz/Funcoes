@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biblioteca de Fórmulas - Ciências da Natureza</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    
+
     <style>
         :root {
             --bg-page: #f0f4f8;
@@ -96,7 +96,7 @@
         }
 
         .search-container::before {
-            content: '🔍';
+            content: 'Buscar';
             position: absolute;
             left: 15px;
             top: 50%;
@@ -416,7 +416,7 @@
         const database = {
             fisica: {
                 name: "Física",
-                icon: "⚛️",
+                icon: "Átomo",
                 categories: {
                     mecanica: {
                         name: "Mecânica",
@@ -679,7 +679,7 @@
             },
             quimica: {
                 name: "Química",
-                icon: "🧪",
+                icon: "Experimento",
                 categories: {
                     geral: {
                         name: "Química Geral",
@@ -841,7 +841,7 @@
             },
             biologia: {
                 name: "Biologia",
-                icon: "🧬",
+                icon: "DNA",
                 categories: {
                     genetica: {
                         name: "Genética",
@@ -1065,7 +1065,7 @@
         // Renderiza a sidebar de categorias
         function renderCategories() {
             categoryListEl.innerHTML = '';
-            
+
             // Desativa visualmente a sidebar no modo busca
             if (searchTerm !== '') {
                 sidebarEl.classList.add('disabled');
@@ -1109,7 +1109,7 @@
                         </div>
                     </div>
                     <div class="example">
-                        <div class="example-title">💡 Exemplo prático</div>
+                        <div class="example-title">Ideia Exemplo prático</div>
                         <div class="example-text">${f.example}</div>
                     </div>
                 </div>
@@ -1166,7 +1166,7 @@
                         html += generateFormulaHTML(f, f.path);
                     });
                 }
-            } 
+            }
             // ================= NAVEGAÇÃO NORMAL =================
             else {
                 const cat = database[currentSubject].categories[currentCategory];
@@ -1176,7 +1176,7 @@
                         <p>${cat.desc}</p>
                     </div>
                 `;
-                
+
                 if (cat.formulas.length === 0) {
                     html += `
                         <div class="card empty-state">

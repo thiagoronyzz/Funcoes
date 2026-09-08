@@ -24,11 +24,11 @@ interface BotaoProps {
 
 const estilos: Record<NonNullable<BotaoProps["variante"]>, string> = {
   primario:
-    "bg-brand-600 text-white shadow-[0_20px_44px_-14px_rgba(10,61,255,0.6)] hover:bg-ink px-7 py-4 text-sm",
-  escuro: "bg-ink text-white hover:bg-brand-600 px-5 py-2.5 text-sm",
+    "bg-brand-600 text-white hover:bg-brand-700 px-6 py-3 text-sm",
+  escuro: "bg-ink text-white hover:bg-brand-700 px-5 py-2.5 text-sm",
   claro:
-    "bg-surface text-ink ring-1 ring-line hover:ring-brand-400/40 px-6 py-4 text-sm",
-  compacto: "bg-brand-600 text-white hover:bg-ink px-4 py-2 text-xs",
+    "bg-surface text-ink ring-1 ring-line hover:border-brand-600 hover:ring-brand-600 px-6 py-3 text-sm",
+  compacto: "bg-brand-600 text-white hover:bg-brand-700 px-4 py-2 text-xs",
 };
 
 export function BotaoBaixarApp({
@@ -52,7 +52,7 @@ export function BotaoBaixarApp({
       <button
         onClick={aoClicar}
         className={cn(
-          "group inline-flex items-center gap-2 rounded-full font-display font-semibold transition-all duration-300",
+          "group inline-flex items-center gap-2 rounded-none font-display font-semibold transition-all duration-300",
           estilos[variante],
           className
         )}
@@ -119,7 +119,7 @@ function ModalComoInstalar({
             exit={{ y: 40, opacity: 0, scale: 0.98 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md rounded-t-3xl bg-surface p-6 ring-1 ring-line sm:rounded-3xl md:p-8"
+            className="w-full max-w-md border border-line bg-surface p-6 md:p-8"
           >
             <div className="mb-6 flex items-start justify-between gap-4">
               <div className="flex items-center gap-3">
@@ -152,7 +152,7 @@ function ModalComoInstalar({
               {passos.map((p, i) => (
                 <li
                   key={i}
-                  className="flex items-center gap-3 rounded-2xl bg-surface2 px-4 py-3 ring-1 ring-line"
+                  className="flex items-center gap-3 border border-line bg-surface2 px-4 py-3"
                 >
                   <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-surface2 text-brand-300 ring-1 ring-line">
                     <p.icone className="size-4" />
@@ -194,7 +194,7 @@ export function BarraInstalarMobile() {
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 90, opacity: 0 }}
         transition={{ duration: 0.6, delay: 1.4, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed inset-x-3 bottom-3 z-[90] flex items-center gap-3 rounded-2xl bg-ink/95 px-4 py-3 text-white shadow-[0_20px_50px_-12px_rgba(6,11,36,0.55)] backdrop-blur-xl md:hidden"
+        className="fixed inset-x-3 bottom-3 z-[90] flex items-center gap-3 border border-white/15 bg-ink/95 px-4 py-3 text-white shadow-[0_20px_50px_-12px_rgba(6,11,36,0.55)] backdrop-blur-xl md:hidden"
       >
         <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-600">
           <Smartphone className="size-5" />

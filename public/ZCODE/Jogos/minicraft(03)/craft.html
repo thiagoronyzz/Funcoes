@@ -955,7 +955,7 @@ smelt('ironore', 'iron', 1, 2); smelt('goldore', 'gold', 1, 2);
 smelt('sand', 'glass', 1, 0); smelt('clay_ball', 'brick', 1, 0);
 smelt('oaklog', 'charcoal', 1, 1); smelt('birchlog', 'charcoal', 1, 1); smelt('sprucelog', 'charcoal', 1, 1);
 smelt('cobblestone', 'stone', 1, 0); smelt('beef', 'cookbeef', 1, 0); smelt('pork', 'cookpork', 1, 0);
-smelt('chickenm', 'cookchicken', 1, 0); 
+smelt('chickenm', 'cookchicken', 1, 0);
 const FUELS = Object.create(null);
 [['coal', 8], ['charcoal', 8], ['oaklog', 15], ['birchlog', 15], ['sprucelog', 15], ['oakplanks', 7.5], ['birchplanks', 7.5], ['spruceplanks', 7.5], ['crafttable', 7.5], ['bookshelf', 7.5], ['stick', 2.5], ['ladder', 6], ['tnt', 12]].forEach(([k, t]) => { FUELS[k] = t; });
 
@@ -2700,7 +2700,7 @@ const UI = {
       du.firstChild.style.background = f > .5 ? 'var(--ok)' : f > .22 ? 'var(--warn)' : 'var(--danger)';
     } else if (du) du.remove();
     let ec = el.querySelector('.ench');
-    if (st.ench && Object.keys(st.ench).length) { if (!ec) { ec = document.createElement('div'); ec.className = 'ench'; ec.textContent = '✦'; el.appendChild(ec); } }
+    if (st.ench && Object.keys(st.ench).length) { if (!ec) { ec = document.createElement('div'); ec.className = 'ench'; ec.textContent = ''; el.appendChild(ec); } }
     else if (ec) ec.remove();
   },
   syncHotbar() {
@@ -3003,7 +3003,7 @@ addEventListener('mousemove', (e) => {
       if (def.food !== undefined) tip.innerHTML += '<i>' + def.food + ' pontos de fome' + (def.heal ? ' · +' + def.heal + ' vida' : '') + '</i>';
       if (def.tool) tip.innerHTML += '<i>' + TIER_NAME[def.tier] + ' · velocidade ' + fmt(def.speed, 0) + ' · dano ' + def.dmg + '</i>';
       if (def.armor !== undefined) tip.innerHTML += '<i>Armadura · defesa ' + def.defense + '</i>';
-      if (st.ench) for (const k in st.ench) tip.innerHTML += '<em>✦ ' + ENCH[k].label + ' ' + roman(st.ench[k]) + '</em>';
+      if (st.ench) for (const k in st.ench) tip.innerHTML += '<em> ' + ENCH[k].label + ' ' + roman(st.ench[k]) + '</em>';
       if (def.res !== undefined && def.kind === 'block') tip.innerHTML += '<i>Dureza ' + def.hard + ' · resistência ' + def.res + '</i>';
       tip.classList.remove('hidden');
       tip.style.left = Math.min(innerWidth - 300, e.clientX + 14) + 'px';
@@ -3423,7 +3423,7 @@ UI.enchantEl = function () {
       const lvl = clamp(Math.ceil(power / 6), 1, ENCH[key].max);
       const s = INV.heldStack();
       if (s) { s.ench = s.ench || {}; s.ench[key] = Math.max(s.ench[key] || 0, lvl); }
-      statsInc('enchanted'); Sound.orb(); toast('✦ ' + ENCH[key].label + ' ' + roman(lvl) + ' em ' + (s ? DEFS[s.id].label : 'item'));
+      statsInc('enchanted'); Sound.orb(); toast(' ' + ENCH[key].label + ' ' + roman(lvl) + ' em ' + (s ? DEFS[s.id].label : 'item'));
       this.close();
       this.syncHotbar();
     };
@@ -3436,7 +3436,7 @@ UI.enchantEl = function () {
   box.appendChild(em);
   const info = document.createElement('div');
   info.style.cssText = 'font-size:11px;color:var(--muted)';
-  info.innerHTML = uniq.map((k) => '✦ ' + ENCH[k].label + ': ' + ENCH[k].desc(1)).join('<br>');
+  info.innerHTML = uniq.map((k) => ' ' + ENCH[k].label + ': ' + ENCH[k].desc(1)).join('<br>');
   box.appendChild(info);
   return box;
 };
@@ -4247,7 +4247,7 @@ function aboutHtml() {
     '5 modos (sobrevivência, criativo, aventura, hardcore, espectador), autosave a cada 45 s e F3 de depuração'];
   const off = ['Redstone e automações (Fase 3 do roadmap)', 'Nether, End e chefões', 'Poções/brewing',
     'Multiplayer client-server', 'Trilhos, minecart e elevadores de água', 'Farming de trigo e vilas geradas'];
-  return '<ul class="tight">' + on.map((x) => '<li>✔ ' + x + '</li>').join('') + '</ul>' +
+  return '<ul class="tight">' + on.map((x) => '<li>OK ' + x + '</li>').join('') + '</ul>' +
     '<p style="margin-top:8px;color:var(--muted);font-size:12.5px">Fora deste escopo (ficam para as próximas fases do roadmap):</p>' +
     '<ul class="tight">' + off.map((x) => '<li>· ' + x + '</li>').join('') + '</ul>';
 }

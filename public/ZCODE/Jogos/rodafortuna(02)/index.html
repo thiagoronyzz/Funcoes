@@ -411,7 +411,7 @@ input.invalid{ border-color:var(--lose); box-shadow:0 0 0 3px rgba(251,113,133,.
         </div>
         <button class="btn-mini" id="applyInitial" type="button">Aplicar</button>
         <button class="sound-toggle" id="soundBtn" type="button" title="Ligar/desligar som"
-                aria-label="Ligar ou desligar som">🔊</button>
+                aria-label="Ligar ou desligar som">Som ligado</button>
       </div>
       <p class="setup__hint" id="setupHint">Aplicar reinicia a partida com o novo valor (mínimo R$5).</p>
     </section>
@@ -867,7 +867,7 @@ function buildColorCards(){
     b.dataset.id = c.id;
     b.setAttribute("aria-pressed", "false");
     b.innerHTML =
-      '<span class="tick" aria-hidden="true">✓</span>' +
+      '<span class="tick" aria-hidden="true">OK</span>' +
       '<span class="dot" aria-hidden="true"></span>' +
       '<span class="nm">' + c.name + "</span>";
     b.addEventListener("click", () => toggleColor(c.id, b));
@@ -1229,7 +1229,7 @@ el.spin.addEventListener("click", spin);
 /* --- Som --- */
 el.soundBtn.addEventListener("click", () => {
   state.soundOn = !state.soundOn;
-  el.soundBtn.textContent = state.soundOn ? "🔊" : "🔇";
+  el.soundBtn.textContent = state.soundOn ? "Som ligado" : "Som desligado";
   if (state.soundOn) beep(880, .07, "triangle", .05);
 });
 

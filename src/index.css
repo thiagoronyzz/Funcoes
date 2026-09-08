@@ -1,67 +1,43 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Tipografia ─────────────────────────────── */
-  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-display: "DM Serif Display", Georgia, "Times New Roman", serif;
+  --font-body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
-  /* ── Paleta ZCODE (violeta + ciano sobre dark) ── */
-  --color-brand-50: #efeaff;
-  --color-brand-100: #ddd0ff;
-  --color-brand-200: #c0a8ff;
-  --color-brand-300: #a684ff;
-  --color-brand-400: #8f68ff;
-  --color-brand-500: #7c5cff;
-  --color-brand-600: #6d43f7;
-  --color-brand-700: #5a2ed6;
-  --color-brand-800: #4a26ae;
-  --color-brand-900: #3c2093;
+  --color-brand-50: #f7ede9;
+  --color-brand-100: #edd8d1;
+  --color-brand-200: #dfb7aa;
+  --color-brand-300: #ce9180;
+  --color-brand-400: #b96b59;
+  --color-brand-500: #9f5140;
+  --color-brand-600: #873f32;
+  --color-brand-700: #6d3229;
+  --color-brand-800: #542921;
+  --color-brand-900: #3b201b;
 
-  /* cores de categoria (espelham o kit dos apps) */
-  --color-acc-cyan: #29e0ff;
-  --color-acc-pink: #ff4d8f;
-  --color-acc-lime: #7dff6a;
-  --color-acc-amber: #ffb347;
+  --color-acc-cyan: #64716f;
+  --color-acc-pink: #a15b4c;
+  --color-acc-lime: #8b8b64;
+  --color-acc-amber: #b88b4a;
 
-  /* superfícies dark */
-  --color-ink: #edf0ff;
-  --color-paper: #05070f;
-  --color-surface: #0c101f;
-  --color-surface2: #131a2e;
-  --color-line: rgba(148, 158, 210, 0.14);
+  --color-ink: #252422;
+  --color-paper: #f3f0ea;
+  --color-surface: #fbfaf7;
+  --color-surface2: #e9e4dc;
+  --color-line: rgba(37, 36, 34, 0.16);
 
-  /* ── Animações ──────────────────────────────── */
-  --animate-marquee: marquee 26s linear infinite;
-  --animate-float: float 7s ease-in-out infinite;
-  --animate-spin-slow: spin 16s linear infinite;
-  --animate-pulse-dot: pulse-dot 2s ease-in-out infinite;
+  --animate-marquee: marquee 38s linear infinite;
 
   @keyframes marquee {
     to {
       transform: translateX(-50%);
     }
   }
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-16px);
-    }
-  }
-  @keyframes pulse-dot {
-    0%,
-    100% {
-      opacity: 1;
-      box-shadow: 0 0 0 0 rgba(124, 92, 255, 0.45);
-    }
-    50% {
-      opacity: 0.75;
-      box-shadow: 0 0 0 7px rgba(124, 92, 255, 0);
-    }
-  }
+}
+
+* {
+  box-sizing: border-box;
 }
 
 html {
@@ -69,66 +45,60 @@ html {
 }
 
 body {
-  background-color: var(--color-paper);
+  background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
-  background: var(--color-brand-500);
+  background: var(--color-brand-600);
   color: #fff;
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 9px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--color-paper);
 }
+
 ::-webkit-scrollbar-thumb {
-  background: var(--color-brand-600);
-  border-radius: 8px;
+  background: #b9b1a5;
   border: 2px solid var(--color-paper);
+  border-radius: 0;
 }
 
-/* cursor customizado apenas em desktop */
-@media (pointer: fine) {
-  * {
-    cursor: none !important;
+*:focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 3px;
+}
+
+button,
+a {
+  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease,
+    transform 180ms ease, opacity 180ms ease;
+}
+
+/* A linguagem visual é editorial: linhas, fotografia e espaço, sem efeitos luminosos. */
+.editorial-rule {
+  height: 1px;
+  background: var(--color-line);
+}
+
+.editorial-image {
+  filter: saturate(0.82) contrast(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
-}
-
-/* ── Utilitários de arte ─────────────────────── */
-.bg-dots {
-  background-image: radial-gradient(circle, rgba(124, 92, 255, 0.18) 1.2px, transparent 1.2px);
-  background-size: 26px 26px;
-}
-
-.bg-dots-light {
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.22) 1.2px, transparent 1.2px);
-  background-size: 24px 24px;
-}
-
-.text-stroke {
-  -webkit-text-stroke: 2.5px var(--color-brand-500);
-  color: transparent;
-}
-
-.text-stroke-ghost {
-  -webkit-text-stroke: 1.5px rgba(237, 240, 255, 0.12);
-  color: transparent;
-}
-
-.text-stroke-white {
-  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.28);
-  color: transparent;
-}
-
-.grain {
-  position: fixed;
-  inset: 0;
-  z-index: 80;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
 }

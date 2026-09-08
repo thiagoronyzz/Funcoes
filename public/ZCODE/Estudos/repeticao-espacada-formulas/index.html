@@ -5,23 +5,23 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Repetição Espaçada: Fórmulas — Zcode</title>
 <meta name="description" content="Fixe as principais fórmulas da matemática com repetição espaçada.">
-<meta name="theme-color" content="#05070f">
+<meta name="theme-color" content="#f3f0ea">
 <meta name="application-name" content="Zcode">
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2064%2064'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%237c5cff'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%2329e0ff'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'64'%20height%3D'64'%20rx%3D'14'%20fill%3D'url(%23g)'%2F%3E%3Cpath%20d%3D'M20%2018h24L20%2046h24'%20fill%3D'none'%20stroke%3D'white'%20stroke-width%3D'8'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2064%2064'%3E%3Crect%20width%3D'64'%20height%3D'64'%20fill%3D'%23f3f0ea'%2F%3E%3Cpath%20d%3D'M20%2018h24L20%2046h24'%20fill%3D'none'%20stroke%3D'%23252422'%20stroke-width%3D'7'%20stroke-linecap%3D'square'%2F%3E%3C%2Fsvg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --z-bg:#05070f; --z-bg2:#0a0d1a; --z-surface:#0e1322; --z-surface2:#151c33;
-  --z-line:rgba(148,158,210,.14); --z-line2:rgba(148,158,210,.28);
-  --z-text:#edf0ff; --z-muted:#97a0c4;
-  --z-brand:#7c5cff; --z-brand-soft:rgba(124,92,255,.16);
-  --z-cyan:#29e0ff; --z-pink:#ff4d8f; --z-lime:#7dff6a; --z-amber:#ffb347;
-  --z-red:#ff5c5c; --z-radius:18px;
-  --z-fd:"Space Grotesk",system-ui,sans-serif;
-  --z-f:"Inter",system-ui,sans-serif;
-  --z-fm:"JetBrains Mono",ui-monospace,monospace;
+  --z-bg:#f3f0ea; --z-bg2:#fbfaf7; --z-surface:#fffefa; --z-surface2:#e9e4dc;
+  --z-line:rgba(37,36,34,.16); --z-line2:rgba(37,36,34,.3);
+  --z-text:#252422; --z-muted:#746e66;
+  --z-brand:#873f32; --z-brand-soft:rgba(135,63,50,.12);
+  --z-cyan:#64716f; --z-pink:#9f5140; --z-lime:#8b8b64; --z-amber:#b88b4a;
+  --z-red:#9f5140; --z-radius:4px;
+  --z-fd:"DM Serif Display",Georgia,serif;
+  --z-f:"DM Sans",system-ui,sans-serif;
+  --z-fm:"IBM Plex Mono",ui-monospace,monospace;
   --z-acc:var(--z-brand);
 }
 html[data-cat="estudos"]{--z-acc:var(--z-cyan)}
@@ -31,10 +31,7 @@ html[data-cat="social"]{--z-acc:var(--z-amber)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
-  background:
-    radial-gradient(1100px 500px at 85% -10%, rgba(124,92,255,.14), transparent 60%),
-    radial-gradient(900px 420px at -10% 110%, rgba(41,224,255,.08), transparent 60%),
-    var(--z-bg);
+  background:var(--z-bg);
   color:var(--z-text); font-family:var(--z-f); font-size:15px; line-height:1.55;
   min-height:100dvh; -webkit-font-smoothing:antialiased;
 }
@@ -53,12 +50,9 @@ h1,h2,h3,.fd{font-family:var(--z-fd);letter-spacing:-.02em}
 .ztop{
   position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;
   height:54px;padding:0 16px;border-bottom:1px solid var(--z-line);
-  background:rgba(5,7,15,.78);backdrop-filter:blur(14px);
+  background:rgba(243,240,234,.96);backdrop-filter:blur(8px);
 }
-.zlogo{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;
-  background:linear-gradient(135deg,#7c5cff,#29e0ff);color:#fff;
-  font-family:var(--z-fd);font-weight:700;font-size:19px;text-decoration:none;
-  box-shadow:0 6px 18px -6px rgba(124,92,255,.65);flex:none}
+.ztop-brand{color:var(--z-text);font-family:var(--z-fd);font-size:21px;line-height:1;text-decoration:none;letter-spacing:-.04em;flex:none}
 .ztop-mid{min-width:0}
 .ztop-mid strong{display:block;font-family:var(--z-fd);font-size:14.5px;letter-spacing:-.01em;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -66,9 +60,9 @@ h1,h2,h3,.fd{font-family:var(--z-fd);letter-spacing:-.02em}
   letter-spacing:.14em;text-transform:uppercase;color:var(--z-acc);
   background:color-mix(in srgb,var(--z-acc) 12%, transparent);
   border:1px solid color-mix(in srgb,var(--z-acc) 34%, transparent);
-  padding:2px 9px;border-radius:99px;white-space:nowrap}
+  padding:2px 9px;border-radius:var(--z-radius);white-space:nowrap}
 .zback{margin-left:auto;font-family:var(--z-fm);font-size:11.5px;text-decoration:none;
-  color:var(--z-muted);border:1px solid var(--z-line2);border-radius:99px;padding:7px 13px;
+  color:var(--z-muted);border:1px solid var(--z-line2);border-radius:var(--z-radius);padding:7px 13px;
   transition:.2s;white-space:nowrap}
 .zback:hover{color:var(--z-text);border-color:var(--z-acc)}
 
@@ -99,7 +93,7 @@ h1,h2,h3,.fd{font-family:var(--z-fd);letter-spacing:-.02em}
 /* ── botões / campos ──────────────────────────────────── */
 .zbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
   font-family:var(--z-fd);font-weight:600;font-size:14.5px;letter-spacing:-.01em;
-  color:#04060d;background:var(--z-acc);border:1px solid transparent;border-radius:13px;
+  color:#04060d;background:var(--z-acc);border:1px solid transparent;border-radius:var(--z-radius);
   padding:11px 20px;transition:.18s;text-decoration:none;user-select:none}
 .zbtn:hover{filter:brightness(1.12);transform:translateY(-1px)}
 .zbtn:active{transform:translateY(0)}
@@ -111,7 +105,7 @@ h1,h2,h3,.fd{font-family:var(--z-fd);letter-spacing:-.02em}
 .zbtn.big{padding:14px 28px;font-size:16px;border-radius:15px}
 .zbtn.w{width:100%}
 .zinput,.zselect,.ztextarea{width:100%;background:var(--z-surface2);border:1px solid var(--z-line2);
-  color:var(--z-text);border-radius:12px;padding:11px 14px;font-family:var(--z-f);font-size:15px;
+  color:var(--z-text);border-radius:var(--z-radius);padding:11px 14px;font-family:var(--z-f);font-size:15px;
   outline:none;transition:.18s}
 .zinput:focus,.zselect:focus,.ztextarea:focus{border-color:var(--z-acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--z-acc) 22%,transparent)}
 .ztextarea{min-height:130px;resize:vertical;font-family:var(--z-fm);font-size:13px;line-height:1.5}
@@ -123,7 +117,7 @@ h1,h2,h3,.fd{font-family:var(--z-fd);letter-spacing:-.02em}
 /* ── opções (quiz) ────────────────────────────────────── */
 .zopty{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
   background:var(--z-surface2);color:var(--z-text);border:1px solid var(--z-line2);
-  border-radius:14px;padding:13px 16px;font-family:var(--z-f);font-size:15px;transition:.16s}
+  border-radius:var(--z-radius);padding:13px 16px;font-family:var(--z-f);font-size:15px;transition:.16s}
 .zopty:hover:not(:disabled){border-color:var(--z-acc);transform:translateX(3px)}
 .zopty i{font-style:normal;font-family:var(--z-fm);font-size:11px;color:var(--z-muted);
   width:24px;height:24px;border-radius:8px;display:grid;place-items:center;
@@ -133,16 +127,16 @@ h1,h2,h3,.fd{font-family:var(--z-fd);letter-spacing:-.02em}
 .zopty:disabled{cursor:default}
 
 /* ── barra / progresso / toast / modal ────────────────── */
-.zprog{height:8px;border-radius:99px;background:var(--z-surface2);overflow:hidden}
+.zprog{height:8px;border-radius:var(--z-radius);background:var(--z-surface2);overflow:hidden}
 .zprog i{display:block;height:100%;border-radius:99px;background:var(--z-acc);transition:width .3s}
 .ztoast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);z-index:99;
   background:var(--z-text);color:#04060d;font-weight:600;font-size:13.5px;padding:10px 20px;
-  border-radius:99px;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 14px 34px -10px rgba(0,0,0,.6)}
+  border-radius:var(--z-radius);opacity:0;pointer-events:none;transition:.25s;box-shadow:0 14px 34px -10px rgba(0,0,0,.6)}
 .ztoast.on{opacity:1;transform:translate(-50%,0)}
 .zmodal{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;
   background:rgba(3,4,10,.72);backdrop-filter:blur(6px)}
 .zbox{width:min(460px,100%);background:var(--z-surface);border:1px solid var(--z-line2);
-  border-radius:22px;padding:26px;text-align:center}
+  border-radius:var(--z-radius);padding:26px;text-align:center}
 .zbox h3{font-size:24px;margin-bottom:8px}
 .zbox p{color:var(--z-muted);margin-bottom:18px}
 .zkbd{font-family:var(--z-fm);font-size:11px;border:1px solid var(--z-line2);border-bottom-width:2px;
@@ -160,13 +154,13 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 </head>
 <body data-app="repeticao-espacada-formulas">
 <header class="ztop">
-  <a class="zlogo" href="/" aria-label="Zcode">Z</a>
+  <a class="ztop-brand" href="/" aria-label="Zcode">Zcode</a>
   <div class="ztop-mid">
     <strong>Repetição Espaçada: Fórmulas</strong>
   </div>
   <span class="zchip">Estudos</span>
-  
-    <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">🔊</button>
+
+    <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
 <main class="zmain" id="zmain">
@@ -286,7 +280,7 @@ window.Z=(function(){
 
 
 var zm=document.getElementById("zmute");
-if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"🔇":"🔊"})}
+if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
 var IT = [["Teorema de Pitágoras","a² + b² = c²"],["Fórmula de Bhaskara","x = (−b ± √(b² − 4ac)) / 2a"],["Área do triângulo","base × altura ÷ 2"],["Circunferência","C = 2πr"],["Volume da esfera","V = 4/3 · πr³"],["Média ponderada","Σ(xᵢ·pᵢ) / Σpᵢ"],["Logaritmo","log_a(b) = c ⇔ aᶜ = b"],["Fatorial","n! = n·(n−1)·…·1"]];
 var CHAVE = "srs-mat";
@@ -315,7 +309,7 @@ function render(){
   $id("mostrar").disabled = false;
   var area = $id("cardArea"); area.innerHTML = "";
   if(pos >= fila.length){
-    area.innerHTML = "<div class='zcard pad center'><div class='zbig acc'>🎉</div><h3>Nada para revisar!</h3><p class='dim'>Volte amanhã ou marque como 'Fácil' para adiantar.</p></div>";
+    area.innerHTML = "<div class='zcard pad center'><div class='zbig acc'>Concluído</div><h3>Nada para revisar!</h3><p class='dim'>Volte amanhã ou marque como 'Fácil' para adiantar.</p></div>";
     atualizarStats();
     return;
   }

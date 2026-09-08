@@ -1,186 +1,101 @@
-import {
-  motion,
-  useMotionValue,
-  useSpring,
-  useTransform,
-} from "framer-motion";
-import {
-  ArrowDown,
-  Gamepad2,
-  GraduationCap,
-  MessagesSquare,
-  Wrench,
-} from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { categorias } from "../data/apps";
 
 const appsPrincipais = categorias
-  .filter((c) => c.id !== "social")
-  .reduce((a, c) => a + c.apps.length, 0);
-
-const chips = [
-  { Icone: GraduationCap, rotulo: "estudos", posicao: "right-[7%] top-[24%]", atraso: "0s" },
-  { Icone: Gamepad2, rotulo: "jogos", posicao: "right-[22%] top-[46%]", atraso: "1.4s" },
-  { Icone: Wrench, rotulo: "úteis", posicao: "right-[5%] top-[64%]", atraso: "0.7s" },
-];
+  .filter((categoria) => categoria.id !== "social")
+  .reduce((total, categoria) => total + categoria.apps.length, 0);
 
 const stats = [
   { valor: String(appsPrincipais).padStart(2, "0"), rotulo: "aplicativos" },
   { valor: "04", rotulo: "categorias" },
   { valor: "100%", rotulo: "no navegador" },
-  { valor: "24/7", rotulo: "sempre no ar" },
+  { valor: "24/7", rotulo: "disponível" },
 ];
 
 export default function Hero() {
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const sx = useSpring(mx, { stiffness: 42, damping: 18 });
-  const sy = useSpring(my, { stiffness: 42, damping: 18 });
-
-  const blobX = useTransform(sx, [-1, 1], [-55, 55]);
-  const blobY = useTransform(sy, [-1, 1], [-35, 35]);
-  const blob2X = useTransform(sx, [-1, 1], [40, -40]);
-  const blob2Y = useTransform(sy, [-1, 1], [30, -30]);
-  const chipX = useTransform(sx, [-1, 1], [18, -18]);
-  const chipY = useTransform(sy, [-1, 1], [14, -14]);
-
   return (
-    <section
-      id="topo"
-      onMouseMove={(e) => {
-        const r = e.currentTarget.getBoundingClientRect();
-        mx.set(((e.clientX - r.left) / r.width) * 2 - 1);
-        my.set(((e.clientY - r.top) / r.height) * 2 - 1);
-      }}
-      className="relative flex min-h-screen flex-col overflow-hidden"
-    >
-      {/* fundo: grade de pontos + manchas azuis com parallax */}
-      <div className="absolute inset-0 bg-dots [mask-image:radial-gradient(ellipse_75%_65%_at_50%_38%,black,transparent)]" />
-      <motion.div
-        style={{ x: blobX, y: blobY }}
-        className="absolute -top-36 right-[6%] size-[36rem] rounded-full bg-brand-500/20 blur-[120px]"
-      />
-      <motion.div
-        style={{ x: blob2X, y: blob2Y }}
-        className="absolute -bottom-24 left-[-12%] size-[30rem] rounded-full bg-brand-300/30 blur-[110px]"
-      />
-      <div className="absolute right-[16%] top-[18%] hidden lg:block">
-        <div className="size-72 animate-spin-slow rounded-full border border-dashed border-brand-600/25" />
-      </div>
-
-      {/* chips flutuantes de categoria */}
-      {chips.map(({ Icone, rotulo, posicao, atraso }) => (
+    <section id="topo" className="relative scroll-mt-20 overflow-hidden pt-28 md:pt-36">
+      <div className="mx-auto grid w-full max-w-7xl gap-14 px-5 pb-14 md:px-8 md:pb-20 lg:grid-cols-[0.88fr_1.12fr] lg:items-end lg:gap-20">
         <motion.div
-          key={rotulo}
-          style={{ x: chipX, y: chipY }}
-          className={`absolute z-20 hidden xl:block ${posicao}`}
-        >
-          <div
-            className="flex animate-float items-center gap-3 rounded-2xl bg-surface/90 p-3 pr-5 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] ring-1 ring-line backdrop-blur"
-            style={{ animationDelay: atraso }}
-          >
-            <span className="grid size-10 place-items-center rounded-xl bg-brand-600 text-white">
-              <Icone className="size-5" strokeWidth={1.8} />
-            </span>
-            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-ink/70">
-              {rotulo}
-            </span>
-          </div>
-        </motion.div>
-      ))}
-
-      <div className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-5 pt-32 md:px-8 md:pt-40">
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-          className="mb-7 flex items-center gap-3"
+          transition={{ duration: 0.7 }}
+          className="flex flex-col"
         >
-          <span className="size-2 animate-pulse-dot rounded-full bg-brand-600" />
-          <span className="font-mono text-[11px] uppercase tracking-[0.32em] text-ink/60">
-            Plataforma pessoal de aplicativos
-          </span>
-        </motion.div>
+          <div className="mb-8 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.26em] text-ink/55">
+            <span className="h-px w-8 bg-brand-600" />
+            Catálogo digital · 2026
+          </div>
 
-        <h1 className="font-display font-bold uppercase leading-[0.84] tracking-[-0.04em]">
-          <span className="block overflow-hidden pb-1">
-            <motion.span
-              initial={{ y: "112%" }}
-              animate={{ y: "0%" }}
-              transition={{ duration: 1.05, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-              className="block text-[clamp(4.2rem,14.5vw,12.5rem)]"
-            >
-              Z
-            </motion.span>
-          </span>
-          <span className="block overflow-hidden pb-2 pl-[9vw]">
-            <motion.span
-              initial={{ y: "112%" }}
-              animate={{ y: "0%" }}
-              transition={{ duration: 1.05, ease: [0.16, 1, 0.3, 1], delay: 0.34 }}
-              className="text-stroke block text-[clamp(4.2rem,14.5vw,12.5rem)]"
-            >
-              CODE
-              <span className="text-brand-400" style={{ WebkitTextStrokeWidth: 0 }}>
-                .
-              </span>
-            </motion.span>
-          </span>
-        </h1>
+          <h1 className="max-w-xl font-display text-[clamp(3.8rem,8vw,7.8rem)] leading-[0.88] tracking-[-0.045em]">
+            Ferramentas para o dia a dia.
+          </h1>
 
-        <div className="mt-10 flex flex-col gap-8 md:mt-14 md:flex-row md:items-end md:justify-between">
-          <motion.p
-            initial={{ opacity: 0, y: 22 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.55 }}
-            className="max-w-md font-display text-3xl font-bold tracking-tight text-ink md:text-5xl"
-          >
-            <span className="text-brand-400">Zcode</span> — 300 apps, zero instalação
-          </motion.p>
+          <p className="mt-8 max-w-md text-base leading-relaxed text-ink/65 md:text-lg">
+            Uma seleção de aplicativos diretos, úteis e acessíveis para estudar,
+            jogar e resolver pequenas tarefas sem sair do navegador.
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 22 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.68 }}
-            className="flex flex-wrap items-center gap-4"
-          >
+          <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4">
             <a
               href="#estudos"
-              className="group inline-flex items-center gap-3 rounded-full bg-brand-600 px-7 py-4 font-display text-sm font-semibold text-white shadow-[0_20px_44px_-14px_rgba(124,92,255,0.6)] transition-all duration-300 hover:bg-brand-700 hover:shadow-[0_20px_44px_-14px_rgba(124,92,255,0.8)]"
+              className="group inline-flex items-center gap-3 border-b border-brand-600 pb-2 font-body text-sm font-semibold text-brand-700"
             >
-              Explorar aplicativos
-              <ArrowDown className="size-4 transition-transform duration-300 group-hover:translate-y-1" />
+              Explorar o catálogo
+              <ArrowDown className="size-4 transition-transform group-hover:translate-y-1" />
             </a>
             <a
               href="#sobre"
-              className="inline-flex items-center gap-2 rounded-full px-6 py-4 font-display text-sm font-semibold text-ink ring-1 ring-ink/15 transition-all duration-300 hover:bg-surface2 hover:ring-brand-400/40"
+              className="inline-flex items-center gap-2 font-body text-sm font-medium text-ink/55 hover:text-ink"
             >
-              <MessagesSquare className="size-4 text-brand-600" />
               Sobre a plataforma
+              <ArrowUpRight className="size-4" />
             </a>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
+
+        <motion.figure
+          initial={{ opacity: 0, y: 26 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.85, delay: 0.12 }}
+          className="relative border border-ink/20 bg-surface p-2"
+        >
+          <div className="relative aspect-[4/3] overflow-hidden md:aspect-[16/10]">
+            <img
+              src="/images/editorial/study-desk.jpg"
+              alt="Mesa de trabalho com caderno, lápis e computador"
+              className="editorial-image absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-black/65 px-5 pb-5 pt-5 text-white">
+              <figcaption className="font-body text-sm">Um lugar para começar.</figcaption>
+              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/70">
+                Arquivo 01
+              </span>
+            </div>
+          </div>
+        </motion.figure>
       </div>
 
-      {/* barra de estatísticas */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.9, delay: 0.9 }}
-        className="relative border-t border-line bg-surface/60 backdrop-blur-sm"
-      >
-        <div className="mx-auto grid w-full max-w-7xl grid-cols-2 divide-x divide-line px-5 md:grid-cols-4 md:px-8">
-          {stats.map((s) => (
-            <div key={s.rotulo} className="flex flex-col gap-1 px-4 py-5 md:px-8 md:py-6">
-              <span className="font-display text-2xl font-bold tracking-tight md:text-3xl">
-                {s.valor}
+      <div className="border-y border-line bg-surface/60">
+        <div className="mx-auto grid w-full max-w-7xl grid-cols-2 px-5 md:grid-cols-4 md:px-8">
+          {stats.map((stat, index) => (
+            <div
+              key={stat.rotulo}
+              className={`flex flex-col gap-1 py-5 md:py-6 ${
+                index > 0 ? "border-l border-line pl-4 md:pl-8" : ""
+              } ${index < 2 ? "pr-4" : ""}`}
+            >
+              <span className="font-display text-3xl leading-none tracking-tight md:text-4xl">
+                {stat.valor}
               </span>
-              <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-ink/50">
-                {s.rotulo}
+              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink/50">
+                {stat.rotulo}
               </span>
             </div>
           ))}
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

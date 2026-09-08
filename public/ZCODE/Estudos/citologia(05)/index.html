@@ -1884,7 +1884,7 @@
         let html = '<th scope="row">' + linha.item + "</th>";
         linha.valores.forEach((v) => {
           if (v.k === "yes" || v.k === "no") {
-            html += '<td><span class="pill pill-' + v.k + '">' + (v.k === "yes" ? "✓ " : "✗ ") + v.t + "</span></td>";
+            html += '<td><span class="pill pill-' + v.k + '">' + (v.k === "yes" ? "OK " : "Não ") + v.t + "</span></td>";
           } else {
             html += "<td>" + v.t + "</td>";
           }

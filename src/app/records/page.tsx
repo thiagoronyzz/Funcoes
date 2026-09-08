@@ -32,7 +32,7 @@ interface RecordsData {
   topPosts: TopPost[];
 }
 
-const MEDALS = ["🥇", "🥈", "🥉"];
+const MEDALS = ["1º", "2º", "3º"];
 
 function getRankStyle(index: number) {
   if (index === 0)

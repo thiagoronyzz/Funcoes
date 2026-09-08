@@ -12,7 +12,7 @@ export function senha({ nome, sub, frase }) {
     <div><span class="zlabel">Separador</span><select class="zselect" id="sep"><option>-</option><option>_</option><option>.</option><option>*</option></select></div>
     <div class="row" style="align-items:flex-end"><button class="zbtn w" id="gerar" type="button">Gerar</button></div>
   </div>
-  <div class="row" style="justify-content:center"><button class="zbtn ghost sm" id="copiar" type="button">📋 Copiar</button></div>
+  <div class="row" style="justify-content:center"><button class="zbtn ghost sm" id="copiar" type="button">Copiar Copiar</button></div>
   <p class="dim center mt" style="font-size:12.5px">Frase-passe forte: fácil de lembrar, difícil de adivinhar (diceware).</p>
 </div>` : `
 <div class="zhero"><h1>${nome}</h1><p>${sub}</p></div>
@@ -29,8 +29,8 @@ export function senha({ nome, sub, frase }) {
     <label class="zcard row" style="padding:10px 14px;cursor:pointer"><input type="checkbox" id="simb" checked> <span>Símbolos (!@#$…)</span></label>
   </div>
   <div class="row" style="justify-content:center;gap:10px">
-    <button class="zbtn" id="gerar" type="button">🎲 Gerar</button>
-    <button class="zbtn ghost" id="copiar" type="button">📋 Copiar</button>
+    <button class="zbtn" id="gerar" type="button">Dado Gerar</button>
+    <button class="zbtn ghost" id="copiar" type="button">Copiar Copiar</button>
   </div>
   <div class="col mt center"><span class="zchip">Força: <b class="acc" id="forca">—</b></span></div>
 </div>`;
@@ -81,7 +81,7 @@ export function senha({ nome, sub, frase }) {
     var s = out.join("");
     $id("saida").textContent = s;
     var bits = entropia(s);
-    var f = bits > 100 ? " Blindada" : bits > 70 ? "🔒 Muito forte" : bits > 50 ? "✅ Boa" : "⚠ Fraca — aumente o tamanho";
+    var f = bits > 100 ? " Blindada" : bits > 70 ? "Bloqueado Muito forte" : bits > 50 ? "OK Boa" : "Atenção Fraca — aumente o tamanho";
     $id("forca").textContent = f + " (" + Math.round(bits) + " bits)";
     Z.snd(700, 0.05, "sine");
   }
@@ -107,7 +107,7 @@ export function base64({ nome, sub }) {
   <div class="row mb" style="justify-content:center;gap:10px">
     <button class="zbtn" id="enc" type="button">⇡ Codificar</button>
     <button class="zbtn" id="dec" type="button">⇩ Decodificar</button>
-    <button class="zbtn ghost" id="copiar" type="button">📋 Copiar saída</button>
+    <button class="zbtn ghost" id="copiar" type="button">Copiar Copiar saída</button>
   </div>
   <span class="zlabel">Resultado</span>
   <textarea class="ztextarea" id="saida" readonly placeholder="O resultado aparece aqui..."></textarea>
@@ -189,9 +189,9 @@ export function uuid({ nome, sub }) {
 <div class="zcard pad center" style="max-width:560px;margin:0 auto">
   <div class="zgrid" id="lista" style="text-align:left"></div>
   <div class="row mt" style="justify-content:center;gap:10px">
-    <button class="zbtn" id="gerar" type="button">🎲 Gerar 1</button>
+    <button class="zbtn" id="gerar" type="button">Dado Gerar 1</button>
     <button class="zbtn ghost" id="gerar10" type="button">Gerar 10</button>
-    <button class="zbtn ghost" id="copiar" type="button">📋 Copiar todos</button>
+    <button class="zbtn ghost" id="copiar" type="button">Copiar Copiar todos</button>
   </div>
 </div>`;
   const js = `
@@ -240,8 +240,8 @@ export function aleatorio({ nome, sub }) {
     <div class="zbig acc" id="resultado">—</div>
   </div>
   <div class="row" style="justify-content:center;gap:10px">
-    <button class="zbtn" id="sortear" type="button">🎲 Sortear</button>
-    <button class="zbtn ghost" id="copiar" type="button">📋 Copiar</button>
+    <button class="zbtn" id="sortear" type="button">Dado Sortear</button>
+    <button class="zbtn ghost" id="copiar" type="button">Copiar Copiar</button>
   </div>
 </div>`;
   const js = `
@@ -271,7 +271,7 @@ export function sorteador({ nome, sub, modo }) {
   <span class="zlabel">${modo === "opcoes" ? "Opções (uma por linha)" : "Lista de nomes (um por linha)"}</span>
   <textarea class="ztextarea mb" id="lista" placeholder="Ana\\nBruno\\nCarla"></textarea>
   <div class="row mb wrap" style="justify-content:center;gap:10px">
-    <button class="zbtn" id="sortear" type="button">🎲 Sortear 1</button>
+    <button class="zbtn" id="sortear" type="button">Dado Sortear 1</button>
     ${modo === "nomes" ? '<button class="zbtn ghost" id="sortear3" type="button">Sortear 3</button>' : ""}
   </div>
   <div class="zcard center" style="background:var(--z-bg2);min-height:80px;display:grid;place-items:center">
@@ -309,7 +309,7 @@ export function moeda({ nome, sub }) {
   const body = `
 <div class="zhero"><h1>${nome}</h1><p>${sub}</p></div>
 <div class="zcard pad center" style="max-width:440px;margin:0 auto">
-  <div id="moeda" style="font-size:110px;line-height:1.2;margin:10px 0 18px;cursor:pointer;user-select:none">🪙</div>
+  <div id="moeda" style="font-size:110px;line-height:1.2;margin:10px 0 18px;cursor:pointer;user-select:none">Moeda</div>
   <p class="fd" id="resultado" style="font-size:22px;min-height:30px">Toque para lançar!</p>
   <div class="row mt" style="justify-content:center;gap:10px">
     <span class="zchip">Caras: <b class="acc" id="c">0</b></span>
@@ -334,7 +334,7 @@ export function moeda({ nome, sub }) {
         var cara = Math.random() < 0.5;
         if(cara){ caras++; $id("c").textContent = caras }
         else { coroas++; $id("k").textContent = coroas }
-        $id("resultado").textContent = cara ? "CARAS! ☀️" : "COROA! 🌙";
+        $id("resultado").textContent = cara ? "CARAS! Sol" : "COROA! Lua";
         Z.snd(cara ? 900 : 600, 0.12, "sine");
         girando = false;
       }
@@ -420,7 +420,7 @@ export function caseConv({ nome, sub }) {
     out.style.cssText = "font-size:12.5px;word-break:break-all;flex:1";
     var btn = document.createElement("button");
     btn.className = "zbtn sm ghost";
-    btn.textContent = "📋";
+    btn.textContent = "Copiar";
     btn.addEventListener("click", function(){ Z.copy(out.textContent) });
     d.appendChild(label); d.appendChild(out); d.appendChild(btn);
     box.appendChild(d);
@@ -447,7 +447,7 @@ export function urlEnc({ nome, sub }) {
   <div class="row mb" style="justify-content:center;gap:10px">
     <button class="zbtn" id="enc" type="button">⇡ Encode</button>
     <button class="zbtn" id="dec" type="button">⇩ Decode</button>
-    <button class="zbtn ghost" id="copiar" type="button">📋</button>
+    <button class="zbtn ghost" id="copiar" type="button">Copiar</button>
   </div>
   <span class="zlabel">Saída</span>
   <textarea class="ztextarea" id="saida" readonly></textarea>
@@ -476,9 +476,9 @@ export function jsonFmt({ nome, sub }) {
   <span class="zlabel">JSON de entrada</span>
   <textarea class="ztextarea mb" id="entrada" placeholder='{"ola":"mundo"}'></textarea>
   <div class="row mb wrap" style="justify-content:center;gap:10px">
-    <button class="zbtn" id="bonito" type="button">✨ Formatar</button>
+    <button class="zbtn" id="bonito" type="button"> Formatar</button>
     <button class="zbtn" id="minimo" type="button">Comprimir</button>
-    <button class="zbtn ghost" id="copiar" type="button">📋 Copiar</button>
+    <button class="zbtn ghost" id="copiar" type="button">Copiar Copiar</button>
   </div>
   <p class="center mb" id="status" style="min-height:20px"></p>
   <span class="zlabel">Saída</span>
@@ -491,10 +491,10 @@ export function jsonFmt({ nome, sub }) {
     try {
       var obj = JSON.parse($id("entrada").value);
       $id("saida").value = JSON.stringify(obj, null, indent);
-      $id("status").innerHTML = "<span class='acc' style='font-family:var(--z-fm)'>✓ JSON válido</span>";
+      $id("status").innerHTML = "<span class='acc' style='font-family:var(--z-fm)'>OK JSON válido</span>";
     } catch(e){
       $id("saida").value = "";
-      $id("status").innerHTML = "<span style='color:var(--z-red);font-family:var(--z-fm)'>✗ " + e.message + "</span>";
+      $id("status").innerHTML = "<span style='color:var(--z-red);font-family:var(--z-fm)'>Não " + e.message + "</span>";
     }
   }
   $id("bonito").addEventListener("click", function(){ processar(2) });
@@ -717,7 +717,7 @@ export function htmlEnt({ nome, sub }) {
   <div class="row mb" style="justify-content:center;gap:10px">
     <button class="zbtn" id="enc" type="button">⇡ Escapar</button>
     <button class="zbtn" id="dec" type="button">⇩ Desescapar</button>
-    <button class="zbtn ghost" id="copiar" type="button">📋</button>
+    <button class="zbtn ghost" id="copiar" type="button">Copiar</button>
   </div>
   <span class="zlabel">Saída</span>
   <textarea class="ztextarea" id="saida" readonly></textarea>
@@ -748,11 +748,11 @@ export function imgB64({ nome, sub }) {
 <div class="zhero"><h1>${nome}</h1><p>${sub}</p></div>
 <div class="zcard pad" style="max-width:640px;margin:0 auto">
   <input type="file" id="arquivo" accept="image/*" style="display:none">
-  <button class="zbtn w mb" id="escolher" type="button">📁 Escolher imagem</button>
+  <button class="zbtn w mb" id="escolher" type="button">Arquivo Escolher imagem</button>
   <div class="row mb wrap" style="gap:10px">
     <div style="flex:1;min-width:120px"><span class="zlabel">Largura máx. (px)</span><input class="zinput" id="largura" type="number" value="0" min="0" placeholder="0 = original"></div>
     <div style="flex:1;min-width:120px"><span class="zlabel">Formato</span><select class="zselect" id="formato"><option>image/png</option><option>image/jpeg</option><option>image/webp</option></select></div>
-    <div class="row" style="align-items:flex-end;gap:8px"><button class="zbtn" id="convert" type="button">Convert</button><button class="zbtn ghost" id="copiar" type="button">📋</button></div>
+    <div class="row" style="align-items:flex-end;gap:8px"><button class="zbtn" id="convert" type="button">Convert</button><button class="zbtn ghost" id="copiar" type="button">Copiar</button></div>
   </div>
   <div class="zcard mb" style="background:var(--z-bg2);text-align:center;padding:12px"><img id="preview" alt="" style="max-width:100%;max-height:220px;border-radius:10px;display:none"><p class="dim" id="info" style="font-size:12px;margin-top:8px"></p></div>
   <span class="zlabel">Base64</span>
@@ -862,7 +862,7 @@ export function imc({ nome, sub }) {
     var m = p / Math.pow(a / 100, 2);
     var c, cor;
     if(m < 18.5){ c = "Baixo peso"; cor = "var(--z-amber)" }
-    else if(m < 25){ c = "Peso normal ✓"; cor = "var(--z-lime)" }
+    else if(m < 25){ c = "Peso normal OK"; cor = "var(--z-lime)" }
     else if(m < 30){ c = "Sobrepeso"; cor = "var(--z-amber)" }
     else if(m < 35){ c = "Obesidade grau 1"; cor = "var(--z-red)" }
     else { c = "Obesidade grau 2+"; cor = "var(--z-red)" }
@@ -1298,7 +1298,7 @@ export function agua({ nome, sub }) {
   <div class="zbig acc mb" id="pct">0%</div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
   <div class="row" style="justify-content:center;gap:10px;flex-wrap:wrap">
-    <button class="zbtn" id="copo" type="button">🥛 +1 copo (250 mL)</button>
+    <button class="zbtn" id="copo" type="button">Leite +1 copo (250 mL)</button>
     <button class="zbtn ghost" id="voltar" type="button">−1</button>
   </div>
   <div class="row mt" style="justify-content:center;gap:8px">
@@ -1324,7 +1324,7 @@ export function agua({ nome, sub }) {
     $id("meta").textContent = Z.fmt(st.meta);
     $id("pct").textContent = pct + "%";
     $id("barra").style.width = pct + "%";
-    if(pct >= 100){ Z.toast("Meta batida! 💧", 2000) }
+    if(pct >= 100){ Z.toast("Meta batida! Água", 2000) }
   }
   $id("copo").addEventListener("click", function(){ st.ml += 250; salvar(); render(); Z.snd(700, 0.05, "sine") });
   $id("voltar").addEventListener("click", function(){ st.ml = Math.max(0, st.ml - 250); salvar(); render() });
@@ -1343,7 +1343,7 @@ export function humor({ nome, sub }) {
 <div class="zhero"><h1>${nome}</h1><p>${sub} · Anote como você está e veja o padrão da semana.</p></div>
 <div class="zcard pad center mb" style="max-width:520px;margin:0 auto">
   <div class="row" style="justify-content:center;gap:14px;font-size:40px">
-    ${["😄", "🙂", "😐", "🙁", "😫"].map((e, i) => `<button class="zbtn sm" data-h="${i}" type="button" style="font-size:34px;width:56px;height:56px;padding:0;border-radius:50%;background:var(--z-surface2)" title="${["ótimo","bom","neutro","ruim","péssimo"][i]}">${e}</button>`).join("")}
+    ${["Bom", "Neutro", "Regular", "Ruim", "Cansado"].map((e, i) => `<button class="zbtn sm" data-h="${i}" type="button" style="font-size:34px;width:56px;height:56px;padding:0;border-radius:50%;background:var(--z-surface2)" title="${["ótimo","bom","neutro","ruim","péssimo"][i]}">${e}</button>`).join("")}
   </div>
   <textarea class="ztextarea mt" id="nota" placeholder="Quer anotar o motivo? (opcional)"></textarea>
   <div class="row mt" style="justify-content:center"><button class="zbtn" id="salvar" type="button">Salvar hoje</button></div>
@@ -1357,7 +1357,7 @@ export function humor({ nome, sub }) {
   function $id(x){return document.getElementById(x)}
   var CHAVE = "humor";
   var st = Z.store.get(CHAVE, {});
-  var EMO = ["😄", "🙂", "😐", "🙁", "😫"];
+  var EMO = ["Bom", "Neutro", "Regular", "Ruim", "Cansado"];
   var ROT = ["ótimo", "bom", "neutro", "ruim", "péssimo"];
   function key(d){ return d.toISOString().slice(0, 10) }
   function render(){
@@ -1436,7 +1436,7 @@ export function orcamento({ nome, sub }) {
       d.innerHTML = "<span>" + t.n + "</span><b class='mono'>R$ " + Z.fmt(t.v, 2) + "</b>";
       var del = document.createElement("button");
       del.className = "zbtn sm danger";
-      del.textContent = "✕";
+      del.textContent = "Fechar";
       del.addEventListener("click", function(){ mes.itens = mes.itens.filter(function(x){ return x !== t }); salvar(); render() });
       d.appendChild(del);
       lista.appendChild(d);
@@ -1471,7 +1471,7 @@ export function csvjson({ nome, sub }) {
   <div class="row mb" style="justify-content:center;gap:10px">
     <button class="zbtn" id="p1" type="button">CSV → JSON</button>
     <button class="zbtn" id="p2" type="button">JSON → CSV</button>
-    <button class="zbtn ghost" id="copiar" type="button">📋</button>
+    <button class="zbtn ghost" id="copiar" type="button">Copiar</button>
   </div>
   <span class="zlabel">Saída</span>
   <textarea class="ztextarea" id="saida" readonly></textarea>

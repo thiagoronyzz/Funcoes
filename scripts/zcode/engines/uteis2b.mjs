@@ -17,7 +17,7 @@ export function cssShadow({ nome, sub }) {
   </div>
   <div class="row" style="justify-content:center;gap:10px">
     <button class="zbtn" id="dupla" type="button">Sombra dupla (soft + dura)</button>
-    <button class="zbtn ghost" id="copiar" type="button">📋 Copiar CSS</button>
+    <button class="zbtn ghost" id="copiar" type="button">Copiar Copiar CSS</button>
   </div>
   <div class="zcard mt" style="background:var(--z-bg2);padding:12px"><code class="mono" id="css" style="font-size:12px;word-break:break-all"></code></div>
 </div>`;
@@ -56,8 +56,8 @@ export function cssRadius({ nome, sub }) {
   <div class="row mt" style="justify-content:center;gap:10px">
     <button class="zbtn ghost" id="round" type="button">Círculo</button>
     <button class="zbtn ghost" id="zero" type="button">Quadrado</button>
-    <button class="zbtn ghost" id="aleatorio" type="button">🎲 Aleatório</button>
-    <button class="zbtn" id="copiar" type="button">📋 Copiar CSS</button>
+    <button class="zbtn ghost" id="aleatorio" type="button">Dado Aleatório</button>
+    <button class="zbtn" id="copiar" type="button">Copiar Copiar CSS</button>
   </div>
   <div class="zcard mt" style="background:var(--z-bg2);padding:12px"><code class="mono" id="css" style="font-size:12px;word-break:break-all"></code></div>
 </div>`;
@@ -114,7 +114,7 @@ export function cssFlex({ nome, sub }) {
     </div>
   </div>
   <style>#flex .item{display:grid;place-items:center;background:var(--z-brand);color:#fff;border-radius:10px;font-family:var(--z-fd);font-weight:700;transition:.25s}</style>
-  <div class="row" style="justify-content:center"><button class="zbtn" id="copiar" type="button">📋 Copiar CSS</button></div>
+  <div class="row" style="justify-content:center"><button class="zbtn" id="copiar" type="button">Copiar Copiar CSS</button></div>
   <div class="zcard mt" style="background:var(--z-bg2);padding:12px"><code class="mono" id="css" style="font-size:12px;word-break:break-all"></code></div>
 </div>`;
   const js = `
@@ -150,7 +150,7 @@ export function cssGrid({ nome, sub }) {
     <div id="grid" style="display:grid;gap:8px;min-height:200px"></div>
   </div>
   <p class="dim mb" style="font-size:13px">Toque em uma célula para a item 1 entrar nela (grid-area) e mudar a span.</p>
-  <div class="row" style="justify-content:center"><button class="zbtn" id="copiar" type="button">📋 Copiar CSS</button></div>
+  <div class="row" style="justify-content:center"><button class="zbtn" id="copiar" type="button">Copiar Copiar CSS</button></div>
   <div class="zcard mt" style="background:var(--z-bg2);padding:12px"><code class="mono" id="css" style="font-size:12px;word-break:break-all"></code></div>
 </div>
 <style>#grid .g{background:var(--z-surface2);border-radius:8px;cursor:pointer;min-height:48px;transition:.2s}#grid .g.sel{background:var(--z-acc)}#grid .g.item1{background:var(--z-brand);display:grid;place-items:center;color:#fff;font-family:var(--z-fd);font-weight:700}</style>`;
@@ -201,7 +201,7 @@ export function cssBezier({ nome, sub }) {
     <div><span class="zlabel">X2</span><input type="range" id="x2" min="-50" max="150" value="1"><b class="acc mono" id="vx2">1</b></div>
     <div><span class="zlabel">Y2</span><input type="range" id="y2" min="-200" max="300" value="1"><b class="acc mono" id="vy2">1</b></div>
   </div>
-  <div class="row" style="justify-content:center;gap:10px"><button class="zbtn" id="copiar" type="button">📋 Copiar CSS</button></div>
+  <div class="row" style="justify-content:center;gap:10px"><button class="zbtn" id="copiar" type="button">Copiar Copiar CSS</button></div>
   <div class="zcard mt" style="background:var(--z-bg2);padding:12px"><code class="mono" id="css" style="font-size:12px;word-break:break-all"></code></div>
 </div>`;
   const js = `
@@ -252,7 +252,7 @@ export function tipografia({ nome, sub }) {
     <div><span class="zlabel">Transform</span><select class="zselect" id="tc"><option>none</option><option>uppercase</option><option>capitalize</option></select></div>
   </div>
   <div class="zcard" id="prev" style="background:var(--z-bg2);padding:24px;min-height:140px">Zcode é a plataforma</div>
-  <div class="row mt" style="justify-content:center"><button class="zbtn" id="copiar" type="button">📋 Copiar CSS</button></div>
+  <div class="row mt" style="justify-content:center"><button class="zbtn" id="copiar" type="button">Copiar Copiar CSS</button></div>
   <div class="zcard mt" style="background:var(--z-bg2);padding:12px"><code class="mono" id="css" style="font-size:12px;word-break:break-all"></code></div>
 </div>`;
   const js = `
@@ -289,7 +289,7 @@ export function lorem({ nome, sub }) {
   <div class="row mb wrap" style="justify-content:center;gap:10px">
     <div><span class="zlabel">Parágrafos</span><input class="zinput" id="qtd" type="number" value="3" min="1" max="20" style="width:90px"></div>
     <button class="zbtn" id="gerar" type="button">Gerar</button>
-    <button class="zbtn ghost" id="copiar" type="button">📋 Copiar</button>
+    <button class="zbtn ghost" id="copiar" type="button">Copiar Copiar</button>
   </div>
   <div class="zcard" style="background:var(--z-bg2);padding:16px;line-height:1.7;font-size:14px" id="saida"></div>
 </div>`;
@@ -339,7 +339,7 @@ export function palindromo({ nome, sub }) {
     var inv = n.split("").reverse().join("");
     $id("espelho").textContent = inv;
     if(!n){ $id("resultado").textContent = "—"; return }
-    $id("resultado").textContent = n === inv ? "✅ É palíndromo!" : "❌ Não é";
+    $id("resultado").textContent = n === inv ? "OK É palíndromo!" : "Não Não é";
   }
   $id("entrada").addEventListener("input", checar);
 })();
@@ -370,7 +370,7 @@ export function fone({ nome, sub }) {
     if(d.length > 10) out = "(" + d.slice(0, 2) + ") " + d.slice(2, 7) + "-" + d.slice(7);
     this.value = out;
     if(d.length === 11 || d.length === 10){
-      $id("status").textContent = "✅ Formato válido: " + (d.length === 11 ? "celular" : "fixo");
+      $id("status").textContent = "OK Formato válido: " + (d.length === 11 ? "celular" : "fixo");
     } else if(d.length === 0){
       $id("status").textContent = "";
     } else {
@@ -408,10 +408,10 @@ export function cpf({ nome, sub }) {
     if(d.length > 9) out = out + "-" + d.slice(9);
     this.value = out;
     if(d.length === 11){
-      if(/^\\d{11}$/.test(d) && d === d[0].repeat(11)){ $id("status").textContent = "❌ CPF inválido (todos iguais)"; return }
+      if(/^\\d{11}$/.test(d) && d === d[0].repeat(11)){ $id("status").textContent = "Não CPF inválido (todos iguais)"; return }
       var d1 = digito(d.slice(0, 9));
       var d2 = digito(d.slice(0, 9) + d1);
-      $id("status").textContent = (d1 === parseInt(d[9], 10) && d2 === parseInt(d[10], 10)) ? "✅ CPF válido" : "❌ Dígitos verificadores incorretos";
+      $id("status").textContent = (d1 === parseInt(d[9], 10) && d2 === parseInt(d[10], 10)) ? "OK CPF válido" : "Não Dígitos verificadores incorretos";
     } else $id("status").textContent = "";
   });
 })();
@@ -1043,8 +1043,8 @@ export function dataEvento({ nome, sub }) {
     $id("dias").textContent = Math.abs(dias);
     $id("sem").textContent = Z.fmt(Math.abs(dias) / 7, 1);
     $id("dia").textContent = alvo.toLocaleDateString("pt-BR", { weekday: "long" });
-    if(dias > 0) $id("obs").textContent = "Faltam " + dias + " dias! 🎉";
-    else if(dias === 0) $id("obs").textContent = "É hoje! 🎊";
+    if(dias > 0) $id("obs").textContent = "Faltam " + dias + " dias! Concluído";
+    else if(dias === 0) $id("obs").textContent = "É hoje! Concluído";
     else $id("obs").textContent = "Passou há " + (-dias) + " dia(s).";
   }
   $id("data").addEventListener("input", calc);
@@ -1109,16 +1109,16 @@ export function metas({ nome, sub }) {
   function salvar(){ Z.store.set(CHAVE, metas) }
   function render(){
     var box = $id("lista"); box.innerHTML = "";
-    if(!metas.length) box.innerHTML = "<p class='dim center'>Crie sua primeira meta. 🎯</p>";
+    if(!metas.length) box.innerHTML = "<p class='dim center'>Crie sua primeira meta. Alvo</p>";
     metas.forEach(function(m){
       var pct = Math.min(100, Math.round(m.atual / m.alvo * 100));
       var d = document.createElement("div");
       d.className = "zcard";
       d.style.cssText = "padding:12px 14px;margin-bottom:10px";
-      d.innerHTML = "<div class='row between mb'><b class='fd'>" + m.nome + (pct >= 100 ? " 🏆" : "") + "</b><span class='mono acc'>" + pct + "%</span></div>" +
+      d.innerHTML = "<div class='row between mb'><b class='fd'>" + m.nome + (pct >= 100 ? " Vitória" : "") + "</b><span class='mono acc'>" + pct + "%</span></div>" +
         "<div class='zprog mb'><i style='width:" + pct + "%'></i></div>" +
         "<div class='row between'><span class='dim mono' style='font-size:12px'>" + m.atual + " / " + m.alvo + "</span>" +
-        "<div class='row' style='gap:6px'><button class='zbtn sm' data-acao='mais' data-i='" + metas.indexOf(m) + "'>+1</button><button class='zbtn sm ghost' data-acao='menos' data-i='" + metas.indexOf(m) + "'>−1</button><button class='zbtn sm danger' data-acao='del' data-i='" + metas.indexOf(m) + "'>✕</button></div></div>";
+        "<div class='row' style='gap:6px'><button class='zbtn sm' data-acao='mais' data-i='" + metas.indexOf(m) + "'>+1</button><button class='zbtn sm ghost' data-acao='menos' data-i='" + metas.indexOf(m) + "'>−1</button><button class='zbtn sm danger' data-acao='del' data-i='" + metas.indexOf(m) + "'>Fechar</button></div></div>";
       box.appendChild(d);
     });
     box.querySelectorAll("button[data-acao]").forEach(function(b){
@@ -1270,8 +1270,8 @@ export function frases({ nome, sub }) {
     <p class="fd" id="frase" style="font-size:24px;line-height:1.4;min-height:70px">“—”</p>
     <p class="dim mt" id="autor" style="font-size:15px"></p>
     <div class="row mt" style="justify-content:center;gap:10px">
-      <button class="zbtn" id="nova" type="button">✨ Nova frase</button>
-      <button class="zbtn ghost" id="copiar" type="button">📋</button>
+      <button class="zbtn" id="nova" type="button"> Nova frase</button>
+      <button class="zbtn ghost" id="copiar" type="button">Copiar</button>
     </div>
   </div>
 </div>`;
@@ -1303,7 +1303,7 @@ export function timestamp({ nome, sub }) {
   <div class="zcard mb" style="background:var(--z-bg2);padding:12px"><b class="mono" id="r1">—</b></div>
   <div class="row" style="justify-content:center;gap:10px">
     <button class="zbtn ghost sm" id="agora" type="button">Usar agora</button>
-    <button class="zbtn sm" id="copiar" type="button">📋</button>
+    <button class="zbtn sm" id="copiar" type="button">Copiar</button>
   </div>
   <hr style="border:none;border-top:1px solid var(--z-line);margin:16px 0">
   <span class="zlabel">Ou: data → timestamp</span>
@@ -1351,7 +1351,7 @@ export function hexTexto({ nome, sub }) {
   <div class="row" style="justify-content:center;gap:10px">
     <button class="zbtn sm" id="p1" type="button">Texto → Hex</button>
     <button class="zbtn sm" id="p2" type="button">Hex → Texto</button>
-    <button class="zbtn ghost sm" id="copiar" type="button">📋 Copiar hex</button>
+    <button class="zbtn ghost sm" id="copiar" type="button">Copiar Copiar hex</button>
   </div>
 </div>`;
   const js = `
@@ -1380,7 +1380,7 @@ export function rot13({ nome, sub }) {
   <textarea class="ztextarea mb" id="entrada" placeholder="Escreva algo..."></textarea>
   <div class="row mb" style="justify-content:center;gap:10px">
     <button class="zbtn" id="rodar" type="button">Cifrar/Decifrar</button>
-    <button class="zbtn ghost" id="copiar" type="button">📋</button>
+    <button class="zbtn ghost" id="copiar" type="button">Copiar</button>
   </div>
   <div class="zcard" style="background:var(--z-bg2);padding:14px;font-family:var(--z-fm);font-size:13px;min-height:100px" id="saida">—</div>
 </div>`;
@@ -1409,7 +1409,7 @@ export function ordem({ nome, sub }) {
 <div class="zcard pad" style="max-width:560px;margin:0 auto">
   <span class="zlabel">Participantes (um por linha)</span>
   <textarea class="ztextarea mb" id="lista" placeholder="Ana\\nBruno\\nCarla\\nDiego"></textarea>
-  <button class="zbtn w mb" id="sortear" type="button">🎲 Sortear ordem</button>
+  <button class="zbtn w mb" id="sortear" type="button">Dado Sortear ordem</button>
   <div class="col" id="resultado"></div>
 </div>`;
   const js = `
@@ -1519,8 +1519,8 @@ export function personagem({ nome, sub }) {
   <p class="fd mt" id="classe" style="font-size:18px;color:var(--z-acc)">—</p>
   <p class="dim" id="origem" style="font-size:15px">—</p>
   <div class="row mt" style="justify-content:center;gap:10px">
-    <button class="zbtn" id="novo" type="button">🎲 Novo personagem</button>
-    <button class="zbtn ghost" id="copiar" type="button">📋</button>
+    <button class="zbtn" id="novo" type="button">Dado Novo personagem</button>
+    <button class="zbtn ghost" id="copiar" type="button">Copiar</button>
   </div>
 </div>`;
   const js = `
@@ -1551,7 +1551,7 @@ export function porExtenso({ nome, sub }) {
 <div class="zcard pad" style="max-width:640px;margin:0 auto">
   <input class="zinput mb" id="num" type="number" value="1234567">
   <div class="zcard" style="background:var(--z-bg2);padding:14px"><b id="saida" style="font-size:16px;line-height:1.5">—</b></div>
-  <div class="row mt" style="justify-content:center"><button class="zbtn sm" id="copiar" type="button">📋 Copiar</button></div>
+  <div class="row mt" style="justify-content:center"><button class="zbtn sm" id="copiar" type="button">Copiar Copiar</button></div>
 </div>`;
   const js = `
 (function(){

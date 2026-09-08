@@ -49,8 +49,8 @@ export default function AppCard({ app, categoria, indice, destaque }: Props) {
         delay: (indice % 3) * 0.09,
       }}
       className={cn(
-        "group relative flex flex-col overflow-hidden rounded-[1.75rem] bg-white ring-1 ring-ink/[0.06] transition-all duration-500",
-        "hover:-translate-y-2 hover:shadow-[0_38px_70px_-28px_rgba(10,61,255,0.38)] hover:ring-brand-600/25",
+        "group relative flex flex-col overflow-hidden rounded-[1.75rem] bg-surface ring-1 ring-line transition-all duration-500",
+        "hover:-translate-y-2 hover:shadow-[0_38px_70px_-28px_rgba(124,92,255,0.45)] hover:ring-brand-400/40",
         destaque && "md:col-span-2 lg:col-span-3 lg:grid lg:grid-cols-[1.15fr_1fr]"
       )}
     >
@@ -76,12 +76,12 @@ export default function AppCard({ app, categoria, indice, destaque }: Props) {
               className="absolute left-1/2 top-1/2 size-24 -translate-x-1/2 -translate-y-1/2 text-white/25 transition-transform duration-700 group-hover:scale-110 group-hover:-rotate-6"
             />
             <span className="absolute bottom-4 left-5 font-mono text-[10px] uppercase tracking-[0.28em] text-white/70">
-              ronycode — app
+              zcode — app
             </span>
           </div>
         )}
         {destaque && (
-          <span className="absolute left-5 top-5 rounded-full bg-brand-600 px-3.5 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-white shadow-[0_10px_24px_-8px_rgba(10,61,255,0.7)]">
+          <span className="absolute left-5 top-5 rounded-full bg-brand-600 px-3.5 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-white shadow-[0_10px_24px_-8px_rgba(124,92,255,0.7)]">
             Destaque
           </span>
         )}
@@ -94,7 +94,7 @@ export default function AppCard({ app, categoria, indice, destaque }: Props) {
           destaque && "lg:justify-center lg:gap-4 lg:p-11"
         )}
       >
-        <div className="flex items-center gap-2 font-mono text-[10px] font-medium uppercase tracking-[0.25em] text-brand-600">
+        <div className="flex items-center gap-2 font-mono text-[10px] font-medium uppercase tracking-[0.25em] text-brand-300">
           <Icone className="size-3.5" strokeWidth={2.2} />
           {ROTULOS[categoria]}
         </div>
@@ -110,10 +110,10 @@ export default function AppCard({ app, categoria, indice, destaque }: Props) {
           {app.descricao}
         </p>
         <div className="mt-auto flex items-center justify-between pt-5">
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/40 transition-colors duration-300 group-hover:text-brand-600">
+          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/40 transition-colors duration-300 group-hover:text-brand-300">
             Abrir app
           </span>
-          <span className="grid size-11 place-items-center rounded-full ring-1 ring-ink/10 transition-all duration-500 group-hover:rotate-45 group-hover:bg-brand-600 group-hover:ring-brand-600">
+          <span className="grid size-11 place-items-center rounded-full ring-1 ring-line transition-all duration-500 group-hover:rotate-45 group-hover:bg-brand-500 group-hover:ring-brand-500">
             <ArrowUpRight className="size-4 transition-colors duration-500 group-hover:text-white" />
           </span>
         </div>

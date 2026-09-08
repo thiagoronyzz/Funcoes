@@ -1,15 +1,15 @@
 {
-  "name": "RONYCODE — Plataforma de Aplicativos",
-  "short_name": "TRcode",
-  "description": "Hub com todos os aplicativos RONYCODE: estudos, jogos, ferramentas úteis e social. Funciona offline.",
+  "name": "Zcode — Plataforma de Aplicativos",
+  "short_name": "Zcode",
+  "description": "Hub com 300 aplicativos Zcode: estudos, jogos, ferramentas úteis e social. Funciona offline.",
   "id": "/",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait-primary",
-  "background_color": "#f7f9ff",
-  "theme_color": "#0a3dff",
+  "background_color": "#05070f",
+  "theme_color": "#7c5cff",
   "lang": "pt-BR",
   "dir": "ltr",
   "categories": ["education", "games", "utilities", "productivity"],
@@ -20,6 +20,7 @@
   ],
   "shortcuts": [
     { "name": "Estudos", "short_name": "Estudos", "url": "/?source=pwa#estudos", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
-    { "name": "Jogos", "short_name": "Jogos", "url": "/?source=pwa#jogos", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
+    { "name": "Jogos", "short_name": "Jogos", "url": "/?source=pwa#jogos", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Úteis", "short_name": "Úteis", "url": "/?source=pwa#uteis", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
   ]
 }

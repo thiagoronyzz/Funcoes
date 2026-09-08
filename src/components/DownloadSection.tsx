@@ -39,11 +39,11 @@ export default function DownloadSection() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col gap-6"
           >
-            <span className="font-mono text-[11px] uppercase tracking-[0.32em] text-brand-600">
+            <span className="font-mono text-[11px] uppercase tracking-[0.32em] text-brand-400">
               {"// Versão para celular"}
             </span>
             <h2 className="max-w-xl font-display text-4xl font-bold uppercase leading-[0.95] tracking-[-0.03em] md:text-6xl">
-              Baixe o <span className="text-brand-600">app</span> RONYCODE
+              Baixe o <span className="text-brand-400">app</span> Zcode
             </h2>
             <p className="max-w-md text-base leading-relaxed text-ink/60">
               Todos os aplicativos num só ícone no seu celular. Instalação em um
@@ -61,9 +61,9 @@ export default function DownloadSection() {
               {beneficios.map((b) => (
                 <li
                   key={b.titulo}
-                  className="rounded-2xl bg-white p-4 ring-1 ring-ink/5"
+                  className="rounded-2xl bg-surface p-4 ring-1 ring-line"
                 >
-                  <b.icone className="mb-2 size-5 text-brand-600" />
+                  <b.icone className="mb-2 size-5 text-brand-300" />
                   <p className="font-display text-sm font-semibold">{b.titulo}</p>
                   <p className="mt-1 text-xs leading-relaxed text-ink/55">
                     {b.texto}
@@ -81,16 +81,16 @@ export default function DownloadSection() {
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             className="mx-auto w-full max-w-[280px]"
           >
-            <div className="animate-float rounded-[2.6rem] bg-ink p-3 shadow-[0_40px_80px_-30px_rgba(6,11,36,0.6)]">
+            <div className="animate-float rounded-[2.6rem] bg-surface p-3 ring-1 ring-line shadow-[0_40px_80px_-30px_rgba(0,0,0,0.8)]">
               <div className="relative aspect-[9/19] overflow-hidden rounded-[2rem] bg-gradient-to-b from-brand-600 to-brand-800">
-                <div className="absolute left-1/2 top-3 h-5 w-24 -translate-x-1/2 rounded-full bg-ink/80" />
+                <div className="absolute left-1/2 top-3 h-5 w-24 -translate-x-1/2 rounded-full bg-black/60" />
                 <div className="flex h-full flex-col items-center justify-center gap-5 px-6 text-center">
                   <span className="grid size-20 place-items-center rounded-3xl bg-white/95 font-display text-4xl font-bold text-brand-600 shadow-lg">
-                    R
+                    Z
                   </span>
                   <div>
                     <p className="font-display text-lg font-bold text-white">
-                      RONYCODE
+                      ZCODE
                     </p>
                     <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.24em] text-white/60">
                       Todos os apps

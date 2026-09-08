@@ -11,7 +11,11 @@ import {
   MessagesSquare,
   Wrench,
 } from "lucide-react";
-import { totalApps } from "../data/apps";
+import { categorias } from "../data/apps";
+
+const appsPrincipais = categorias
+  .filter((c) => c.id !== "social")
+  .reduce((a, c) => a + c.apps.length, 0);
 
 const chips = [
   { Icone: GraduationCap, rotulo: "estudos", posicao: "right-[7%] top-[24%]", atraso: "0s" },
@@ -20,7 +24,7 @@ const chips = [
 ];
 
 const stats = [
-  { valor: String(totalApps).padStart(2, "0"), rotulo: "aplicativos" },
+  { valor: String(appsPrincipais).padStart(2, "0"), rotulo: "aplicativos" },
   { valor: "04", rotulo: "categorias" },
   { valor: "100%", rotulo: "no navegador" },
   { valor: "24/7", rotulo: "sempre no ar" },
@@ -71,7 +75,7 @@ export default function Hero() {
           className={`absolute z-20 hidden xl:block ${posicao}`}
         >
           <div
-            className="flex animate-float items-center gap-3 rounded-2xl bg-white/90 p-3 pr-5 shadow-[0_20px_50px_-20px_rgba(6,11,36,0.25)] ring-1 ring-ink/5 backdrop-blur"
+            className="flex animate-float items-center gap-3 rounded-2xl bg-surface/90 p-3 pr-5 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] ring-1 ring-line backdrop-blur"
             style={{ animationDelay: atraso }}
           >
             <span className="grid size-10 place-items-center rounded-xl bg-brand-600 text-white">
@@ -105,7 +109,7 @@ export default function Hero() {
               transition={{ duration: 1.05, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
               className="block text-[clamp(4.2rem,14.5vw,12.5rem)]"
             >
-              RONY
+              Z
             </motion.span>
           </span>
           <span className="block overflow-hidden pb-2 pl-[9vw]">
@@ -116,7 +120,7 @@ export default function Hero() {
               className="text-stroke block text-[clamp(4.2rem,14.5vw,12.5rem)]"
             >
               CODE
-              <span className="text-brand-600" style={{ WebkitTextStrokeWidth: 0 }}>
+              <span className="text-brand-400" style={{ WebkitTextStrokeWidth: 0 }}>
                 .
               </span>
             </motion.span>
@@ -130,7 +134,7 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.55 }}
             className="max-w-md font-display text-3xl font-bold tracking-tight text-ink md:text-5xl"
           >
-            <span className="text-brand-600">RONYCODE</span> — 2026
+            <span className="text-brand-400">Zcode</span> — 300 apps, zero instalação
           </motion.p>
 
           <motion.div
@@ -141,14 +145,14 @@ export default function Hero() {
           >
             <a
               href="#estudos"
-              className="group inline-flex items-center gap-3 rounded-full bg-brand-600 px-7 py-4 font-display text-sm font-semibold text-white shadow-[0_20px_44px_-14px_rgba(10,61,255,0.6)] transition-all duration-300 hover:bg-ink hover:shadow-[0_20px_44px_-14px_rgba(6,11,36,0.5)]"
+              className="group inline-flex items-center gap-3 rounded-full bg-brand-600 px-7 py-4 font-display text-sm font-semibold text-white shadow-[0_20px_44px_-14px_rgba(124,92,255,0.6)] transition-all duration-300 hover:bg-brand-700 hover:shadow-[0_20px_44px_-14px_rgba(124,92,255,0.8)]"
             >
               Explorar aplicativos
               <ArrowDown className="size-4 transition-transform duration-300 group-hover:translate-y-1" />
             </a>
             <a
               href="#sobre"
-              className="inline-flex items-center gap-2 rounded-full px-6 py-4 font-display text-sm font-semibold text-ink ring-1 ring-ink/15 transition-all duration-300 hover:bg-white hover:ring-brand-600/40"
+              className="inline-flex items-center gap-2 rounded-full px-6 py-4 font-display text-sm font-semibold text-ink ring-1 ring-ink/15 transition-all duration-300 hover:bg-surface2 hover:ring-brand-400/40"
             >
               <MessagesSquare className="size-4 text-brand-600" />
               Sobre a plataforma
@@ -162,9 +166,9 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.9, delay: 0.9 }}
-        className="relative border-t border-ink/10 bg-white/60 backdrop-blur-sm"
+        className="relative border-t border-line bg-surface/60 backdrop-blur-sm"
       >
-        <div className="mx-auto grid w-full max-w-7xl grid-cols-2 divide-x divide-ink/10 px-5 md:grid-cols-4 md:px-8">
+        <div className="mx-auto grid w-full max-w-7xl grid-cols-2 divide-x divide-line px-5 md:grid-cols-4 md:px-8">
           {stats.map((s) => (
             <div key={s.rotulo} className="flex flex-col gap-1 px-4 py-5 md:px-8 md:py-6">
               <span className="font-display text-2xl font-bold tracking-tight md:text-3xl">

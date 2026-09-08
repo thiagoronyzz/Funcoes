@@ -52,7 +52,7 @@ export default function Manifesto() {
                   delay: i * 0.12,
                 }}
                 className={`block text-[clamp(2.6rem,7.5vw,6.5rem)] ${
-                  linha.azul ? "text-brand-600" : ""
+                  linha.azul ? "text-brand-400" : ""
                 }`}
               >
                 {linha.texto}
@@ -70,9 +70,9 @@ export default function Manifesto() {
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.7, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
               data-hover
-              className="group flex flex-col gap-4 bg-white p-8 transition-colors duration-500 hover:bg-brand-600 md:p-10"
+              className="group flex flex-col gap-4 bg-surface p-8 transition-colors duration-500 hover:bg-brand-600 md:p-10"
             >
-              <span className="grid size-12 place-items-center rounded-2xl bg-brand-50 text-brand-600 ring-1 ring-brand-100 transition-colors duration-500 group-hover:bg-white/10 group-hover:text-white group-hover:ring-white/20">
+              <span className="grid size-12 place-items-center rounded-2xl bg-surface2 text-brand-300 ring-1 ring-line transition-colors duration-500 group-hover:bg-white/10 group-hover:text-white group-hover:ring-white/20">
                 <p.Icone className="size-5" strokeWidth={1.8} />
               </span>
               <h3 className="font-display text-xl font-bold tracking-tight transition-colors duration-500 group-hover:text-white">

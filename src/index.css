@@ -6,19 +6,30 @@
   --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-  /* ── Paleta RONYCODE (azul + branco) ────────── */
-  --color-brand-50: #eef3ff;
-  --color-brand-100: #dfe9ff;
-  --color-brand-200: #c0d3ff;
-  --color-brand-300: #94b4ff;
-  --color-brand-400: #618bff;
-  --color-brand-500: #3562ff;
-  --color-brand-600: #0a3dff;
-  --color-brand-700: #0530d6;
-  --color-brand-800: #092aa8;
-  --color-brand-900: #0e2685;
-  --color-ink: #060b24;
-  --color-paper: #f7f9ff;
+  /* ── Paleta ZCODE (violeta + ciano sobre dark) ── */
+  --color-brand-50: #efeaff;
+  --color-brand-100: #ddd0ff;
+  --color-brand-200: #c0a8ff;
+  --color-brand-300: #a684ff;
+  --color-brand-400: #8f68ff;
+  --color-brand-500: #7c5cff;
+  --color-brand-600: #6d43f7;
+  --color-brand-700: #5a2ed6;
+  --color-brand-800: #4a26ae;
+  --color-brand-900: #3c2093;
+
+  /* cores de categoria (espelham o kit dos apps) */
+  --color-acc-cyan: #29e0ff;
+  --color-acc-pink: #ff4d8f;
+  --color-acc-lime: #7dff6a;
+  --color-acc-amber: #ffb347;
+
+  /* superfícies dark */
+  --color-ink: #edf0ff;
+  --color-paper: #05070f;
+  --color-surface: #0c101f;
+  --color-surface2: #131a2e;
+  --color-line: rgba(148, 158, 210, 0.14);
 
   /* ── Animações ──────────────────────────────── */
   --animate-marquee: marquee 26s linear infinite;
@@ -44,11 +55,11 @@
     0%,
     100% {
       opacity: 1;
-      box-shadow: 0 0 0 0 rgba(10, 61, 255, 0.45);
+      box-shadow: 0 0 0 0 rgba(124, 92, 255, 0.45);
     }
     50% {
       opacity: 0.75;
-      box-shadow: 0 0 0 7px rgba(10, 61, 255, 0);
+      box-shadow: 0 0 0 7px rgba(124, 92, 255, 0);
     }
   }
 }
@@ -65,7 +76,7 @@ body {
 }
 
 ::selection {
-  background: var(--color-brand-600);
+  background: var(--color-brand-500);
   color: #fff;
 }
 
@@ -90,7 +101,7 @@ body {
 
 /* ── Utilitários de arte ─────────────────────── */
 .bg-dots {
-  background-image: radial-gradient(circle, rgba(10, 61, 255, 0.16) 1.2px, transparent 1.2px);
+  background-image: radial-gradient(circle, rgba(124, 92, 255, 0.18) 1.2px, transparent 1.2px);
   background-size: 26px 26px;
 }
 
@@ -100,12 +111,12 @@ body {
 }
 
 .text-stroke {
-  -webkit-text-stroke: 2.5px var(--color-brand-600);
+  -webkit-text-stroke: 2.5px var(--color-brand-500);
   color: transparent;
 }
 
 .text-stroke-ghost {
-  -webkit-text-stroke: 1.5px rgba(6, 11, 36, 0.12);
+  -webkit-text-stroke: 1.5px rgba(237, 240, 255, 0.12);
   color: transparent;
 }
 

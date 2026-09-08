@@ -27,7 +27,7 @@ const estilos: Record<NonNullable<BotaoProps["variante"]>, string> = {
     "bg-brand-600 text-white shadow-[0_20px_44px_-14px_rgba(10,61,255,0.6)] hover:bg-ink px-7 py-4 text-sm",
   escuro: "bg-ink text-white hover:bg-brand-600 px-5 py-2.5 text-sm",
   claro:
-    "bg-white text-ink ring-1 ring-ink/15 hover:ring-brand-600/40 px-6 py-4 text-sm",
+    "bg-surface text-ink ring-1 ring-line hover:ring-brand-400/40 px-6 py-4 text-sm",
   compacto: "bg-brand-600 text-white hover:bg-ink px-4 py-2 text-xs",
 };
 
@@ -99,7 +99,7 @@ function ModalComoInstalar({
           ]
         : [
             { icone: MoreVertical, texto: "Abra o menu do navegador (⋮)" },
-            { icone: SquarePlus, texto: 'Clique em "Instalar RONYCODE"' },
+            { icone: SquarePlus, texto: 'Clique em "Instalar Zcode"' },
             { icone: Check, texto: "O app abre em janela própria" },
           ];
 
@@ -119,7 +119,7 @@ function ModalComoInstalar({
             exit={{ y: 40, opacity: 0, scale: 0.98 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md rounded-t-3xl bg-white p-6 sm:rounded-3xl md:p-8"
+            className="w-full max-w-md rounded-t-3xl bg-surface p-6 ring-1 ring-line sm:rounded-3xl md:p-8"
           >
             <div className="mb-6 flex items-start justify-between gap-4">
               <div className="flex items-center gap-3">
@@ -128,7 +128,7 @@ function ModalComoInstalar({
                 </span>
                 <div>
                   <h3 className="font-display text-xl font-bold tracking-tight">
-                    Instalar RONYCODE
+                    Instalar Zcode
                   </h3>
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink/45">
                     {plataforma === "ios"
@@ -142,7 +142,7 @@ function ModalComoInstalar({
               <button
                 onClick={fechar}
                 aria-label="Fechar"
-                className="grid size-9 shrink-0 place-items-center rounded-xl ring-1 ring-ink/10 transition-colors hover:bg-brand-50"
+                className="grid size-9 shrink-0 place-items-center rounded-xl ring-1 ring-line transition-colors hover:bg-surface2"
               >
                 <X className="size-4" />
               </button>
@@ -152,9 +152,9 @@ function ModalComoInstalar({
               {passos.map((p, i) => (
                 <li
                   key={i}
-                  className="flex items-center gap-3 rounded-2xl bg-paper px-4 py-3 ring-1 ring-ink/5"
+                  className="flex items-center gap-3 rounded-2xl bg-surface2 px-4 py-3 ring-1 ring-line"
                 >
-                  <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white text-brand-600 ring-1 ring-ink/10">
+                  <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-surface2 text-brand-300 ring-1 ring-line">
                     <p.icone className="size-4" />
                   </span>
                   <span className="text-sm text-ink/75">{p.texto}</span>
@@ -201,7 +201,7 @@ export function BarraInstalarMobile() {
         </span>
         <div className="min-w-0 flex-1">
           <p className="font-display text-sm font-semibold leading-tight">
-            Leve a RONYCODE no bolso
+            Leve o Zcode no bolso
           </p>
           <p className="truncate text-[11px] text-white/55">
             Instale o app e use até offline

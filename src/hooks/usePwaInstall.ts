@@ -8,7 +8,7 @@ export interface BeforeInstallPromptEvent extends Event {
 
 export type Plataforma = "android" | "ios" | "desktop";
 
-const CHAVE_STORAGE = "ronycode_app_instalado";
+const CHAVE_STORAGE = "zcode_app_instalado";
 
 function detectarPlataforma(): Plataforma {
   if (typeof navigator === "undefined") return "desktop";

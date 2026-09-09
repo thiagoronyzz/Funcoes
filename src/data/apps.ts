@@ -1,4 +1,4 @@
-/* GERADE AUTOMATICAMENTE por scripts/zcode/generate.mjs — não editar à mão. */
+/* GERADO AUTOMATICAMENTE por scripts/zcode/generate.mjs — não editar à mão. */
 
 export interface AppItem {
   nome: string;
@@ -20,10 +20,10 @@ export interface Categoria {
 export const categorias: Categoria[] = [
   {
     id: "estudos",
-    rotulo: "Categoria.01",
+    rotulo: "Estudos",
     titulo: "Estudos",
     descricao:
-      "Ferramentas para aprender melhor: foco, revisão, quizzes e tudo que ajuda na hora de estudar.",
+      "Guias completos, simulados cronometrados e treinos focados para aprender de verdade.",
     apps: [
       {
         nome: "Funções",
@@ -629,94 +629,268 @@ export const categorias: Categoria[] = [
   },
   {
     id: "jogos",
-    rotulo: "Categoria.02",
+    rotulo: "Jogos",
     titulo: "Jogos",
     descricao:
-      "Arcade clássico e jogos de reflexo: treine a mão, o olho e o cérebro.",
+      "Arcade, estratégia e raciocínio: jogos completos que rodam direto no navegador.",
     apps: [
       {
         nome: "Bandeiras do Mundo",
         descricao: "Adivinhe o país pela bandeira.",
-        imagem: "images/editorial/chess-board.jpg",
+        imagem: "",
         link: "/ZCODE/Jogos/jogopaises(01)/zcode.html",
       },
       {
         nome: "Roleta da Fortuna",
         descricao: "Gire a roleta e acerte as perguntas.",
-        imagem: "images/editorial/chess-board.jpg",
+        imagem: "",
         link: "/ZCODE/Jogos/rodafortuna(02)/zcode.html",
       },
       {
         nome: "TRcraft",
         descricao: "Mundo voxel infinito para explorar e construir.",
-        imagem: "images/editorial/chess-board.jpg",
+        imagem: "",
         link: "/ZCODE/Jogos/minicraft(03)/zcode.html",
       },
       {
         nome: "Hunterz",
         descricao: "A caçada na floresta: desvie e sobreviva.",
-        imagem: "images/editorial/chess-board.jpg",
+        imagem: "",
         link: "/ZCODE/Jogos/estilhacos(04)/zcode.html",
       },
       {
         nome: "MK: Ultimate Arena",
         descricao: "Jogo de luta com golpes especiais.",
-        imagem: "images/editorial/chess-board.jpg",
+        imagem: "",
         link: "/ZCODE/Jogos/mortalkombat(05)/zcode.html",
       },
       {
         nome: "Fuja das Esferas",
         descricao: "Corra e fuja das esferas que te perseguem.",
-        imagem: "images/editorial/chess-board.jpg",
+        imagem: "",
         link: "/ZCODE/Jogos/fujaesferas(06)/zcode.html",
       },
       {
-        nome: "IFood Rider",
-        descricao: "Corrida infinita entregando sem capotar.",
-        imagem: "images/editorial/chess-board.jpg",
+        nome: "Delivery Rider",
+        descricao: "Corrida infinita de entregas: desvie sem capotar.",
+        imagem: "",
         link: "/ZCODE/Jogos/ifoodrunner(07)/zcode.html",
       },
       {
+        nome: "Tetris Clássico",
+        descricao: "Empilhe as peças, complete linhas e suba de nível. Com peça fantasma.",
+        imagem: "",
+        link: "/ZCODE/Jogos/tetris-classico/index.html",
+      },
+      {
+        nome: "Tetris Sprint",
+        descricao: "Complete 40 linhas o mais rápido que puder.",
+        imagem: "",
+        link: "/ZCODE/Jogos/tetris-sprint/index.html",
+      },
+      {
+        nome: "Quebra-Blocos",
+        descricao: "Rebata a bola e destrua os tijolos em 5 fases.",
+        imagem: "",
+        link: "/ZCODE/Jogos/quebra-blocos/index.html",
+      },
+      {
+        nome: "Quebra-Blocos Turbo",
+        descricao: "8 fases em velocidade máxima.",
+        imagem: "",
+        link: "/ZCODE/Jogos/quebra-blocos-turbo/index.html",
+      },
+      {
+        nome: "Pac-Labirinto",
+        descricao: "Coma todos os pontos e fuja dos 4 fantasmas.",
+        imagem: "",
+        link: "/ZCODE/Jogos/pac-labirinto/index.html",
+      },
+      {
+        nome: "Pac-Labirinto 2",
+        descricao: "Um segundo labirinto, mais fechado e traiçoeiro.",
+        imagem: "",
+        link: "/ZCODE/Jogos/pac-labirinto-2/index.html",
+      },
+      {
+        nome: "Fuga das Esferas",
+        descricao: "Sobreviva 60 segundos às esferas caçadoras. Use o dash!",
+        imagem: "",
+        link: "/ZCODE/Jogos/fuga-das-esferas/index.html",
+      },
+      {
+        nome: "Fuga Infinita",
+        descricao: "Sem limite de tempo: quanto você aguenta?",
+        imagem: "",
+        link: "/ZCODE/Jogos/fuga-infinita/index.html",
+      },
+      {
+        nome: "Caçada na Floresta",
+        descricao: "Colete os 8 cogumelos e desvie dos lobos.",
+        imagem: "",
+        link: "/ZCODE/Jogos/cacada-na-floresta/index.html",
+      },
+      {
+        nome: "Caçada Noturna",
+        descricao: "A floresta escura: só a sua lanterna e os vagalumes.",
+        imagem: "",
+        link: "/ZCODE/Jogos/cacada-noturna/index.html",
+      },
+      {
+        nome: "Pulo Certeiro",
+        descricao: "Plataforma com 3 fases: moedas, espinhos e a porta de saída.",
+        imagem: "",
+        link: "/ZCODE/Jogos/pulo-certeiro/index.html",
+      },
+      {
+        nome: "Pulo Certeiro 2",
+        descricao: "Mais 3 fases, mais altas e traiçoeiras.",
+        imagem: "",
+        link: "/ZCODE/Jogos/pulo-certeiro-2/index.html",
+      },
+      {
+        nome: "Corrida Maluca",
+        descricao: "Desvie do tráfego, pegue moedas e não deixe o tanque zerar.",
+        imagem: "",
+        link: "/ZCODE/Jogos/corrida-maluca/index.html",
+      },
+      {
+        nome: "Corrida Noturna",
+        descricao: "A mesma estrada, no escuro dos faróis.",
+        imagem: "",
+        link: "/ZCODE/Jogos/corrida-noturna/index.html",
+      },
+      {
+        nome: "Sobreviva aos Zumbis",
+        descricao: "Ondas de zumbis com tiro automático e itens de cura.",
+        imagem: "",
+        link: "/ZCODE/Jogos/sobreviva-aos-zumbis/index.html",
+      },
+      {
+        nome: "Noite dos Zumbis",
+        descricao: "Zumbis mais rápidos no escuro. Segure as ondas.",
+        imagem: "",
+        link: "/ZCODE/Jogos/noite-dos-zumbis/index.html",
+      },
+      {
+        nome: "Esquadrão Estelar",
+        descricao: "Shooter espacial com power-ups e chefes a cada 5 ondas.",
+        imagem: "",
+        link: "/ZCODE/Jogos/esquadrao-estelar/index.html",
+      },
+      {
+        nome: "Esquadrão Turbo",
+        descricao: "Formação densa e chefes agressivos.",
+        imagem: "",
+        link: "/ZCODE/Jogos/esquadrao-turbo/index.html",
+      },
+      {
+        nome: "Mini-Golfe",
+        descricao: "6 buracos: corredores, areia e tacadas contadas.",
+        imagem: "",
+        link: "/ZCODE/Jogos/mini-golfe/index.html",
+      },
+      {
+        nome: "Mini-Golfe Pro",
+        descricao: "6 buracos difíceis para quem zerou o primeiro.",
+        imagem: "",
+        link: "/ZCODE/Jogos/mini-golfe-pro/index.html",
+      },
+      {
+        nome: "Damas",
+        descricao: "Damas contra a CPU: capturas obrigatórias e damas voadoras.",
+        imagem: "",
+        link: "/ZCODE/Jogos/damas/index.html",
+      },
+      {
+        nome: "Damas Difícil",
+        descricao: "A CPU analisa mais fundo. Boa sorte.",
+        imagem: "",
+        link: "/ZCODE/Jogos/damas-dificil/index.html",
+      },
+      {
+        nome: "Lig-4",
+        descricao: "Acerte 4 em linha antes da CPU.",
+        imagem: "",
+        link: "/ZCODE/Jogos/lig-4/index.html",
+      },
+      {
+        nome: "Lig-4 Difícil",
+        descricao: "CPU com análise profunda. Quase imbatível.",
+        imagem: "",
+        link: "/ZCODE/Jogos/lig-4-dificil/index.html",
+      },
+      {
+        nome: "Resta Um",
+        descricao: "O clássico tabuleiro inglês. Reste uma peça — no centro!",
+        imagem: "",
+        link: "/ZCODE/Jogos/resta-um/index.html",
+      },
+      {
+        nome: "Resta Um Europeu",
+        descricao: "O tabuleiro francês, com 36 peças.",
+        imagem: "",
+        link: "/ZCODE/Jogos/resta-um-europeu/index.html",
+      },
+      {
+        nome: "Torre de Hanói",
+        descricao: "4 discos: leve a torre inteira para a última haste.",
+        imagem: "",
+        link: "/ZCODE/Jogos/torre-de-hanoi/index.html",
+      },
+      {
+        nome: "Hanói Mestre",
+        descricao: "6 discos e 63 lances mínimos. Paciência!",
+        imagem: "",
+        link: "/ZCODE/Jogos/hanoi-mestre/index.html",
+      },
+      {
+        nome: "Nonogram 5×5",
+        descricao: "Pinte pelos números e revele 3 desenhos.",
+        imagem: "",
+        link: "/ZCODE/Jogos/nonogram-5-5/index.html",
+      },
+      {
+        nome: "Nonogram 10×10",
+        descricao: "Dois painéis grandes com dicas e verificação.",
+        imagem: "",
+        link: "/ZCODE/Jogos/nonogram-10-10/index.html",
+      },
+      {
+        nome: "Apague as Luzes 5×5",
+        descricao: "Toque para inverter as vizinhas e apague tudo.",
+        imagem: "",
+        link: "/ZCODE/Jogos/apague-as-luzes-5-5/index.html",
+      },
+      {
+        nome: "Apague as Luzes 7×7",
+        descricao: "Grade grande, sempre com solução garantida.",
+        imagem: "",
+        link: "/ZCODE/Jogos/apague-as-luzes-7-7/index.html",
+      },
+      {
+        nome: "Defesa da Base",
+        descricao: "Tower defense: 20 ondas, 3 torres e melhorias.",
+        imagem: "",
+        link: "/ZCODE/Jogos/defesa-da-base/index.html",
+      },
+      {
+        nome: "Defesa Infinita",
+        descricao: "Ondas sem fim. Até onde a base aguenta?",
+        imagem: "",
+        link: "/ZCODE/Jogos/defesa-infinita/index.html",
+      },
+      {
+        nome: "Adedonha Solo",
+        descricao: "Letra sorteada, 6 categorias e 90 segundos.",
+        imagem: "",
+        link: "/ZCODE/Jogos/adedonha-solo/index.html",
+      },
+      {
         nome: "Snake Neon",
-        descricao: "O clássico da cobrinha em neon. Coma e cresça!",
+        descricao: "O clássico da cobrinha. Coma, cresça e bata o recorde.",
         imagem: "",
         link: "/ZCODE/Jogos/snake-neon/index.html",
-      },
-      {
-        nome: "Snake Retrô",
-        descricao: "Cobrinha verde estilo arcade dos anos 80.",
-        imagem: "",
-        link: "/ZCODE/Jogos/snake-retro/index.html",
-      },
-      {
-        nome: "Snake Rosa",
-        descricao: "A cobrinha rosa. Mesmas regras, outro charme.",
-        imagem: "",
-        link: "/ZCODE/Jogos/snake-rosa/index.html",
-      },
-      {
-        nome: "Snake Violeta",
-        descricao: "Cobrinha violeta para quem gosta de roxo.",
-        imagem: "",
-        link: "/ZCODE/Jogos/snake-violeta/index.html",
-      },
-      {
-        nome: "Snake Amarelo",
-        descricao: "Cobrinha amarela bem visível no escuro.",
-        imagem: "",
-        link: "/ZCODE/Jogos/snake-amarelo/index.html",
-      },
-      {
-        nome: "Snake Ciano",
-        descricao: "Cobrinha ciana, rápida e fria.",
-        imagem: "",
-        link: "/ZCODE/Jogos/snake-ciano/index.html",
-      },
-      {
-        nome: "Turbo Snake",
-        descricao: "Snake duas vezes mais rápido. Só para corajosos.",
-        imagem: "",
-        link: "/ZCODE/Jogos/turbo-snake/index.html",
       },
       {
         nome: "Snake Sem Muro",
@@ -726,39 +900,15 @@ export const categorias: Categoria[] = [
       },
       {
         nome: "2048 Clássico",
-        descricao: "Junte os blocos e chegue à tile 2048.",
+        descricao: "Junte os blocos e chegue à peça 2048.",
         imagem: "",
         link: "/ZCODE/Jogos/2048-classico/index.html",
-      },
-      {
-        nome: "1024 Compacto",
-        descricao: "Mesma mecânica, meta mais curta: chegue a 1024.",
-        imagem: "",
-        link: "/ZCODE/Jogos/1024-compacto/index.html",
-      },
-      {
-        nome: "512 Mini",
-        descricao: "Grade 3×3 e meta de 512. Aperte o raciocínio.",
-        imagem: "",
-        link: "/ZCODE/Jogos/512-mini/index.html",
       },
       {
         nome: "2048 XL",
         descricao: "Grade 5×5 com muito mais espaço para manobrar.",
         imagem: "",
         link: "/ZCODE/Jogos/2048-xl/index.html",
-      },
-      {
-        nome: "4096 Extremo",
-        descricao: "Para quem não se contenta com 2048.",
-        imagem: "",
-        link: "/ZCODE/Jogos/4096-extremo/index.html",
-      },
-      {
-        nome: "8192 Lendário",
-        descricao: "O desafio lendário: alcance a tile 8192.",
-        imagem: "",
-        link: "/ZCODE/Jogos/8192-lendario/index.html",
       },
       {
         nome: "Memória: Frutas",
@@ -773,40 +923,10 @@ export const categorias: Categoria[] = [
         link: "/ZCODE/Jogos/memoria-animais/index.html",
       },
       {
-        nome: "Memória: Esportes",
-        descricao: "Encontre os pares de esportes no menor número de jogadas.",
-        imagem: "",
-        link: "/ZCODE/Jogos/memoria-esportes/index.html",
-      },
-      {
         nome: "Memória: Espaço",
         descricao: "Encontre os pares de espaço no menor número de jogadas.",
         imagem: "",
         link: "/ZCODE/Jogos/memoria-espaco/index.html",
-      },
-      {
-        nome: "Memória: Comida",
-        descricao: "Encontre os pares de comida no menor número de jogadas.",
-        imagem: "",
-        link: "/ZCODE/Jogos/memoria-comida/index.html",
-      },
-      {
-        nome: "Memória: Natureza",
-        descricao: "Encontre os pares de natureza no menor número de jogadas.",
-        imagem: "",
-        link: "/ZCODE/Jogos/memoria-natureza/index.html",
-      },
-      {
-        nome: "Memória: Objetos",
-        descricao: "Encontre os pares de objetos no menor número de jogadas.",
-        imagem: "",
-        link: "/ZCODE/Jogos/memoria-objetos/index.html",
-      },
-      {
-        nome: "Memória: Corações",
-        descricao: "Encontre os pares de corações no menor número de jogadas.",
-        imagem: "",
-        link: "/ZCODE/Jogos/memoria-coracoes/index.html",
       },
       {
         nome: "Memória: Música",
@@ -819,18 +939,6 @@ export const categorias: Categoria[] = [
         descricao: "Encontre os pares de clima no menor número de jogadas.",
         imagem: "",
         link: "/ZCODE/Jogos/memoria-clima/index.html",
-      },
-      {
-        nome: "Memória: Festas",
-        descricao: "Encontre os pares de festas no menor número de jogadas.",
-        imagem: "",
-        link: "/ZCODE/Jogos/memoria-festas/index.html",
-      },
-      {
-        nome: "Memória: Carros",
-        descricao: "Encontre os pares de carros no menor número de jogadas.",
-        imagem: "",
-        link: "/ZCODE/Jogos/memoria-carros/index.html",
       },
       {
         nome: "Velha vs CPU",
@@ -867,12 +975,6 @@ export const categorias: Categoria[] = [
         descricao: "14×14 com 30 minas. Só experts.",
         imagem: "",
         link: "/ZCODE/Jogos/campo-minado-dificil/index.html",
-      },
-      {
-        nome: "Campo Minado: Expert",
-        descricao: "16×16 com 40 minas. Boa sorte.",
-        imagem: "",
-        link: "/ZCODE/Jogos/campo-minado-expert/index.html",
       },
       {
         nome: "Pong Neon",
@@ -917,34 +1019,10 @@ export const categorias: Categoria[] = [
         link: "/ZCODE/Jogos/reflexos-pare-no-meio/index.html",
       },
       {
-        nome: "Reflexos: Cores",
-        descricao: "Memorize a cor e clique no nome dela em 30 segundos.",
-        imagem: "",
-        link: "/ZCODE/Jogos/reflexos-cores/index.html",
-      },
-      {
         nome: "Caça-Frutas",
         descricao: "Pegue os itens que caem antes que saiam da tela. 30 segundos.",
         imagem: "",
         link: "/ZCODE/Jogos/caca-frutas/index.html",
-      },
-      {
-        nome: "Caça-Doce",
-        descricao: "Pegue os itens que caem antes que saiam da tela. 30 segundos.",
-        imagem: "",
-        link: "/ZCODE/Jogos/caca-doce/index.html",
-      },
-      {
-        nome: "Caça-Ferramentas",
-        descricao: "Pegue os itens que caem antes que saiam da tela. 30 segundos.",
-        imagem: "",
-        link: "/ZCODE/Jogos/caca-ferramentas/index.html",
-      },
-      {
-        nome: "Caça-Símbolos",
-        descricao: "Pegue os itens que caem antes que saiam da tela. 30 segundos.",
-        imagem: "",
-        link: "/ZCODE/Jogos/caca-simbolos/index.html",
       },
       {
         nome: "Caça-Moedas",
@@ -954,7 +1032,7 @@ export const categorias: Categoria[] = [
       },
       {
         nome: "Forca: Animais",
-        descricao: "Palavras paraenses… digo, de bichos!",
+        descricao: "Adivinhe o animal antes de completar o boneco.",
         imagem: "",
         link: "/ZCODE/Jogos/forca-animais/index.html",
       },
@@ -966,7 +1044,7 @@ export const categorias: Categoria[] = [
       },
       {
         nome: "Forca: Profissões",
-        descricao: "Palavras de quem trabalha para você passar.",
+        descricao: "Adivinhe a profissão letra a letra.",
         imagem: "",
         link: "/ZCODE/Jogos/forca-profissoes/index.html",
       },
@@ -975,30 +1053,6 @@ export const categorias: Categoria[] = [
         descricao: "Cidades, países e lugares do Brasil e do mundo.",
         imagem: "",
         link: "/ZCODE/Jogos/forca-lugares/index.html",
-      },
-      {
-        nome: "Forca: Palavras Longas",
-        descricao: "Para quem já domina a forca: só palavras longas.",
-        imagem: "",
-        link: "/ZCODE/Jogos/forca-palavras-longas/index.html",
-      },
-      {
-        nome: "Adivinhe o Número (100)",
-        descricao: "O número está entre 1 e 100. Acerte em poucas tentativas.",
-        imagem: "",
-        link: "/ZCODE/Jogos/adivinhe-o-numero-100/index.html",
-      },
-      {
-        nome: "Adivinhe o Número (500)",
-        descricao: "Entre 1 e 500: pense em busca binária!",
-        imagem: "",
-        link: "/ZCODE/Jogos/adivinhe-o-numero-500/index.html",
-      },
-      {
-        nome: "Adivinhe o Número (1000)",
-        descricao: "Entre 1 e 1000. O logaritmo é seu amigo.",
-        imagem: "",
-        link: "/ZCODE/Jogos/adivinhe-o-numero-1000/index.html",
       },
       {
         nome: "Sudoku 4×4",
@@ -1037,16 +1091,10 @@ export const categorias: Categoria[] = [
         link: "/ZCODE/Jogos/quebra-cabeca-15/index.html",
       },
       {
-        nome: "Asteroides Neon",
-        descricao: "Destroie asteroides em estilo neon.",
+        nome: "Asteroides",
+        descricao: "Destroie os asteroides e desvie dos fragmentos.",
         imagem: "",
-        link: "/ZCODE/Jogos/asteroides-neon/index.html",
-      },
-      {
-        nome: "Asteroides Clássico",
-        descricao: "Astrominado estilo arcade original.",
-        imagem: "",
-        link: "/ZCODE/Jogos/asteroides-classico/index.html",
+        link: "/ZCODE/Jogos/asteroides/index.html",
       },
       {
         nome: "Invasores Espaciais",
@@ -1062,15 +1110,9 @@ export const categorias: Categoria[] = [
       },
       {
         nome: "Flappy Pipa",
-        descricao: "Toque para voar. A pipa verde não para.",
+        descricao: "Toque para voar sem bater.",
         imagem: "",
         link: "/ZCODE/Jogos/flappy-pipa/index.html",
-      },
-      {
-        nome: "Flappy Lua",
-        descricao: "A pipa atravessa a noite lunar.",
-        imagem: "",
-        link: "/ZCODE/Jogos/flappy-lua/index.html",
       },
       {
         nome: "Runner Neon",
@@ -1080,21 +1122,9 @@ export const categorias: Categoria[] = [
       },
       {
         nome: "Runner Dino",
-        descricao: "O clássico dinossauro em versão Zcode.",
+        descricao: "Corra, pule e desvie numa corrida pré-histórica.",
         imagem: "",
         link: "/ZCODE/Jogos/runner-dino/index.html",
-      },
-      {
-        nome: "Runner Lua",
-        descricao: "Corrida noturna em ritmo de sátiro… de lua.",
-        imagem: "",
-        link: "/ZCODE/Jogos/runner-lua/index.html",
-      },
-      {
-        nome: "Runner Neo",
-        descricao: "Corrida em roxo cyberpunk.",
-        imagem: "",
-        link: "/ZCODE/Jogos/runner-neo/index.html",
       },
       {
         nome: "Alvo Móvel",
@@ -1113,24 +1143,6 @@ export const categorias: Categoria[] = [
         descricao: "Empilhe blocos sem deixar cair. Quanto mais alto, melhor.",
         imagem: "",
         link: "/ZCODE/Jogos/pilha-de-blocos/index.html",
-      },
-      {
-        nome: "Pilha Neon",
-        descricao: "O empilhador em estilo neon.",
-        imagem: "",
-        link: "/ZCODE/Jogos/pilha-neon/index.html",
-      },
-      {
-        nome: "Jogo Stroop",
-        descricao: "Diga a COR da tinta, não a palavra.",
-        imagem: "",
-        link: "/ZCODE/Jogos/jogo-stroop/index.html",
-      },
-      {
-        nome: "Stroop Turbo",
-        descricao: "Stroop com tempo encurtado.",
-        imagem: "",
-        link: "/ZCODE/Jogos/stroop-turbo/index.html",
       },
       {
         nome: "Boliche",
@@ -1163,12 +1175,6 @@ export const categorias: Categoria[] = [
         link: "/ZCODE/Jogos/labirinto-9/index.html",
       },
       {
-        nome: "Labirinto 13",
-        descricao: "Labirinto 13×13, sem pressa — mas com paredes.",
-        imagem: "",
-        link: "/ZCODE/Jogos/labirinto-13/index.html",
-      },
-      {
         nome: "Labirinto 11 com Fantasma",
         descricao: "Saia do labirinto antes que o fantasma te pegue.",
         imagem: "",
@@ -1197,12 +1203,6 @@ export const categorias: Categoria[] = [
         descricao: "Desvie dos blocos que caem do topo.",
         imagem: "",
         link: "/ZCODE/Jogos/esquiva/index.html",
-      },
-      {
-        nome: "Esquiva Neon",
-        descricao: "A esquiva em neons psicodélicos.",
-        imagem: "",
-        link: "/ZCODE/Jogos/esquiva-neon/index.html",
       },
       {
         nome: "Pintor 6×6",
@@ -1238,10 +1238,10 @@ export const categorias: Categoria[] = [
   },
   {
     id: "uteis",
-    rotulo: "Categoria.03",
+    rotulo: "Úteis",
     titulo: "Úteis",
     descricao:
-      "Calculadoras, conversores e ferramentas do dia a dia que resolvem em segundos.",
+      "Calculadoras, conversores e ferramentas profissionais para trabalho e rotina.",
     apps: [
       {
         nome: "Fauna Sonora",
@@ -1847,28 +1847,28 @@ export const categorias: Categoria[] = [
   },
   {
     id: "social",
-    rotulo: "Categoria.04",
-    titulo: "Social",
+    rotulo: "Recursos",
+    titulo: "Recursos",
     descricao:
-      "Onde me encontrar e interagir: chats, links e experimentos comunitários da plataforma.",
+      "Ajuda, instalação e contato: tudo para aproveitar a plataforma ao máximo.",
     apps: [
       {
-        nome: "Romanov",
-        descricao: "Rede social para filósofos.",
-        imagem: "/images/editorial/meeting.jpg",
-        link: "shorturl.sh/romanov",
+        nome: "Central de Ajuda",
+        descricao: "Respostas diretas sobre contas, offline, privacidade e erros.",
+        imagem: "",
+        link: "/ZCODE/Recursos/ajuda.html",
       },
       {
-        nome: "Meus Links",
-        descricao: "Todos os meus perfis e redes sociais em uma página só.",
-        imagem: "/images/editorial/community.jpg",
-        link: "#",
+        nome: "Instalar a Zcode",
+        descricao: "Passo a passo para iPhone, Android e computador.",
+        imagem: "",
+        link: "/ZCODE/Recursos/instalar.html",
       },
       {
-        nome: "Comenta Aí",
-        descricao: "Mural aberto para deixar recados e sugestões de apps.",
-        imagem: "/images/editorial/meeting.jpg",
-        link: "#",
+        nome: "Fale Conosco",
+        descricao: "Sugestões de apps, relato de erros e parcerias.",
+        imagem: "",
+        link: "/ZCODE/Recursos/contato.html",
       },
     ],
   },

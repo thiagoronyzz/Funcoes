@@ -4,23 +4,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Úteis — Zcode</title>
-<meta name="description" content="100 apps de úteis da plataforma Zcode.">
-<meta name="theme-color" content="#f3f0ea">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23f3f0ea'/%3E%3Cpath d='M20 18h24L20 46h24' fill='none' stroke='%23252422' stroke-width='7' stroke-linecap='square'/%3E%3C/svg%3E">
+<meta name="description" content="100 apps de úteis da plataforma Zcode: Calculadoras, conversores e ferramentas profissionais para o trabalho e a rotina.">
+<meta name="theme-color" content="#090d0b">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0f0d'/%3E%3Crect x='1' y='1' width='62' height='62' rx='13' fill='none' stroke='rgba(255,255,255,0.16)' stroke-width='2'/%3E%3Cpath d='M20 18h24L20 46h24' fill='none' stroke='%2310b981' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --z-bg:#f3f0ea; --z-bg2:#fbfaf7; --z-surface:#fffefa; --z-surface2:#e9e4dc;
-  --z-line:rgba(37,36,34,.16); --z-line2:rgba(37,36,34,.3);
-  --z-text:#252422; --z-muted:#746e66;
-  --z-brand:#873f32; --z-brand-soft:rgba(135,63,50,.12);
-  --z-cyan:#64716f; --z-pink:#9f5140; --z-lime:#8b8b64; --z-amber:#b88b4a;
-  --z-red:#9f5140; --z-radius:4px;
-  --z-fd:"DM Serif Display",Georgia,serif;
-  --z-f:"DM Sans",system-ui,sans-serif;
-  --z-fm:"IBM Plex Mono",ui-monospace,monospace;
-  --z-acc:var(--z-brand);
+  --z-bg:#090d0b; --z-bg2:#0c1210; --z-surface:#101715; --z-surface2:#162019;
+  --z-line:rgba(255,255,255,.09); --z-line2:rgba(255,255,255,.17);
+  --z-text:#edf2ef; --z-muted:#8e9b94;
+  --z-brand:#10b981; --z-brand-hi:#34d399; --z-brand-deep:#059669;
+  --z-brand-soft:rgba(16,185,129,.12);
+  --z-cyan:#38bdf8; --z-pink:#a78bfa; --z-lime:#4ade80; --z-amber:#fbbf24;
+  --z-red:#f87171; --z-ok:#34d399; --z-radius:12px;
+  --z-fd:"Sora",system-ui,sans-serif;
+  --z-f:"Inter",system-ui,sans-serif;
+  --z-fm:"JetBrains Mono",ui-monospace,monospace;
+  --z-acc:var(--z-brand-hi);
+  color-scheme:dark;
 }
 html[data-cat="estudos"]{--z-acc:var(--z-cyan)}
 html[data-cat="jogos"]{--z-acc:var(--z-pink)}
@@ -30,11 +33,13 @@ html[data-cat="social"]{--z-acc:var(--z-amber)}
 html{scroll-behavior:smooth}
 body{
   background:var(--z-bg);
-  color:var(--z-text); font-family:var(--z-f); font-size:15px; line-height:1.55;
+  background-image:radial-gradient(1100px 340px at 50% -120px,rgba(16,185,129,.09),transparent 70%);
+  background-attachment:fixed;
+  color:var(--z-text); font-family:var(--z-f); font-size:15px; line-height:1.6;
   min-height:100dvh; -webkit-font-smoothing:antialiased;
 }
-::selection{background:var(--z-acc);color:#04060d}
-a{color:var(--z-acc)}
+::selection{background:var(--z-brand);color:#04120c}
+a{color:var(--z-brand-hi)}
 h1,h2,h3,.fd{font-family:var(--z-fd);letter-spacing:-.02em}
 .mono{font-family:var(--z-fm)}
 .dim{color:var(--z-muted)} .acc{color:var(--z-acc)}
@@ -43,234 +48,280 @@ h1,h2,h3,.fd{font-family:var(--z-fd);letter-spacing:-.02em}
 .col{display:flex;flex-direction:column;gap:10px}
 .mt{margin-top:14px} .mb{margin-bottom:14px} .grow{flex:1}
 .hidden{display:none!important}
+:focus-visible{outline:2px solid var(--z-brand-hi);outline-offset:2px;border-radius:6px}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#243029;border-radius:99px;border:2px solid var(--z-bg)}
 
 /* ── topo ─────────────────────────────────────────────── */
 .ztop{
   position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;
-  height:54px;padding:0 16px;border-bottom:1px solid var(--z-line);
-  background:rgba(243,240,234,.96);backdrop-filter:blur(8px);
+  height:58px;padding:0 16px;border-bottom:1px solid var(--z-line);
+  background:rgba(9,13,11,.86);backdrop-filter:blur(12px);
 }
-.ztop-brand{color:var(--z-text);font-family:var(--z-fd);font-size:21px;line-height:1;text-decoration:none;letter-spacing:-.04em;flex:none}
+.ztop-brand{display:inline-flex;align-items:center;gap:9px;color:var(--z-text);
+  font-family:var(--z-fd);font-weight:800;font-size:17px;line-height:1;text-decoration:none;flex:none}
+.zlogo{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;
+  background:linear-gradient(135deg,#10b981,#0d8a63);color:#04120c;font-size:16px;font-weight:800;
+  box-shadow:0 4px 14px -4px rgba(16,185,129,.55)}
 .ztop-mid{min-width:0}
-.ztop-mid strong{display:block;font-family:var(--z-fd);font-size:14.5px;letter-spacing:-.01em;
+.ztop-mid strong{display:block;font-size:14px;font-weight:600;letter-spacing:-.01em;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.zchip{display:inline-flex;align-items:center;gap:6px;font-family:var(--z-fm);font-size:10px;
-  letter-spacing:.14em;text-transform:uppercase;color:var(--z-acc);
+.zchip{display:inline-flex;align-items:center;gap:6px;font-family:var(--z-fm);font-size:10.5px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--z-acc);
   background:color-mix(in srgb,var(--z-acc) 12%, transparent);
-  border:1px solid color-mix(in srgb,var(--z-acc) 34%, transparent);
-  padding:2px 9px;border-radius:var(--z-radius);white-space:nowrap}
-.zback{margin-left:auto;font-family:var(--z-fm);font-size:11.5px;text-decoration:none;
-  color:var(--z-muted);border:1px solid var(--z-line2);border-radius:var(--z-radius);padding:7px 13px;
-  transition:.2s;white-space:nowrap}
+  border:1px solid color-mix(in srgb,var(--z-acc) 32%, transparent);
+  padding:3px 10px;border-radius:99px;white-space:nowrap}
+.zback{margin-left:auto;font-size:13px;font-weight:600;text-decoration:none;
+  color:var(--z-muted);border:1px solid var(--z-line2);border-radius:9px;padding:8px 14px;
+  transition:.2s;white-space:nowrap;background:transparent;cursor:pointer;font-family:var(--z-f)}
 .zback:hover{color:var(--z-text);border-color:var(--z-acc)}
 
 /* ── layout ───────────────────────────────────────────── */
-.zmain{max-width:980px;margin:0 auto;padding:26px 16px 70px}
-.zhero{margin-bottom:22px}
-.zhero h1{font-size:clamp(26px,4.5vw,40px);font-weight:700;line-height:1.05}
+.zmain{max-width:1020px;margin:0 auto;padding:30px 18px 80px}
+.zhero{margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--z-line)}
+.zhero h1{font-size:clamp(26px,4.5vw,38px);font-weight:800;line-height:1.08;letter-spacing:-.03em}
 .zhero h1 em{font-style:normal;color:var(--z-acc)}
-.zhero p{color:var(--z-muted);margin-top:8px;max-width:640px}
-.zfoot{border-top:1px solid var(--z-line);padding:18px 16px 26px;text-align:center;
-  font-family:var(--z-fm);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--z-muted)}
+.zhero p{color:var(--z-muted);margin-top:8px;max-width:660px;font-size:15.5px}
+.zfoot{border-top:1px solid var(--z-line);padding:20px 16px 28px;text-align:center;
+  font-family:var(--z-fm);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--z-muted)}
 .zfoot b{color:var(--z-text);font-weight:600}
 
 /* ── cartões / painéis ────────────────────────────────── */
-.zcard{background:var(--z-surface);border:1px solid var(--z-line);
-  border-radius:var(--z-radius);padding:18px}
+.zcard{background:linear-gradient(180deg,rgba(255,255,255,.025),transparent 40%),var(--z-surface);
+  border:1px solid var(--z-line);border-radius:var(--z-radius);padding:18px;
+  box-shadow:0 18px 40px -28px rgba(0,0,0,.8)}
 .zcard.pad{padding:24px}
 .zgrid{display:grid;gap:12px}
 .zg2{grid-template-columns:repeat(2,1fr)}
 .zg3{grid-template-columns:repeat(3,1fr)}
 .zg4{grid-template-columns:repeat(4,1fr)}
-.zbig{font-family:var(--z-fd);font-size:clamp(40px,9vw,72px);font-weight:700;line-height:1;
-  font-variant-numeric:tabular-nums}
+.zbig{font-family:var(--z-fd);font-size:clamp(40px,9vw,68px);font-weight:800;line-height:1;
+  font-variant-numeric:tabular-nums;letter-spacing:-.04em}
 .zstat{display:flex;flex-direction:column;gap:2px}
-.zstat span{font-family:var(--z-fm);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--z-muted)}
+.zstat span{font-family:var(--z-fm);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--z-muted)}
 .zstat b{font-family:var(--z-fd);font-size:20px;font-weight:700}
+
+/* ── tabelas / chamadas / código / selos ──────────────── */
+.ztable{width:100%;border-collapse:collapse;font-size:14px}
+.ztable th{font-family:var(--z-fm);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--z-muted);font-weight:500;text-align:left;padding:10px 12px;border-bottom:1px solid var(--z-line2)}
+.ztable td{padding:11px 12px;border-bottom:1px solid var(--z-line);font-variant-numeric:tabular-nums}
+.ztable tr:last-child td{border-bottom:0}
+.ztable tr:hover td{background:rgba(255,255,255,.02)}
+.zbadge{display:inline-flex;align-items:center;font-size:11.5px;font-weight:700;
+  padding:3px 10px;border-radius:99px;background:var(--z-brand-soft);color:var(--z-brand-hi);
+  border:1px solid rgba(16,185,129,.3);white-space:nowrap}
+.zcallout{border:1px solid var(--z-line2);border-left:3px solid var(--z-acc);
+  background:rgba(255,255,255,.025);border-radius:10px;padding:13px 16px;font-size:14px}
+.zcallout b{color:var(--z-acc)}
+.zcode{font-family:var(--z-fm);font-size:13px;line-height:1.6;background:#070b09;
+  border:1px solid var(--z-line);border-radius:10px;padding:14px 16px;overflow-x:auto;white-space:pre}
 
 /* ── botões / campos ──────────────────────────────────── */
 .zbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
-  font-family:var(--z-fd);font-weight:600;font-size:14.5px;letter-spacing:-.01em;
-  color:#04060d;background:var(--z-acc);border:1px solid transparent;border-radius:var(--z-radius);
+  font-family:var(--z-f);font-weight:700;font-size:14.5px;
+  color:#04120c;background:var(--z-acc);border:1px solid transparent;border-radius:10px;
   padding:11px 20px;transition:.18s;text-decoration:none;user-select:none}
-.zbtn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.zbtn:hover{filter:brightness(1.1);transform:translateY(-1px)}
 .zbtn:active{transform:translateY(0)}
-.zbtn:disabled{opacity:.45;cursor:not-allowed;transform:none;filter:none}
-.zbtn.ghost{background:transparent;color:var(--z-text);border-color:var(--z-line2)}
+.zbtn:disabled{opacity:.4;cursor:not-allowed;transform:none;filter:none}
+.zbtn.ghost{background:rgba(255,255,255,.03);color:var(--z-text);border-color:var(--z-line2)}
 .zbtn.ghost:hover{border-color:var(--z-acc);color:var(--z-acc)}
-.zbtn.danger{background:var(--z-red);color:#fff}
-.zbtn.sm{padding:7px 13px;font-size:12.5px;border-radius:10px}
-.zbtn.big{padding:14px 28px;font-size:16px;border-radius:15px}
+.zbtn.danger{background:var(--z-red);color:#1c0606}
+.zbtn.sm{padding:7px 13px;font-size:12.5px;border-radius:8px}
+.zbtn.big{padding:14px 28px;font-size:16px;border-radius:12px}
 .zbtn.w{width:100%}
-.zinput,.zselect,.ztextarea{width:100%;background:var(--z-surface2);border:1px solid var(--z-line2);
-  color:var(--z-text);border-radius:var(--z-radius);padding:11px 14px;font-family:var(--z-f);font-size:15px;
+.zinput,.zselect,.ztextarea{width:100%;background:#0b100d;border:1px solid var(--z-line2);
+  color:var(--z-text);border-radius:10px;padding:11px 14px;font-family:var(--z-f);font-size:15px;
   outline:none;transition:.18s}
 .zinput:focus,.zselect:focus,.ztextarea:focus{border-color:var(--z-acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--z-acc) 22%,transparent)}
 .ztextarea{min-height:130px;resize:vertical;font-family:var(--z-fm);font-size:13px;line-height:1.5}
 .zselect{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--z-muted) 50%),linear-gradient(135deg,var(--z-muted) 50%,transparent 50%);
   background-position:calc(100% - 18px) 55%,calc(100% - 13px) 55%;background-size:5px 5px;background-repeat:no-repeat;padding-right:38px}
-.zlabel{display:block;font-family:var(--z-fm);font-size:10.5px;letter-spacing:.16em;
+.zselect option{background:#101715}
+.zlabel{display:block;font-family:var(--z-fm);font-size:10.5px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--z-muted);margin-bottom:6px}
 
 /* ── opções (quiz) ────────────────────────────────────── */
 .zopty{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
-  background:var(--z-surface2);color:var(--z-text);border:1px solid var(--z-line2);
-  border-radius:var(--z-radius);padding:13px 16px;font-family:var(--z-f);font-size:15px;transition:.16s}
+  background:rgba(255,255,255,.03);color:var(--z-text);border:1px solid var(--z-line2);
+  border-radius:10px;padding:13px 16px;font-family:var(--z-f);font-size:15px;transition:.16s}
 .zopty:hover:not(:disabled){border-color:var(--z-acc);transform:translateX(3px)}
 .zopty i{font-style:normal;font-family:var(--z-fm);font-size:11px;color:var(--z-muted);
   width:24px;height:24px;border-radius:8px;display:grid;place-items:center;
-  background:rgba(148,158,210,.1);flex:none}
-.zopty.ok{border-color:var(--z-lime);background:color-mix(in srgb,var(--z-lime) 14%, var(--z-surface2));color:var(--z-lime)}
-.zopty.err{border-color:var(--z-red);background:color-mix(in srgb,var(--z-red) 14%, var(--z-surface2));color:var(--z-red)}
+  background:rgba(255,255,255,.06);flex:none}
+.zopty.ok{border-color:var(--z-ok);background:rgba(52,211,153,.1);color:var(--z-ok)}
+.zopty.err{border-color:var(--z-red);background:rgba(248,113,113,.1);color:var(--z-red)}
 .zopty:disabled{cursor:default}
 
 /* ── barra / progresso / toast / modal ────────────────── */
-.zprog{height:8px;border-radius:var(--z-radius);background:var(--z-surface2);overflow:hidden}
+.zprog{height:8px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
 .zprog i{display:block;height:100%;border-radius:99px;background:var(--z-acc);transition:width .3s}
 .ztoast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);z-index:99;
-  background:var(--z-text);color:#04060d;font-weight:600;font-size:13.5px;padding:10px 20px;
-  border-radius:var(--z-radius);opacity:0;pointer-events:none;transition:.25s;box-shadow:0 14px 34px -10px rgba(0,0,0,.6)}
+  background:#f2f5f3;color:#0a0e0c;font-weight:700;font-size:13.5px;padding:11px 22px;
+  border-radius:10px;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 18px 40px -12px rgba(0,0,0,.7)}
 .ztoast.on{opacity:1;transform:translate(-50%,0)}
 .zmodal{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;
-  background:rgba(3,4,10,.72);backdrop-filter:blur(6px)}
+  background:rgba(2,5,4,.72);backdrop-filter:blur(6px)}
 .zbox{width:min(460px,100%);background:var(--z-surface);border:1px solid var(--z-line2);
-  border-radius:var(--z-radius);padding:26px;text-align:center}
+  border-radius:16px;padding:26px;text-align:center;box-shadow:0 30px 60px -20px rgba(0,0,0,.8)}
 .zbox h3{font-size:24px;margin-bottom:8px}
 .zbox p{color:var(--z-muted);margin-bottom:18px}
 .zkbd{font-family:var(--z-fm);font-size:11px;border:1px solid var(--z-line2);border-bottom-width:2px;
-  border-radius:7px;padding:2px 7px;background:var(--z-surface2)}
-canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-line);
-  background:var(--z-bg2);touch-action:none}
+  border-radius:7px;padding:2px 7px;background:rgba(255,255,255,.05)}
+canvas.zc{display:block;width:100%;border-radius:14px;border:1px solid var(--z-line);
+  background:#070b09;touch-action:none}
 @media (max-width:560px){
   .zg3,.zg4{grid-template-columns:repeat(2,1fr)}
-  .zmain{padding-top:18px}
+  .zmain{padding-top:20px}
+  .ztop-mid{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
 }
 
-.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:16px}
-.c{display:flex;flex-direction:column;gap:6px;background:var(--z-surface);border:1px solid var(--z-line);border-radius:16px;padding:14px 16px;text-decoration:none;color:var(--z-text);transition:transform .15s,border-color .15s}
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:20px}
+.c{display:flex;gap:12px;align-items:flex-start;background:var(--z-surface);border:1px solid var(--z-line);
+  border-radius:12px;padding:14px 14px;text-decoration:none;color:var(--z-text);transition:.16s}
 .c:hover{transform:translateY(-2px);border-color:var(--z-acc)}
-.c b{font-family:var(--z-fd);font-size:15.5px;color:var(--z-text)}
-.c span{font-size:12.5px;color:var(--z-muted);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-#busca{width:100%;max-width:420px;margin-top:18px}
+.c .ic{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;flex:none;
+  font-family:var(--z-fd);font-weight:800;font-size:17px;color:var(--z-acc);
+  background:color-mix(in srgb,var(--z-acc) 13%, transparent);
+  border:1px solid color-mix(in srgb,var(--z-acc) 30%, transparent)}
+.c .tx{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.c b{font-size:14.5px;font-weight:600;letter-spacing:-.01em}
+.c .tx>span{font-size:12.5px;color:var(--z-muted);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.c .go{color:var(--z-muted);font-size:15px;flex:none;transition:.16s}
+.c:hover .go{color:var(--z-acc);transform:translateX(3px)}
+#busca{width:100%;max-width:460px;margin-top:18px}
+.lstats{display:flex;gap:22px;margin-top:14px;flex-wrap:wrap}
+.lstats b{font-family:var(--z-fd);font-size:19px}
+.lstats span{display:block;font-size:11.5px;color:var(--z-muted)}
 </style>
 </head>
 <body>
 <header class="ztop">
-  <a class="ztop-brand" href="/">Zcode</a>
-  <div class="ztop-mid"><strong>Úteis — Zcode</strong></div>
-  <a class="zback" href="/">← Home</a>
+  <a class="ztop-brand" href="/"><span class="zlogo">Z</span>code</a>
+  <div class="ztop-mid"><strong>Úteis</strong></div>
+  <span class="zchip">100 apps</span>
+  <a class="zback" href="/">← Início</a>
 </header>
 <main class="zmain">
   <div class="zhero">
+    <p class="mono dim" style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin:0 0 10px">Zcode · Diretório</p>
     <h1>Úteis</h1>
-    <p>100 aplicativos · escolha o seu</p>
-    <input class="zinput" id="busca" placeholder="Buscar neste catálogo…" autocomplete="off">
+    <p>Calculadoras, conversores e ferramentas profissionais para o trabalho e a rotina.</p>
+    <input class="zinput" id="busca" placeholder="Buscar entre os 100 aplicativos…" autocomplete="off">
+    <div class="lstats">
+      <div><b>100</b><span>aplicativos</span></div>
+      <div><b>0</b><span>cadastro exigido</span></div>
+      <div><b>100%</b><span>no navegador</span></div>
+    </div>
   </div>
   <div class="lgrid" id="grid">
-<a class="c" href="Sons(01)/zcode.html"><b class="fd">Fauna Sonora</b><span>Ouça o canto real dos animais.</span></a>
-<a class="c" href="diminuilink(02)/zcode.html"><b class="fd">Encurtador de Links</b><span>Encurte e acompanhe seus links.</span></a>
-<a class="c" href="dados(03)/zcode.html"><b class="fd">Lançador de Dados</b><span>D3, D6, D20 e mais em 3D.</span></a>
-<a class="c" href="sorteargrupos(04)/zcode.html"><b class="fd">Sorteador de Grupos</b><span>Divida pessoas em grupos aleatórios.</span></a>
-<a class="c" href="cssatual(05)/zcode.html"><b class="fd">Gerador de Gradiente</b><span>Crie gradientes CSS e copie o código.</span></a>
-<a class="c" href="conversor-de-comprimento/index.html"><b class="fd">Conversor de Comprimento</b><span>Converta entre as principais unidades de comprimento.</span></a>
-<a class="c" href="conversor-de-massa/index.html"><b class="fd">Conversor de Massa</b><span>Converta entre as principais unidades de massa.</span></a>
-<a class="c" href="conversor-de-area/index.html"><b class="fd">Conversor de Área</b><span>Converta entre as principais unidades de área.</span></a>
-<a class="c" href="conversor-de-volume/index.html"><b class="fd">Conversor de Volume</b><span>Converta entre as principais unidades de volume.</span></a>
-<a class="c" href="conversor-de-velocidade/index.html"><b class="fd">Conversor de Velocidade</b><span>Converta entre as principais unidades de velocidade.</span></a>
-<a class="c" href="conversor-de-tempo/index.html"><b class="fd">Conversor de Tempo</b><span>Converta entre as principais unidades de tempo.</span></a>
-<a class="c" href="conversor-de-dados/index.html"><b class="fd">Conversor de Dados</b><span>Converta entre as principais unidades de dados.</span></a>
-<a class="c" href="conversor-de-temperatura/index.html"><b class="fd">Conversor de Temperatura</b><span>Converta entre as principais unidades de temperatura.</span></a>
-<a class="c" href="calculadora-cientifica/index.html"><b class="fd">Calculadora Científica</b><span>Raízes, potências, trig, log e mais.</span></a>
-<a class="c" href="calculadora-de-percentual/index.html"><b class="fd">Calculadora de Percentual</b><span>Quanto é X% de Y? E o aumento/desconto?</span></a>
-<a class="c" href="cronometro/index.html"><b class="fd">Cronômetro</b><span>Cronômetro com voltas e precisão de 100 ms.</span></a>
-<a class="c" href="timer-de-contagem/index.html"><b class="fd">Timer de Contagem</b><span>Contagem regressiva com alarme sonoro.</span></a>
-<a class="c" href="relogio-mundial/index.html"><b class="fd">Relógio Mundial</b><span>Hora local em 18 cidades do mundo, ao vivo.</span></a>
-<a class="c" href="calendario/index.html"><b class="fd">Calendário</b><span>Calendário do mês com navegação por anos.</span></a>
-<a class="c" href="bussola/index.html"><b class="fd">Bússola</b><span>Use o sensor do aparelho como bússola (ou simulação).</span></a>
-<a class="c" href="nivel-digital/index.html"><b class="fd">Nível Digital</b><span>Nível de bolha na tela para nivelar objetos.</span></a>
-<a class="c" href="lousa/index.html"><b class="fd">Lousa</b><span>Desenhe com o dedo ou o mouse, com cores e borracha.</span></a>
-<a class="c" href="lista-de-tarefas/index.html"><b class="fd">Lista de Tarefas</b><span>To-do list com prioridades. Salvo no navegador.</span></a>
-<a class="c" href="rastreador-de-habitos/index.html"><b class="fd">Rastreador de Hábitos</b><span>Acompanhe seus hábitos diários com streak.</span></a>
-<a class="c" href="gerador-de-cores/index.html"><b class="fd">Gerador de Cores</b><span>Converte HEX/RGB/HSL e gera tons.</span></a>
-<a class="c" href="contraste-wcag/index.html"><b class="fd">Contraste WCAG</b><span>Teste a acessibilidade da sua combinação de cores.</span></a>
-<a class="c" href="gerador-de-senha/index.html"><b class="fd">Gerador de Senha</b><span>Senhas aleatórias fortes com escolha de tamanho e símbolos.</span></a>
-<a class="c" href="frase-senha/index.html"><b class="fd">Frase-Senha</b><span>Senha tipo diceware: 4 palavras fáceis de lembrar.</span></a>
-<a class="c" href="codificador-base64/index.html"><b class="fd">Codificador Base64</b><span>Codifique e decodifique Base64 em tempo real.</span></a>
-<a class="c" href="gerador-de-hash/index.html"><b class="fd">Gerador de Hash</b><span>MD5, SHA-1, SHA-256 e SHA-512 instantâneos.</span></a>
-<a class="c" href="gerador-de-uuid/index.html"><b class="fd">Gerador de UUID</b><span>Crie UUIDs v4 em lote.</span></a>
-<a class="c" href="gerador-de-numeros/index.html"><b class="fd">Gerador de Números</b><span>Números aleatórios com intervalo e sem repetição.</span></a>
-<a class="c" href="sorteador-de-opcoes/index.html"><b class="fd">Sorteador de Opções</b><span>Digite opções e deixe o sorteio escolher.</span></a>
-<a class="c" href="sorteador-de-nomes/index.html"><b class="fd">Sorteador de Nomes</b><span>Sorteie um nome de uma lista (prêmios, equipes).</span></a>
-<a class="c" href="cara-ou-coroa/index.html"><b class="fd">Cara ou Coroa</b><span>Moeda virtual para decisões difíceis.</span></a>
-<a class="c" href="estatisticas-de-texto/index.html"><b class="fd">Estatísticas de Texto</b><span>Palavras, caracteres, frases e tempo de leitura.</span></a>
-<a class="c" href="conversor-de-maiusculas/index.html"><b class="fd">Conversor de Maiúsculas</b><span>camelCase, SNAKE_CASE, kebab-case e mais 7 modos.</span></a>
-<a class="c" href="codificador-de-url/index.html"><b class="fd">Codificador de URL</b><span>Encode/decode de parâmetros de URL.</span></a>
-<a class="c" href="lorem-ipsum/index.html"><b class="fd">Lorem Ipsum</b><span>Gere parágrafos de texto de preenchimento.</span></a>
-<a class="c" href="formatador-json/index.html"><b class="fd">Formatador JSON</b><span>Formate, comprima e valide JSON.</span></a>
-<a class="c" href="testador-de-regex/index.html"><b class="fd">Testador de Regex</b><span>Teste expressões regulares com destaque ao vivo.</span></a>
-<a class="c" href="comparador-de-texto/index.html"><b class="fd">Comparador de Texto</b><span>Diferença lado a lado entre dois textos.</span></a>
-<a class="c" href="editor-markdown/index.html"><b class="fd">Editor Markdown</b><span>Escreva Markdown e veja a prévia instantânea.</span></a>
-<a class="c" href="conversor-html-entidades/index.html"><b class="fd">Conversor HTML/Entidades</b><span>Converta texto para entidades HTML e vice-versa.</span></a>
-<a class="c" href="imagem-para-base64/index.html"><b class="fd">Imagem para Base64</b><span>Cole uma imagem e copie o data-URI.</span></a>
-<a class="c" href="gerador-de-qr-code/index.html"><b class="fd">Gerador de QR Code</b><span>Transforme qualquer texto ou URL em QR Code.</span></a>
-<a class="c" href="calculadora-de-imc/index.html"><b class="fd">Calculadora de IMC</b><span>Índice de massa corporal com faixa de referência.</span></a>
-<a class="c" href="calculadora-de-gorjeta/index.html"><b class="fd">Calculadora de Gorjeta</b><span>Divida a conta e calcule a gorjeta.</span></a>
-<a class="c" href="divisao-de-conta/index.html"><b class="fd">Divisão de Conta</b><span>Quanto cada um paga, com ou sem gorjeta.</span></a>
-<a class="c" href="juros-compostos/index.html"><b class="fd">Juros Compostos</b><span>Montante de juros compostos vs simples.</span></a>
-<a class="c" href="prestacao-de-emprestimo/index.html"><b class="fd">Prestação de Empréstimo</b><span>Prestação mensal no sistema PRICE.</span></a>
-<a class="c" href="juros-simples/index.html"><b class="fd">Juros Simples</b><span>A fórmula J = C·i·t na prática.</span></a>
-<a class="c" href="gasto-calorico-tmb/index.html"><b class="fd">Gasto Calórico (TMB)</b><span>Calcule seu metabolismo basal e gasto diário.</span></a>
-<a class="c" href="orcamento-pessoal/index.html"><b class="fd">Orçamento Pessoal</b><span>Registre entradas e saídas, mês a mês.</span></a>
-<a class="c" href="meta-de-agua/index.html"><b class="fd">Meta de Água</b><span>Acompanhe seu consumo diário de água.</span></a>
-<a class="c" href="calculadora-de-sono/index.html"><b class="fd">Calculadora de Sono</b><span>A que horas dormir (ou acordar) para ciclos inteiros?</span></a>
-<a class="c" href="respiracao-4-7-8/index.html"><b class="fd">Respiração 4-7-8</b><span>Respiração guiada para acalmar em minutos.</span></a>
-<a class="c" href="calculadora-de-idade/index.html"><b class="fd">Calculadora de Idade</b><span>Sua idade exata em anos, meses e dias.</span></a>
-<a class="c" href="diferenca-de-datas/index.html"><b class="fd">Diferença de Datas</b><span>Quantos dias entre duas datas.</span></a>
-<a class="c" href="contagem-de-evento/index.html"><b class="fd">Contagem de Evento</b><span>Faltam X dias para o grande evento.</span></a>
-<a class="c" href="calculo-de-gestacao/index.html"><b class="fd">Cálculo de Gestação</b><span>Data provável do parto (regra de Naegele).</span></a>
-<a class="c" href="semana-e-trimestre/index.html"><b class="fd">Semana e Trimestre</b><span>Dia da semana, semana ISO e trimestre de qualquer data.</span></a>
-<a class="c" href="conversor-csv-json/index.html"><b class="fd">Conversor CSV/JSON</b><span>Transforme CSV em JSON e vice-versa.</span></a>
-<a class="c" href="sombra-css/index.html"><b class="fd">Sombra CSS</b><span>Crie box-shadow e copie o CSS pronto.</span></a>
-<a class="c" href="raio-css/index.html"><b class="fd">Raio CSS</b><span>border-radius por canto, com prévia ao vivo.</span></a>
-<a class="c" href="flexbox-playground/index.html"><b class="fd">Flexbox Playground</b><span>Brinque com flexbox e copie o CSS.</span></a>
-<a class="c" href="css-grid-playground/index.html"><b class="fd">CSS Grid Playground</b><span>Explore grid-template com prévia interativa.</span></a>
-<a class="c" href="curvas-bezier/index.html"><b class="fd">Curvas Bezier</b><span>Ajuste cubic-bezier e veja a animação.</span></a>
-<a class="c" href="tipografia/index.html"><b class="fd">Tipografia</b><span>Componha fonte, peso, linha e espaçamento.</span></a>
-<a class="c" href="palindromo/index.html"><b class="fd">Palíndromo</b><span>Verifique se a frase é lida igual aos dois sentidos.</span></a>
-<a class="c" href="mascara-de-telefone/index.html"><b class="fd">Máscara de Telefone</b><span>Digite e veja o número formatado ao vivo.</span></a>
-<a class="c" href="validador-de-cpf/index.html"><b class="fd">Validador de CPF</b><span>Validação dos dígitos verificadores em tempo real.</span></a>
-<a class="c" href="conversor-de-numeros-romanos/index.html"><b class="fd">Conversor de Números Romanos</b><span>Vá e volta entre arábicos e romanos.</span></a>
-<a class="c" href="conversor-de-bases/index.html"><b class="fd">Conversor de Bases</b><span>Binário, octal, decimal e hexadecimal em sincronia.</span></a>
-<a class="c" href="texto-hex/index.html"><b class="fd">Texto ↔ Hex</b><span>Converta texto para bytes hex e vice-versa.</span></a>
-<a class="c" href="cifra-rot13/index.html"><b class="fd">Cifra ROT13</b><span>Cifre e decifre com o clássico ROT13.</span></a>
-<a class="c" href="sorte-de-ordem/index.html"><b class="fd">Sorte de Ordem</b><span>Sorteie a ordem de uma lista de participantes.</span></a>
-<a class="c" href="conversor-de-angulos/index.html"><b class="fd">Conversor de Ângulos</b><span>Graus ↔ radianos, complemento e suplemento.</span></a>
-<a class="c" href="pitagoras/index.html"><b class="fd">Pitágoras</b><span>Hipotenusa ou cateto, com os ângulos do triângulo.</span></a>
-<a class="c" href="areas-de-formas/index.html"><b class="fd">Áreas de Formas</b><span>Área e perímetro de 5 formas geométricas.</span></a>
-<a class="c" href="media-ponderada/index.html"><b class="fd">Média Ponderada</b><span>Some notas com pesos e veja sua média final.</span></a>
-<a class="c" href="nota-da-recuperacao/index.html"><b class="fd">Nota da Recuperação</b><span>Qual nota você precisa para alcançar a média?</span></a>
-<a class="c" href="salario-liquido/index.html"><b class="fd">Salário Líquido</b><span>Simulação de INSS e IRRF sobre o bruto.</span></a>
-<a class="c" href="custo-de-viagem/index.html"><b class="fd">Custo de Viagem</b><span>Combustível, pedágio e hospedagem por pessoa.</span></a>
-<a class="c" href="distancia-entre-pontos/index.html"><b class="fd">Distância entre Pontos</b><span>Haversine: distância real entre coordenadas.</span></a>
-<a class="c" href="velocidade-media/index.html"><b class="fd">Velocidade Média</b><span>Calcule km/h, m/s e mph a partir de distância e tempo.</span></a>
-<a class="c" href="escala-de-mapa/index.html"><b class="fd">Escala de Mapa</b><span>Converta medidas de mapa em distância real.</span></a>
-<a class="c" href="area-de-terreno/index.html"><b class="fd">Área de Terreno</b><span>m², hectares e alqueires de um terreno retangular.</span></a>
-<a class="c" href="calculadora-de-cimento/index.html"><b class="fd">Calculadora de Cimento</b><span>Cimento, areia e brita para sua laje.</span></a>
-<a class="c" href="calculadora-de-tinta/index.html"><b class="fd">Calculadora de Tinta</b><span>Litros e latas de tinta para sua parede.</span></a>
-<a class="c" href="consumo-de-energia/index.html"><b class="fd">Consumo de Energia</b><span>Estime a conta de luz de um aparelho.</span></a>
-<a class="c" href="tempo-de-download/index.html"><b class="fd">Tempo de Download</b><span>Quanto tempo leva para baixar aquele arquivo?</span></a>
-<a class="c" href="gerador-de-personagem/index.html"><b class="fd">Gerador de Personagem</b><span>Nomes e classes aleatórias para seu RPG.</span></a>
-<a class="c" href="frase-do-dia/index.html"><b class="fd">Frase do Dia</b><span>Citações curtas para inspirar o dia.</span></a>
-<a class="c" href="timestamp-unix/index.html"><b class="fd">Timestamp UNIX</b><span>Converta datas e timestamps UNIX nos dois sentidos.</span></a>
-<a class="c" href="metronomo/index.html"><b class="fd">Metrônomo</b><span>BPM ajustável com tap tempo.</span></a>
-<a class="c" href="diario-de-humor/index.html"><b class="fd">Diário de Humor</b><span>Registre seu humor e veja a tendência do mês.</span></a>
-<a class="c" href="rastreador-de-metas/index.html"><b class="fd">Rastreador de Metas</b><span>Metas com barra de progresso e contagem.</span></a>
-<a class="c" href="numero-por-extenso/index.html"><b class="fd">Número por Extenso</b><span>Escreva qualquer número em palavras.</span></a>
-<a class="c" href="comparador-de-numeros/index.html"><b class="fd">Comparador de Números</b><span>Qual é maior, e por quanto?</span></a>
+<a class="c" href="Sons(01)/zcode.html"><span class="ic">F</span><span class="tx"><b>Fauna Sonora</b><span>Ouça o canto real dos animais.</span></span><span class="go">→</span></a>
+<a class="c" href="diminuilink(02)/zcode.html"><span class="ic">E</span><span class="tx"><b>Encurtador de Links</b><span>Encurte e acompanhe seus links.</span></span><span class="go">→</span></a>
+<a class="c" href="dados(03)/zcode.html"><span class="ic">L</span><span class="tx"><b>Lançador de Dados</b><span>D3, D6, D20 e mais em 3D.</span></span><span class="go">→</span></a>
+<a class="c" href="sorteargrupos(04)/zcode.html"><span class="ic">G</span><span class="tx"><b>Sorteador de Grupos</b><span>Divida pessoas em grupos aleatórios.</span></span><span class="go">→</span></a>
+<a class="c" href="cssatual(05)/zcode.html"><span class="ic">G</span><span class="tx"><b>Gerador de Gradiente</b><span>Crie gradientes CSS e copie o código.</span></span><span class="go">→</span></a>
+<a class="c" href="conversor-de-comprimento/index.html"><span class="ic">C</span><span class="tx"><b>Conversor de Comprimento</b><span>Converta entre as principais unidades de comprimento.</span></span><span class="go">→</span></a>
+<a class="c" href="conversor-de-massa/index.html"><span class="ic">M</span><span class="tx"><b>Conversor de Massa</b><span>Converta entre as principais unidades de massa.</span></span><span class="go">→</span></a>
+<a class="c" href="conversor-de-area/index.html"><span class="ic">Á</span><span class="tx"><b>Conversor de Área</b><span>Converta entre as principais unidades de área.</span></span><span class="go">→</span></a>
+<a class="c" href="conversor-de-volume/index.html"><span class="ic">V</span><span class="tx"><b>Conversor de Volume</b><span>Converta entre as principais unidades de volume.</span></span><span class="go">→</span></a>
+<a class="c" href="conversor-de-velocidade/index.html"><span class="ic">V</span><span class="tx"><b>Conversor de Velocidade</b><span>Converta entre as principais unidades de velocidade.</span></span><span class="go">→</span></a>
+<a class="c" href="conversor-de-tempo/index.html"><span class="ic">T</span><span class="tx"><b>Conversor de Tempo</b><span>Converta entre as principais unidades de tempo.</span></span><span class="go">→</span></a>
+<a class="c" href="conversor-de-dados/index.html"><span class="ic">D</span><span class="tx"><b>Conversor de Dados</b><span>Converta entre as principais unidades de dados.</span></span><span class="go">→</span></a>
+<a class="c" href="conversor-de-temperatura/index.html"><span class="ic">T</span><span class="tx"><b>Conversor de Temperatura</b><span>Converta entre as principais unidades de temperatura.</span></span><span class="go">→</span></a>
+<a class="c" href="calculadora-cientifica/index.html"><span class="ic">C</span><span class="tx"><b>Calculadora Científica</b><span>Raízes, potências, trig, log e mais.</span></span><span class="go">→</span></a>
+<a class="c" href="calculadora-de-percentual/index.html"><span class="ic">P</span><span class="tx"><b>Calculadora de Percentual</b><span>Quanto é X% de Y? E o aumento/desconto?</span></span><span class="go">→</span></a>
+<a class="c" href="cronometro/index.html"><span class="ic">C</span><span class="tx"><b>Cronômetro</b><span>Cronômetro com voltas e precisão de 100 ms.</span></span><span class="go">→</span></a>
+<a class="c" href="timer-de-contagem/index.html"><span class="ic">T</span><span class="tx"><b>Timer de Contagem</b><span>Contagem regressiva com alarme sonoro.</span></span><span class="go">→</span></a>
+<a class="c" href="relogio-mundial/index.html"><span class="ic">R</span><span class="tx"><b>Relógio Mundial</b><span>Hora local em 18 cidades do mundo, ao vivo.</span></span><span class="go">→</span></a>
+<a class="c" href="calendario/index.html"><span class="ic">C</span><span class="tx"><b>Calendário</b><span>Calendário do mês com navegação por anos.</span></span><span class="go">→</span></a>
+<a class="c" href="bussola/index.html"><span class="ic">B</span><span class="tx"><b>Bússola</b><span>Use o sensor do aparelho como bússola (ou simulação).</span></span><span class="go">→</span></a>
+<a class="c" href="nivel-digital/index.html"><span class="ic">N</span><span class="tx"><b>Nível Digital</b><span>Nível de bolha na tela para nivelar objetos.</span></span><span class="go">→</span></a>
+<a class="c" href="lousa/index.html"><span class="ic">L</span><span class="tx"><b>Lousa</b><span>Desenhe com o dedo ou o mouse, com cores e borracha.</span></span><span class="go">→</span></a>
+<a class="c" href="lista-de-tarefas/index.html"><span class="ic">L</span><span class="tx"><b>Lista de Tarefas</b><span>To-do list com prioridades. Salvo no navegador.</span></span><span class="go">→</span></a>
+<a class="c" href="rastreador-de-habitos/index.html"><span class="ic">R</span><span class="tx"><b>Rastreador de Hábitos</b><span>Acompanhe seus hábitos diários com streak.</span></span><span class="go">→</span></a>
+<a class="c" href="gerador-de-cores/index.html"><span class="ic">C</span><span class="tx"><b>Gerador de Cores</b><span>Converte HEX/RGB/HSL e gera tons.</span></span><span class="go">→</span></a>
+<a class="c" href="contraste-wcag/index.html"><span class="ic">C</span><span class="tx"><b>Contraste WCAG</b><span>Teste a acessibilidade da sua combinação de cores.</span></span><span class="go">→</span></a>
+<a class="c" href="gerador-de-senha/index.html"><span class="ic">S</span><span class="tx"><b>Gerador de Senha</b><span>Senhas aleatórias fortes com escolha de tamanho e símbolos.</span></span><span class="go">→</span></a>
+<a class="c" href="frase-senha/index.html"><span class="ic">F</span><span class="tx"><b>Frase-Senha</b><span>Senha tipo diceware: 4 palavras fáceis de lembrar.</span></span><span class="go">→</span></a>
+<a class="c" href="codificador-base64/index.html"><span class="ic">C</span><span class="tx"><b>Codificador Base64</b><span>Codifique e decodifique Base64 em tempo real.</span></span><span class="go">→</span></a>
+<a class="c" href="gerador-de-hash/index.html"><span class="ic">H</span><span class="tx"><b>Gerador de Hash</b><span>MD5, SHA-1, SHA-256 e SHA-512 instantâneos.</span></span><span class="go">→</span></a>
+<a class="c" href="gerador-de-uuid/index.html"><span class="ic">U</span><span class="tx"><b>Gerador de UUID</b><span>Crie UUIDs v4 em lote.</span></span><span class="go">→</span></a>
+<a class="c" href="gerador-de-numeros/index.html"><span class="ic">N</span><span class="tx"><b>Gerador de Números</b><span>Números aleatórios com intervalo e sem repetição.</span></span><span class="go">→</span></a>
+<a class="c" href="sorteador-de-opcoes/index.html"><span class="ic">O</span><span class="tx"><b>Sorteador de Opções</b><span>Digite opções e deixe o sorteio escolher.</span></span><span class="go">→</span></a>
+<a class="c" href="sorteador-de-nomes/index.html"><span class="ic">N</span><span class="tx"><b>Sorteador de Nomes</b><span>Sorteie um nome de uma lista (prêmios, equipes).</span></span><span class="go">→</span></a>
+<a class="c" href="cara-ou-coroa/index.html"><span class="ic">C</span><span class="tx"><b>Cara ou Coroa</b><span>Moeda virtual para decisões difíceis.</span></span><span class="go">→</span></a>
+<a class="c" href="estatisticas-de-texto/index.html"><span class="ic">E</span><span class="tx"><b>Estatísticas de Texto</b><span>Palavras, caracteres, frases e tempo de leitura.</span></span><span class="go">→</span></a>
+<a class="c" href="conversor-de-maiusculas/index.html"><span class="ic">M</span><span class="tx"><b>Conversor de Maiúsculas</b><span>camelCase, SNAKE_CASE, kebab-case e mais 7 modos.</span></span><span class="go">→</span></a>
+<a class="c" href="codificador-de-url/index.html"><span class="ic">C</span><span class="tx"><b>Codificador de URL</b><span>Encode/decode de parâmetros de URL.</span></span><span class="go">→</span></a>
+<a class="c" href="lorem-ipsum/index.html"><span class="ic">L</span><span class="tx"><b>Lorem Ipsum</b><span>Gere parágrafos de texto de preenchimento.</span></span><span class="go">→</span></a>
+<a class="c" href="formatador-json/index.html"><span class="ic">F</span><span class="tx"><b>Formatador JSON</b><span>Formate, comprima e valide JSON.</span></span><span class="go">→</span></a>
+<a class="c" href="testador-de-regex/index.html"><span class="ic">T</span><span class="tx"><b>Testador de Regex</b><span>Teste expressões regulares com destaque ao vivo.</span></span><span class="go">→</span></a>
+<a class="c" href="comparador-de-texto/index.html"><span class="ic">C</span><span class="tx"><b>Comparador de Texto</b><span>Diferença lado a lado entre dois textos.</span></span><span class="go">→</span></a>
+<a class="c" href="editor-markdown/index.html"><span class="ic">E</span><span class="tx"><b>Editor Markdown</b><span>Escreva Markdown e veja a prévia instantânea.</span></span><span class="go">→</span></a>
+<a class="c" href="conversor-html-entidades/index.html"><span class="ic">C</span><span class="tx"><b>Conversor HTML/Entidades</b><span>Converta texto para entidades HTML e vice-versa.</span></span><span class="go">→</span></a>
+<a class="c" href="imagem-para-base64/index.html"><span class="ic">I</span><span class="tx"><b>Imagem para Base64</b><span>Cole uma imagem e copie o data-URI.</span></span><span class="go">→</span></a>
+<a class="c" href="gerador-de-qr-code/index.html"><span class="ic">Q</span><span class="tx"><b>Gerador de QR Code</b><span>Transforme qualquer texto ou URL em QR Code.</span></span><span class="go">→</span></a>
+<a class="c" href="calculadora-de-imc/index.html"><span class="ic">I</span><span class="tx"><b>Calculadora de IMC</b><span>Índice de massa corporal com faixa de referência.</span></span><span class="go">→</span></a>
+<a class="c" href="calculadora-de-gorjeta/index.html"><span class="ic">G</span><span class="tx"><b>Calculadora de Gorjeta</b><span>Divida a conta e calcule a gorjeta.</span></span><span class="go">→</span></a>
+<a class="c" href="divisao-de-conta/index.html"><span class="ic">D</span><span class="tx"><b>Divisão de Conta</b><span>Quanto cada um paga, com ou sem gorjeta.</span></span><span class="go">→</span></a>
+<a class="c" href="juros-compostos/index.html"><span class="ic">J</span><span class="tx"><b>Juros Compostos</b><span>Montante de juros compostos vs simples.</span></span><span class="go">→</span></a>
+<a class="c" href="prestacao-de-emprestimo/index.html"><span class="ic">P</span><span class="tx"><b>Prestação de Empréstimo</b><span>Prestação mensal no sistema PRICE.</span></span><span class="go">→</span></a>
+<a class="c" href="juros-simples/index.html"><span class="ic">J</span><span class="tx"><b>Juros Simples</b><span>A fórmula J = C·i·t na prática.</span></span><span class="go">→</span></a>
+<a class="c" href="gasto-calorico-tmb/index.html"><span class="ic">G</span><span class="tx"><b>Gasto Calórico (TMB)</b><span>Calcule seu metabolismo basal e gasto diário.</span></span><span class="go">→</span></a>
+<a class="c" href="orcamento-pessoal/index.html"><span class="ic">O</span><span class="tx"><b>Orçamento Pessoal</b><span>Registre entradas e saídas, mês a mês.</span></span><span class="go">→</span></a>
+<a class="c" href="meta-de-agua/index.html"><span class="ic">M</span><span class="tx"><b>Meta de Água</b><span>Acompanhe seu consumo diário de água.</span></span><span class="go">→</span></a>
+<a class="c" href="calculadora-de-sono/index.html"><span class="ic">S</span><span class="tx"><b>Calculadora de Sono</b><span>A que horas dormir (ou acordar) para ciclos inteiros?</span></span><span class="go">→</span></a>
+<a class="c" href="respiracao-4-7-8/index.html"><span class="ic">R</span><span class="tx"><b>Respiração 4-7-8</b><span>Respiração guiada para acalmar em minutos.</span></span><span class="go">→</span></a>
+<a class="c" href="calculadora-de-idade/index.html"><span class="ic">I</span><span class="tx"><b>Calculadora de Idade</b><span>Sua idade exata em anos, meses e dias.</span></span><span class="go">→</span></a>
+<a class="c" href="diferenca-de-datas/index.html"><span class="ic">D</span><span class="tx"><b>Diferença de Datas</b><span>Quantos dias entre duas datas.</span></span><span class="go">→</span></a>
+<a class="c" href="contagem-de-evento/index.html"><span class="ic">C</span><span class="tx"><b>Contagem de Evento</b><span>Faltam X dias para o grande evento.</span></span><span class="go">→</span></a>
+<a class="c" href="calculo-de-gestacao/index.html"><span class="ic">C</span><span class="tx"><b>Cálculo de Gestação</b><span>Data provável do parto (regra de Naegele).</span></span><span class="go">→</span></a>
+<a class="c" href="semana-e-trimestre/index.html"><span class="ic">S</span><span class="tx"><b>Semana e Trimestre</b><span>Dia da semana, semana ISO e trimestre de qualquer data.</span></span><span class="go">→</span></a>
+<a class="c" href="conversor-csv-json/index.html"><span class="ic">C</span><span class="tx"><b>Conversor CSV/JSON</b><span>Transforme CSV em JSON e vice-versa.</span></span><span class="go">→</span></a>
+<a class="c" href="sombra-css/index.html"><span class="ic">S</span><span class="tx"><b>Sombra CSS</b><span>Crie box-shadow e copie o CSS pronto.</span></span><span class="go">→</span></a>
+<a class="c" href="raio-css/index.html"><span class="ic">R</span><span class="tx"><b>Raio CSS</b><span>border-radius por canto, com prévia ao vivo.</span></span><span class="go">→</span></a>
+<a class="c" href="flexbox-playground/index.html"><span class="ic">F</span><span class="tx"><b>Flexbox Playground</b><span>Brinque com flexbox e copie o CSS.</span></span><span class="go">→</span></a>
+<a class="c" href="css-grid-playground/index.html"><span class="ic">C</span><span class="tx"><b>CSS Grid Playground</b><span>Explore grid-template com prévia interativa.</span></span><span class="go">→</span></a>
+<a class="c" href="curvas-bezier/index.html"><span class="ic">C</span><span class="tx"><b>Curvas Bezier</b><span>Ajuste cubic-bezier e veja a animação.</span></span><span class="go">→</span></a>
+<a class="c" href="tipografia/index.html"><span class="ic">T</span><span class="tx"><b>Tipografia</b><span>Componha fonte, peso, linha e espaçamento.</span></span><span class="go">→</span></a>
+<a class="c" href="palindromo/index.html"><span class="ic">P</span><span class="tx"><b>Palíndromo</b><span>Verifique se a frase é lida igual aos dois sentidos.</span></span><span class="go">→</span></a>
+<a class="c" href="mascara-de-telefone/index.html"><span class="ic">M</span><span class="tx"><b>Máscara de Telefone</b><span>Digite e veja o número formatado ao vivo.</span></span><span class="go">→</span></a>
+<a class="c" href="validador-de-cpf/index.html"><span class="ic">C</span><span class="tx"><b>Validador de CPF</b><span>Validação dos dígitos verificadores em tempo real.</span></span><span class="go">→</span></a>
+<a class="c" href="conversor-de-numeros-romanos/index.html"><span class="ic">N</span><span class="tx"><b>Conversor de Números Romanos</b><span>Vá e volta entre arábicos e romanos.</span></span><span class="go">→</span></a>
+<a class="c" href="conversor-de-bases/index.html"><span class="ic">B</span><span class="tx"><b>Conversor de Bases</b><span>Binário, octal, decimal e hexadecimal em sincronia.</span></span><span class="go">→</span></a>
+<a class="c" href="texto-hex/index.html"><span class="ic">T</span><span class="tx"><b>Texto ↔ Hex</b><span>Converta texto para bytes hex e vice-versa.</span></span><span class="go">→</span></a>
+<a class="c" href="cifra-rot13/index.html"><span class="ic">C</span><span class="tx"><b>Cifra ROT13</b><span>Cifre e decifre com o clássico ROT13.</span></span><span class="go">→</span></a>
+<a class="c" href="sorte-de-ordem/index.html"><span class="ic">S</span><span class="tx"><b>Sorte de Ordem</b><span>Sorteie a ordem de uma lista de participantes.</span></span><span class="go">→</span></a>
+<a class="c" href="conversor-de-angulos/index.html"><span class="ic">Â</span><span class="tx"><b>Conversor de Ângulos</b><span>Graus ↔ radianos, complemento e suplemento.</span></span><span class="go">→</span></a>
+<a class="c" href="pitagoras/index.html"><span class="ic">P</span><span class="tx"><b>Pitágoras</b><span>Hipotenusa ou cateto, com os ângulos do triângulo.</span></span><span class="go">→</span></a>
+<a class="c" href="areas-de-formas/index.html"><span class="ic">Á</span><span class="tx"><b>Áreas de Formas</b><span>Área e perímetro de 5 formas geométricas.</span></span><span class="go">→</span></a>
+<a class="c" href="media-ponderada/index.html"><span class="ic">M</span><span class="tx"><b>Média Ponderada</b><span>Some notas com pesos e veja sua média final.</span></span><span class="go">→</span></a>
+<a class="c" href="nota-da-recuperacao/index.html"><span class="ic">N</span><span class="tx"><b>Nota da Recuperação</b><span>Qual nota você precisa para alcançar a média?</span></span><span class="go">→</span></a>
+<a class="c" href="salario-liquido/index.html"><span class="ic">S</span><span class="tx"><b>Salário Líquido</b><span>Simulação de INSS e IRRF sobre o bruto.</span></span><span class="go">→</span></a>
+<a class="c" href="custo-de-viagem/index.html"><span class="ic">C</span><span class="tx"><b>Custo de Viagem</b><span>Combustível, pedágio e hospedagem por pessoa.</span></span><span class="go">→</span></a>
+<a class="c" href="distancia-entre-pontos/index.html"><span class="ic">D</span><span class="tx"><b>Distância entre Pontos</b><span>Haversine: distância real entre coordenadas.</span></span><span class="go">→</span></a>
+<a class="c" href="velocidade-media/index.html"><span class="ic">V</span><span class="tx"><b>Velocidade Média</b><span>Calcule km/h, m/s e mph a partir de distância e tempo.</span></span><span class="go">→</span></a>
+<a class="c" href="escala-de-mapa/index.html"><span class="ic">E</span><span class="tx"><b>Escala de Mapa</b><span>Converta medidas de mapa em distância real.</span></span><span class="go">→</span></a>
+<a class="c" href="area-de-terreno/index.html"><span class="ic">Á</span><span class="tx"><b>Área de Terreno</b><span>m², hectares e alqueires de um terreno retangular.</span></span><span class="go">→</span></a>
+<a class="c" href="calculadora-de-cimento/index.html"><span class="ic">C</span><span class="tx"><b>Calculadora de Cimento</b><span>Cimento, areia e brita para sua laje.</span></span><span class="go">→</span></a>
+<a class="c" href="calculadora-de-tinta/index.html"><span class="ic">T</span><span class="tx"><b>Calculadora de Tinta</b><span>Litros e latas de tinta para sua parede.</span></span><span class="go">→</span></a>
+<a class="c" href="consumo-de-energia/index.html"><span class="ic">C</span><span class="tx"><b>Consumo de Energia</b><span>Estime a conta de luz de um aparelho.</span></span><span class="go">→</span></a>
+<a class="c" href="tempo-de-download/index.html"><span class="ic">T</span><span class="tx"><b>Tempo de Download</b><span>Quanto tempo leva para baixar aquele arquivo?</span></span><span class="go">→</span></a>
+<a class="c" href="gerador-de-personagem/index.html"><span class="ic">P</span><span class="tx"><b>Gerador de Personagem</b><span>Nomes e classes aleatórias para seu RPG.</span></span><span class="go">→</span></a>
+<a class="c" href="frase-do-dia/index.html"><span class="ic">F</span><span class="tx"><b>Frase do Dia</b><span>Citações curtas para inspirar o dia.</span></span><span class="go">→</span></a>
+<a class="c" href="timestamp-unix/index.html"><span class="ic">T</span><span class="tx"><b>Timestamp UNIX</b><span>Converta datas e timestamps UNIX nos dois sentidos.</span></span><span class="go">→</span></a>
+<a class="c" href="metronomo/index.html"><span class="ic">M</span><span class="tx"><b>Metrônomo</b><span>BPM ajustável com tap tempo.</span></span><span class="go">→</span></a>
+<a class="c" href="diario-de-humor/index.html"><span class="ic">D</span><span class="tx"><b>Diário de Humor</b><span>Registre seu humor e veja a tendência do mês.</span></span><span class="go">→</span></a>
+<a class="c" href="rastreador-de-metas/index.html"><span class="ic">R</span><span class="tx"><b>Rastreador de Metas</b><span>Metas com barra de progresso e contagem.</span></span><span class="go">→</span></a>
+<a class="c" href="numero-por-extenso/index.html"><span class="ic">N</span><span class="tx"><b>Número por Extenso</b><span>Escreva qualquer número em palavras.</span></span><span class="go">→</span></a>
+<a class="c" href="comparador-de-numeros/index.html"><span class="ic">C</span><span class="tx"><b>Comparador de Números</b><span>Qual é maior, e por quanto?</span></span><span class="go">→</span></a>
   </div>
+  <p class="dim center mt" id="vazio" style="display:none">Nenhum aplicativo encontrado para essa busca.</p>
 </main>
 <footer class="zfoot"><b>Zcode</b> · 300 aplicativos em 3 categorias</footer>
 <script>
@@ -363,19 +414,28 @@ window.Z=(function(){
     if(html!=null)e.innerHTML=html;
     return e;
   }
-  return {$:$,$$:$$,toast:toast,store:store,snd:snd,onKey:onKey,rnd:rnd,pick:pick,shuffle:shuffle,copy:copy,fmt:fmt,el:el,
+  function esc(s){
+    return String(s).replace(/[&<>"']/g,function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+  return {$:$,$:$$,toast:toast,store:store,snd:snd,onKey:onKey,rnd:rnd,pick:pick,shuffle:shuffle,copy:copy,fmt:fmt,el:el,esc:esc,
     mute:function(){muted=!muted;return muted}};
 })();
 
-var D = [{"n":"Fauna Sonora","d":"Ouça o canto real dos animais.","h":"Sons(01)/zcode.html"},{"n":"Encurtador de Links","d":"Encurte e acompanhe seus links.","h":"diminuilink(02)/zcode.html"},{"n":"Lançador de Dados","d":"D3, D6, D20 e mais em 3D.","h":"dados(03)/zcode.html"},{"n":"Sorteador de Grupos","d":"Divida pessoas em grupos aleatórios.","h":"sorteargrupos(04)/zcode.html"},{"n":"Gerador de Gradiente","d":"Crie gradientes CSS e copie o código.","h":"cssatual(05)/zcode.html"},{"n":"Conversor de Comprimento","d":"Converta entre as principais unidades de comprimento.","h":"conversor-de-comprimento/index.html"},{"n":"Conversor de Massa","d":"Converta entre as principais unidades de massa.","h":"conversor-de-massa/index.html"},{"n":"Conversor de Área","d":"Converta entre as principais unidades de área.","h":"conversor-de-area/index.html"},{"n":"Conversor de Volume","d":"Converta entre as principais unidades de volume.","h":"conversor-de-volume/index.html"},{"n":"Conversor de Velocidade","d":"Converta entre as principais unidades de velocidade.","h":"conversor-de-velocidade/index.html"},{"n":"Conversor de Tempo","d":"Converta entre as principais unidades de tempo.","h":"conversor-de-tempo/index.html"},{"n":"Conversor de Dados","d":"Converta entre as principais unidades de dados.","h":"conversor-de-dados/index.html"},{"n":"Conversor de Temperatura","d":"Converta entre as principais unidades de temperatura.","h":"conversor-de-temperatura/index.html"},{"n":"Calculadora Científica","d":"Raízes, potências, trig, log e mais.","h":"calculadora-cientifica/index.html"},{"n":"Calculadora de Percentual","d":"Quanto é X% de Y? E o aumento/desconto?","h":"calculadora-de-percentual/index.html"},{"n":"Cronômetro","d":"Cronômetro com voltas e precisão de 100 ms.","h":"cronometro/index.html"},{"n":"Timer de Contagem","d":"Contagem regressiva com alarme sonoro.","h":"timer-de-contagem/index.html"},{"n":"Relógio Mundial","d":"Hora local em 18 cidades do mundo, ao vivo.","h":"relogio-mundial/index.html"},{"n":"Calendário","d":"Calendário do mês com navegação por anos.","h":"calendario/index.html"},{"n":"Bússola","d":"Use o sensor do aparelho como bússola (ou simulação).","h":"bussola/index.html"},{"n":"Nível Digital","d":"Nível de bolha na tela para nivelar objetos.","h":"nivel-digital/index.html"},{"n":"Lousa","d":"Desenhe com o dedo ou o mouse, com cores e borracha.","h":"lousa/index.html"},{"n":"Lista de Tarefas","d":"To-do list com prioridades. Salvo no navegador.","h":"lista-de-tarefas/index.html"},{"n":"Rastreador de Hábitos","d":"Acompanhe seus hábitos diários com streak.","h":"rastreador-de-habitos/index.html"},{"n":"Gerador de Cores","d":"Converte HEX/RGB/HSL e gera tons.","h":"gerador-de-cores/index.html"},{"n":"Contraste WCAG","d":"Teste a acessibilidade da sua combinação de cores.","h":"contraste-wcag/index.html"},{"n":"Gerador de Senha","d":"Senhas aleatórias fortes com escolha de tamanho e símbolos.","h":"gerador-de-senha/index.html"},{"n":"Frase-Senha","d":"Senha tipo diceware: 4 palavras fáceis de lembrar.","h":"frase-senha/index.html"},{"n":"Codificador Base64","d":"Codifique e decodifique Base64 em tempo real.","h":"codificador-base64/index.html"},{"n":"Gerador de Hash","d":"MD5, SHA-1, SHA-256 e SHA-512 instantâneos.","h":"gerador-de-hash/index.html"},{"n":"Gerador de UUID","d":"Crie UUIDs v4 em lote.","h":"gerador-de-uuid/index.html"},{"n":"Gerador de Números","d":"Números aleatórios com intervalo e sem repetição.","h":"gerador-de-numeros/index.html"},{"n":"Sorteador de Opções","d":"Digite opções e deixe o sorteio escolher.","h":"sorteador-de-opcoes/index.html"},{"n":"Sorteador de Nomes","d":"Sorteie um nome de uma lista (prêmios, equipes).","h":"sorteador-de-nomes/index.html"},{"n":"Cara ou Coroa","d":"Moeda virtual para decisões difíceis.","h":"cara-ou-coroa/index.html"},{"n":"Estatísticas de Texto","d":"Palavras, caracteres, frases e tempo de leitura.","h":"estatisticas-de-texto/index.html"},{"n":"Conversor de Maiúsculas","d":"camelCase, SNAKE_CASE, kebab-case e mais 7 modos.","h":"conversor-de-maiusculas/index.html"},{"n":"Codificador de URL","d":"Encode/decode de parâmetros de URL.","h":"codificador-de-url/index.html"},{"n":"Lorem Ipsum","d":"Gere parágrafos de texto de preenchimento.","h":"lorem-ipsum/index.html"},{"n":"Formatador JSON","d":"Formate, comprima e valide JSON.","h":"formatador-json/index.html"},{"n":"Testador de Regex","d":"Teste expressões regulares com destaque ao vivo.","h":"testador-de-regex/index.html"},{"n":"Comparador de Texto","d":"Diferença lado a lado entre dois textos.","h":"comparador-de-texto/index.html"},{"n":"Editor Markdown","d":"Escreva Markdown e veja a prévia instantânea.","h":"editor-markdown/index.html"},{"n":"Conversor HTML/Entidades","d":"Converta texto para entidades HTML e vice-versa.","h":"conversor-html-entidades/index.html"},{"n":"Imagem para Base64","d":"Cole uma imagem e copie o data-URI.","h":"imagem-para-base64/index.html"},{"n":"Gerador de QR Code","d":"Transforme qualquer texto ou URL em QR Code.","h":"gerador-de-qr-code/index.html"},{"n":"Calculadora de IMC","d":"Índice de massa corporal com faixa de referência.","h":"calculadora-de-imc/index.html"},{"n":"Calculadora de Gorjeta","d":"Divida a conta e calcule a gorjeta.","h":"calculadora-de-gorjeta/index.html"},{"n":"Divisão de Conta","d":"Quanto cada um paga, com ou sem gorjeta.","h":"divisao-de-conta/index.html"},{"n":"Juros Compostos","d":"Montante de juros compostos vs simples.","h":"juros-compostos/index.html"},{"n":"Prestação de Empréstimo","d":"Prestação mensal no sistema PRICE.","h":"prestacao-de-emprestimo/index.html"},{"n":"Juros Simples","d":"A fórmula J = C·i·t na prática.","h":"juros-simples/index.html"},{"n":"Gasto Calórico (TMB)","d":"Calcule seu metabolismo basal e gasto diário.","h":"gasto-calorico-tmb/index.html"},{"n":"Orçamento Pessoal","d":"Registre entradas e saídas, mês a mês.","h":"orcamento-pessoal/index.html"},{"n":"Meta de Água","d":"Acompanhe seu consumo diário de água.","h":"meta-de-agua/index.html"},{"n":"Calculadora de Sono","d":"A que horas dormir (ou acordar) para ciclos inteiros?","h":"calculadora-de-sono/index.html"},{"n":"Respiração 4-7-8","d":"Respiração guiada para acalmar em minutos.","h":"respiracao-4-7-8/index.html"},{"n":"Calculadora de Idade","d":"Sua idade exata em anos, meses e dias.","h":"calculadora-de-idade/index.html"},{"n":"Diferença de Datas","d":"Quantos dias entre duas datas.","h":"diferenca-de-datas/index.html"},{"n":"Contagem de Evento","d":"Faltam X dias para o grande evento.","h":"contagem-de-evento/index.html"},{"n":"Cálculo de Gestação","d":"Data provável do parto (regra de Naegele).","h":"calculo-de-gestacao/index.html"},{"n":"Semana e Trimestre","d":"Dia da semana, semana ISO e trimestre de qualquer data.","h":"semana-e-trimestre/index.html"},{"n":"Conversor CSV/JSON","d":"Transforme CSV em JSON e vice-versa.","h":"conversor-csv-json/index.html"},{"n":"Sombra CSS","d":"Crie box-shadow e copie o CSS pronto.","h":"sombra-css/index.html"},{"n":"Raio CSS","d":"border-radius por canto, com prévia ao vivo.","h":"raio-css/index.html"},{"n":"Flexbox Playground","d":"Brinque com flexbox e copie o CSS.","h":"flexbox-playground/index.html"},{"n":"CSS Grid Playground","d":"Explore grid-template com prévia interativa.","h":"css-grid-playground/index.html"},{"n":"Curvas Bezier","d":"Ajuste cubic-bezier e veja a animação.","h":"curvas-bezier/index.html"},{"n":"Tipografia","d":"Componha fonte, peso, linha e espaçamento.","h":"tipografia/index.html"},{"n":"Palíndromo","d":"Verifique se a frase é lida igual aos dois sentidos.","h":"palindromo/index.html"},{"n":"Máscara de Telefone","d":"Digite e veja o número formatado ao vivo.","h":"mascara-de-telefone/index.html"},{"n":"Validador de CPF","d":"Validação dos dígitos verificadores em tempo real.","h":"validador-de-cpf/index.html"},{"n":"Conversor de Números Romanos","d":"Vá e volta entre arábicos e romanos.","h":"conversor-de-numeros-romanos/index.html"},{"n":"Conversor de Bases","d":"Binário, octal, decimal e hexadecimal em sincronia.","h":"conversor-de-bases/index.html"},{"n":"Texto ↔ Hex","d":"Converta texto para bytes hex e vice-versa.","h":"texto-hex/index.html"},{"n":"Cifra ROT13","d":"Cifre e decifre com o clássico ROT13.","h":"cifra-rot13/index.html"},{"n":"Sorte de Ordem","d":"Sorteie a ordem de uma lista de participantes.","h":"sorte-de-ordem/index.html"},{"n":"Conversor de Ângulos","d":"Graus ↔ radianos, complemento e suplemento.","h":"conversor-de-angulos/index.html"},{"n":"Pitágoras","d":"Hipotenusa ou cateto, com os ângulos do triângulo.","h":"pitagoras/index.html"},{"n":"Áreas de Formas","d":"Área e perímetro de 5 formas geométricas.","h":"areas-de-formas/index.html"},{"n":"Média Ponderada","d":"Some notas com pesos e veja sua média final.","h":"media-ponderada/index.html"},{"n":"Nota da Recuperação","d":"Qual nota você precisa para alcançar a média?","h":"nota-da-recuperacao/index.html"},{"n":"Salário Líquido","d":"Simulação de INSS e IRRF sobre o bruto.","h":"salario-liquido/index.html"},{"n":"Custo de Viagem","d":"Combustível, pedágio e hospedagem por pessoa.","h":"custo-de-viagem/index.html"},{"n":"Distância entre Pontos","d":"Haversine: distância real entre coordenadas.","h":"distancia-entre-pontos/index.html"},{"n":"Velocidade Média","d":"Calcule km/h, m/s e mph a partir de distância e tempo.","h":"velocidade-media/index.html"},{"n":"Escala de Mapa","d":"Converta medidas de mapa em distância real.","h":"escala-de-mapa/index.html"},{"n":"Área de Terreno","d":"m², hectares e alqueires de um terreno retangular.","h":"area-de-terreno/index.html"},{"n":"Calculadora de Cimento","d":"Cimento, areia e brita para sua laje.","h":"calculadora-de-cimento/index.html"},{"n":"Calculadora de Tinta","d":"Litros e latas de tinta para sua parede.","h":"calculadora-de-tinta/index.html"},{"n":"Consumo de Energia","d":"Estime a conta de luz de um aparelho.","h":"consumo-de-energia/index.html"},{"n":"Tempo de Download","d":"Quanto tempo leva para baixar aquele arquivo?","h":"tempo-de-download/index.html"},{"n":"Gerador de Personagem","d":"Nomes e classes aleatórias para seu RPG.","h":"gerador-de-personagem/index.html"},{"n":"Frase do Dia","d":"Citações curtas para inspirar o dia.","h":"frase-do-dia/index.html"},{"n":"Timestamp UNIX","d":"Converta datas e timestamps UNIX nos dois sentidos.","h":"timestamp-unix/index.html"},{"n":"Metrônomo","d":"BPM ajustável com tap tempo.","h":"metronomo/index.html"},{"n":"Diário de Humor","d":"Registre seu humor e veja a tendência do mês.","h":"diario-de-humor/index.html"},{"n":"Rastreador de Metas","d":"Metas com barra de progresso e contagem.","h":"rastreador-de-metas/index.html"},{"n":"Número por Extenso","d":"Escreva qualquer número em palavras.","h":"numero-por-extenso/index.html"},{"n":"Comparador de Números","d":"Qual é maior, e por quanto?","h":"comparador-de-numeros/index.html"}];
+var D = [{"n":"Fauna Sonora","d":"Ouça o canto real dos animais."},{"n":"Encurtador de Links","d":"Encurte e acompanhe seus links."},{"n":"Lançador de Dados","d":"D3, D6, D20 e mais em 3D."},{"n":"Sorteador de Grupos","d":"Divida pessoas em grupos aleatórios."},{"n":"Gerador de Gradiente","d":"Crie gradientes CSS e copie o código."},{"n":"Conversor de Comprimento","d":"Converta entre as principais unidades de comprimento."},{"n":"Conversor de Massa","d":"Converta entre as principais unidades de massa."},{"n":"Conversor de Área","d":"Converta entre as principais unidades de área."},{"n":"Conversor de Volume","d":"Converta entre as principais unidades de volume."},{"n":"Conversor de Velocidade","d":"Converta entre as principais unidades de velocidade."},{"n":"Conversor de Tempo","d":"Converta entre as principais unidades de tempo."},{"n":"Conversor de Dados","d":"Converta entre as principais unidades de dados."},{"n":"Conversor de Temperatura","d":"Converta entre as principais unidades de temperatura."},{"n":"Calculadora Científica","d":"Raízes, potências, trig, log e mais."},{"n":"Calculadora de Percentual","d":"Quanto é X% de Y? E o aumento/desconto?"},{"n":"Cronômetro","d":"Cronômetro com voltas e precisão de 100 ms."},{"n":"Timer de Contagem","d":"Contagem regressiva com alarme sonoro."},{"n":"Relógio Mundial","d":"Hora local em 18 cidades do mundo, ao vivo."},{"n":"Calendário","d":"Calendário do mês com navegação por anos."},{"n":"Bússola","d":"Use o sensor do aparelho como bússola (ou simulação)."},{"n":"Nível Digital","d":"Nível de bolha na tela para nivelar objetos."},{"n":"Lousa","d":"Desenhe com o dedo ou o mouse, com cores e borracha."},{"n":"Lista de Tarefas","d":"To-do list com prioridades. Salvo no navegador."},{"n":"Rastreador de Hábitos","d":"Acompanhe seus hábitos diários com streak."},{"n":"Gerador de Cores","d":"Converte HEX/RGB/HSL e gera tons."},{"n":"Contraste WCAG","d":"Teste a acessibilidade da sua combinação de cores."},{"n":"Gerador de Senha","d":"Senhas aleatórias fortes com escolha de tamanho e símbolos."},{"n":"Frase-Senha","d":"Senha tipo diceware: 4 palavras fáceis de lembrar."},{"n":"Codificador Base64","d":"Codifique e decodifique Base64 em tempo real."},{"n":"Gerador de Hash","d":"MD5, SHA-1, SHA-256 e SHA-512 instantâneos."},{"n":"Gerador de UUID","d":"Crie UUIDs v4 em lote."},{"n":"Gerador de Números","d":"Números aleatórios com intervalo e sem repetição."},{"n":"Sorteador de Opções","d":"Digite opções e deixe o sorteio escolher."},{"n":"Sorteador de Nomes","d":"Sorteie um nome de uma lista (prêmios, equipes)."},{"n":"Cara ou Coroa","d":"Moeda virtual para decisões difíceis."},{"n":"Estatísticas de Texto","d":"Palavras, caracteres, frases e tempo de leitura."},{"n":"Conversor de Maiúsculas","d":"camelCase, SNAKE_CASE, kebab-case e mais 7 modos."},{"n":"Codificador de URL","d":"Encode/decode de parâmetros de URL."},{"n":"Lorem Ipsum","d":"Gere parágrafos de texto de preenchimento."},{"n":"Formatador JSON","d":"Formate, comprima e valide JSON."},{"n":"Testador de Regex","d":"Teste expressões regulares com destaque ao vivo."},{"n":"Comparador de Texto","d":"Diferença lado a lado entre dois textos."},{"n":"Editor Markdown","d":"Escreva Markdown e veja a prévia instantânea."},{"n":"Conversor HTML/Entidades","d":"Converta texto para entidades HTML e vice-versa."},{"n":"Imagem para Base64","d":"Cole uma imagem e copie o data-URI."},{"n":"Gerador de QR Code","d":"Transforme qualquer texto ou URL em QR Code."},{"n":"Calculadora de IMC","d":"Índice de massa corporal com faixa de referência."},{"n":"Calculadora de Gorjeta","d":"Divida a conta e calcule a gorjeta."},{"n":"Divisão de Conta","d":"Quanto cada um paga, com ou sem gorjeta."},{"n":"Juros Compostos","d":"Montante de juros compostos vs simples."},{"n":"Prestação de Empréstimo","d":"Prestação mensal no sistema PRICE."},{"n":"Juros Simples","d":"A fórmula J = C·i·t na prática."},{"n":"Gasto Calórico (TMB)","d":"Calcule seu metabolismo basal e gasto diário."},{"n":"Orçamento Pessoal","d":"Registre entradas e saídas, mês a mês."},{"n":"Meta de Água","d":"Acompanhe seu consumo diário de água."},{"n":"Calculadora de Sono","d":"A que horas dormir (ou acordar) para ciclos inteiros?"},{"n":"Respiração 4-7-8","d":"Respiração guiada para acalmar em minutos."},{"n":"Calculadora de Idade","d":"Sua idade exata em anos, meses e dias."},{"n":"Diferença de Datas","d":"Quantos dias entre duas datas."},{"n":"Contagem de Evento","d":"Faltam X dias para o grande evento."},{"n":"Cálculo de Gestação","d":"Data provável do parto (regra de Naegele)."},{"n":"Semana e Trimestre","d":"Dia da semana, semana ISO e trimestre de qualquer data."},{"n":"Conversor CSV/JSON","d":"Transforme CSV em JSON e vice-versa."},{"n":"Sombra CSS","d":"Crie box-shadow e copie o CSS pronto."},{"n":"Raio CSS","d":"border-radius por canto, com prévia ao vivo."},{"n":"Flexbox Playground","d":"Brinque com flexbox e copie o CSS."},{"n":"CSS Grid Playground","d":"Explore grid-template com prévia interativa."},{"n":"Curvas Bezier","d":"Ajuste cubic-bezier e veja a animação."},{"n":"Tipografia","d":"Componha fonte, peso, linha e espaçamento."},{"n":"Palíndromo","d":"Verifique se a frase é lida igual aos dois sentidos."},{"n":"Máscara de Telefone","d":"Digite e veja o número formatado ao vivo."},{"n":"Validador de CPF","d":"Validação dos dígitos verificadores em tempo real."},{"n":"Conversor de Números Romanos","d":"Vá e volta entre arábicos e romanos."},{"n":"Conversor de Bases","d":"Binário, octal, decimal e hexadecimal em sincronia."},{"n":"Texto ↔ Hex","d":"Converta texto para bytes hex e vice-versa."},{"n":"Cifra ROT13","d":"Cifre e decifre com o clássico ROT13."},{"n":"Sorte de Ordem","d":"Sorteie a ordem de uma lista de participantes."},{"n":"Conversor de Ângulos","d":"Graus ↔ radianos, complemento e suplemento."},{"n":"Pitágoras","d":"Hipotenusa ou cateto, com os ângulos do triângulo."},{"n":"Áreas de Formas","d":"Área e perímetro de 5 formas geométricas."},{"n":"Média Ponderada","d":"Some notas com pesos e veja sua média final."},{"n":"Nota da Recuperação","d":"Qual nota você precisa para alcançar a média?"},{"n":"Salário Líquido","d":"Simulação de INSS e IRRF sobre o bruto."},{"n":"Custo de Viagem","d":"Combustível, pedágio e hospedagem por pessoa."},{"n":"Distância entre Pontos","d":"Haversine: distância real entre coordenadas."},{"n":"Velocidade Média","d":"Calcule km/h, m/s e mph a partir de distância e tempo."},{"n":"Escala de Mapa","d":"Converta medidas de mapa em distância real."},{"n":"Área de Terreno","d":"m², hectares e alqueires de um terreno retangular."},{"n":"Calculadora de Cimento","d":"Cimento, areia e brita para sua laje."},{"n":"Calculadora de Tinta","d":"Litros e latas de tinta para sua parede."},{"n":"Consumo de Energia","d":"Estime a conta de luz de um aparelho."},{"n":"Tempo de Download","d":"Quanto tempo leva para baixar aquele arquivo?"},{"n":"Gerador de Personagem","d":"Nomes e classes aleatórias para seu RPG."},{"n":"Frase do Dia","d":"Citações curtas para inspirar o dia."},{"n":"Timestamp UNIX","d":"Converta datas e timestamps UNIX nos dois sentidos."},{"n":"Metrônomo","d":"BPM ajustável com tap tempo."},{"n":"Diário de Humor","d":"Registre seu humor e veja a tendência do mês."},{"n":"Rastreador de Metas","d":"Metas com barra de progresso e contagem."},{"n":"Número por Extenso","d":"Escreva qualquer número em palavras."},{"n":"Comparador de Números","d":"Qual é maior, e por quanto?"}];
 var g = document.getElementById("grid");
+var vazio = document.getElementById("vazio");
 document.getElementById("busca").addEventListener("input", function(){
   var t = this.value.trim().toLowerCase();
-  var cs = g.children;
+  var cs = g.children, vis = 0;
   for(var i = 0; i < cs.length; i++){
     var d = D[i];
-    cs[i].style.display = (!t || (d.n + " " + d.d).toLowerCase().indexOf(t) >= 0) ? "" : "none";
+    var ok = (!t || (d.n + " " + d.d).toLowerCase().indexOf(t) >= 0);
+    cs[i].style.display = ok ? "" : "none";
+    if(ok) vis++;
   }
+  vazio.style.display = vis ? "none" : "";
 });
 </script>
 </body>

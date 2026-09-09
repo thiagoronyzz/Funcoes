@@ -7,13 +7,14 @@ import * as D from "./data/estudos.mjs";
 import { UNIDADES } from "./data/uteis.mjs";
 import * as EST from "./engines/estudos.mjs";
 import * as JOG from "./engines/jogos.mjs";
+import * as JOG2 from "./engines/jogos2.mjs";
 import * as UT1 from "./engines/uteis.mjs";
 import * as UT2 from "./engines/uteis2.mjs";
 import * as UT2B from "./engines/uteis2b.mjs";
 import * as UT3 from "./engines/uteis3.mjs";
 
 export const UTEIS = { ...UT1, ...UT2, ...UT2B, ...UT3 };
-export const ENGINES = { estudos: EST.ESTUDOS, jogos: JOG.JOGOS, uteis: UTEIS };
+export const ENGINES = { estudos: EST.ESTUDOS, jogos: { ...JOG.JOGOS, ...JOG2.JOGOS2 }, uteis: UTEIS };
 
 /* ── helpers ─────────────────────────────────────────────── */
 const GEN = (arr) => "function(){return " + JSON.stringify(arr) + "}";
@@ -310,181 +311,131 @@ const J = [];
 const jleg = (nome, desc, dir, page, imagem, destaque) =>
   J.push({ nome, desc, legacy: dir, page, imagem, destaque: !!destaque });
 
-jleg("Bandeiras do Mundo", "Adivinhe o país pela bandeira.", "jogopaises(01)", "index.html", "images/editorial/chess-board.jpg", true);
-jleg("Roleta da Fortuna", "Gire a roleta e acerte as perguntas.", "rodafortuna(02)", "index.html", "images/editorial/chess-board.jpg");
-jleg("TRcraft", "Mundo voxel infinito para explorar e construir.", "minicraft(03)", "craft.html", "images/editorial/chess-board.jpg", true);
-jleg("Hunterz", "A caçada na floresta: desvie e sobreviva.", "estilhacos(04)", "index.html", "images/editorial/chess-board.jpg");
-jleg("MK: Ultimate Arena", "Jogo de luta com golpes especiais.", "mortalkombat(05)", "index.html", "images/editorial/chess-board.jpg");
-jleg("Fuja das Esferas", "Corra e fuja das esferas que te perseguem.", "fujaesferas(06)", "index.html", "images/editorial/chess-board.jpg");
-jleg("IFood Rider", "Corrida infinita entregando sem capotar.", "ifoodrunner(07)", "index.html", "images/editorial/chess-board.jpg");
+jleg("Bandeiras do Mundo", "Adivinhe o país pela bandeira.", "jogopaises(01)", "index.html", "", true);
+jleg("Roleta da Fortuna", "Gire a roleta e acerte as perguntas.", "rodafortuna(02)", "index.html", "");
+jleg("TRcraft", "Mundo voxel infinito para explorar e construir.", "minicraft(03)", "craft.html", "", true);
+jleg("Hunterz", "A caçada na floresta: desvie e sobreviva.", "estilhacos(04)", "index.html", "");
+jleg("MK: Ultimate Arena", "Jogo de luta com golpes especiais.", "mortalkombat(05)", "index.html", "");
+jleg("Fuja das Esferas", "Corra e fuja das esferas que te perseguem.", "fujaesferas(06)", "index.html", "");
+jleg("Delivery Rider", "Corrida infinita de entregas: desvie sem capotar.", "ifoodrunner(07)", "index.html", "");
 
 const japp = (nome, desc, engine, params, destaque) =>
   J.push({ nome, desc, engine, params, imagem: "", destaque: !!destaque });
 
-/* snake ×8 */
-japp("Snake Neon", "O clássico da cobrinha em neon. Coma e cresça!", "snake", { tema: "neon" }, true);
-japp("Snake Retrô", "Cobrinha verde estilo arcade dos anos 80.", "snake", { tema: "retrô" });
-japp("Snake Rosa", "A cobrinha rosa. Mesmas regras, outro charme.", "snake", { tema: "rosa" });
-japp("Snake Violeta", "Cobrinha violeta para quem gosta de roxo.", "snake", { tema: "violeta" });
-japp("Snake Amarelo", "Cobrinha amarela bem visível no escuro.", "snake", { tema: "amarelo" });
-japp("Snake Ciano", "Cobrinha ciana, rápida e fria.", "snake", { tema: "ciano" });
-japp("Turbo Snake", "Snake duas vezes mais rápido. Só para corajosos.", "snake", { tema: "neon", velocidade: 70 });
+/* --- jogos completos (engines novos) --- */
+japp("Tetris Clássico", "Empilhe as peças, complete linhas e suba de nível. Com peça fantasma.", "tetris", { modo: "classico" }, true);
+japp("Tetris Sprint", "Complete 40 linhas o mais rápido que puder.", "tetris", { modo: "sprint" });
+japp("Quebra-Blocos", "Rebata a bola e destrua os tijolos em 5 fases.", "breakout", { turbo: false }, true);
+japp("Quebra-Blocos Turbo", "8 fases em velocidade máxima.", "breakout", { turbo: true });
+japp("Pac-Labirinto", "Coma todos os pontos e fuja dos 4 fantasmas.", "pac", { mapa: 0 }, true);
+japp("Pac-Labirinto 2", "Um segundo labirinto, mais fechado e traiçoeiro.", "pac", { mapa: 1 });
+japp("Fuga das Esferas", "Sobreviva 60 segundos às esferas caçadoras. Use o dash!", "fuga", { modo: "tempo" }, true);
+japp("Fuga Infinita", "Sem limite de tempo: quanto você aguenta?", "fuga", { modo: "endless" });
+japp("Caçada na Floresta", "Colete os 8 cogumelos e desvie dos lobos.", "cacada", { noite: false });
+japp("Caçada Noturna", "A floresta escura: só a sua lanterna e os vagalumes.", "cacada", { noite: true });
+japp("Pulo Certeiro", "Plataforma com 3 fases: moedas, espinhos e a porta de saída.", "platformer", { pack: 0 });
+japp("Pulo Certeiro 2", "Mais 3 fases, mais altas e traiçoeiras.", "platformer", { pack: 1 });
+japp("Corrida Maluca", "Desvie do tráfego, pegue moedas e não deixe o tanque zerar.", "corrida", { noite: false });
+japp("Corrida Noturna", "A mesma estrada, no escuro dos faróis.", "corrida", { noite: true });
+japp("Sobreviva aos Zumbis", "Ondas de zumbis com tiro automático e itens de cura.", "zumbis", { dificil: false }, true);
+japp("Noite dos Zumbis", "Zumbis mais rápidos no escuro. Segure as ondas.", "zumbis", { dificil: true });
+japp("Esquadrão Estelar", "Shooter espacial com power-ups e chefes a cada 5 ondas.", "shmup", { turbo: false }, true);
+japp("Esquadrão Turbo", "Formação densa e chefes agressivos.", "shmup", { turbo: true });
+japp("Mini-Golfe", "6 buracos: corredores, areia e tacadas contadas.", "golfe", { pack: 0 });
+japp("Mini-Golfe Pro", "6 buracos difíceis para quem zerou o primeiro.", "golfe", { pack: 1 });
+japp("Damas", "Damas contra a CPU: capturas obrigatórias e damas voadoras.", "damas", { nivel: "normal" });
+japp("Damas Difícil", "A CPU analisa mais fundo. Boa sorte.", "damas", { nivel: "dificil" });
+japp("Lig-4", "Acerte 4 em linha antes da CPU.", "lig4", { nivel: "normal" });
+japp("Lig-4 Difícil", "CPU com análise profunda. Quase imbatível.", "lig4", { nivel: "dificil" });
+japp("Resta Um", "O clássico tabuleiro inglês. Reste uma peça — no centro!", "resta1", { tabuleiro: "ingles" });
+japp("Resta Um Europeu", "O tabuleiro francês, com 36 peças.", "resta1", { tabuleiro: "europeu" });
+japp("Torre de Hanói", "4 discos: leve a torre inteira para a última haste.", "hanoi", { discos: 4 });
+japp("Hanói Mestre", "6 discos e 63 lances mínimos. Paciência!", "hanoi", { discos: 6 });
+japp("Nonogram 5×5", "Pinte pelos números e revele 3 desenhos.", "nonogram", { pack: "facil" });
+japp("Nonogram 10×10", "Dois painéis grandes com dicas e verificação.", "nonogram", { pack: "medio" });
+japp("Apague as Luzes 5×5", "Toque para inverter as vizinhas e apague tudo.", "lights", { n: 5 });
+japp("Apague as Luzes 7×7", "Grade grande, sempre com solução garantida.", "lights", { n: 7 });
+japp("Defesa da Base", "Tower defense: 20 ondas, 3 torres e melhorias.", "defesa", { modo: "normal" }, true);
+japp("Defesa Infinita", "Ondas sem fim. Até onde a base aguenta?", "defesa", { modo: "endless" });
+japp("Adedonha Solo", "Letra sorteada, 6 categorias e 90 segundos.", "adedonha", {});
+
+/* --- clássicos mantidos --- */
+japp("Snake Neon", "O clássico da cobrinha. Coma, cresça e bata o recorde.", "snake", { tema: "neon" }, true);
 japp("Snake Sem Muro", "Atravesse as bordas do tabuleiro e saia do outro lado.", "snake", { tema: "neon", wrap: true });
-
-/* 2048 ×6 */
-japp("2048 Clássico", "Junte os blocos e chegue à tile 2048.", "jogo2048", { n: 4, alvo: 2048 }, true);
-japp("1024 Compacto", "Mesma mecânica, meta mais curta: chegue a 1024.", "jogo2048", { n: 4, alvo: 1024 });
-japp("512 Mini", "Grade 3×3 e meta de 512. Aperte o raciocínio.", "jogo2048", { n: 3, alvo: 512 });
+japp("2048 Clássico", "Junte os blocos e chegue à peça 2048.", "jogo2048", { n: 4, alvo: 2048 }, true);
 japp("2048 XL", "Grade 5×5 com muito mais espaço para manobrar.", "jogo2048", { n: 5, alvo: 2048 });
-japp("4096 Extremo", "Para quem não se contenta com 2048.", "jogo2048", { n: 4, alvo: 4096 });
-japp("8192 Lendário", "O desafio lendário: alcance a tile 8192.", "jogo2048", { n: 4, alvo: 8192 });
 
-/* memoria ×12 */
+/* memoria ×5 */
 const MEM = [
   ["Frutas", ["Maçã", "", "Morango", "Abacaxi", "Abacate"], true],
   ["Animais", ["Cachorro", "Gato", "Rato", "", "Coelho"], false],
-  ["Esportes", ["Bola", "Basquete", "Tênis", "", ""], false],
   ["Espaço", ["Nave", "Mundo", "Lua", "⭐", "Cometa"], false],
-  ["Comida", ["Pizza", "Hambúrguer", "Batata", "", ""], false],
-  ["Natureza", ["Pinheiro", "Cacto", "Girassol", "Cogumelo", ""], false],
-  ["Objetos", ["Mochila", "Chave", "⌚", "", ""], false],
-  ["Corações", ["Vermelho", "Laranja", "Amarelo", "Verde", "Azul"], false],
   ["Música", ["Violão", "Piano", "Trompete", "", "Bateria"], false],
   ["Clima", ["Sol", "Neve", "Energia", "Arco-íris", "Tempestade"], false],
-  ["Festas", ["Concluído", "Presente", "Balão", "Bolo", ""], false],
-  ["Carros", ["Carro", "", "", "", "Carro"], false],
 ];
 for (const [t, emo, d] of MEM) japp("Memória: " + t, "Encontre os pares de " + t.toLowerCase() + " no menor número de jogadas.", "memoria", { emoji: emo, cols: 3 }, d);
 
-/* velha ×2 */
 japp("Velha vs CPU", "Jogo da velha contra o computador.", "velha", { cpu: true });
 japp("Velha a Dois", "Jogo da velha para dois jogadores no mesmo aparelho.", "velha", { cpu: false });
-
-/* minas ×5 */
 japp("Campo Minado: Fácil", "Tabuleiro 8×8 com 8 minas.", "minas", { rows: 8, cols: 8, bombs: 8 });
 japp("Campo Minado: Clássico", "O clássico 9×9 com 10 minas.", "minas", { rows: 9, cols: 9, bombs: 10 }, true);
 japp("Campo Minado: Médio", "12×12 com 20 minas. Cuidado!", "minas", { rows: 12, cols: 12, bombs: 20 });
 japp("Campo Minado: Difícil", "14×14 com 30 minas. Só experts.", "minas", { rows: 14, cols: 14, bombs: 30 });
-japp("Campo Minado: Expert", "16×16 com 40 minas. Boa sorte.", "minas", { rows: 16, cols: 16, bombs: 40 });
-
-/* pong ×2 */
 japp("Pong Neon", "Pong em neon contra a CPU.", "pong", { neon: true }, true);
 japp("Pong Clássico", "Pong estilo original, sem neons.", "pong", { neon: false });
-
-/* simon ×2 */
 japp("Simon Diz", "Repita a sequência de luzes e sons.", "simon", { turbo: false }, true);
 japp("Simon Turbo", "Simon com sequências mais rápidas.", "simon", { turbo: true });
-
-/* reflexos ×4 */
 japp("Reflexos: Tempo", "Clique quando aparecer o verde o mais rápido possível.", "reflexos", { modo: "tempo" });
 japp("Reflexos: Turbo", "Versão turbo: o verde aparece mais rápido e imprevisível.", "reflexos", { modo: "turbo" });
 japp("Reflexos: Pare no Meio", "Mova o cursor e pare o mais perto possível do centro.", "reflexos", { modo: "pare" });
-japp("Reflexos: Cores", "Memorize a cor e clique no nome dela em 30 segundos.", "reflexos", { modo: "cor" });
 
-/* cacador ×5 */
+/* cacador ×2 */
 const CAC = [
   ["Caça-Frutas", ["Maçã", ""], false],
-  ["Caça-Doce", ["Rosquinha", "Doce"], false],
-  ["Caça-Ferramentas", ["Martelo", "Ferramenta"], false],
-  ["Caça-Símbolos", ["⭐", "Cristal"], false],
   ["Caça-Moedas", ["Moeda", "Moeda"], false],
 ];
 for (const [t, emo, d] of CAC) japp(t, "Pegue os itens que caem antes que saiam da tela. 30 segundos.", "cacador", { emoji: emo }, d);
 
-/* forca ×5 */
-japp("Forca: Animais", "Palavras paraenses… digo, de bichos!", "forca", {
+japp("Forca: Animais", "Adivinhe o animal antes de completar o boneco.", "forca", {
   palavras: ["cavalo", "tatu", "jacare", "arara", "onca", "capivara", "tucano", "morcego", "cobra", "sapo"],
 }, true);
 japp("Forca: Frutas", "Adivinhe a fruta antes de completar o boneco.", "forca", {
   palavras: ["mangueira", "goiaba", "abacaxi", "maracuja", "pitaya", "carambola", "jabuticaba", "mamon"],
 });
-japp("Forca: Profissões", "Palavras de quem trabalha para você passar.", "forca", {
+japp("Forca: Profissões", "Adivinhe a profissão letra a letra.", "forca", {
   palavras: ["padeiro", "dentista", "carpinteiro", "mecanico", "programador", "pedreiro", "pintor", "piloto"],
 });
 japp("Forca: Lugares", "Cidades, países e lugares do Brasil e do mundo.", "forca", {
   palavras: ["amazonas", "recife", "lisboa", "patagonia", "patagonia", "marrakech", "belgrado", "salvador"],
 });
-japp("Forca: Palavras Longas", "Para quem já domina a forca: só palavras longas.", "forca", {
-  palavras: ["xale", "burburinho", "borboleta", "borboleta", "carambola", "jornalista", "borboleteiro"],
-});
-
-/* adivinhe ×3 */
-japp("Adivinhe o Número (100)", "O número está entre 1 e 100. Acerte em poucas tentativas.", "adivinhe", { max: 100 });
-japp("Adivinhe o Número (500)", "Entre 1 e 500: pense em busca binária!", "adivinhe", { max: 500 });
-japp("Adivinhe o Número (1000)", "Entre 1 e 1000. O logaritmo é seu amigo.", "adivinhe", { max: 1000 });
-
-/* sudoku ×4 */
 japp("Sudoku 4×4", "Sudoku de entrada: grade 4×4.", "sudoku", { n: 4, buracos: 8 });
 japp("Sudoku 6×6", "Sudoku intermediário: grade 6×6.", "sudoku", { n: 6, buracos: 12 });
 japp("Sudoku 9×9", "O clássico: grade 9×9.", "sudoku", { n: 9, buracos: 20 }, true);
 japp("Sudoku 9×9: Difícil", "Grade 9×9 com poucos números iniciais.", "sudoku", { n: 9, buracos: 30 });
-
-/* quinze ×2 */
 japp("Quebra-Cabeça 8", "Ordene as peças 1 a 8 (grade 3×3).", "quinze", { n: 3 });
 japp("Quebra-Cabeça 15", "Ordene as peças 1 a 15 (grade 4×4).", "quinze", { n: 4 });
-
-/* asteroides ×2 */
-japp("Asteroides Neon", "Destroie asteroides em estilo neon.", "asteroides", { neon: true });
-japp("Asteroides Clássico", "Astrominado estilo arcade original.", "asteroides", { neon: false });
-
-/* invasores ×2 */
+japp("Asteroides", "Destroie os asteroides e desvie dos fragmentos.", "asteroides", { neon: true });
 japp("Invasores Espaciais", "Defenda a Terra das fileiras de invasores.", "invasores", { turbo: false });
 japp("Invasores Turbo", "Invasores mais rápidos e sem piedade.", "invasores", { turbo: true });
-
-/* flappy ×2 */
-japp("Flappy Pipa", "Toque para voar. A pipa verde não para.", "flappy", { tema: "verde" }, true);
-japp("Flappy Lua", "A pipa atravessa a noite lunar.", "flappy", { tema: "lua" });
-
-/* runner ×4 */
+japp("Flappy Pipa", "Toque para voar sem bater.", "flappy", { tema: "verde" }, true);
 japp("Runner Neon", "Corra e pule obstáculos em cenário neon.", "runner", { tema: "neon" }, true);
-japp("Runner Dino", "O clássico dinossauro em versão Zcode.", "runner", { tema: "dino" });
-japp("Runner Lua", "Corrida noturna em ritmo de sátiro… de lua.", "runner", { tema: "lua" });
-japp("Runner Neo", "Corrida em roxo cyberpunk.", "runner", { tema: "neomex" });
-
-/* alvo ×2 */
+japp("Runner Dino", "Corra, pule e desvie numa corrida pré-histórica.", "runner", { tema: "dino" });
 japp("Alvo Móvel", "Acerte o alvo antes que ele mude de lugar.", "alvo", { turbo: false });
 japp("Alvo Turbo", "O alvo não fica parado: versão turbo.", "alvo", { turbo: true });
-
-/* pilha ×2 */
 japp("Pilha de Blocos", "Empilhe blocos sem deixar cair. Quanto mais alto, melhor.", "pilha", { neon: false }, true);
-japp("Pilha Neon", "O empilhador em estilo neon.", "pilha", { neon: true });
-
-/* stroop ×2 */
-japp("Jogo Stroop", "Diga a COR da tinta, não a palavra.", "stroop", { turbo: false });
-japp("Stroop Turbo", "Stroop com tempo encurtado.", "stroop", { turbo: true });
-
-/* boliche ×1 */
 japp("Boliche", "Arraste a bola e derrube as 10 pinos.", "boliche", {}, true);
-
-/* dadoDuelo ×2 */
 japp("Duelo do 7", "Vence quem chegar primeiro a somar 7 com dois dados.", "dadoDuelo", { alvo: 7 });
 japp("Duelo do 12", "A soma máxima: chegue a 12 primeiro.", "dadoDuelo", { alvo: 12 });
-
-/* blackjack ×1 */
 japp("Blackjack 21", "Pegue até 21 sem estourar. Contra o dealer.", "blackjack", {}, true);
-
-/* labirinto ×4 */
 japp("Labirinto 9", "Encontre a saída no labirinto 9×9.", "labirinto", { n: 9 });
-japp("Labirinto 13", "Labirinto 13×13, sem pressa — mas com paredes.", "labirinto", { n: 13 });
 japp("Labirinto 11 com Fantasma", "Saia do labirinto antes que o fantasma te pegue.", "labirinto", { n: 11, perseguido: true }, true);
 japp("Labirinto 17 com Fantasma", "Labirinto grande, fantasma ágil. Sorte!", "labirinto", { n: 17, perseguido: true });
-
-/* bolhas ×2 */
 japp("Bolhas", "Estoure todas as bolhas antes do tempo acabar.", "bolhas", { turbo: false });
 japp("Bolhas Turbo", "Bolhas mais rápidas: reflexo afiado.", "bolhas", { turbo: true });
-
-/* esquiva ×2 */
 japp("Esquiva", "Desvie dos blocos que caem do topo.", "esquiva", { neon: false });
-japp("Esquiva Neon", "A esquiva em neons psicodélicos.", "esquiva", { neon: true });
-
-/* pintor ×2 */
 japp("Pintor 6×6", "Repita o padrão de cores célula por célula.", "pintor", { n: 6 });
 japp("Pintor 8×8", "Padrão 8×8: memória de cores em grau avançado.", "pintor", { n: 8 });
-
-/* tapTempo ×1 */
 japp("Tap Tempo", "Toque no ritmo exato do metrônomo. Precisão!", "tapTempo", {});
-
-/* pegaQuedas ×2 */
 japp("Pega Frutas", "Gire a cesta e pegue as frutas que caem.", "pegaQuedas", { noite: false }, true);
 japp("Pega Frutas: Noite", "O mesmo jogo, agora no escuro. Cuidado com as bombas.", "pegaQuedas", { noite: true });
 

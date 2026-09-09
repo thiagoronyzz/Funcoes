@@ -1,8 +1,9 @@
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Marquee from "./components/Marquee";
-import Manifesto from "./components/Manifesto";
+import Features from "./components/Features";
 import CategorySection from "./components/CategorySection";
+import Faq from "./components/Faq";
 import DownloadSection from "./components/DownloadSection";
 import { BarraInstalarMobile } from "./components/InstallApp";
 import Footer from "./components/Footer";
@@ -15,10 +16,11 @@ export default function App() {
       <main>
         <Hero />
         <Marquee />
-        <Manifesto />
-        {categorias.map((categoria, i) => (
-          <CategorySection key={categoria.id} categoria={categoria} indice={i} />
+        <Features />
+        {categorias.map((categoria) => (
+          <CategorySection key={categoria.id} categoria={categoria} />
         ))}
+        <Faq />
         <DownloadSection />
       </main>
       <Footer />

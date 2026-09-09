@@ -3,7 +3,7 @@
    - navegações (HTML): rede primeiro, cai para o cache quando offline
    - demais arquivos: cache primeiro, atualizando em segundo plano   */
 
-const VERSAO = "zcode-v1";
+const VERSAO = "zcode-v3";
 const ESSENCIAIS = [
   "/",
   "/index.html",

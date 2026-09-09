@@ -1,24 +1,129 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Zcode — catálogo de aplicativos para estudos, jogos e tarefas úteis. Tudo no navegador." />
-    <link rel="manifest" href="/manifest.webmanifest" />
-    <meta name="theme-color" content="#252422" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="application-name" content="Zcode" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Zcode" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-    <title>Zcode — Catálogo de aplicativos</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Zcode — catálogo de ferramentas. Sem frills, sem gradientes, sem fontes de IA." />
+  <title>Zcode — Catálogo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f2f2ef;
+      --surface: #ffffff;
+      --text: #121212;
+      --text-secondary: #5c5c58;
+      --text-muted: #8a8a82;
+      --line: #e0ded8;
+      --line-strong: #c8c7c2;
+      --accent: #0f2e26;
+      --accent-soft: rgba(15,46,38,0.08);
+      --radius: 10px;
+      --font-body: "Inter", system-ui, -apple-system, sans-serif;
+      --font-heading: "Space Grotesk", system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121212; --surface: #181818; --text: #f0f0ee; --text-secondary: #a8a8a4; --text-muted: #7a7a74; --line: #2a2a28; --line-strong: #3d3d3a; --accent: #c6e2d8; --accent-soft: rgba(198,226,216,0.10);
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    ::selection { background: var(--accent); color: var(--bg); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+    header { position: sticky; top: 0; z-index: 50; background: rgba(242,242,239,0.92); backdrop-filter: blur(10px) saturate(140%); border-bottom: 1px solid var(--line); }
+    @media (prefers-color-scheme: dark) { header { background: rgba(18,18,18,0.92); border-bottom-color: var(--line); } }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 18px 28px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: var(--font-heading); font-weight: 700; font-size: 1.35rem; letter-spacing: -0.03em; color: var(--text); }
+    .logo span { color: var(--text-muted); font-weight: 400; }
+    nav a { font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-secondary); margin-left: 22px; }
+    nav a:hover { color: var(--text); text-decoration: none; }
+    hero { display: block; max-width: 1200px; margin: 0 auto; padding: 100px 28px 60px; }
+    hero h1 { font-family: var(--font-heading); font-weight: 700; font-size: clamp(2.6rem, 6vw, 4.2rem); line-height: 1.05; letter-spacing: -0.045em; color: var(--text); max-width: 720px; }
+    hero p.lead { margin-top: 22px; max-width: 560px; font-size: 1.15rem; color: var(--text-secondary); line-height: 1.6; }
+    .meta { margin-top: 28px; display: flex; gap: 24px; flex-wrap: wrap; }
+    .meta-item { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); }
+    .meta-item strong { display: block; font-family: var(--font-heading); font-size: 1.05rem; color: var(--text); font-weight: 600; }
+    .categories { max-width: 1200px; margin: 0 auto; padding: 60px 28px 120px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; transition: border-color .15s, transform .15s; display: flex; flex-direction: column; gap: 10px; }
+    .card:hover { border-color: var(--line-strong); transform: translateY(-2px); }
+    .card .label { font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-muted); }
+    .card h3 { font-family: var(--font-heading); font-weight: 600; font-size: 1.15rem; letter-spacing: -0.02em; color: var(--text); }
+    .card p { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.45; }
+    .card a { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-top: auto; padding-top: 10px; border-top: 1px solid var(--line); }
+    footer { max-width: 1200px; margin: 0 auto; padding: 40px 28px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    footer .small { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <a href="/" class="logo">ZCODE <span>catalogo</span></a>
+      <nav aria-label="Navegacao">
+        <a href="/ZCODE/Estudos">Estudos</a>
+        <a href="/ZCODE/Jogos">Jogos</a>
+        <a href="/ZCODE/Úteis">Uteis</a>
+        <a href="/ZCODE/Social">Social</a>
+      </nav>
+    </div>
+  </header>
+
+  <hero>
+    <h1>Ferramentas para pensar. Sem frills, sem gradientes.</h1>
+    <p class="lead">810 experiencias com identidade propria. Cada site resolve um problema diferente — simulador, editor, jogo, laboratorio, visualizador, calculadora, rede. Nenhum duplicado.</p>
+    <div class="meta">
+      <div class="meta-item"><strong>810</strong> sites</div>
+      <div class="meta-item"><strong>22</strong> categorias</div>
+      <div class="meta-item"><strong>0</strong> fontes de IA</div>
+    </div>
+  </hero>
+
+  <section class="categories" aria-label="Categorias">
+    <a href="/ZCODE/Estudos" class="card" style="text-decoration:none;">
+      <span class="label">Estudos</span>
+      <h3>Simuladores, laboratorios e visualizadores</h3>
+      <p>Fisica, quimica, biologia, matematica, astronomia. Interatividade real com parametros ajustaveis.</p>
+      <span>Ver ferramentas &rarr;</span>
+    </a>
+    <a href="/ZCODE/Jogos" class="card" style="text-decoration:none;">
+      <span class="label">Jogos</span>
+      <h3>Logica, estrategia e exploracao</h3>
+      <p>Torre de Hanoi, sudoku visual, defesa de castelos, misterios, labirintos e jogos de deducao.</p>
+      <span>Ver ferramentas &rarr;</span>
+    </a>
+    <a href="/ZCODE/Úteis" class="card" style="text-decoration:none;">
+      <span class="label">Uteis</span>
+      <h3>Produtividade, design, calculo e audio</h3>
+      <p>Calculadoras, editores, geradores de paletas, ferramentas de organizacao e miniaplicativos.</p>
+      <span>Ver ferramentas &rarr;</span>
+    </a>
+    <a href="/ZCODE/Social" class="card" style="text-decoration:none;">
+      <span class="label">Social</span>
+      <h3>Colaboracao e compartilhamento</h3>
+      <p>Redes de ideias, revisao de codigo, mentoria, discussao cientifica e troca de recursos.</p>
+      <span>Ver ferramentas &rarr;</span>
+    </a>
+    <a href="/ZCODE/Estudos" class="card" style="text-decoration:none;">
+      <span class="label">Experiencias</span>
+      <h3>Ciencia, educacao e teste</h3>
+      <p>Laboratorios virtuais, testes de velocidade, desafios de raciocinio e avaliacoes interativas.</p>
+      <span>Ver ferramentas &rarr;</span>
+    </a>
+    <a href="/ZCODE/Jogos" class="card" style="text-decoration:none;">
+      <span class="label">Mapas</span>
+      <h3>Geografia e navegacao</h3>
+      <p>Rotas, relevo 3D, mapa de calor, fronteiras e exploracao de terreno.</p>
+      <span>Ver ferramentas &rarr;</span>
+    </a>
+  </section>
+
+  <footer>
+    <span class="small">Zcode — 2026. Nenhum emoji. Nenhum gradiente. Nenhuma fonte de IA.</span>
+    <span class="small">Catalogo de 810 ferramentas distintas.</span>
+  </footer>
+</body>
 </html>

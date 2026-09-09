@@ -2,11 +2,10 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Marquee from "./components/Marquee";
 import Manifesto from "./components/Manifesto";
-import CategorySection from "./components/CategorySection";
+import AppCatalogHub from "./components/AppCatalogHub";
 import DownloadSection from "./components/DownloadSection";
 import { BarraInstalarMobile } from "./components/InstallApp";
 import Footer from "./components/Footer";
-import { categorias } from "./data/apps";
 
 export default function App() {
   return (
@@ -16,9 +15,7 @@ export default function App() {
         <Hero />
         <Marquee />
         <Manifesto />
-        {categorias.map((categoria, i) => (
-          <CategorySection key={categoria.id} categoria={categoria} indice={i} />
-        ))}
+        <AppCatalogHub />
         <DownloadSection />
       </main>
       <Footer />

@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Conjugação: Passado</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/8</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Conjugue: cantar (eu (pretérito perfeito))","op":["cantei","cantava","cantaria","canto"],"a":0,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: falar (você (imperf.))","op":["falei","falava","falou","falo"],"a":1,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: comer (nós (pret. perfeito))","op":["comemos","comeremos","comi","comiamos"],"a":0,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: escrever (ele (pret. perfeito))","op":["escrevi","escreveu","escrevemos","escreve"],"a":1,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: dizer (tu (pret. perfeito))","op":["disseste","dizia","disse","direi"],"a":0,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: fazer (você (pret. perfeito))","op":["faço","fazei","fez","fiz"],"a":2,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: ir (nós (pret. perfeito))","op":["fomos","fui","íamos","iremos"],"a":0,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: pôr (eu (pret. perfeito))","op":["pus","pôs","puz","ponho"],"a":2,"dica":"Preste atenção na pessoa do verbo."}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Conjugue: cantar (eu (pretérito perfeito))","op":["cantei","cantaria","canto","cantava"],"a":0,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: falar (você (imperf.))","op":["falo","falou","falava","falei"],"a":2,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: comer (nós (pret. perfeito))","op":["comiamos","comemos","comeremos","comi"],"a":1,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: escrever (ele (pret. perfeito))","op":["escreveu","escrevemos","escrevi","escreve"],"a":0,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: dizer (tu (pret. perfeito))","op":["direi","dizia","disse","disseste"],"a":3,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: fazer (você (pret. perfeito))","op":["fez","fazei","faço","fiz"],"a":0,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: ir (nós (pret. perfeito))","op":["fui","íamos","iremos","fomos"],"a":3,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: pôr (eu (pret. perfeito))","op":["pus","ponho","pôs","puz"],"a":3,"dica":"Preste atenção na pessoa do verbo."}]}; return g(); })();
 var TOTAL = 8;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

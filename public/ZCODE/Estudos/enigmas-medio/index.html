@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Enigmas: Médio</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/10</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Sou o oposto de 'verdade' e tenho 7 letras.","op":["MILAGRE","MORTEIRO","MENTIRA","MACHADO"],"a":2},{"t":"Sou maior que o meu pai e mais novo que o meu filho. Quem sou?","op":["O irmão","O avô","O tio","O primo"],"a":1},{"t":"Posso ser lido de trás para frente e fico a mesma coisa. O que sou?","op":["CIFRADO","HIBRIDO","PALÍNDROMO","ANAGRAMA"],"a":2},{"t":"Você me come, mas eu não te como. Quanto mais come, mais cresce.","op":["A areia","A fome","A noite","Um buraco de fome"],"a":3},{"t":"Dois entram, um sai. O que é?","op":["Uma porta","Um funil","Uma briga","Uma subtração"],"a":2},{"t":"Se 5 gatos pegam 5 ratos em 5 minutos, quanto tempo 100 gatos pegam 100 ratos?","op":["1 min","5 min","100 min","20 min"],"a":2},{"t":"O que é cheio de buracos e ainda guarda água?","op":["Um coador","Um balde","Uma esponja","Um lenço"],"a":2},{"t":"Posso correr sem mover os pés. O que sou?","op":["A nuvem","O relógio","O vento","O rio"],"a":3},{"t":"Perde a cabeça e vive. Ganha a cabeça e morre.","op":["Um cravo","Um botão","Uma moeda","Um prego"],"a":0},{"t":"Quem faz, não quer; quem quer, não faz.","op":["O sol","A sombra","A chuva","O eco"],"a":0}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Sou o oposto de 'verdade' e tenho 7 letras.","op":["MENTIRA","MACHADO","MORTEIRO","MILAGRE"],"a":0},{"t":"Sou maior que o meu pai e mais novo que o meu filho. Quem sou?","op":["O irmão","O primo","O avô","O tio"],"a":2},{"t":"Posso ser lido de trás para frente e fico a mesma coisa. O que sou?","op":["PALÍNDROMO","ANAGRAMA","CIFRADO","HIBRIDO"],"a":0},{"t":"Você me come, mas eu não te como. Quanto mais come, mais cresce.","op":["A fome","A noite","Um buraco de fome","A areia"],"a":2},{"t":"Dois entram, um sai. O que é?","op":["Uma briga","Uma porta","Um funil","Uma subtração"],"a":0},{"t":"Se 5 gatos pegam 5 ratos em 5 minutos, quanto tempo 100 gatos pegam 100 ratos?","op":["20 min","100 min","1 min","5 min"],"a":1},{"t":"O que é cheio de buracos e ainda guarda água?","op":["Uma esponja","Um coador","Um lenço","Um balde"],"a":0},{"t":"Posso correr sem mover os pés. O que sou?","op":["O rio","O vento","A nuvem","O relógio"],"a":0},{"t":"Perde a cabeça e vive. Ganha a cabeça e morre.","op":["Um cravo","Um prego","Um botão","Uma moeda"],"a":0},{"t":"Quem faz, não quer; quem quer, não faz.","op":["O sol","A sombra","A chuva","O eco"],"a":0}]}; return g(); })();
 var TOTAL = 10;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

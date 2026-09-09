@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Quiz: Esportes</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/12</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Quantos jogadores por time no futebol (em campo)?","op":["10","12","11","14"],"a":2},{"t":"Quantos pontos vale uma cesta de 3 no basquete?","op":["3","4","2","1"],"a":0},{"t":"Quantos anéis tem a bandeira olímpica?","op":["7","5","6","4"],"a":1},{"t":"Qual país tem mais Copas do Mundo de futebol?","op":["Brasil","Alemanha","Itália","Argentina"],"a":0},{"t":"Em qual esporte se usa o 'saquetê'?","op":["Vôlei","Tênis","Golfe","Badminton"],"a":3},{"t":"A maratona tem aproximadamente:","op":["60 km","50 km","42 km","32 km"],"a":2},{"t":"No tênis, o zero se chama:","op":["Zero","Nil","Love","Ace"],"a":2},{"t":"Quantos jogadores por time em quadra no basquete?","op":["5","7","6","4"],"a":0},{"t":"O 'scrum' é usado em qual esporte?","op":["Hóquei","Futebol americano","Rugby","Críquete"],"a":2},{"t":"'Grand Slam' é título em qual esporte?","op":["Tênis","Golf","Natação","Boxe"],"a":0},{"t":"Um carro de Fórmula 1 tem quantos pilotos?","op":["2","3","4","1"],"a":3},{"t":"O 'xeque-mate' é termo de qual jogo?","op":["Go","Damas","Bridge","Xadrez"],"a":3}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Quantos jogadores por time no futebol (em campo)?","op":["14","10","11","12"],"a":2},{"t":"Quantos pontos vale uma cesta de 3 no basquete?","op":["1","2","3","4"],"a":2},{"t":"Quantos anéis tem a bandeira olímpica?","op":["6","7","4","5"],"a":3},{"t":"Qual país tem mais Copas do Mundo de futebol?","op":["Itália","Alemanha","Argentina","Brasil"],"a":3},{"t":"Em qual esporte se usa o 'saquetê'?","op":["Tênis","Badminton","Vôlei","Golfe"],"a":1},{"t":"A maratona tem aproximadamente:","op":["42 km","60 km","32 km","50 km"],"a":0},{"t":"No tênis, o zero se chama:","op":["Nil","Zero","Ace","Love"],"a":3},{"t":"Quantos jogadores por time em quadra no basquete?","op":["6","5","4","7"],"a":1},{"t":"O 'scrum' é usado em qual esporte?","op":["Rugby","Futebol americano","Hóquei","Críquete"],"a":0},{"t":"'Grand Slam' é título em qual esporte?","op":["Golf","Tênis","Boxe","Natação"],"a":1},{"t":"Um carro de Fórmula 1 tem quantos pilotos?","op":["4","1","2","3"],"a":1},{"t":"O 'xeque-mate' é termo de qual jogo?","op":["Xadrez","Bridge","Go","Damas"],"a":0}]}; return g(); })();
 var TOTAL = 12;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

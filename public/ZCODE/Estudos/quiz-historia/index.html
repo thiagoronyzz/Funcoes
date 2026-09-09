@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Quiz: História</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/12</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Em que ano os portugueses chegaram ao Brasil (tradição)?","op":["1530","1600","1500","1492"],"a":2},{"t":"A Proclamação da República foi em que ano?","op":["1888","1822","1889","1891"],"a":2},{"t":"A Constituição 'Cidadã' foi promulgada em:","op":["1964","1977","1988","1994"],"a":2},{"t":"Quem foi o líder da Inconfidência Mineira?","op":["Zumbi","Dom Pedro I","Rui Barbosa","Tiradentes"],"a":3},{"t":"A Revolução Francesa começou em:","op":["1815","1804","1789","1776"],"a":2},{"t":"Quem foi o primeiro imperador do Brasil?","op":["Dom Pedro II","Dom João VI","Getúlio Vargas","Dom Pedro I"],"a":3},{"t":"Quem escreveu 'Os Lusíadas'?","op":["Bocage","Gonçalves Dias","Fagundes","Camões"],"a":3},{"t":"A Lei Áurea (abolição) foi assinada em:","op":["1871","1889","1881","1888"],"a":3},{"t":"Quem foi o primeiro presidente da República do Brasil?","op":["Deodoro da Fonseca","Rui Barbosa","Floriano Peixoto","Prudente de Morais"],"a":0},{"t":"A Independência do Brasil foi em:","op":["1840","1831","1822","1808"],"a":2},{"t":"O Tratado de Tordesillas foi em:","op":["1532","1642","1500","1494"],"a":3},{"t":"Quem foi o ditador da Alemanha nazista?","op":["Franco","Mussolini","Stalin","Hitler"],"a":3}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Em que ano os portugueses chegaram ao Brasil (tradição)?","op":["1530","1600","1492","1500"],"a":3},{"t":"A Proclamação da República foi em que ano?","op":["1891","1822","1888","1889"],"a":3},{"t":"A Constituição 'Cidadã' foi promulgada em:","op":["1964","1988","1977","1994"],"a":1},{"t":"Quem foi o líder da Inconfidência Mineira?","op":["Tiradentes","Rui Barbosa","Zumbi","Dom Pedro I"],"a":0},{"t":"A Revolução Francesa começou em:","op":["1815","1804","1789","1776"],"a":2},{"t":"Quem foi o primeiro imperador do Brasil?","op":["Dom João VI","Dom Pedro II","Getúlio Vargas","Dom Pedro I"],"a":3},{"t":"Quem escreveu 'Os Lusíadas'?","op":["Fagundes","Bocage","Gonçalves Dias","Camões"],"a":3},{"t":"A Lei Áurea (abolição) foi assinada em:","op":["1881","1871","1889","1888"],"a":3},{"t":"Quem foi o primeiro presidente da República do Brasil?","op":["Floriano Peixoto","Rui Barbosa","Prudente de Morais","Deodoro da Fonseca"],"a":3},{"t":"A Independência do Brasil foi em:","op":["1808","1831","1822","1840"],"a":2},{"t":"O Tratado de Tordesillas foi em:","op":["1532","1500","1494","1642"],"a":2},{"t":"Quem foi o ditador da Alemanha nazista?","op":["Franco","Hitler","Stalin","Mussolini"],"a":1}]}; return g(); })();
 var TOTAL = 12;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

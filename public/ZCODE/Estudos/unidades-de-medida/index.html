@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Unidades de Medida</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/10</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Qual é a unidade de comprimento no Sistema Internacional?","op":["quilômetro","hertz","metro (m)","política"],"a":2},{"t":"Qual é a unidade de massa no Sistema Internacional?","op":["litro","segundo","kelvin","quilograma (kg)"],"a":3},{"t":"Qual é a unidade de tempo no Sistema Internacional?","op":["watt","ampere","segundo (s)","metro"],"a":2},{"t":"Qual é a unidade de corrente elétrica no Sistema Internacional?","op":["joule","volt","ampere (A)","ohm"],"a":2},{"t":"Qual é a unidade de temperatura no Sistema Internacional?","op":["kelvin (K)","pascal","tesla","newton"],"a":0},{"t":"Qual é a unidade de quantidade de matéria no Sistema Internacional?","op":["hertz","mol (mol)","litro","grama"],"a":1},{"t":"Qual é a unidade de intensidade luminosa no Sistema Internacional?","op":["watt","lúmen","candela (cd)","hertz"],"a":2},{"t":"Qual é a unidade de força no Sistema Internacional?","op":["newton (N)","joule","pascal","watt"],"a":0},{"t":"Qual é a unidade de energia no Sistema Internacional?","op":["watt","newton","joule (J)","pascal"],"a":2},{"t":"Qual é a unidade de pressão no Sistema Internacional?","op":["bar","joule","pascal (Pa)","newton"],"a":2}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Qual é a unidade de comprimento no Sistema Internacional?","op":["metro (m)","quilômetro","hertz","política"],"a":0},{"t":"Qual é a unidade de massa no Sistema Internacional?","op":["kelvin","litro","quilograma (kg)","segundo"],"a":2},{"t":"Qual é a unidade de tempo no Sistema Internacional?","op":["watt","segundo (s)","ampere","metro"],"a":1},{"t":"Qual é a unidade de corrente elétrica no Sistema Internacional?","op":["joule","volt","ampere (A)","ohm"],"a":2},{"t":"Qual é a unidade de temperatura no Sistema Internacional?","op":["kelvin (K)","newton","pascal","tesla"],"a":0},{"t":"Qual é a unidade de quantidade de matéria no Sistema Internacional?","op":["grama","litro","mol (mol)","hertz"],"a":2},{"t":"Qual é a unidade de intensidade luminosa no Sistema Internacional?","op":["lúmen","hertz","watt","candela (cd)"],"a":3},{"t":"Qual é a unidade de força no Sistema Internacional?","op":["watt","newton (N)","pascal","joule"],"a":1},{"t":"Qual é a unidade de energia no Sistema Internacional?","op":["newton","pascal","joule (J)","watt"],"a":2},{"t":"Qual é a unidade de pressão no Sistema Internacional?","op":["bar","pascal (Pa)","joule","newton"],"a":1}]}; return g(); })();
 var TOTAL = 10;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Sinônimos Relâmpagos</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/12</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Qual é o sinônimo de “feliz”?","op":["melancólico","moradia","esperto","contente"],"a":3},{"t":"Qual é o sinônimo de “correr”?","op":["sprintar","dizer","lindo","veloz"],"a":0},{"t":"Qual é o sinônimo de “grande”?","op":["enorme","adquirir","moradia","lindo"],"a":0},{"t":"Qual é o sinônimo de “belo”?","op":["dizer","moradia","lindo","veloz"],"a":2},{"t":"Qual é o sinônimo de “triste”?","op":["complicado","lindo","melancólico","enorme"],"a":2},{"t":"Qual é o sinônimo de “falar”?","op":["adquirir","complicado","dizer","melancólico"],"a":2},{"t":"Qual é o sinônimo de “comprar”?","op":["adquirir","contente","veloz","sprintar"],"a":0},{"t":"Qual é o sinônimo de “casa”?","op":["enorme","lindo","moradia","sprintar"],"a":2},{"t":"Qual é o sinônimo de “bonito”?","op":["esperto","veloz","complicado","lindo"],"a":3},{"t":"Qual é o sinônimo de “rápido”?","op":["lindo","veloz","enorme","complicado"],"a":1},{"t":"Qual é o sinônimo de “inteligente”?","op":["contente","complicado","esperto","adquirir"],"a":2},{"t":"Qual é o sinônimo de “difícil”?","op":["moradia","complicado","lindo","sprintar"],"a":1}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Qual é o sinônimo de “feliz”?","op":["sprintar","enorme","contente","moradia"],"a":2},{"t":"Qual é o sinônimo de “correr”?","op":["dizer","enorme","sprintar","adquirir"],"a":2},{"t":"Qual é o sinônimo de “grande”?","op":["lindo","melancólico","enorme","moradia"],"a":2},{"t":"Qual é o sinônimo de “belo”?","op":["esperto","lindo","complicado","enorme"],"a":1},{"t":"Qual é o sinônimo de “triste”?","op":["moradia","melancólico","lindo","esperto"],"a":1},{"t":"Qual é o sinônimo de “falar”?","op":["veloz","lindo","sprintar","dizer"],"a":3},{"t":"Qual é o sinônimo de “comprar”?","op":["sprintar","contente","melancólico","adquirir"],"a":3},{"t":"Qual é o sinônimo de “casa”?","op":["esperto","moradia","complicado","adquirir"],"a":1},{"t":"Qual é o sinônimo de “bonito”?","op":["lindo","melancólico","esperto","moradia"],"a":0},{"t":"Qual é o sinônimo de “rápido”?","op":["contente","lindo","adquirir","veloz"],"a":3},{"t":"Qual é o sinônimo de “inteligente”?","op":["lindo","melancólico","esperto","moradia"],"a":2},{"t":"Qual é o sinônimo de “difícil”?","op":["complicado","adquirir","dizer","enorme"],"a":0}]}; return g(); })();
 var TOTAL = 12;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

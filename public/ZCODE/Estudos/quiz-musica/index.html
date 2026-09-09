@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Quiz: Música</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/12</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Quantas teclas tem um piano padrão?","op":["92","100","88","76"],"a":2},{"t":"Quem é o 'Rei do Pop'?","op":["Freddie Mercury","Michael Jackson","Elvis Presley","Prince"],"a":1},{"t":"Vivaldi compôs qual obra famosa?","op":["As Quatro Estações","Nona Sinfonia","A Flauta Mágica","A ópera Traviata"],"a":0},{"t":"A banda Queen é de qual país?","op":["EUA","Austrália","Reino Unido","Irlanda"],"a":2},{"t":"Quantas cordas tem uma guitarra clássica?","op":["5","6","7","4"],"a":1},{"t":"Quem compôs 'A Flauta Mágica'?","op":["Chopin","Beethoven","Bach","Mozart"],"a":3},{"t":"Louis Armstrong tocava qual instrumento?","op":["Saxofone","Trompete","Piano","Bateria"],"a":1},{"t":"O tema da 'Ode à Alegria' está em qual sinfonia?","op":["7ª de Mozart","9ª de Beethoven","5ª de Beethoven","4ª de Tchaikovsky"],"a":1},{"t":"Quantas notas naturais existem na escala musical?","op":["6","7","5","8"],"a":1},{"t":"Quem é citado como 'Pai do Samba'?","op":["Cartola","Dorival Caymmi","Donga","Luiz Gonzaga"],"a":2},{"t":"Em um crescendo, o que aumenta?","op":["O ritmo","A intensidade","A altura","A duração"],"a":1},{"t":"O 'samba' e a 'bossa nova' têm origem em qual país?","op":["Argentina","Portugal","Cuba","Brasil"],"a":3}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Quantas teclas tem um piano padrão?","op":["88","100","92","76"],"a":0},{"t":"Quem é o 'Rei do Pop'?","op":["Elvis Presley","Freddie Mercury","Prince","Michael Jackson"],"a":3},{"t":"Vivaldi compôs qual obra famosa?","op":["A ópera Traviata","As Quatro Estações","A Flauta Mágica","Nona Sinfonia"],"a":1},{"t":"A banda Queen é de qual país?","op":["Irlanda","Reino Unido","Austrália","EUA"],"a":1},{"t":"Quantas cordas tem uma guitarra clássica?","op":["7","5","4","6"],"a":3},{"t":"Quem compôs 'A Flauta Mágica'?","op":["Bach","Mozart","Chopin","Beethoven"],"a":1},{"t":"Louis Armstrong tocava qual instrumento?","op":["Bateria","Saxofone","Trompete","Piano"],"a":2},{"t":"O tema da 'Ode à Alegria' está em qual sinfonia?","op":["7ª de Mozart","5ª de Beethoven","9ª de Beethoven","4ª de Tchaikovsky"],"a":2},{"t":"Quantas notas naturais existem na escala musical?","op":["7","6","5","8"],"a":0},{"t":"Quem é citado como 'Pai do Samba'?","op":["Donga","Cartola","Luiz Gonzaga","Dorival Caymmi"],"a":0},{"t":"Em um crescendo, o que aumenta?","op":["A intensidade","O ritmo","A duração","A altura"],"a":0},{"t":"O 'samba' e a 'bossa nova' têm origem em qual país?","op":["Cuba","Portugal","Brasil","Argentina"],"a":2}]}; return g(); })();
 var TOTAL = 12;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

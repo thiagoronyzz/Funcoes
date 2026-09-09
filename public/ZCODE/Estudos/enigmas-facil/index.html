@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Enigmas: Fácil</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/10</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Tem cabeça, tem orelha, mas não ouve.","op":["Um telefone","Um alho","Um sapo","Um cavalo"],"a":1},{"t":"Quanto mais tira, maior fica.","op":["Uma fila","Um bolo","Um buraco","Uma montanha"],"a":2},{"t":"O que é seu, mas os outros usam mais que você?","op":["Seu telefone","Seu nome","Sua casa","Seu carro"],"a":1},{"t":"Tem pés, mas não anda.","op":["Um sapato","Uma cama","Uma cadeira de rodinha","Um relógio"],"a":1},{"t":"Fala sem ter boca e ouve sem ter orelha.","op":["Um espelho","Um sonho","Um eco","Um rádio"],"a":2},{"t":"O que sobe, mas nunca desce?","op":["A idade","A maré","A temperatura","A chuva"],"a":2},{"t":"O que tem dentes, mas não morde?","op":["Uma chave","Um pente","Um relógio","Um livro"],"a":1},{"t":"Quanto mais lava, mais fica sujo.","op":["O chão","A água","O ar","O sabão"],"a":1},{"t":"O que tem pescoço, mas não tem cabeça?","op":["Um violão","Um cisne","Um cavalo","Uma garrafa"],"a":3},{"t":"O que cai, mas nunca quebra?","op":["O vento","A chuva","A noite","A neve"],"a":2}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Tem cabeça, tem orelha, mas não ouve.","op":["Um telefone","Um sapo","Um alho","Um cavalo"],"a":2},{"t":"Quanto mais tira, maior fica.","op":["Uma fila","Um buraco","Uma montanha","Um bolo"],"a":1},{"t":"O que é seu, mas os outros usam mais que você?","op":["Seu telefone","Seu nome","Seu carro","Sua casa"],"a":1},{"t":"Tem pés, mas não anda.","op":["Um sapato","Uma cama","Uma cadeira de rodinha","Um relógio"],"a":1},{"t":"Fala sem ter boca e ouve sem ter orelha.","op":["Um espelho","Um sonho","Um rádio","Um eco"],"a":3},{"t":"O que sobe, mas nunca desce?","op":["A idade","A temperatura","A chuva","A maré"],"a":1},{"t":"O que tem dentes, mas não morde?","op":["Uma chave","Um livro","Um pente","Um relógio"],"a":2},{"t":"Quanto mais lava, mais fica sujo.","op":["A água","O chão","O ar","O sabão"],"a":0},{"t":"O que tem pescoço, mas não tem cabeça?","op":["Um violão","Uma garrafa","Um cavalo","Um cisne"],"a":1},{"t":"O que cai, mas nunca quebra?","op":["A noite","O vento","A chuva","A neve"],"a":0}]}; return g(); })();
 var TOTAL = 10;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

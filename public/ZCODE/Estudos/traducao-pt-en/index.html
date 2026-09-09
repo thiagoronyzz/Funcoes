@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Tradução PT → EN</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/16</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"“sol” em inglês?","op":["star","sun","sky","moon"],"a":1},{"t":"“lua” em inglês?","op":["cloud","sun","moon","earth"],"a":2},{"t":"“pão” em inglês?","op":["rice","meat","bread","fish"],"a":2},{"t":"“leite” em inglês?","op":["tea","juice","milk","water"],"a":2},{"t":"“cachorro” em inglês?","op":["dog","bird","cat","horse"],"a":0},{"t":"“mesa” em inglês?","op":["desk","chair","bed","table"],"a":3},{"t":"“janela” em inglês?","op":["window","roof","door","wall"],"a":0},{"t":"“livro” em inglês?","op":["book","bag","paper","pen"],"a":0},{"t":"“amigo” em inglês?","op":["enemy","brother","friend","coworker"],"a":2},{"t":"“chuva” em inglês?","op":["snow","wind","storm","rain"],"a":3},{"t":"“dinheiro” em inglês?","op":["gold","money","cash","coin"],"a":1},{"t":"“tempo” em inglês?","op":["hour","day","clock","time"],"a":3},{"t":"“cidade” em inglês?","op":["city","village","street","town"],"a":0},{"t":"“escola” em inglês?","op":["school","college","university","classroom"],"a":0},{"t":"“professor” em inglês?","op":["teacher","student","coach","principal"],"a":0},{"t":"“família” em inglês?","op":["relatives","family","kin","clan"],"a":1}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"“sol” em inglês?","op":["sky","moon","sun","star"],"a":2},{"t":"“lua” em inglês?","op":["sun","cloud","earth","moon"],"a":3},{"t":"“pão” em inglês?","op":["fish","meat","bread","rice"],"a":2},{"t":"“leite” em inglês?","op":["juice","water","tea","milk"],"a":3},{"t":"“cachorro” em inglês?","op":["bird","cat","dog","horse"],"a":2},{"t":"“mesa” em inglês?","op":["desk","chair","bed","table"],"a":3},{"t":"“janela” em inglês?","op":["window","roof","wall","door"],"a":0},{"t":"“livro” em inglês?","op":["pen","bag","book","paper"],"a":2},{"t":"“amigo” em inglês?","op":["enemy","friend","brother","coworker"],"a":1},{"t":"“chuva” em inglês?","op":["rain","wind","snow","storm"],"a":0},{"t":"“dinheiro” em inglês?","op":["gold","money","coin","cash"],"a":1},{"t":"“tempo” em inglês?","op":["clock","day","time","hour"],"a":2},{"t":"“cidade” em inglês?","op":["city","town","street","village"],"a":0},{"t":"“escola” em inglês?","op":["college","classroom","university","school"],"a":3},{"t":"“professor” em inglês?","op":["student","coach","principal","teacher"],"a":3},{"t":"“família” em inglês?","op":["clan","relatives","kin","family"],"a":3}]}; return g(); })();
 var TOTAL = 16;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

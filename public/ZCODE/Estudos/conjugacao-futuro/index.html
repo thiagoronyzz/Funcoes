@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Conjugação: Futuro</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/7</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Conjugue: cantar (eu (futuro))","op":["cantarei","cantaria","cantar","cantava"],"a":0,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: falar (tu (futuro))","op":["falarás","falará","falaria","falarei"],"a":0,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: viver (ele (futuro))","op":["viviam","vive","viverei","viverá"],"a":3,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: partir (nós (futuro))","op":["partirei","partirás","partimos","partiremos"],"a":3,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: ser (vocês (futuro))","op":["serei","seremos","sereis","serão"],"a":2,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: estar (eu (futuro))","op":["estaria","estareis","estarei","estava"],"a":2,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: ter (você (futuro))","op":["terá","tinha","terei","tens"],"a":0,"dica":"Preste atenção na pessoa do verbo."}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Conjugue: cantar (eu (futuro))","op":["cantava","cantarei","cantar","cantaria"],"a":1,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: falar (tu (futuro))","op":["falarei","falarás","falaria","falará"],"a":1,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: viver (ele (futuro))","op":["viviam","vive","viverei","viverá"],"a":3,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: partir (nós (futuro))","op":["partirei","partimos","partiremos","partirás"],"a":2,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: ser (vocês (futuro))","op":["seremos","serão","serei","sereis"],"a":3,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: estar (eu (futuro))","op":["estareis","estava","estarei","estaria"],"a":2,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: ter (você (futuro))","op":["tinha","tens","terá","terei"],"a":2,"dica":"Preste atenção na pessoa do verbo."}]}; return g(); })();
 var TOTAL = 7;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

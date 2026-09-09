@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Símbolos Químicos</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/12</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Qual é o símbolo do elemento Ferro?","op":["Ag","H","Fe","Na"],"a":2,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Ouro?","op":["Au","K","N","Ca"],"a":0,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Prata?","op":["K","Ag","H","O"],"a":1,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Sódio?","op":["Ca","N","Na","Cl"],"a":2,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Potássio?","op":["Cl","K","Cu","Ca"],"a":1,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Cálcio?","op":["N","Ca","Cl","K"],"a":1,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Cloro?","op":["Na","Cl","K","Cu"],"a":1,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Carbono?","op":["Cl","C","Ag","Na"],"a":1,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Hidrogênio?","op":["Cu","Au","O","H"],"a":3,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Oxigênio?","op":["H","K","Au","O"],"a":3,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Nitrogênio?","op":["Au","C","Cl","N"],"a":3,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Cobre?","op":["Cu","N","Ca","Au"],"a":0,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Qual é o símbolo do elemento Ferro?","op":["N","C","K","Fe"],"a":3,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Ouro?","op":["H","Ag","Au","N"],"a":2,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Prata?","op":["H","Cl","Ag","Na"],"a":2,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Sódio?","op":["Na","Ag","Au","Fe"],"a":0,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Potássio?","op":["K","Ag","Na","Au"],"a":0,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Cálcio?","op":["Au","N","Ca","C"],"a":2,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Cloro?","op":["H","K","C","Cl"],"a":3,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Carbono?","op":["C","Fe","N","Cu"],"a":0,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Hidrogênio?","op":["Cl","H","Ag","Au"],"a":1,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Oxigênio?","op":["Fe","O","Cl","N"],"a":1,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Nitrogênio?","op":["K","H","C","N"],"a":3,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."},{"t":"Qual é o símbolo do elemento Cobre?","op":["Au","Cu","Na","O"],"a":1,"dica":"Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras."}]}; return g(); })();
 var TOTAL = 12;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

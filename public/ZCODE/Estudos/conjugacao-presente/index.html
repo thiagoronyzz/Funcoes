@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Conjugação: Presente</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/10</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Conjugue: cantar (eu)","op":["cantam","cantes","canto","canta"],"a":2,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: falar (tu)","op":["falo","fale","falam","falas"],"a":3,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: viver (ele)","op":["vives","vive","vivo","vivem"],"a":1,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: partir (nós)","op":["partimos","partem","parte","partes"],"a":0,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: ser (você)","op":["são","somos","sou","é"],"a":3,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: estar (eles)","op":["estás","está","estão","estou"],"a":2,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: ter (nós)","op":["temos","têm","tem","tens"],"a":0,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: ir (eu)","op":["vao","vão","vou","vais"],"a":2,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: fazer (vocês)","op":["fazei","faço","fazem","faz"],"a":2,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: ler (eu)","op":["lemos","leio","lê","lês"],"a":1,"dica":"Preste atenção na pessoa do verbo."}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Conjugue: cantar (eu)","op":["cantam","cantes","canta","canto"],"a":3,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: falar (tu)","op":["fale","falas","falo","falam"],"a":1,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: viver (ele)","op":["vive","vives","vivo","vivem"],"a":0,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: partir (nós)","op":["partimos","partes","partem","parte"],"a":0,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: ser (você)","op":["é","sou","somos","são"],"a":0,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: estar (eles)","op":["está","estou","estão","estás"],"a":2,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: ter (nós)","op":["temos","tem","tens","têm"],"a":0,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: ir (eu)","op":["vão","vais","vou","vao"],"a":2,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: fazer (vocês)","op":["fazei","fazem","faz","faço"],"a":1,"dica":"Preste atenção na pessoa do verbo."},{"t":"Conjugue: ler (eu)","op":["lê","lês","lemos","leio"],"a":3,"dica":"Preste atenção na pessoa do verbo."}]}; return g(); })();
 var TOTAL = 10;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

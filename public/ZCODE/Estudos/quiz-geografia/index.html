@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Quiz: Geografia</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/12</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Qual é a capital da França?","op":["Marselha","Lyon","Paris","Nice"],"a":2},{"t":"Qual é o maior país do mundo em área?","op":["China","Rússia","Canadá","EUA"],"a":1},{"t":"Qual rio atravessa o Egito?","op":["Amazonas","Danúbio","Congo","Nilo"],"a":3},{"t":"Qual é o estado mais populoso do Brasil?","op":["São Paulo","Bahia","Rio de Janeiro","Minas Gerais"],"a":0},{"t":"Qual é o maior estado do Brasil em área?","op":["Mato Grosso","Amazonas","Minas Gerais","Pará"],"a":1},{"t":"Qual é a capital do Japão?","op":["Nagoya","Tóquio","Quioto","Osaka"],"a":1},{"t":"Qual é a montanha mais alta do mundo?","op":["K2","Aconcágua","Kilimanjaro","Everest"],"a":3},{"t":"O 'continente branco' é:","op":["Antártida","Ásia","África","Europa"],"a":0},{"t":"Qual é a capital do Canadá?","op":["Ottawa","Vancouver","Montreal","Toronto"],"a":0},{"t":"Qual é a capital da Alemanha?","op":["Hamburgo","Munique","Colônia","Berlim"],"a":3},{"t":"O Pantanal fica principalmente em qual estado?","op":["Pará","Mato Grosso do Sul","Goiás","Mato Grosso"],"a":1},{"t":"Qual oceano banha o litoral brasileiro?","op":["Índico","Pacífico","Ártico","Atlântico"],"a":3}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Qual é a capital da França?","op":["Marselha","Paris","Nice","Lyon"],"a":1},{"t":"Qual é o maior país do mundo em área?","op":["Canadá","EUA","Rússia","China"],"a":2},{"t":"Qual rio atravessa o Egito?","op":["Congo","Nilo","Amazonas","Danúbio"],"a":1},{"t":"Qual é o estado mais populoso do Brasil?","op":["São Paulo","Minas Gerais","Rio de Janeiro","Bahia"],"a":0},{"t":"Qual é o maior estado do Brasil em área?","op":["Pará","Mato Grosso","Minas Gerais","Amazonas"],"a":3},{"t":"Qual é a capital do Japão?","op":["Quioto","Tóquio","Osaka","Nagoya"],"a":1},{"t":"Qual é a montanha mais alta do mundo?","op":["K2","Kilimanjaro","Aconcágua","Everest"],"a":3},{"t":"O 'continente branco' é:","op":["Ásia","África","Antártida","Europa"],"a":2},{"t":"Qual é a capital do Canadá?","op":["Ottawa","Montreal","Toronto","Vancouver"],"a":0},{"t":"Qual é a capital da Alemanha?","op":["Munique","Hamburgo","Berlim","Colônia"],"a":2},{"t":"O Pantanal fica principalmente em qual estado?","op":["Mato Grosso","Goiás","Mato Grosso do Sul","Pará"],"a":2},{"t":"Qual oceano banha o litoral brasileiro?","op":["Índico","Pacífico","Ártico","Atlântico"],"a":3}]}; return g(); })();
 var TOTAL = 12;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

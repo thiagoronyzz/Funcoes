@@ -18,7 +18,7 @@ function ok(msg) { console.log("  OK", msg); }
 /* ── 1. catálogo ────────────────────────────────────────── */
 console.log("1) Catálogo");
 const er = validar();
-if (er.length) er.forEach(fail); else ok("100 apps por categoria, nomes únicos");
+if (er.length) er.forEach(fail); else ok("270 apps por categoria, nomes únicos");
 
 /* ── 2. arquivos gerados ────────────────────────────────── */
 console.log("2) Arquivos");
@@ -117,7 +117,7 @@ for (const c of ["estudos", "jogos", "uteis", "social"]) {
 }
 for (const [c, n] of Object.entries(cats)) {
   if (c === "social") { if (n !== 3) fail(`social: ${n} apps (esperado 3)`); }
-  else if (n !== 100) fail(`${c}: ${n} apps no apps.ts (esperado 100)`);
+  else if (n !== 270) fail(`${c}: ${n} apps no apps.ts (esperado 270)`);
 }
 let linkFail = 0;
 for (const l of links) {
@@ -125,7 +125,7 @@ for (const l of links) {
   const p = path.join(ROOT, "public", l.replace(/^\//, ""));
   if (!fs.existsSync(p)) { fail(`link inexistente: ${l}`); linkFail++; }
 }
-ok(`${links.length - linkFail} links verificados (100×3 + social)`);
+ok(`${links.length - linkFail} links verificados (270×3 + social)`);
 
 /* ── resultado ───────────────────────────────────────────── */
 console.log(falhas === 0 ? "\nOK TODOS OS TESTES PASSARAM" : `\nNão ${falhas} falha(s)`);

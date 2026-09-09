@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Bandeiras do Mundo 2</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/8</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Qual país tem esta bandeira? [PT]","op":["Brasil","Angola","Portugal","Moçambique"],"a":2},{"t":"Qual país tem esta bandeira? [MX]","op":["México","Bolívia","Equador","Peru"],"a":0},{"t":"Qual país tem esta bandeira? [GB]","op":["Escócia","Irlanda","Gales","Reino Unido"],"a":3},{"t":"Qual país tem esta bandeira? [CA]","op":["Nova Zelândia","EUA","Austrália","Canadá"],"a":3},{"t":"Qual país tem esta bandeira? [AU]","op":["Fiji","Nova Zelândia","Austrália","Papua-Nova Guiné"],"a":2},{"t":"Qual país tem esta bandeira? [IN]","op":["Paquistão","Índia","Bangladesh","Nepal"],"a":1},{"t":"Qual país tem esta bandeira? [RU]","op":["Ucrânia","Bielorrússia","Polônia","Rússia"],"a":3},{"t":"Qual país tem esta bandeira? [KR]","op":["Japão","Coreia do Norte","Coreia do Sul","China"],"a":2}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Qual país tem esta bandeira? [PT]","op":["Brasil","Portugal","Angola","Moçambique"],"a":1},{"t":"Qual país tem esta bandeira? [MX]","op":["Bolívia","Peru","Equador","México"],"a":3},{"t":"Qual país tem esta bandeira? [GB]","op":["Irlanda","Gales","Reino Unido","Escócia"],"a":2},{"t":"Qual país tem esta bandeira? [CA]","op":["Canadá","EUA","Nova Zelândia","Austrália"],"a":0},{"t":"Qual país tem esta bandeira? [AU]","op":["Nova Zelândia","Austrália","Papua-Nova Guiné","Fiji"],"a":1},{"t":"Qual país tem esta bandeira? [IN]","op":["Paquistão","Nepal","Índia","Bangladesh"],"a":2},{"t":"Qual país tem esta bandeira? [RU]","op":["Ucrânia","Polônia","Rússia","Bielorrússia"],"a":2},{"t":"Qual país tem esta bandeira? [KR]","op":["Coreia do Norte","Japão","China","Coreia do Sul"],"a":3}]}; return g(); })();
 var TOTAL = 8;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

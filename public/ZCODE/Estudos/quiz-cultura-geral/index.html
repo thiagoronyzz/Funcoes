@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Quiz: Cultura Geral</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/12</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Qual é a capital da Austrália?","op":["Melbourne","Sydney","Canberra","Perth"],"a":2},{"t":"Qual é o maior oceano do mundo?","op":["Atlântico","Pacífico","Índico","Ártico"],"a":1},{"t":"Qual é o menor planeta do Sistema Solar?","op":["Vênus","Marte","Mercúrio","Júpiter"],"a":2},{"t":"Quem escreveu 'Dom Casmurro'?","op":["José de Alencar","Clarice Lispector","Machado de Assis","Guimarães Rosa"],"a":2},{"t":"Quem foi o primeiro ser humano no espaço?","op":["Buzz Aldrin","Neil Armstrong","Yuri Gagarin","John Glenn"],"a":2},{"t":"Qual é o símbolo químico do oxigênio?","op":["O","Og","Oz","Ox"],"a":0},{"t":"Quantos continentes existem?","op":["6","5","7","8"],"a":2},{"t":"Quem pintou a Mona Lisa?","op":["Rafael","Leonardo da Vinci","Donatello","Michelangelo"],"a":1},{"t":"Qual é o maior deserto quente do mundo?","op":["Gobi","Atacama","Sahara","Mojave"],"a":2},{"t":"Qual é a língua com mais falantes nativos no mundo?","op":["Chinês mandarim","Inglês","Espanhol","Hindi"],"a":0},{"t":"Em que ano caiu o Muro de Berlim?","op":["1985","1991","1989","1979"],"a":2},{"t":"Quantas cores principais tem o arco-íris?","op":["7","6","8","5"],"a":0}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Qual é a capital da Austrália?","op":["Sydney","Canberra","Perth","Melbourne"],"a":1},{"t":"Qual é o maior oceano do mundo?","op":["Índico","Pacífico","Ártico","Atlântico"],"a":1},{"t":"Qual é o menor planeta do Sistema Solar?","op":["Mercúrio","Vênus","Júpiter","Marte"],"a":0},{"t":"Quem escreveu 'Dom Casmurro'?","op":["Machado de Assis","Guimarães Rosa","Clarice Lispector","José de Alencar"],"a":0},{"t":"Quem foi o primeiro ser humano no espaço?","op":["Yuri Gagarin","Neil Armstrong","Buzz Aldrin","John Glenn"],"a":0},{"t":"Qual é o símbolo químico do oxigênio?","op":["Oz","O","Og","Ox"],"a":1},{"t":"Quantos continentes existem?","op":["7","5","8","6"],"a":0},{"t":"Quem pintou a Mona Lisa?","op":["Michelangelo","Rafael","Leonardo da Vinci","Donatello"],"a":2},{"t":"Qual é o maior deserto quente do mundo?","op":["Gobi","Atacama","Sahara","Mojave"],"a":2},{"t":"Qual é a língua com mais falantes nativos no mundo?","op":["Chinês mandarim","Hindi","Inglês","Espanhol"],"a":0},{"t":"Em que ano caiu o Muro de Berlim?","op":["1991","1985","1989","1979"],"a":2},{"t":"Quantas cores principais tem o arco-íris?","op":["7","6","8","5"],"a":0}]}; return g(); })();
 var TOTAL = 12;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

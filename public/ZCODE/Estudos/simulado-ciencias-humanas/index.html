@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Simulado: Ciências Humanas</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Semana de Arte Moderna:","op":["1930","1900","1954","1922"],"a":3},{"t":"Autor de 'O Guarani':","op":["Machado","Alencar","Drummond","Lispector"],"a":1},{"t":"Constituição Cidadã:","op":["1934","1964","1994","1988"],"a":3},{"t":"Queda do Muro de Berlim:","op":["1993","1989","1991","1985"],"a":1},{"t":"Lei Áurea:","op":["1881","1871","1888","1889"],"a":2},{"t":"Socrático 'sei que nada sei':","op":["Aristóteles","Platão","Cícero","Sócrates"],"a":3},{"t":"Independência do Brasil:","op":["1831","1822","1889","1808"],"a":1},{"t":"Iluminismo valoriza:","op":["A fé","A monarquia","A tradição","A razão"],"a":3},{"t":"Tordesillas:","op":["1530","1494","1492","1500"],"a":1},{"t":"Machado de Assis:","op":["Modernismo","Romantismo","Barroco","Realismo"],"a":3},{"t":"Estado Novo:","op":["1945–1964","1937–1945","1930–1937","1964–1985"],"a":1},{"t":"1º presidente da República:","op":["Rui","Deodoro","Floriano","Prudente"],"a":1},{"t":"Cruz e Sousa:","op":["Realismo","Simbolismo","Parnasianismo","Modernismo"],"a":1},{"t":"Revolução Francesa:","op":["1789","1792","1804","1776"],"a":0},{"t":"Graciliano Ramos:","op":["Minas","São Paulo","Bahia","Alagoas"],"a":3}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Semana de Arte Moderna:","op":["1922","1900","1930","1954"],"a":0},{"t":"Autor de 'O Guarani':","op":["Drummond","Machado","Alencar","Lispector"],"a":2},{"t":"Constituição Cidadã:","op":["1994","1964","1988","1934"],"a":2},{"t":"Queda do Muro de Berlim:","op":["1989","1993","1991","1985"],"a":0},{"t":"Lei Áurea:","op":["1881","1888","1889","1871"],"a":1},{"t":"Socrático 'sei que nada sei':","op":["Sócrates","Platão","Aristóteles","Cícero"],"a":0},{"t":"Independência do Brasil:","op":["1808","1889","1831","1822"],"a":3},{"t":"Iluminismo valoriza:","op":["A fé","A razão","A monarquia","A tradição"],"a":1},{"t":"Tordesillas:","op":["1492","1500","1530","1494"],"a":3},{"t":"Machado de Assis:","op":["Realismo","Modernismo","Romantismo","Barroco"],"a":0},{"t":"Estado Novo:","op":["1937–1945","1930–1937","1964–1985","1945–1964"],"a":0},{"t":"1º presidente da República:","op":["Prudente","Deodoro","Rui","Floriano"],"a":1},{"t":"Cruz e Sousa:","op":["Parnasianismo","Modernismo","Realismo","Simbolismo"],"a":3},{"t":"Revolução Francesa:","op":["1776","1789","1792","1804"],"a":1},{"t":"Graciliano Ramos:","op":["Bahia","São Paulo","Minas","Alagoas"],"a":3}]}; return g(); })();
 var TOTAL = 15;
 var TEMPO = 300;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

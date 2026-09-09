@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Simulado: Ciências da Natureza</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Célula sem núcleo organizado:","op":["Virion","Eucarionte","Talo","Procarionte"],"a":3},{"t":"Fotossíntese libera:","op":["Oxigênio","Nitrogênio","Metano","CO₂"],"a":0},{"t":"Unidade de força:","op":["Joule","Ampere","Watt","Newton"],"a":3},{"t":"pH neutro:","op":["0","1","7","14"],"a":2},{"t":"Organela da respiração:","op":["Mitocôndria","Vacúolo","Lisossomo","Cloroplasto"],"a":0},{"t":"Velocidade da luz ≈","op":["300.000 km/s","340 m/s","150.000 km/s","3.000 km/s"],"a":0},{"t":"Sangue é bombeado pelo:","op":["Coração","Rim","Pulmão","Fígado"],"a":0},{"t":"Estado sólido da água:","op":["Orvalho","Gelo","Neblina","Vapor"],"a":1},{"t":"Símbolo do ouro:","op":["Or","Ag","Go","Au"],"a":3},{"t":"Primeira Lei de Newton:","op":["Ação-reação","F=ma","Inércia","Universal"],"a":2},{"t":"Gás que as plantas absorvem:","op":["CO₂","Argônio","Hidrogênio","Oxigênio"],"a":0},{"t":"Menor unidade da vida:","op":["Tecido","Sistema","Célula","Órgão"],"a":2},{"t":"Ponto de fusão da água:","op":["10°C","−10°C","0°C","100°C"],"a":2},{"t":"Unidade de energia:","op":["Joule","Watt","Pascal","Volt"],"a":0},{"t":"Quem descreveu as leis do planeta?","op":["Galileu","Copérnico","Hubble","Kepler"],"a":3}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Célula sem núcleo organizado:","op":["Talo","Eucarionte","Virion","Procarionte"],"a":3},{"t":"Fotossíntese libera:","op":["Nitrogênio","Oxigênio","CO₂","Metano"],"a":1},{"t":"Unidade de força:","op":["Newton","Ampere","Watt","Joule"],"a":0},{"t":"pH neutro:","op":["1","14","0","7"],"a":3},{"t":"Organela da respiração:","op":["Cloroplasto","Mitocôndria","Vacúolo","Lisossomo"],"a":1},{"t":"Velocidade da luz ≈","op":["340 m/s","3.000 km/s","150.000 km/s","300.000 km/s"],"a":3},{"t":"Sangue é bombeado pelo:","op":["Coração","Rim","Fígado","Pulmão"],"a":0},{"t":"Estado sólido da água:","op":["Gelo","Neblina","Vapor","Orvalho"],"a":0},{"t":"Símbolo do ouro:","op":["Au","Go","Or","Ag"],"a":0},{"t":"Primeira Lei de Newton:","op":["F=ma","Inércia","Universal","Ação-reação"],"a":1},{"t":"Gás que as plantas absorvem:","op":["Oxigênio","Argônio","CO₂","Hidrogênio"],"a":2},{"t":"Menor unidade da vida:","op":["Célula","Tecido","Sistema","Órgão"],"a":0},{"t":"Ponto de fusão da água:","op":["10°C","−10°C","0°C","100°C"],"a":2},{"t":"Unidade de energia:","op":["Joule","Volt","Watt","Pascal"],"a":0},{"t":"Quem descreveu as leis do planeta?","op":["Galileu","Kepler","Copérnico","Hubble"],"a":1}]}; return g(); })();
 var TOTAL = 15;
 var TEMPO = 300;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

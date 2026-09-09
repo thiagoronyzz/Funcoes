@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Quiz: Arte</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/12</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Quem pintou 'A Noite Estrelada'?","op":["Picasso","Dalí","Van Gogh","Monet"],"a":2},{"t":"Onde está a Mona Lisa?","op":["Uffizi","Louvre","MoMA","Prado"],"a":1},{"t":"Quem esculpiu o 'David'?","op":["Donatello","Rodin","Bernini","Michelangelo"],"a":3},{"t":"'Guernica' é de qual artista?","op":["Miró","Picasso","Matisse","Dalí"],"a":1},{"t":"O ballet clássico nasceu na corte de qual país?","op":["Inglaterra","Rússia","França","Itália"],"a":2},{"t":"Quem compôs 'Para Elisa'?","op":["Bach","Beethoven","Mozart","Chopin"],"a":1},{"t":"O samba tem origem em qual país?","op":["Brasil","Cuba","Portugal","Argentina"],"a":0},{"t":"'A Persistência da Memória' (relógios derretidos) é de:","op":["Dalí","Magritte","Warhol","Kandinsky"],"a":0},{"t":"Qual instrumento tem 88 teclas?","op":["Harpa","Órgão","Clavicle","Piano"],"a":3},{"t":"O Cubismo é associado a qual pintor?","op":["Monet","Picasso","Rembrandt","Gauguin"],"a":1},{"t":"A Pop Art ficou famosa por retratar:","op":["Reis e imperadores","Natureza-morta religiosa","Cultura popular (latas, estrelas)","Mitologia"],"a":2},{"t":"Quem é associado ao início da arte abstrata?","op":["Cézanne","Kandinsky","Matisse","Mondrian"],"a":1}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Quem pintou 'A Noite Estrelada'?","op":["Van Gogh","Monet","Dalí","Picasso"],"a":0},{"t":"Onde está a Mona Lisa?","op":["Uffizi","Prado","Louvre","MoMA"],"a":2},{"t":"Quem esculpiu o 'David'?","op":["Donatello","Bernini","Michelangelo","Rodin"],"a":2},{"t":"'Guernica' é de qual artista?","op":["Dalí","Picasso","Miró","Matisse"],"a":1},{"t":"O ballet clássico nasceu na corte de qual país?","op":["Inglaterra","Rússia","Itália","França"],"a":3},{"t":"Quem compôs 'Para Elisa'?","op":["Beethoven","Mozart","Bach","Chopin"],"a":0},{"t":"O samba tem origem em qual país?","op":["Portugal","Argentina","Cuba","Brasil"],"a":3},{"t":"'A Persistência da Memória' (relógios derretidos) é de:","op":["Kandinsky","Warhol","Dalí","Magritte"],"a":2},{"t":"Qual instrumento tem 88 teclas?","op":["Piano","Harpa","Clavicle","Órgão"],"a":0},{"t":"O Cubismo é associado a qual pintor?","op":["Gauguin","Rembrandt","Picasso","Monet"],"a":2},{"t":"A Pop Art ficou famosa por retratar:","op":["Natureza-morta religiosa","Reis e imperadores","Cultura popular (latas, estrelas)","Mitologia"],"a":2},{"t":"Quem é associado ao início da arte abstrata?","op":["Matisse","Cézanne","Mondrian","Kandinsky"],"a":3}]}; return g(); })();
 var TOTAL = 12;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

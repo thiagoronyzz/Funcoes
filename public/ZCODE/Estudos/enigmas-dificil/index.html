@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Enigmas: Difícil</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/10</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Três amigos dividem R$ 30 em uma pousada. O cobrador devolve R$ 5, guarda R$ 2 e devolve R$ 3. Cada um pagou R$ 9 (total 27) + R$ 2 guardados = 29. Onde foi o R$ 1?","op":["Foi trocado","A conta está mal montada","Ficou na pousada","Foi perdido"],"a":3},{"t":"Um relógio adianta 3 min por dia. Quanto em 4 dias?","op":["7 min","12 min","15 min","9 min"],"a":0},{"t":"Se você me dividir por 2, dá 3. Divida por 3 e dou 2. O que sou?","op":["O número 6","O número 4","O número 8","O número 5"],"a":0},{"t":"Quantas vezes o ponteiro dos minutos passa pelo ponteiro das horas em 12 horas?","op":["24","10","12","11"],"a":2},{"t":"Um navio está amarrado a um cais. A maré sobe 2 m. Quanto do cabo fica submerso a mais?","op":["1 m","Depende do cabo","2 m","Nada"],"a":2},{"t":"Quais dois números somados dão 10 e multiplicados dão 21?","op":["5 e 5","2 e 8","4 e 6","3 e 7"],"a":1},{"t":"Se 3 pintores pintam 3 paredes em 3 dias, quanto tempo 6 pintores levam para pintar 6 paredes?","op":["6 dias","3 dias","9 dias","1,5 dia"],"a":1},{"t":"Um trem de 100 m entra em um túnel de 100 m a 100 km/h. Tempo para sair por completo?","op":["A metade","O triplo","O dobro do do só túnel","Igual ao do só túnel"],"a":2},{"t":"Qual é a próxima: 1, 11, 21, 1211, 111221, ...?","op":["123112","312211","131122","112211"],"a":3},{"t":"Um pássaro voa entre dois trens que se aproximam. Soma das distâncias percorridas até o encontro:","op":["Soma das velocidades","Velocidade × tempo até o encontro","Depende da velocidade do pássaro","Zero"],"a":2}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Três amigos dividem R$ 30 em uma pousada. O cobrador devolve R$ 5, guarda R$ 2 e devolve R$ 3. Cada um pagou R$ 9 (total 27) + R$ 2 guardados = 29. Onde foi o R$ 1?","op":["Foi perdido","A conta está mal montada","Ficou na pousada","Foi trocado"],"a":0},{"t":"Um relógio adianta 3 min por dia. Quanto em 4 dias?","op":["7 min","15 min","9 min","12 min"],"a":0},{"t":"Se você me dividir por 2, dá 3. Divida por 3 e dou 2. O que sou?","op":["O número 6","O número 5","O número 8","O número 4"],"a":0},{"t":"Quantas vezes o ponteiro dos minutos passa pelo ponteiro das horas em 12 horas?","op":["10","12","11","24"],"a":1},{"t":"Um navio está amarrado a um cais. A maré sobe 2 m. Quanto do cabo fica submerso a mais?","op":["Depende do cabo","1 m","Nada","2 m"],"a":3},{"t":"Quais dois números somados dão 10 e multiplicados dão 21?","op":["4 e 6","3 e 7","2 e 8","5 e 5"],"a":2},{"t":"Se 3 pintores pintam 3 paredes em 3 dias, quanto tempo 6 pintores levam para pintar 6 paredes?","op":["1,5 dia","9 dias","3 dias","6 dias"],"a":2},{"t":"Um trem de 100 m entra em um túnel de 100 m a 100 km/h. Tempo para sair por completo?","op":["O dobro do do só túnel","Igual ao do só túnel","A metade","O triplo"],"a":0},{"t":"Qual é a próxima: 1, 11, 21, 1211, 111221, ...?","op":["112211","131122","312211","123112"],"a":0},{"t":"Um pássaro voa entre dois trens que se aproximam. Soma das distâncias percorridas até o encontro:","op":["Depende da velocidade do pássaro","Velocidade × tempo até o encontro","Soma das velocidades","Zero"],"a":0}]}; return g(); })();
 var TOTAL = 10;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Capitais da Europa</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/16</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Qual é a capital de Portugal?","op":["Lisboa","Roma","Munique","Madrid"],"a":0},{"t":"Qual é a capital de Itália?","op":["Veneza","Turim","Roma","Milão"],"a":2},{"t":"Qual é a capital de Suíça?","op":["Basileia","Berna","Genebra","Zurique"],"a":1},{"t":"Qual é a capital de Noruega?","op":["Oslo","Copenhague","Estocolmo","Helsinque"],"a":0},{"t":"Qual é a capital de Suécia?","op":["Estocolmo","Helsinque","Oslo","Reykjavík"],"a":0},{"t":"Qual é a capital de Dinamarca?","op":["Copenhague","Amsterdã","Haia","Estocolmo"],"a":0},{"t":"Qual é a capital de Grécia?","op":["Atenas","Esparta","Pafos","Tessalônica"],"a":0},{"t":"Qual é a capital de Áustria?","op":["Viena","Budapeste","Salzburgo","Praga"],"a":0},{"t":"Qual é a capital de Polônia?","op":["Lodz","Cracóvia","Varsóvia","Gdansk"],"a":2},{"t":"Qual é a capital de República Tcheca?","op":["Ostrava","Praga","Brno","Plzen"],"a":1},{"t":"Qual é a capital de Hungria?","op":["Bratislava","Viena","Budapeste","Varsóvia"],"a":2},{"t":"Qual é a capital de Finlândia?","op":["Turku","Oulu","Helsinque","Tampere"],"a":2},{"t":"Qual é a capital de Irlanda?","op":["Belfast","Cork","Galway","Dublin"],"a":3},{"t":"Qual é a capital de Bélgica?","op":["Bruges","Bruxelas","Antuérpia","Gante"],"a":1},{"t":"Qual é a capital de Holanda?","op":["Amsterdã","Roterdã","Utrecht","Haia"],"a":0},{"t":"Qual é a capital de Turquia?","op":["Ancara","Esmirna","Bursa","Istambul"],"a":0}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Qual é a capital de Portugal?","op":["Roma","Munique","Madrid","Lisboa"],"a":3},{"t":"Qual é a capital de Itália?","op":["Turim","Roma","Veneza","Milão"],"a":1},{"t":"Qual é a capital de Suíça?","op":["Basileia","Berna","Zurique","Genebra"],"a":1},{"t":"Qual é a capital de Noruega?","op":["Helsinque","Estocolmo","Oslo","Copenhague"],"a":2},{"t":"Qual é a capital de Suécia?","op":["Reykjavík","Oslo","Helsinque","Estocolmo"],"a":3},{"t":"Qual é a capital de Dinamarca?","op":["Amsterdã","Haia","Copenhague","Estocolmo"],"a":2},{"t":"Qual é a capital de Grécia?","op":["Esparta","Pafos","Atenas","Tessalônica"],"a":2},{"t":"Qual é a capital de Áustria?","op":["Viena","Budapeste","Praga","Salzburgo"],"a":0},{"t":"Qual é a capital de Polônia?","op":["Cracóvia","Varsóvia","Gdansk","Lodz"],"a":1},{"t":"Qual é a capital de República Tcheca?","op":["Ostrava","Praga","Plzen","Brno"],"a":1},{"t":"Qual é a capital de Hungria?","op":["Viena","Budapeste","Varsóvia","Bratislava"],"a":1},{"t":"Qual é a capital de Finlândia?","op":["Tampere","Turku","Oulu","Helsinque"],"a":3},{"t":"Qual é a capital de Irlanda?","op":["Dublin","Galway","Cork","Belfast"],"a":0},{"t":"Qual é a capital de Bélgica?","op":["Bruges","Gante","Bruxelas","Antuérpia"],"a":2},{"t":"Qual é a capital de Holanda?","op":["Roterdã","Amsterdã","Utrecht","Haia"],"a":1},{"t":"Qual é a capital de Turquia?","op":["Ancara","Bursa","Esmirna","Istambul"],"a":0}]}; return g(); })();
 var TOTAL = 16;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

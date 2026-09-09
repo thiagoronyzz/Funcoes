@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Quiz: Inglês</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/12</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Como se diz 'casa' em inglês?","op":["room","house","wall","door"],"a":1},{"t":"Como se diz 'livro' em inglês?","op":["desk","map","pen","book"],"a":3},{"t":"Como se diz 'água' em inglês?","op":["ice","air","fire","water"],"a":3},{"t":"Como se diz 'escola' em inglês?","op":["hospital","school","farm","church"],"a":1},{"t":"Como se diz 'professor(a)' em inglês?","op":["worker","friend","student","teacher"],"a":3},{"t":"Como se diz 'amigo' em inglês?","op":["neighbor","family","friend","people"],"a":2},{"t":"Como se diz 'dinheiro' em inglês?","op":["money","food","time","power"],"a":0},{"t":"Como se diz 'chuva' em inglês?","op":["snow","wind","sun","rain"],"a":3},{"t":"Como se diz 'cidade' em inglês?","op":["field","street","city","river"],"a":2},{"t":"Como se diz 'manhã' em inglês?","op":["noon","night","morning","dusk"],"a":2},{"t":"Como se diz 'família' em inglês?","op":["family","team","group","clan"],"a":0},{"t":"Como se diz 'rua' em inglês?","op":["road","bridge","street","park"],"a":2}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Como se diz 'casa' em inglês?","op":["room","wall","house","door"],"a":2},{"t":"Como se diz 'livro' em inglês?","op":["map","pen","desk","book"],"a":3},{"t":"Como se diz 'água' em inglês?","op":["water","fire","ice","air"],"a":0},{"t":"Como se diz 'escola' em inglês?","op":["church","school","farm","hospital"],"a":1},{"t":"Como se diz 'professor(a)' em inglês?","op":["student","teacher","worker","friend"],"a":1},{"t":"Como se diz 'amigo' em inglês?","op":["friend","family","people","neighbor"],"a":0},{"t":"Como se diz 'dinheiro' em inglês?","op":["time","food","power","money"],"a":3},{"t":"Como se diz 'chuva' em inglês?","op":["rain","wind","sun","snow"],"a":0},{"t":"Como se diz 'cidade' em inglês?","op":["field","river","city","street"],"a":2},{"t":"Como se diz 'manhã' em inglês?","op":["dusk","night","morning","noon"],"a":2},{"t":"Como se diz 'família' em inglês?","op":["family","team","group","clan"],"a":0},{"t":"Como se diz 'rua' em inglês?","op":["bridge","park","road","street"],"a":3}]}; return g(); })();
 var TOTAL = 12;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

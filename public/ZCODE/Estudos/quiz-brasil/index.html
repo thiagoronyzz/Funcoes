@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Quiz: Brasil</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/12</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Qual oceano banha o litoral brasileiro?","op":["Pacífico","Atlântico","Índico","Ártico"],"a":1},{"t":"Qual é a capital federal?","op":["Brasília","São Paulo","Rio de Janeiro","Salvador"],"a":0},{"t":"Qual é o maior bioma do Brasil?","op":["Caatinga","Pampa","Amazônia","Cerrado"],"a":2},{"t":"Qual é a moeda do Brasil?","op":["Euro","Real","Peso","Dólar"],"a":1},{"t":"Quantas regiões o Brasil possui?","op":["6","4","5","7"],"a":2},{"t":"O Pantanal é a maior planície alagável:","op":["da Europa","da Ásia","do mundo","da América"],"a":2},{"t":"Quantos fusos horários o Brasil tem hoje?","op":["5","3","4","6"],"a":2},{"t":"Qual é a maior floresta tropical do mundo?","op":["Orinoco","Mekong","Congo","Amazônia"],"a":3},{"t":"A Caatinga é um bioma:","op":["antártico","norte-americano","compartilhado","exclusivo do Brasil"],"a":3},{"t":"O 'dia do Índio' é comemorado em:","op":["21 de setembro","12 de outubro","4 de julho","19 de abril"],"a":1},{"t":"Onde fica Brasília?","op":["Bahia","Goiás","Minas Gerais","DF"],"a":3},{"t":"O Cerrado é conhecido como a 'savana' brasileira com árvores:","op":["tortas e de casca grossa","de folhas caducas","retas e altas","cactáceas"],"a":0}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Qual oceano banha o litoral brasileiro?","op":["Atlântico","Índico","Ártico","Pacífico"],"a":0},{"t":"Qual é a capital federal?","op":["São Paulo","Brasília","Rio de Janeiro","Salvador"],"a":1},{"t":"Qual é o maior bioma do Brasil?","op":["Amazônia","Cerrado","Pampa","Caatinga"],"a":0},{"t":"Qual é a moeda do Brasil?","op":["Real","Peso","Dólar","Euro"],"a":0},{"t":"Quantas regiões o Brasil possui?","op":["5","4","7","6"],"a":0},{"t":"O Pantanal é a maior planície alagável:","op":["do mundo","da América","da Ásia","da Europa"],"a":0},{"t":"Quantos fusos horários o Brasil tem hoje?","op":["6","5","4","3"],"a":2},{"t":"Qual é a maior floresta tropical do mundo?","op":["Congo","Orinoco","Mekong","Amazônia"],"a":3},{"t":"A Caatinga é um bioma:","op":["compartilhado","antártico","norte-americano","exclusivo do Brasil"],"a":3},{"t":"O 'dia do Índio' é comemorado em:","op":["12 de outubro","21 de setembro","19 de abril","4 de julho"],"a":0},{"t":"Onde fica Brasília?","op":["Bahia","Goiás","Minas Gerais","DF"],"a":3},{"t":"O Cerrado é conhecido como a 'savana' brasileira com árvores:","op":["tortas e de casca grossa","de folhas caducas","retas e altas","cactáceas"],"a":0}]}; return g(); })();
 var TOTAL = 12;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

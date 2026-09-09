@@ -159,7 +159,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
     <strong>Quiz: Física</strong>
   </div>
   <span class="zchip">Estudos</span>
-
+  
     <button id="zmute" class="zback" type="button" title="Som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Zcode</a>
 </header>
@@ -172,7 +172,7 @@ canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-l
 <div class="zcard pad" id="jogo">
   <div class="row between mb wrap">
     <span class="zchip" id="qnum">1/12</span>
-
+    
     <span class="zchip" id="score">Acertos: 0</span>
   </div>
   <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
@@ -293,7 +293,7 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"Qual é a unidade de força?","op":["Watt","Joule","Pascal","Newton"],"a":3},{"t":"A Primeira Lei de Newton também é chamada de:","op":["Ação e reação","Conservação","Universal","Inércia"],"a":3},{"t":"A velocidade do som no ar é aproximadamente:","op":["100 m/s","340 m/s","300.000 km/s","3400 m/s"],"a":1},{"t":"Qual é a unidade de energia?","op":["Watt","Volt","Joule","Newton"],"a":2},{"t":"A gravidade é:","op":["Um campo sonoro","Uma onda","Uma força de atração","Uma pressão"],"a":2},{"t":"Qual é a unidade de resistência elétrica?","op":["Ampère","Volt","Coulomb","Ohm"],"a":3},{"t":"F = m·a é qual lei?","op":["Primeira","Terceira","Segunda","Universal"],"a":2},{"t":"A luz é uma:","op":["Onda eletromagnética","Onda sonora","Partícula de gás","Corrente de ar"],"a":0},{"t":"Qual é a unidade de frequência?","op":["Lumen","Hertz","Decibel","Gray"],"a":1},{"t":"A potência é medida em:","op":["Pascal","Joule","Watt","Newton"],"a":2},{"t":"O que um termômetro mede?","op":["Umidade","Pressão","Densidade","Temperatura"],"a":3},{"t":"A água congela (nível do mar) em:","op":["-10°C","100°C","0°C","10°C"],"a":2}]}; return g(); })();
+var P = (function(){ var g = function(){return [{"t":"Qual é a unidade de força?","op":["Watt","Joule","Pascal","Newton"],"a":3},{"t":"A Primeira Lei de Newton também é chamada de:","op":["Universal","Conservação","Inércia","Ação e reação"],"a":2},{"t":"A velocidade do som no ar é aproximadamente:","op":["340 m/s","3400 m/s","300.000 km/s","100 m/s"],"a":0},{"t":"Qual é a unidade de energia?","op":["Joule","Newton","Watt","Volt"],"a":0},{"t":"A gravidade é:","op":["Uma pressão","Uma força de atração","Uma onda","Um campo sonoro"],"a":1},{"t":"Qual é a unidade de resistência elétrica?","op":["Volt","Ohm","Coulomb","Ampère"],"a":1},{"t":"F = m·a é qual lei?","op":["Segunda","Primeira","Universal","Terceira"],"a":0},{"t":"A luz é uma:","op":["Onda sonora","Corrente de ar","Partícula de gás","Onda eletromagnética"],"a":3},{"t":"Qual é a unidade de frequência?","op":["Gray","Hertz","Decibel","Lumen"],"a":1},{"t":"A potência é medida em:","op":["Pascal","Newton","Watt","Joule"],"a":2},{"t":"O que um termômetro mede?","op":["Pressão","Temperatura","Umidade","Densidade"],"a":1},{"t":"A água congela (nível do mar) em:","op":["-10°C","0°C","100°C","10°C"],"a":1}]}; return g(); })();
 var TOTAL = 12;
 var TEMPO = 0;
 var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;

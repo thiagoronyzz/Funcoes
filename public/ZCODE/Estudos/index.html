@@ -4,23 +4,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Estudos — Zcode</title>
-<meta name="description" content="100 apps de estudos da plataforma Zcode.">
-<meta name="theme-color" content="#f3f0ea">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23f3f0ea'/%3E%3Cpath d='M20 18h24L20 46h24' fill='none' stroke='%23252422' stroke-width='7' stroke-linecap='square'/%3E%3C/svg%3E">
+<meta name="description" content="100 apps de estudos da plataforma Zcode: Guias, simulados e treinos para aprender de verdade — do ENEM ao dia a dia.">
+<meta name="theme-color" content="#090d0b">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0f0d'/%3E%3Crect x='1' y='1' width='62' height='62' rx='13' fill='none' stroke='rgba(255,255,255,0.16)' stroke-width='2'/%3E%3Cpath d='M20 18h24L20 46h24' fill='none' stroke='%2310b981' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --z-bg:#f3f0ea; --z-bg2:#fbfaf7; --z-surface:#fffefa; --z-surface2:#e9e4dc;
-  --z-line:rgba(37,36,34,.16); --z-line2:rgba(37,36,34,.3);
-  --z-text:#252422; --z-muted:#746e66;
-  --z-brand:#873f32; --z-brand-soft:rgba(135,63,50,.12);
-  --z-cyan:#64716f; --z-pink:#9f5140; --z-lime:#8b8b64; --z-amber:#b88b4a;
-  --z-red:#9f5140; --z-radius:4px;
-  --z-fd:"DM Serif Display",Georgia,serif;
-  --z-f:"DM Sans",system-ui,sans-serif;
-  --z-fm:"IBM Plex Mono",ui-monospace,monospace;
-  --z-acc:var(--z-brand);
+  --z-bg:#090d0b; --z-bg2:#0c1210; --z-surface:#101715; --z-surface2:#162019;
+  --z-line:rgba(255,255,255,.09); --z-line2:rgba(255,255,255,.17);
+  --z-text:#edf2ef; --z-muted:#8e9b94;
+  --z-brand:#10b981; --z-brand-hi:#34d399; --z-brand-deep:#059669;
+  --z-brand-soft:rgba(16,185,129,.12);
+  --z-cyan:#38bdf8; --z-pink:#a78bfa; --z-lime:#4ade80; --z-amber:#fbbf24;
+  --z-red:#f87171; --z-ok:#34d399; --z-radius:12px;
+  --z-fd:"Sora",system-ui,sans-serif;
+  --z-f:"Inter",system-ui,sans-serif;
+  --z-fm:"JetBrains Mono",ui-monospace,monospace;
+  --z-acc:var(--z-brand-hi);
+  color-scheme:dark;
 }
 html[data-cat="estudos"]{--z-acc:var(--z-cyan)}
 html[data-cat="jogos"]{--z-acc:var(--z-pink)}
@@ -30,11 +33,13 @@ html[data-cat="social"]{--z-acc:var(--z-amber)}
 html{scroll-behavior:smooth}
 body{
   background:var(--z-bg);
-  color:var(--z-text); font-family:var(--z-f); font-size:15px; line-height:1.55;
+  background-image:radial-gradient(1100px 340px at 50% -120px,rgba(16,185,129,.09),transparent 70%);
+  background-attachment:fixed;
+  color:var(--z-text); font-family:var(--z-f); font-size:15px; line-height:1.6;
   min-height:100dvh; -webkit-font-smoothing:antialiased;
 }
-::selection{background:var(--z-acc);color:#04060d}
-a{color:var(--z-acc)}
+::selection{background:var(--z-brand);color:#04120c}
+a{color:var(--z-brand-hi)}
 h1,h2,h3,.fd{font-family:var(--z-fd);letter-spacing:-.02em}
 .mono{font-family:var(--z-fm)}
 .dim{color:var(--z-muted)} .acc{color:var(--z-acc)}
@@ -43,234 +48,280 @@ h1,h2,h3,.fd{font-family:var(--z-fd);letter-spacing:-.02em}
 .col{display:flex;flex-direction:column;gap:10px}
 .mt{margin-top:14px} .mb{margin-bottom:14px} .grow{flex:1}
 .hidden{display:none!important}
+:focus-visible{outline:2px solid var(--z-brand-hi);outline-offset:2px;border-radius:6px}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#243029;border-radius:99px;border:2px solid var(--z-bg)}
 
 /* ── topo ─────────────────────────────────────────────── */
 .ztop{
   position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;
-  height:54px;padding:0 16px;border-bottom:1px solid var(--z-line);
-  background:rgba(243,240,234,.96);backdrop-filter:blur(8px);
+  height:58px;padding:0 16px;border-bottom:1px solid var(--z-line);
+  background:rgba(9,13,11,.86);backdrop-filter:blur(12px);
 }
-.ztop-brand{color:var(--z-text);font-family:var(--z-fd);font-size:21px;line-height:1;text-decoration:none;letter-spacing:-.04em;flex:none}
+.ztop-brand{display:inline-flex;align-items:center;gap:9px;color:var(--z-text);
+  font-family:var(--z-fd);font-weight:800;font-size:17px;line-height:1;text-decoration:none;flex:none}
+.zlogo{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;
+  background:linear-gradient(135deg,#10b981,#0d8a63);color:#04120c;font-size:16px;font-weight:800;
+  box-shadow:0 4px 14px -4px rgba(16,185,129,.55)}
 .ztop-mid{min-width:0}
-.ztop-mid strong{display:block;font-family:var(--z-fd);font-size:14.5px;letter-spacing:-.01em;
+.ztop-mid strong{display:block;font-size:14px;font-weight:600;letter-spacing:-.01em;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.zchip{display:inline-flex;align-items:center;gap:6px;font-family:var(--z-fm);font-size:10px;
-  letter-spacing:.14em;text-transform:uppercase;color:var(--z-acc);
+.zchip{display:inline-flex;align-items:center;gap:6px;font-family:var(--z-fm);font-size:10.5px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--z-acc);
   background:color-mix(in srgb,var(--z-acc) 12%, transparent);
-  border:1px solid color-mix(in srgb,var(--z-acc) 34%, transparent);
-  padding:2px 9px;border-radius:var(--z-radius);white-space:nowrap}
-.zback{margin-left:auto;font-family:var(--z-fm);font-size:11.5px;text-decoration:none;
-  color:var(--z-muted);border:1px solid var(--z-line2);border-radius:var(--z-radius);padding:7px 13px;
-  transition:.2s;white-space:nowrap}
+  border:1px solid color-mix(in srgb,var(--z-acc) 32%, transparent);
+  padding:3px 10px;border-radius:99px;white-space:nowrap}
+.zback{margin-left:auto;font-size:13px;font-weight:600;text-decoration:none;
+  color:var(--z-muted);border:1px solid var(--z-line2);border-radius:9px;padding:8px 14px;
+  transition:.2s;white-space:nowrap;background:transparent;cursor:pointer;font-family:var(--z-f)}
 .zback:hover{color:var(--z-text);border-color:var(--z-acc)}
 
 /* ── layout ───────────────────────────────────────────── */
-.zmain{max-width:980px;margin:0 auto;padding:26px 16px 70px}
-.zhero{margin-bottom:22px}
-.zhero h1{font-size:clamp(26px,4.5vw,40px);font-weight:700;line-height:1.05}
+.zmain{max-width:1020px;margin:0 auto;padding:30px 18px 80px}
+.zhero{margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--z-line)}
+.zhero h1{font-size:clamp(26px,4.5vw,38px);font-weight:800;line-height:1.08;letter-spacing:-.03em}
 .zhero h1 em{font-style:normal;color:var(--z-acc)}
-.zhero p{color:var(--z-muted);margin-top:8px;max-width:640px}
-.zfoot{border-top:1px solid var(--z-line);padding:18px 16px 26px;text-align:center;
-  font-family:var(--z-fm);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--z-muted)}
+.zhero p{color:var(--z-muted);margin-top:8px;max-width:660px;font-size:15.5px}
+.zfoot{border-top:1px solid var(--z-line);padding:20px 16px 28px;text-align:center;
+  font-family:var(--z-fm);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--z-muted)}
 .zfoot b{color:var(--z-text);font-weight:600}
 
 /* ── cartões / painéis ────────────────────────────────── */
-.zcard{background:var(--z-surface);border:1px solid var(--z-line);
-  border-radius:var(--z-radius);padding:18px}
+.zcard{background:linear-gradient(180deg,rgba(255,255,255,.025),transparent 40%),var(--z-surface);
+  border:1px solid var(--z-line);border-radius:var(--z-radius);padding:18px;
+  box-shadow:0 18px 40px -28px rgba(0,0,0,.8)}
 .zcard.pad{padding:24px}
 .zgrid{display:grid;gap:12px}
 .zg2{grid-template-columns:repeat(2,1fr)}
 .zg3{grid-template-columns:repeat(3,1fr)}
 .zg4{grid-template-columns:repeat(4,1fr)}
-.zbig{font-family:var(--z-fd);font-size:clamp(40px,9vw,72px);font-weight:700;line-height:1;
-  font-variant-numeric:tabular-nums}
+.zbig{font-family:var(--z-fd);font-size:clamp(40px,9vw,68px);font-weight:800;line-height:1;
+  font-variant-numeric:tabular-nums;letter-spacing:-.04em}
 .zstat{display:flex;flex-direction:column;gap:2px}
-.zstat span{font-family:var(--z-fm);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--z-muted)}
+.zstat span{font-family:var(--z-fm);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--z-muted)}
 .zstat b{font-family:var(--z-fd);font-size:20px;font-weight:700}
+
+/* ── tabelas / chamadas / código / selos ──────────────── */
+.ztable{width:100%;border-collapse:collapse;font-size:14px}
+.ztable th{font-family:var(--z-fm);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--z-muted);font-weight:500;text-align:left;padding:10px 12px;border-bottom:1px solid var(--z-line2)}
+.ztable td{padding:11px 12px;border-bottom:1px solid var(--z-line);font-variant-numeric:tabular-nums}
+.ztable tr:last-child td{border-bottom:0}
+.ztable tr:hover td{background:rgba(255,255,255,.02)}
+.zbadge{display:inline-flex;align-items:center;font-size:11.5px;font-weight:700;
+  padding:3px 10px;border-radius:99px;background:var(--z-brand-soft);color:var(--z-brand-hi);
+  border:1px solid rgba(16,185,129,.3);white-space:nowrap}
+.zcallout{border:1px solid var(--z-line2);border-left:3px solid var(--z-acc);
+  background:rgba(255,255,255,.025);border-radius:10px;padding:13px 16px;font-size:14px}
+.zcallout b{color:var(--z-acc)}
+.zcode{font-family:var(--z-fm);font-size:13px;line-height:1.6;background:#070b09;
+  border:1px solid var(--z-line);border-radius:10px;padding:14px 16px;overflow-x:auto;white-space:pre}
 
 /* ── botões / campos ──────────────────────────────────── */
 .zbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
-  font-family:var(--z-fd);font-weight:600;font-size:14.5px;letter-spacing:-.01em;
-  color:#04060d;background:var(--z-acc);border:1px solid transparent;border-radius:var(--z-radius);
+  font-family:var(--z-f);font-weight:700;font-size:14.5px;
+  color:#04120c;background:var(--z-acc);border:1px solid transparent;border-radius:10px;
   padding:11px 20px;transition:.18s;text-decoration:none;user-select:none}
-.zbtn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.zbtn:hover{filter:brightness(1.1);transform:translateY(-1px)}
 .zbtn:active{transform:translateY(0)}
-.zbtn:disabled{opacity:.45;cursor:not-allowed;transform:none;filter:none}
-.zbtn.ghost{background:transparent;color:var(--z-text);border-color:var(--z-line2)}
+.zbtn:disabled{opacity:.4;cursor:not-allowed;transform:none;filter:none}
+.zbtn.ghost{background:rgba(255,255,255,.03);color:var(--z-text);border-color:var(--z-line2)}
 .zbtn.ghost:hover{border-color:var(--z-acc);color:var(--z-acc)}
-.zbtn.danger{background:var(--z-red);color:#fff}
-.zbtn.sm{padding:7px 13px;font-size:12.5px;border-radius:10px}
-.zbtn.big{padding:14px 28px;font-size:16px;border-radius:15px}
+.zbtn.danger{background:var(--z-red);color:#1c0606}
+.zbtn.sm{padding:7px 13px;font-size:12.5px;border-radius:8px}
+.zbtn.big{padding:14px 28px;font-size:16px;border-radius:12px}
 .zbtn.w{width:100%}
-.zinput,.zselect,.ztextarea{width:100%;background:var(--z-surface2);border:1px solid var(--z-line2);
-  color:var(--z-text);border-radius:var(--z-radius);padding:11px 14px;font-family:var(--z-f);font-size:15px;
+.zinput,.zselect,.ztextarea{width:100%;background:#0b100d;border:1px solid var(--z-line2);
+  color:var(--z-text);border-radius:10px;padding:11px 14px;font-family:var(--z-f);font-size:15px;
   outline:none;transition:.18s}
 .zinput:focus,.zselect:focus,.ztextarea:focus{border-color:var(--z-acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--z-acc) 22%,transparent)}
 .ztextarea{min-height:130px;resize:vertical;font-family:var(--z-fm);font-size:13px;line-height:1.5}
 .zselect{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--z-muted) 50%),linear-gradient(135deg,var(--z-muted) 50%,transparent 50%);
   background-position:calc(100% - 18px) 55%,calc(100% - 13px) 55%;background-size:5px 5px;background-repeat:no-repeat;padding-right:38px}
-.zlabel{display:block;font-family:var(--z-fm);font-size:10.5px;letter-spacing:.16em;
+.zselect option{background:#101715}
+.zlabel{display:block;font-family:var(--z-fm);font-size:10.5px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--z-muted);margin-bottom:6px}
 
 /* ── opções (quiz) ────────────────────────────────────── */
 .zopty{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
-  background:var(--z-surface2);color:var(--z-text);border:1px solid var(--z-line2);
-  border-radius:var(--z-radius);padding:13px 16px;font-family:var(--z-f);font-size:15px;transition:.16s}
+  background:rgba(255,255,255,.03);color:var(--z-text);border:1px solid var(--z-line2);
+  border-radius:10px;padding:13px 16px;font-family:var(--z-f);font-size:15px;transition:.16s}
 .zopty:hover:not(:disabled){border-color:var(--z-acc);transform:translateX(3px)}
 .zopty i{font-style:normal;font-family:var(--z-fm);font-size:11px;color:var(--z-muted);
   width:24px;height:24px;border-radius:8px;display:grid;place-items:center;
-  background:rgba(148,158,210,.1);flex:none}
-.zopty.ok{border-color:var(--z-lime);background:color-mix(in srgb,var(--z-lime) 14%, var(--z-surface2));color:var(--z-lime)}
-.zopty.err{border-color:var(--z-red);background:color-mix(in srgb,var(--z-red) 14%, var(--z-surface2));color:var(--z-red)}
+  background:rgba(255,255,255,.06);flex:none}
+.zopty.ok{border-color:var(--z-ok);background:rgba(52,211,153,.1);color:var(--z-ok)}
+.zopty.err{border-color:var(--z-red);background:rgba(248,113,113,.1);color:var(--z-red)}
 .zopty:disabled{cursor:default}
 
 /* ── barra / progresso / toast / modal ────────────────── */
-.zprog{height:8px;border-radius:var(--z-radius);background:var(--z-surface2);overflow:hidden}
+.zprog{height:8px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
 .zprog i{display:block;height:100%;border-radius:99px;background:var(--z-acc);transition:width .3s}
 .ztoast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);z-index:99;
-  background:var(--z-text);color:#04060d;font-weight:600;font-size:13.5px;padding:10px 20px;
-  border-radius:var(--z-radius);opacity:0;pointer-events:none;transition:.25s;box-shadow:0 14px 34px -10px rgba(0,0,0,.6)}
+  background:#f2f5f3;color:#0a0e0c;font-weight:700;font-size:13.5px;padding:11px 22px;
+  border-radius:10px;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 18px 40px -12px rgba(0,0,0,.7)}
 .ztoast.on{opacity:1;transform:translate(-50%,0)}
 .zmodal{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;
-  background:rgba(3,4,10,.72);backdrop-filter:blur(6px)}
+  background:rgba(2,5,4,.72);backdrop-filter:blur(6px)}
 .zbox{width:min(460px,100%);background:var(--z-surface);border:1px solid var(--z-line2);
-  border-radius:var(--z-radius);padding:26px;text-align:center}
+  border-radius:16px;padding:26px;text-align:center;box-shadow:0 30px 60px -20px rgba(0,0,0,.8)}
 .zbox h3{font-size:24px;margin-bottom:8px}
 .zbox p{color:var(--z-muted);margin-bottom:18px}
 .zkbd{font-family:var(--z-fm);font-size:11px;border:1px solid var(--z-line2);border-bottom-width:2px;
-  border-radius:7px;padding:2px 7px;background:var(--z-surface2)}
-canvas.zc{display:block;width:100%;border-radius:16px;border:1px solid var(--z-line);
-  background:var(--z-bg2);touch-action:none}
+  border-radius:7px;padding:2px 7px;background:rgba(255,255,255,.05)}
+canvas.zc{display:block;width:100%;border-radius:14px;border:1px solid var(--z-line);
+  background:#070b09;touch-action:none}
 @media (max-width:560px){
   .zg3,.zg4{grid-template-columns:repeat(2,1fr)}
-  .zmain{padding-top:18px}
+  .zmain{padding-top:20px}
+  .ztop-mid{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
 }
 
-.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:16px}
-.c{display:flex;flex-direction:column;gap:6px;background:var(--z-surface);border:1px solid var(--z-line);border-radius:16px;padding:14px 16px;text-decoration:none;color:var(--z-text);transition:transform .15s,border-color .15s}
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:20px}
+.c{display:flex;gap:12px;align-items:flex-start;background:var(--z-surface);border:1px solid var(--z-line);
+  border-radius:12px;padding:14px 14px;text-decoration:none;color:var(--z-text);transition:.16s}
 .c:hover{transform:translateY(-2px);border-color:var(--z-acc)}
-.c b{font-family:var(--z-fd);font-size:15.5px;color:var(--z-text)}
-.c span{font-size:12.5px;color:var(--z-muted);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-#busca{width:100%;max-width:420px;margin-top:18px}
+.c .ic{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;flex:none;
+  font-family:var(--z-fd);font-weight:800;font-size:17px;color:var(--z-acc);
+  background:color-mix(in srgb,var(--z-acc) 13%, transparent);
+  border:1px solid color-mix(in srgb,var(--z-acc) 30%, transparent)}
+.c .tx{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.c b{font-size:14.5px;font-weight:600;letter-spacing:-.01em}
+.c .tx>span{font-size:12.5px;color:var(--z-muted);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.c .go{color:var(--z-muted);font-size:15px;flex:none;transition:.16s}
+.c:hover .go{color:var(--z-acc);transform:translateX(3px)}
+#busca{width:100%;max-width:460px;margin-top:18px}
+.lstats{display:flex;gap:22px;margin-top:14px;flex-wrap:wrap}
+.lstats b{font-family:var(--z-fd);font-size:19px}
+.lstats span{display:block;font-size:11.5px;color:var(--z-muted)}
 </style>
 </head>
 <body>
 <header class="ztop">
-  <a class="ztop-brand" href="/">Zcode</a>
-  <div class="ztop-mid"><strong>Estudos — Zcode</strong></div>
-  <a class="zback" href="/">← Home</a>
+  <a class="ztop-brand" href="/"><span class="zlogo">Z</span>code</a>
+  <div class="ztop-mid"><strong>Estudos</strong></div>
+  <span class="zchip">100 apps</span>
+  <a class="zback" href="/">← Início</a>
 </header>
 <main class="zmain">
   <div class="zhero">
+    <p class="mono dim" style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin:0 0 10px">Zcode · Diretório</p>
     <h1>Estudos</h1>
-    <p>100 aplicativos · escolha o seu</p>
-    <input class="zinput" id="busca" placeholder="Buscar neste catálogo…" autocomplete="off">
+    <p>Guias, simulados e treinos para aprender de verdade — do ENEM ao dia a dia.</p>
+    <input class="zinput" id="busca" placeholder="Buscar entre os 100 aplicativos…" autocomplete="off">
+    <div class="lstats">
+      <div><b>100</b><span>aplicativos</span></div>
+      <div><b>0</b><span>cadastro exigido</span></div>
+      <div><b>100%</b><span>no navegador</span></div>
+    </div>
   </div>
   <div class="lgrid" id="grid">
-<a class="c" href="funcoes(01)/zcode.html"><b class="fd">Funções</b><span>Visualizador matemático interativo de funções.</span></a>
-<a class="c" href="calculadorabasica(02)/zcode.html"><b class="fd">Calculadora</b><span>Calculadora de estudo para resolver expressões.</span></a>
-<a class="c" href="tabelaperiodica(03)/zcode.html"><b class="fd">Tabela Periódica</b><span>Tabela periódica interativa dos elementos.</span></a>
-<a class="c" href="formulas(04)/zcode.html"><b class="fd">Fórmulas</b><span>Biblioteca de fórmulas das ciências da natureza.</span></a>
-<a class="c" href="citologia(05)/zcode.html"><b class="fd">Citologia</b><span>Explorador interativo das partes da célula.</span></a>
-<a class="c" href="sistemas(06)/zcode.html"><b class="fd">Sistemas do Corpo</b><span>Atlas interativo dos sistemas do corpo humano.</span></a>
-<a class="c" href="Atlas(07)/zcode.html"><b class="fd">Atlas Interativo</b><span>Mapa vetorial interativo para estudar geografia.</span></a>
-<a class="c" href="eras(08)/zcode.html"><b class="fd">Eras Geológicas</b><span>Linha do tempo interativa da Terra.</span></a>
-<a class="c" href="pomodoro(09)/zcode.html"><b class="fd">Pomodoro</b><span>Cronômetro de foco para sessões de estudo.</span></a>
-<a class="c" href="geometria(10)/zcode.html"><b class="fd">Plotter 3D</b><span>Plotter de funções em três dimensões.</span></a>
-<a class="c" href="learncss(11)/zcode.html"><b class="fd">CSS Challenge</b><span>Clone de designs famosos para treinar CSS.</span></a>
-<a class="c" href="flashcards-matematica/index.html"><b class="fd">Flashcards: Matemática</b><span>12 cartões para fixar o essencial do assunto.</span></a>
-<a class="c" href="flashcards-ingles/index.html"><b class="fd">Flashcards: Inglês</b><span>14 cartões para fixar o essencial do assunto.</span></a>
-<a class="c" href="flashcards-historia/index.html"><b class="fd">Flashcards: História</b><span>12 cartões para fixar o essencial do assunto.</span></a>
-<a class="c" href="flashcards-ciencias/index.html"><b class="fd">Flashcards: Ciências</b><span>12 cartões para fixar o essencial do assunto.</span></a>
-<a class="c" href="flashcards-biologia/index.html"><b class="fd">Flashcards: Biologia</b><span>12 cartões para fixar o essencial do assunto.</span></a>
-<a class="c" href="flashcards-fisica/index.html"><b class="fd">Flashcards: Física</b><span>12 cartões para fixar o essencial do assunto.</span></a>
-<a class="c" href="flashcards-quimica/index.html"><b class="fd">Flashcards: Química</b><span>12 cartões para fixar o essencial do assunto.</span></a>
-<a class="c" href="flashcards-geografia/index.html"><b class="fd">Flashcards: Geografia</b><span>12 cartões para fixar o essencial do assunto.</span></a>
-<a class="c" href="flashcards-literatura/index.html"><b class="fd">Flashcards: Literatura</b><span>12 cartões para fixar o essencial do assunto.</span></a>
-<a class="c" href="flashcards-filosofia/index.html"><b class="fd">Flashcards: Filosofia</b><span>12 cartões para fixar o essencial do assunto.</span></a>
-<a class="c" href="flashcards-programacao/index.html"><b class="fd">Flashcards: Programação</b><span>12 cartões para fixar o essencial do assunto.</span></a>
-<a class="c" href="flashcards-gramatica/index.html"><b class="fd">Flashcards: Gramática</b><span>12 cartões para fixar o essencial do assunto.</span></a>
-<a class="c" href="flashcards-arte/index.html"><b class="fd">Flashcards: Arte</b><span>12 cartões para fixar o essencial do assunto.</span></a>
-<a class="c" href="flashcards-esportes/index.html"><b class="fd">Flashcards: Esportes</b><span>12 cartões para fixar o essencial do assunto.</span></a>
-<a class="c" href="quiz-cultura-geral/index.html"><b class="fd">Quiz: Cultura Geral</b><span>12 questões de múltipla escolha sobre o tema.</span></a>
-<a class="c" href="quiz-matematica/index.html"><b class="fd">Quiz: Matemática</b><span>12 questões de múltipla escolha sobre o tema.</span></a>
-<a class="c" href="quiz-historia/index.html"><b class="fd">Quiz: História</b><span>12 questões de múltipla escolha sobre o tema.</span></a>
-<a class="c" href="quiz-geografia/index.html"><b class="fd">Quiz: Geografia</b><span>12 questões de múltipla escolha sobre o tema.</span></a>
-<a class="c" href="quiz-ciencias/index.html"><b class="fd">Quiz: Ciências</b><span>12 questões de múltipla escolha sobre o tema.</span></a>
-<a class="c" href="quiz-ingles/index.html"><b class="fd">Quiz: Inglês</b><span>12 questões de múltipla escolha sobre o tema.</span></a>
-<a class="c" href="quiz-logica/index.html"><b class="fd">Quiz: Lógica</b><span>12 questões de múltipla escolha sobre o tema.</span></a>
-<a class="c" href="quiz-programacao/index.html"><b class="fd">Quiz: Programação</b><span>12 questões de múltipla escolha sobre o tema.</span></a>
-<a class="c" href="quiz-arte/index.html"><b class="fd">Quiz: Arte</b><span>12 questões de múltipla escolha sobre o tema.</span></a>
-<a class="c" href="quiz-esportes/index.html"><b class="fd">Quiz: Esportes</b><span>12 questões de múltipla escolha sobre o tema.</span></a>
-<a class="c" href="quiz-biologia/index.html"><b class="fd">Quiz: Biologia</b><span>12 questões de múltipla escolha sobre o tema.</span></a>
-<a class="c" href="quiz-fisica/index.html"><b class="fd">Quiz: Física</b><span>12 questões de múltipla escolha sobre o tema.</span></a>
-<a class="c" href="quiz-quimica/index.html"><b class="fd">Quiz: Química</b><span>12 questões de múltipla escolha sobre o tema.</span></a>
-<a class="c" href="quiz-brasil/index.html"><b class="fd">Quiz: Brasil</b><span>12 questões de múltipla escolha sobre o tema.</span></a>
-<a class="c" href="quiz-cinema/index.html"><b class="fd">Quiz: Cinema</b><span>12 questões de múltipla escolha sobre o tema.</span></a>
-<a class="c" href="quiz-musica/index.html"><b class="fd">Quiz: Música</b><span>12 questões de múltipla escolha sobre o tema.</span></a>
-<a class="c" href="sequencias-aritmeticas/index.html"><b class="fd">Sequências Aritméticas</b><span>Descubra o próximo número da sequência aritmética.</span></a>
-<a class="c" href="sequencias-geometricas/index.html"><b class="fd">Sequências Geométricas</b><span>Descubra o próximo número da sequência geométrica.</span></a>
-<a class="c" href="sequencias-de-fibonacci/index.html"><b class="fd">Sequências de Fibonacci</b><span>Cada termo é a soma dos dois anteriores. Descubra o próximo.</span></a>
-<a class="c" href="sequencias-de-primos/index.html"><b class="fd">Sequências de Primos</b><span>Sequências de números primos. Descubra o próximo.</span></a>
-<a class="c" href="conjugacao-presente/index.html"><b class="fd">Conjugação: Presente</b><span>Conjugue o verbo no tempo presente.</span></a>
-<a class="c" href="conjugacao-passado/index.html"><b class="fd">Conjugação: Passado</b><span>Conjugue o verbo no tempo passado.</span></a>
-<a class="c" href="conjugacao-futuro/index.html"><b class="fd">Conjugação: Futuro</b><span>Conjugue o verbo no tempo futuro.</span></a>
-<a class="c" href="traducao-pt-en/index.html"><b class="fd">Tradução PT → EN</b><span>Descubra a tradução correta em inglês.</span></a>
-<a class="c" href="traducao-en-pt/index.html"><b class="fd">Tradução EN → PT</b><span>Descubra a tradução correta em português.</span></a>
-<a class="c" href="unidades-de-medida/index.html"><b class="fd">Unidades de Medida</b><span>Qual é a unidade oficial no SI?</span></a>
-<a class="c" href="capitais-da-europa/index.html"><b class="fd">Capitais da Europa</b><span>Associe o país à capital.</span></a>
-<a class="c" href="estatistica-rapida/index.html"><b class="fd">Estatística Rápida</b><span>Calcule a média aritmética do conjunto em até 60 segundos.</span></a>
-<a class="c" href="anagramas-facil/index.html"><b class="fd">Anagramas: Fácil</b><span>Desembrulhe as letras e forme a palavra.</span></a>
-<a class="c" href="anagramas-medio/index.html"><b class="fd">Anagramas: Médio</b><span>Desembrulhe as letras e forme a palavra.</span></a>
-<a class="c" href="anagramas-ciencia/index.html"><b class="fd">Anagramas: Ciência</b><span>Desembrulhe as letras e forme a palavra.</span></a>
-<a class="c" href="v-f-ciencias/index.html"><b class="fd">V/F: Ciências</b><span>Verdadeiro ou falso? 12 afirmações.</span></a>
-<a class="c" href="v-f-historia/index.html"><b class="fd">V/F: História</b><span>Verdadeiro ou falso? 12 afirmações.</span></a>
-<a class="c" href="v-f-geografia/index.html"><b class="fd">V/F: Geografia</b><span>Verdadeiro ou falso? 12 afirmações.</span></a>
-<a class="c" href="v-f-cultura/index.html"><b class="fd">V/F: Cultura</b><span>Verdadeiro ou falso? 12 afirmações.</span></a>
-<a class="c" href="v-f-esportes/index.html"><b class="fd">V/F: Esportes</b><span>Verdadeiro ou falso? 12 afirmações.</span></a>
-<a class="c" href="v-f-matematica/index.html"><b class="fd">V/F: Matemática</b><span>Verdadeiro ou falso? 12 afirmações.</span></a>
-<a class="c" href="palavras-escondidas-animais/index.html"><b class="fd">Palavras Escondidas: Animais</b><span>Encontre as 6 palavras na grade.</span></a>
-<a class="c" href="palavras-escondidas-frutas/index.html"><b class="fd">Palavras Escondidas: Frutas</b><span>Encontre as 6 palavras na grade.</span></a>
-<a class="c" href="palavras-escondidas-profissoes/index.html"><b class="fd">Palavras Escondidas: Profissões</b><span>Encontre as 6 palavras na grade.</span></a>
-<a class="c" href="jogo-dos-pares-animais/index.html"><b class="fd">Jogo dos Pares: Animais</b><span>Encontre os pares de animais e fixe o conteúdo.</span></a>
-<a class="c" href="jogo-dos-pares-capitais/index.html"><b class="fd">Jogo dos Pares: Capitais</b><span>Encontre os pares de capitais e fixe o conteúdo.</span></a>
-<a class="c" href="jogo-dos-pares-elementos/index.html"><b class="fd">Jogo dos Pares: Elementos</b><span>Encontre os pares de elementos e fixe o conteúdo.</span></a>
-<a class="c" href="jogo-dos-pares-sinonimos/index.html"><b class="fd">Jogo dos Pares: Sinônimos</b><span>Encontre os pares de sinônimos e fixe o conteúdo.</span></a>
-<a class="c" href="jogo-dos-pares-antonimos/index.html"><b class="fd">Jogo dos Pares: Antônimos</b><span>Encontre os pares de antônimos e fixe o conteúdo.</span></a>
-<a class="c" href="jogo-dos-pares-citacoes/index.html"><b class="fd">Jogo dos Pares: Citações</b><span>Encontre os pares de citações e fixe o conteúdo.</span></a>
-<a class="c" href="jogo-dos-pares-orgaos/index.html"><b class="fd">Jogo dos Pares: Órgãos</b><span>Encontre os pares de órgãos e fixe o conteúdo.</span></a>
-<a class="c" href="jogo-dos-pares-datas-historicas/index.html"><b class="fd">Jogo dos Pares: Datas Históricas</b><span>Encontre os pares de datas históricas e fixe o conteúdo.</span></a>
-<a class="c" href="repeticao-espacada-formulas/index.html"><b class="fd">Repetição Espaçada: Fórmulas</b><span>Fixe as principais fórmulas da matemática com repetição espaçada.</span></a>
-<a class="c" href="repeticao-espacada-ingles/index.html"><b class="fd">Repetição Espaçada: Inglês</b><span>Vocabulário em inglês com repetição espaçada.</span></a>
-<a class="c" href="planner-de-estudos/index.html"><b class="fd">Planner de Estudos</b><span>Organize tarefas com assunto, duração e data. Salvo no navegador.</span></a>
-<a class="c" href="caderno-de-anotacoes/index.html"><b class="fd">Caderno de Anotações</b><span>Anotações rápidas com Markdown simples. Salvo no navegador.</span></a>
-<a class="c" href="ginastica-cerebral/index.html"><b class="fd">Ginástica Cerebral</b><span>Memorize sequências de dígitos que ficam cada vez maiores.</span></a>
-<a class="c" href="enigmas-facil/index.html"><b class="fd">Enigmas: Fácil</b><span>Quebra-cabeças de lógica e raciocínio.</span></a>
-<a class="c" href="enigmas-medio/index.html"><b class="fd">Enigmas: Médio</b><span>Quebra-cabeças de lógica e raciocínio.</span></a>
-<a class="c" href="enigmas-dificil/index.html"><b class="fd">Enigmas: Difícil</b><span>Quebra-cabeças de lógica e raciocínio.</span></a>
-<a class="c" href="probabilidade/index.html"><b class="fd">Probabilidade</b><span>Qual é a fração correta da probabilidade?</span></a>
-<a class="c" href="trigonometria-basica/index.html"><b class="fd">Trigonometria Básica</b><span>Valores de seno, cosseno e tangente dos ângulos notáveis.</span></a>
-<a class="c" href="bandeiras-do-mundo-1/index.html"><b class="fd">Bandeiras do Mundo 1</b><span>Identifique o país pela bandeira. Ronda 1.</span></a>
-<a class="c" href="bandeiras-do-mundo-2/index.html"><b class="fd">Bandeiras do Mundo 2</b><span>Identifique o país pela bandeira. Ronda 2.</span></a>
-<a class="c" href="simulado-matematica/index.html"><b class="fd">Simulado: Matemática</b><span>15 questões mistas com tempo limite de 5 minutos.</span></a>
-<a class="c" href="simulado-ciencias-da-natureza/index.html"><b class="fd">Simulado: Ciências da Natureza</b><span>15 questões mistas com tempo limite de 5 minutos.</span></a>
-<a class="c" href="simulado-ciencias-humanas/index.html"><b class="fd">Simulado: Ciências Humanas</b><span>15 questões mistas com tempo limite de 5 minutos.</span></a>
-<a class="c" href="geometria-areas/index.html"><b class="fd">Geometria: Áreas</b><span>Calcule áreas de triângulo, quadrado, círculo e retângulo em 60 segundos.</span></a>
-<a class="c" href="geometria-volumes/index.html"><b class="fd">Geometria: Volumes</b><span>Calcule volumes de prisma, cilindro e cubo em 60 segundos.</span></a>
-<a class="c" href="tabuada-do-7/index.html"><b class="fd">Tabuada do 7</b><span>Treine a tabuada do 7 o máximo que puder em 60 segundos.</span></a>
-<a class="c" href="tabuada-do-9/index.html"><b class="fd">Tabuada do 9</b><span>Treine a tabuada do 9 o máximo que puder em 60 segundos.</span></a>
-<a class="c" href="tabuada-do-12/index.html"><b class="fd">Tabuada do 12</b><span>Treine a tabuada do 12 o máximo que puder em 60 segundos.</span></a>
-<a class="c" href="potencias-rapidas/index.html"><b class="fd">Potências Rápidas</b><span>Calcule potências como 3^4 em até 60 segundos.</span></a>
-<a class="c" href="formulas-de-area/index.html"><b class="fd">Fórmulas de Área</b><span>Calcule a área das figuras em até 60 segundos.</span></a>
-<a class="c" href="movimento-retilineo/index.html"><b class="fd">Movimento Retílineo</b><span>Resolva problemas de velocidade, tempo e distância em 60 segundos.</span></a>
-<a class="c" href="simbolos-quimicos/index.html"><b class="fd">Símbolos Químicos</b><span>Associe o elemento ao seu símbolo na tabela periódica.</span></a>
-<a class="c" href="capitais-do-mundo/index.html"><b class="fd">Capitais do Mundo</b><span>Teste seus conhecimentos em capitais do planeta.</span></a>
-<a class="c" href="sinonimos-relampagos/index.html"><b class="fd">Sinônimos Relâmpagos</b><span>Escolha o sinônimo correto.</span></a>
-<a class="c" href="cronologia/index.html"><b class="fd">Cronologia</b><span>Em que ano aconteceu o evento?</span></a>
+<a class="c" href="funcoes(01)/zcode.html"><span class="ic">F</span><span class="tx"><b>Funções</b><span>Visualizador matemático interativo de funções.</span></span><span class="go">→</span></a>
+<a class="c" href="calculadorabasica(02)/zcode.html"><span class="ic">C</span><span class="tx"><b>Calculadora</b><span>Calculadora de estudo para resolver expressões.</span></span><span class="go">→</span></a>
+<a class="c" href="tabelaperiodica(03)/zcode.html"><span class="ic">T</span><span class="tx"><b>Tabela Periódica</b><span>Tabela periódica interativa dos elementos.</span></span><span class="go">→</span></a>
+<a class="c" href="formulas(04)/zcode.html"><span class="ic">F</span><span class="tx"><b>Fórmulas</b><span>Biblioteca de fórmulas das ciências da natureza.</span></span><span class="go">→</span></a>
+<a class="c" href="citologia(05)/zcode.html"><span class="ic">C</span><span class="tx"><b>Citologia</b><span>Explorador interativo das partes da célula.</span></span><span class="go">→</span></a>
+<a class="c" href="sistemas(06)/zcode.html"><span class="ic">S</span><span class="tx"><b>Sistemas do Corpo</b><span>Atlas interativo dos sistemas do corpo humano.</span></span><span class="go">→</span></a>
+<a class="c" href="Atlas(07)/zcode.html"><span class="ic">A</span><span class="tx"><b>Atlas Interativo</b><span>Mapa vetorial interativo para estudar geografia.</span></span><span class="go">→</span></a>
+<a class="c" href="eras(08)/zcode.html"><span class="ic">E</span><span class="tx"><b>Eras Geológicas</b><span>Linha do tempo interativa da Terra.</span></span><span class="go">→</span></a>
+<a class="c" href="pomodoro(09)/zcode.html"><span class="ic">P</span><span class="tx"><b>Pomodoro</b><span>Cronômetro de foco para sessões de estudo.</span></span><span class="go">→</span></a>
+<a class="c" href="geometria(10)/zcode.html"><span class="ic">P</span><span class="tx"><b>Plotter 3D</b><span>Plotter de funções em três dimensões.</span></span><span class="go">→</span></a>
+<a class="c" href="learncss(11)/zcode.html"><span class="ic">C</span><span class="tx"><b>CSS Challenge</b><span>Clone de designs famosos para treinar CSS.</span></span><span class="go">→</span></a>
+<a class="c" href="redacao-enem-estrutura/index.html"><span class="ic">R</span><span class="tx"><b>Redação ENEM: Estrutura</b><span>O esqueleto da dissertação-argumentativa, competência por competência.</span></span><span class="go">→</span></a>
+<a class="c" href="redacao-enem-repertorio/index.html"><span class="ic">R</span><span class="tx"><b>Redação ENEM: Repertório</b><span>Citações, leis e pensadores prontos para usar em qualquer tema.</span></span><span class="go">→</span></a>
+<a class="c" href="gramatica-classes-de-palavras/index.html"><span class="ic">G</span><span class="tx"><b>Gramática: Classes de Palavras</b><span>As 10 classes com função, exemplos e pegadinhas de prova.</span></span><span class="go">→</span></a>
+<a class="c" href="gramatica-sintaxe-essencial/index.html"><span class="ic">G</span><span class="tx"><b>Gramática: Sintaxe Essencial</b><span>Termos da oração e período composto sem decoreba vazia.</span></span><span class="go">→</span></a>
+<a class="c" href="gramatica-pontuacao-e-crase/index.html"><span class="ic">G</span><span class="tx"><b>Gramática: Pontuação e Crase</b><span>Vírgula sem chute e crase com macete infalível.</span></span><span class="go">→</span></a>
+<a class="c" href="literatura-autores-do-brasil/index.html"><span class="ic">L</span><span class="tx"><b>Literatura: Autores do Brasil</b><span>Os 10 nomes que mais caem, com obra-chave e estilo de cada um.</span></span><span class="go">→</span></a>
+<a class="c" href="historia-colonia-e-imperio/index.html"><span class="ic">H</span><span class="tx"><b>História: Colônia e Império</b><span>Do pau-brasil à Proclamação da República em 5 paradas.</span></span><span class="go">→</span></a>
+<a class="c" href="historia-brasil-republica/index.html"><span class="ic">H</span><span class="tx"><b>História: Brasil República</b><span>De Deodoro à redemocratização: as fases que a prova adora.</span></span><span class="go">→</span></a>
+<a class="c" href="filosofia-antiga-e-medieval/index.html"><span class="ic">F</span><span class="tx"><b>Filosofia: Antiga e Medieval</b><span>Dos pré-socráticos a Santo Agostinho: as bases do pensamento.</span></span><span class="go">→</span></a>
+<a class="c" href="filosofia-moderna-e-contemporanea/index.html"><span class="ic">F</span><span class="tx"><b>Filosofia: Moderna e Contemporânea</b><span>Da dúvida metódica à sociedade do cansaço.</span></span><span class="go">→</span></a>
+<a class="c" href="biomas-do-brasil/index.html"><span class="ic">B</span><span class="tx"><b>Biomas do Brasil</b><span>Os 6 biomas: clima, vegetação e prova — com exemplos.</span></span><span class="go">→</span></a>
+<a class="c" href="quimica-estequiometria/index.html"><span class="ic">Q</span><span class="tx"><b>Química: Estequiometria</b><span>Cálculos químicos passo a passo, do mol à reação.</span></span><span class="go">→</span></a>
+<a class="c" href="fisica-cinematica/index.html"><span class="ic">F</span><span class="tx"><b>Física: Cinemática</b><span>Movimento uniforme e variado: conceitos, fórmulas e quando usar.</span></span><span class="go">→</span></a>
+<a class="c" href="conectivos-para-redacao/index.html"><span class="ic">C</span><span class="tx"><b>Conectivos para Redação</b><span>Os conectivos certos para cada função, com exemplos prontos.</span></span><span class="go">→</span></a>
+<a class="c" href="ingles-verbos-irregulares/index.html"><span class="ic">I</span><span class="tx"><b>Inglês: Verbos Irregulares</b><span>Os 40 verbos irregulares mais usados, com passado e particípio.</span></span><span class="go">→</span></a>
+<a class="c" href="matematica-formulas/index.html"><span class="ic">M</span><span class="tx"><b>Matemática: Fórmulas</b><span>Áreas, volumes, porcentagem e equações em uma tabela só.</span></span><span class="go">→</span></a>
+<a class="c" href="fisica-grandezas-e-unidades/index.html"><span class="ic">F</span><span class="tx"><b>Física: Grandezas e Unidades</b><span>O Sistema Internacional e as unidades que caem em prova.</span></span><span class="go">→</span></a>
+<a class="c" href="escolas-literarias/index.html"><span class="ic">E</span><span class="tx"><b>Escolas Literárias</b><span>Do Trovadorismo ao Modernismo em 10 marcos.</span></span><span class="go">→</span></a>
+<a class="c" href="linha-do-tempo-brasil/index.html"><span class="ic">L</span><span class="tx"><b>Linha do Tempo: Brasil</b><span>12 marcos de 1500 à Constituição cidadã.</span></span><span class="go">→</span></a>
+<a class="c" href="linha-do-tempo-mundo/index.html"><span class="ic">L</span><span class="tx"><b>Linha do Tempo: Mundo</b><span>10 marcos da escrita à queda do Muro.</span></span><span class="go">→</span></a>
+<a class="c" href="equacoes-do-1-grau/index.html"><span class="ic">E</span><span class="tx"><b>Equações do 1º Grau</b><span>Aprenda o método e treine até dominar.</span></span><span class="go">→</span></a>
+<a class="c" href="teorema-de-pitagoras/index.html"><span class="ic">T</span><span class="tx"><b>Teorema de Pitágoras</b><span>O teorema mais famoso, com treino guiado.</span></span><span class="go">→</span></a>
+<a class="c" href="operacoes-com-fracoes/index.html"><span class="ic">O</span><span class="tx"><b>Operações com Frações</b><span>Somar, subtrair e multiplicar frações.</span></span><span class="go">→</span></a>
+<a class="c" href="potencias-e-raizes/index.html"><span class="ic">P</span><span class="tx"><b>Potências e Raízes</b><span>O básico de potências com treino rápido.</span></span><span class="go">→</span></a>
+<a class="c" href="porques/index.html"><span class="ic">P</span><span class="tx"><b>Porquês</b><span>Porque, porquê, por que ou por quê? Acerte sempre.</span></span><span class="go">→</span></a>
+<a class="c" href="homonimos-e-paronimos/index.html"><span class="ic">H</span><span class="tx"><b>Homônimos e Parônimos</b><span>Mau/mal, sessão/seção, a fim/afim e outras confusões.</span></span><span class="go">→</span></a>
+<a class="c" href="crase-na-pratica/index.html"><span class="ic">C</span><span class="tx"><b>Crase na Prática</b><span>Complete com A ou À e fixe a regra.</span></span><span class="go">→</span></a>
+<a class="c" href="ingles-verb-to-be/index.html"><span class="ic">I</span><span class="tx"><b>Inglês: Verb To Be</b><span>Am, is ou are? Complete as frases.</span></span><span class="go">→</span></a>
+<a class="c" href="concordancia-verbal/index.html"><span class="ic">C</span><span class="tx"><b>Concordância Verbal</b><span>O verbo concorda com o sujeito — complete certo.</span></span><span class="go">→</span></a>
+<a class="c" href="acentuacao/index.html"><span class="ic">A</span><span class="tx"><b>Acentuação</b><span>Complete com a forma acentuada correta.</span></span><span class="go">→</span></a>
+<a class="c" href="ingles-in-on-at/index.html"><span class="ic">I</span><span class="tx"><b>Inglês: In, On, At</b><span>As preposições de tempo e lugar mais cobradas.</span></span><span class="go">→</span></a>
+<a class="c" href="cronologia-do-brasil/index.html"><span class="ic">C</span><span class="tx"><b>Cronologia do Brasil</b><span>Ordene 6 marcos da história do Brasil.</span></span><span class="go">→</span></a>
+<a class="c" href="ciclo-da-agua/index.html"><span class="ic">C</span><span class="tx"><b>Ciclo da Água</b><span>Ordene as etapas do ciclo hidrológico.</span></span><span class="go">→</span></a>
+<a class="c" href="metodo-cientifico/index.html"><span class="ic">M</span><span class="tx"><b>Método Científico</b><span>Ordene as etapas de uma pesquisa.</span></span><span class="go">→</span></a>
+<a class="c" href="fotossintese/index.html"><span class="ic">F</span><span class="tx"><b>Fotossíntese</b><span>Ordene as etapas da fotossíntese.</span></span><span class="go">→</span></a>
+<a class="c" href="revolucao-francesa/index.html"><span class="ic">R</span><span class="tx"><b>Revolução Francesa</b><span>Ordene os fatos de 1789 a 1799.</span></span><span class="go">→</span></a>
+<a class="c" href="eras-da-terra/index.html"><span class="ic">E</span><span class="tx"><b>Eras da Terra</b><span>Ordene da mais antiga à atual.</span></span><span class="go">→</span></a>
+<a class="c" href="paises-e-capitais/index.html"><span class="ic">P</span><span class="tx"><b>Países e Capitais</b><span>Ligue cada país à sua capital.</span></span><span class="go">→</span></a>
+<a class="c" href="elementos-e-simbolos/index.html"><span class="ic">E</span><span class="tx"><b>Elementos e Símbolos</b><span>Ligue cada elemento ao seu símbolo.</span></span><span class="go">→</span></a>
+<a class="c" href="autores-e-obras/index.html"><span class="ic">A</span><span class="tx"><b>Autores e Obras</b><span>Ligue cada autor à sua obra.</span></span><span class="go">→</span></a>
+<a class="c" href="ingles-palavras/index.html"><span class="ic">I</span><span class="tx"><b>Inglês: Palavras</b><span>Ligue cada palavra em inglês ao seu sentido.</span></span><span class="go">→</span></a>
+<a class="c" href="grandezas-e-unidades/index.html"><span class="ic">G</span><span class="tx"><b>Grandezas e Unidades</b><span>Ligue cada grandeza à sua unidade SI.</span></span><span class="go">→</span></a>
+<a class="c" href="biomas-e-marcas/index.html"><span class="ic">B</span><span class="tx"><b>Biomas e Marcas</b><span>Ligue cada bioma à sua característica.</span></span><span class="go">→</span></a>
+<a class="c" href="figuras-de-linguagem/index.html"><span class="ic">F</span><span class="tx"><b>Figuras de Linguagem</b><span>Ligue cada figura à sua definição.</span></span><span class="go">→</span></a>
+<a class="c" href="corpo-humano/index.html"><span class="ic">C</span><span class="tx"><b>Corpo Humano</b><span>Ligue cada órgão à sua função.</span></span><span class="go">→</span></a>
+<a class="c" href="caca-erros-concordancia/index.html"><span class="ic">C</span><span class="tx"><b>Caça-erros: Concordância</b><span>Toque na parte errada de cada frase.</span></span><span class="go">→</span></a>
+<a class="c" href="caca-erros-crase/index.html"><span class="ic">C</span><span class="tx"><b>Caça-erros: Crase</b><span>Toque na parte errada de cada frase.</span></span><span class="go">→</span></a>
+<a class="c" href="caca-erros-pontuacao/index.html"><span class="ic">C</span><span class="tx"><b>Caça-erros: Pontuação</b><span>Toque na parte errada de cada frase.</span></span><span class="go">→</span></a>
+<a class="c" href="caca-erros-contas/index.html"><span class="ic">C</span><span class="tx"><b>Caça-erros: Contas</b><span>Toque no passo errado de cada conta.</span></span><span class="go">→</span></a>
+<a class="c" href="caca-erros-ingles/index.html"><span class="ic">C</span><span class="tx"><b>Caça-erros: Inglês</b><span>Toque na palavra errada de cada frase.</span></span><span class="go">→</span></a>
+<a class="c" href="cruzada-palavras/index.html"><span class="ic">C</span><span class="tx"><b>Cruzada: Palavras</b><span>Uma mini cruzada para aquecer.</span></span><span class="go">→</span></a>
+<a class="c" href="cruzada-animais/index.html"><span class="ic">C</span><span class="tx"><b>Cruzada: Animais</b><span>Três palavras do mundo animal.</span></span><span class="go">→</span></a>
+<a class="c" href="cruzada-escola/index.html"><span class="ic">C</span><span class="tx"><b>Cruzada: Escola</b><span>Palavras de escola e ciência.</span></span><span class="go">→</span></a>
+<a class="c" href="sequencias-aritmeticas/index.html"><span class="ic">A</span><span class="tx"><b>Sequências Aritméticas</b><span>Descubra o próximo número da sequência aritmética.</span></span><span class="go">→</span></a>
+<a class="c" href="sequencias-de-fibonacci/index.html"><span class="ic">D</span><span class="tx"><b>Sequências de Fibonacci</b><span>Cada termo é a soma dos dois anteriores. Descubra o próximo.</span></span><span class="go">→</span></a>
+<a class="c" href="estatistica-rapida/index.html"><span class="ic">E</span><span class="tx"><b>Estatística Rápida</b><span>Calcule a média aritmética do conjunto em até 60 segundos.</span></span><span class="go">→</span></a>
+<a class="c" href="anagramas-facil/index.html"><span class="ic">A</span><span class="tx"><b>Anagramas: Fácil</b><span>Desembrulhe as letras e forme a palavra.</span></span><span class="go">→</span></a>
+<a class="c" href="anagramas-medio/index.html"><span class="ic">A</span><span class="tx"><b>Anagramas: Médio</b><span>Desembrulhe as letras e forme a palavra.</span></span><span class="go">→</span></a>
+<a class="c" href="anagramas-ciencia/index.html"><span class="ic">A</span><span class="tx"><b>Anagramas: Ciência</b><span>Desembrulhe as letras e forme a palavra.</span></span><span class="go">→</span></a>
+<a class="c" href="v-f-ciencias/index.html"><span class="ic">V</span><span class="tx"><b>V/F: Ciências</b><span>Verdadeiro ou falso? 12 afirmações.</span></span><span class="go">→</span></a>
+<a class="c" href="v-f-historia/index.html"><span class="ic">V</span><span class="tx"><b>V/F: História</b><span>Verdadeiro ou falso? 12 afirmações.</span></span><span class="go">→</span></a>
+<a class="c" href="v-f-geografia/index.html"><span class="ic">V</span><span class="tx"><b>V/F: Geografia</b><span>Verdadeiro ou falso? 12 afirmações.</span></span><span class="go">→</span></a>
+<a class="c" href="v-f-matematica/index.html"><span class="ic">V</span><span class="tx"><b>V/F: Matemática</b><span>Verdadeiro ou falso? 12 afirmações.</span></span><span class="go">→</span></a>
+<a class="c" href="palavras-escondidas-animais/index.html"><span class="ic">P</span><span class="tx"><b>Palavras Escondidas: Animais</b><span>Encontre as 6 palavras na grade.</span></span><span class="go">→</span></a>
+<a class="c" href="palavras-escondidas-frutas/index.html"><span class="ic">P</span><span class="tx"><b>Palavras Escondidas: Frutas</b><span>Encontre as 6 palavras na grade.</span></span><span class="go">→</span></a>
+<a class="c" href="palavras-escondidas-profissoes/index.html"><span class="ic">P</span><span class="tx"><b>Palavras Escondidas: Profissões</b><span>Encontre as 6 palavras na grade.</span></span><span class="go">→</span></a>
+<a class="c" href="jogo-dos-pares-animais/index.html"><span class="ic">D</span><span class="tx"><b>Jogo dos Pares: Animais</b><span>Encontre os pares de animais e fixe o conteúdo.</span></span><span class="go">→</span></a>
+<a class="c" href="jogo-dos-pares-capitais/index.html"><span class="ic">D</span><span class="tx"><b>Jogo dos Pares: Capitais</b><span>Encontre os pares de capitais e fixe o conteúdo.</span></span><span class="go">→</span></a>
+<a class="c" href="jogo-dos-pares-elementos/index.html"><span class="ic">D</span><span class="tx"><b>Jogo dos Pares: Elementos</b><span>Encontre os pares de elementos e fixe o conteúdo.</span></span><span class="go">→</span></a>
+<a class="c" href="jogo-dos-pares-citacoes/index.html"><span class="ic">D</span><span class="tx"><b>Jogo dos Pares: Citações</b><span>Encontre os pares de citações e fixe o conteúdo.</span></span><span class="go">→</span></a>
+<a class="c" href="jogo-dos-pares-datas-historicas/index.html"><span class="ic">D</span><span class="tx"><b>Jogo dos Pares: Datas Históricas</b><span>Encontre os pares de datas históricas e fixe o conteúdo.</span></span><span class="go">→</span></a>
+<a class="c" href="repeticao-espacada-formulas/index.html"><span class="ic">R</span><span class="tx"><b>Repetição Espaçada: Fórmulas</b><span>Fixe as principais fórmulas da matemática com repetição espaçada.</span></span><span class="go">→</span></a>
+<a class="c" href="repeticao-espacada-ingles/index.html"><span class="ic">R</span><span class="tx"><b>Repetição Espaçada: Inglês</b><span>Vocabulário em inglês com repetição espaçada.</span></span><span class="go">→</span></a>
+<a class="c" href="planner-de-estudos/index.html"><span class="ic">P</span><span class="tx"><b>Planner de Estudos</b><span>Organize tarefas com assunto, duração e data. Salvo no navegador.</span></span><span class="go">→</span></a>
+<a class="c" href="caderno-de-anotacoes/index.html"><span class="ic">C</span><span class="tx"><b>Caderno de Anotações</b><span>Anotações rápidas com Markdown simples. Salvo no navegador.</span></span><span class="go">→</span></a>
+<a class="c" href="ginastica-cerebral/index.html"><span class="ic">G</span><span class="tx"><b>Ginástica Cerebral</b><span>Memorize sequências de dígitos que ficam cada vez maiores.</span></span><span class="go">→</span></a>
+<a class="c" href="probabilidade/index.html"><span class="ic">P</span><span class="tx"><b>Probabilidade</b><span>Qual é a fração correta da probabilidade?</span></span><span class="go">→</span></a>
+<a class="c" href="trigonometria-basica/index.html"><span class="ic">T</span><span class="tx"><b>Trigonometria Básica</b><span>Valores de seno, cosseno e tangente dos ângulos notáveis.</span></span><span class="go">→</span></a>
+<a class="c" href="bandeiras-do-mundo/index.html"><span class="ic">B</span><span class="tx"><b>Bandeiras do Mundo</b><span>Identifique o país pela bandeira entre todas as bandeiras do jogo.</span></span><span class="go">→</span></a>
+<a class="c" href="simulado-matematica/index.html"><span class="ic">S</span><span class="tx"><b>Simulado: Matemática</b><span>15 questões mistas com tempo limite de 5 minutos.</span></span><span class="go">→</span></a>
+<a class="c" href="simulado-ciencias-da-natureza/index.html"><span class="ic">S</span><span class="tx"><b>Simulado: Ciências da Natureza</b><span>15 questões mistas com tempo limite de 5 minutos.</span></span><span class="go">→</span></a>
+<a class="c" href="simulado-ciencias-humanas/index.html"><span class="ic">S</span><span class="tx"><b>Simulado: Ciências Humanas</b><span>15 questões mistas com tempo limite de 5 minutos.</span></span><span class="go">→</span></a>
+<a class="c" href="geometria-areas/index.html"><span class="ic">G</span><span class="tx"><b>Geometria: Áreas</b><span>Calcule áreas de triângulo, quadrado, círculo e retângulo em 60 segundos.</span></span><span class="go">→</span></a>
+<a class="c" href="geometria-volumes/index.html"><span class="ic">G</span><span class="tx"><b>Geometria: Volumes</b><span>Calcule volumes de prisma, cilindro e cubo em 60 segundos.</span></span><span class="go">→</span></a>
+<a class="c" href="tabuada-do-7/index.html"><span class="ic">D</span><span class="tx"><b>Tabuada do 7</b><span>Treine a tabuada do 7 o máximo que puder em 60 segundos.</span></span><span class="go">→</span></a>
+<a class="c" href="tabuada-do-12/index.html"><span class="ic">D</span><span class="tx"><b>Tabuada do 12</b><span>Treine a tabuada do 12 o máximo que puder em 60 segundos.</span></span><span class="go">→</span></a>
+<a class="c" href="movimento-retilineo/index.html"><span class="ic">M</span><span class="tx"><b>Movimento Retílineo</b><span>Resolva problemas de velocidade, tempo e distância em 60 segundos.</span></span><span class="go">→</span></a>
+<a class="c" href="capitais-do-mundo/index.html"><span class="ic">C</span><span class="tx"><b>Capitais do Mundo</b><span>Teste seus conhecimentos em capitais do planeta.</span></span><span class="go">→</span></a>
+<a class="c" href="cronologia/index.html"><span class="ic">C</span><span class="tx"><b>Cronologia</b><span>Em que ano aconteceu o evento?</span></span><span class="go">→</span></a>
   </div>
+  <p class="dim center mt" id="vazio" style="display:none">Nenhum aplicativo encontrado para essa busca.</p>
 </main>
 <footer class="zfoot"><b>Zcode</b> · 300 aplicativos em 3 categorias</footer>
 <script>
@@ -363,19 +414,28 @@ window.Z=(function(){
     if(html!=null)e.innerHTML=html;
     return e;
   }
-  return {$:$,$$:$$,toast:toast,store:store,snd:snd,onKey:onKey,rnd:rnd,pick:pick,shuffle:shuffle,copy:copy,fmt:fmt,el:el,
+  function esc(s){
+    return String(s).replace(/[&<>"']/g,function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+  return {$:$,$:$$,toast:toast,store:store,snd:snd,onKey:onKey,rnd:rnd,pick:pick,shuffle:shuffle,copy:copy,fmt:fmt,el:el,esc:esc,
     mute:function(){muted=!muted;return muted}};
 })();
 
-var D = [{"n":"Funções","d":"Visualizador matemático interativo de funções.","h":"funcoes(01)/zcode.html"},{"n":"Calculadora","d":"Calculadora de estudo para resolver expressões.","h":"calculadorabasica(02)/zcode.html"},{"n":"Tabela Periódica","d":"Tabela periódica interativa dos elementos.","h":"tabelaperiodica(03)/zcode.html"},{"n":"Fórmulas","d":"Biblioteca de fórmulas das ciências da natureza.","h":"formulas(04)/zcode.html"},{"n":"Citologia","d":"Explorador interativo das partes da célula.","h":"citologia(05)/zcode.html"},{"n":"Sistemas do Corpo","d":"Atlas interativo dos sistemas do corpo humano.","h":"sistemas(06)/zcode.html"},{"n":"Atlas Interativo","d":"Mapa vetorial interativo para estudar geografia.","h":"Atlas(07)/zcode.html"},{"n":"Eras Geológicas","d":"Linha do tempo interativa da Terra.","h":"eras(08)/zcode.html"},{"n":"Pomodoro","d":"Cronômetro de foco para sessões de estudo.","h":"pomodoro(09)/zcode.html"},{"n":"Plotter 3D","d":"Plotter de funções em três dimensões.","h":"geometria(10)/zcode.html"},{"n":"CSS Challenge","d":"Clone de designs famosos para treinar CSS.","h":"learncss(11)/zcode.html"},{"n":"Flashcards: Matemática","d":"12 cartões para fixar o essencial do assunto.","h":"flashcards-matematica/index.html"},{"n":"Flashcards: Inglês","d":"14 cartões para fixar o essencial do assunto.","h":"flashcards-ingles/index.html"},{"n":"Flashcards: História","d":"12 cartões para fixar o essencial do assunto.","h":"flashcards-historia/index.html"},{"n":"Flashcards: Ciências","d":"12 cartões para fixar o essencial do assunto.","h":"flashcards-ciencias/index.html"},{"n":"Flashcards: Biologia","d":"12 cartões para fixar o essencial do assunto.","h":"flashcards-biologia/index.html"},{"n":"Flashcards: Física","d":"12 cartões para fixar o essencial do assunto.","h":"flashcards-fisica/index.html"},{"n":"Flashcards: Química","d":"12 cartões para fixar o essencial do assunto.","h":"flashcards-quimica/index.html"},{"n":"Flashcards: Geografia","d":"12 cartões para fixar o essencial do assunto.","h":"flashcards-geografia/index.html"},{"n":"Flashcards: Literatura","d":"12 cartões para fixar o essencial do assunto.","h":"flashcards-literatura/index.html"},{"n":"Flashcards: Filosofia","d":"12 cartões para fixar o essencial do assunto.","h":"flashcards-filosofia/index.html"},{"n":"Flashcards: Programação","d":"12 cartões para fixar o essencial do assunto.","h":"flashcards-programacao/index.html"},{"n":"Flashcards: Gramática","d":"12 cartões para fixar o essencial do assunto.","h":"flashcards-gramatica/index.html"},{"n":"Flashcards: Arte","d":"12 cartões para fixar o essencial do assunto.","h":"flashcards-arte/index.html"},{"n":"Flashcards: Esportes","d":"12 cartões para fixar o essencial do assunto.","h":"flashcards-esportes/index.html"},{"n":"Quiz: Cultura Geral","d":"12 questões de múltipla escolha sobre o tema.","h":"quiz-cultura-geral/index.html"},{"n":"Quiz: Matemática","d":"12 questões de múltipla escolha sobre o tema.","h":"quiz-matematica/index.html"},{"n":"Quiz: História","d":"12 questões de múltipla escolha sobre o tema.","h":"quiz-historia/index.html"},{"n":"Quiz: Geografia","d":"12 questões de múltipla escolha sobre o tema.","h":"quiz-geografia/index.html"},{"n":"Quiz: Ciências","d":"12 questões de múltipla escolha sobre o tema.","h":"quiz-ciencias/index.html"},{"n":"Quiz: Inglês","d":"12 questões de múltipla escolha sobre o tema.","h":"quiz-ingles/index.html"},{"n":"Quiz: Lógica","d":"12 questões de múltipla escolha sobre o tema.","h":"quiz-logica/index.html"},{"n":"Quiz: Programação","d":"12 questões de múltipla escolha sobre o tema.","h":"quiz-programacao/index.html"},{"n":"Quiz: Arte","d":"12 questões de múltipla escolha sobre o tema.","h":"quiz-arte/index.html"},{"n":"Quiz: Esportes","d":"12 questões de múltipla escolha sobre o tema.","h":"quiz-esportes/index.html"},{"n":"Quiz: Biologia","d":"12 questões de múltipla escolha sobre o tema.","h":"quiz-biologia/index.html"},{"n":"Quiz: Física","d":"12 questões de múltipla escolha sobre o tema.","h":"quiz-fisica/index.html"},{"n":"Quiz: Química","d":"12 questões de múltipla escolha sobre o tema.","h":"quiz-quimica/index.html"},{"n":"Quiz: Brasil","d":"12 questões de múltipla escolha sobre o tema.","h":"quiz-brasil/index.html"},{"n":"Quiz: Cinema","d":"12 questões de múltipla escolha sobre o tema.","h":"quiz-cinema/index.html"},{"n":"Quiz: Música","d":"12 questões de múltipla escolha sobre o tema.","h":"quiz-musica/index.html"},{"n":"Sequências Aritméticas","d":"Descubra o próximo número da sequência aritmética.","h":"sequencias-aritmeticas/index.html"},{"n":"Sequências Geométricas","d":"Descubra o próximo número da sequência geométrica.","h":"sequencias-geometricas/index.html"},{"n":"Sequências de Fibonacci","d":"Cada termo é a soma dos dois anteriores. Descubra o próximo.","h":"sequencias-de-fibonacci/index.html"},{"n":"Sequências de Primos","d":"Sequências de números primos. Descubra o próximo.","h":"sequencias-de-primos/index.html"},{"n":"Conjugação: Presente","d":"Conjugue o verbo no tempo presente.","h":"conjugacao-presente/index.html"},{"n":"Conjugação: Passado","d":"Conjugue o verbo no tempo passado.","h":"conjugacao-passado/index.html"},{"n":"Conjugação: Futuro","d":"Conjugue o verbo no tempo futuro.","h":"conjugacao-futuro/index.html"},{"n":"Tradução PT → EN","d":"Descubra a tradução correta em inglês.","h":"traducao-pt-en/index.html"},{"n":"Tradução EN → PT","d":"Descubra a tradução correta em português.","h":"traducao-en-pt/index.html"},{"n":"Unidades de Medida","d":"Qual é a unidade oficial no SI?","h":"unidades-de-medida/index.html"},{"n":"Capitais da Europa","d":"Associe o país à capital.","h":"capitais-da-europa/index.html"},{"n":"Estatística Rápida","d":"Calcule a média aritmética do conjunto em até 60 segundos.","h":"estatistica-rapida/index.html"},{"n":"Anagramas: Fácil","d":"Desembrulhe as letras e forme a palavra.","h":"anagramas-facil/index.html"},{"n":"Anagramas: Médio","d":"Desembrulhe as letras e forme a palavra.","h":"anagramas-medio/index.html"},{"n":"Anagramas: Ciência","d":"Desembrulhe as letras e forme a palavra.","h":"anagramas-ciencia/index.html"},{"n":"V/F: Ciências","d":"Verdadeiro ou falso? 12 afirmações.","h":"v-f-ciencias/index.html"},{"n":"V/F: História","d":"Verdadeiro ou falso? 12 afirmações.","h":"v-f-historia/index.html"},{"n":"V/F: Geografia","d":"Verdadeiro ou falso? 12 afirmações.","h":"v-f-geografia/index.html"},{"n":"V/F: Cultura","d":"Verdadeiro ou falso? 12 afirmações.","h":"v-f-cultura/index.html"},{"n":"V/F: Esportes","d":"Verdadeiro ou falso? 12 afirmações.","h":"v-f-esportes/index.html"},{"n":"V/F: Matemática","d":"Verdadeiro ou falso? 12 afirmações.","h":"v-f-matematica/index.html"},{"n":"Palavras Escondidas: Animais","d":"Encontre as 6 palavras na grade.","h":"palavras-escondidas-animais/index.html"},{"n":"Palavras Escondidas: Frutas","d":"Encontre as 6 palavras na grade.","h":"palavras-escondidas-frutas/index.html"},{"n":"Palavras Escondidas: Profissões","d":"Encontre as 6 palavras na grade.","h":"palavras-escondidas-profissoes/index.html"},{"n":"Jogo dos Pares: Animais","d":"Encontre os pares de animais e fixe o conteúdo.","h":"jogo-dos-pares-animais/index.html"},{"n":"Jogo dos Pares: Capitais","d":"Encontre os pares de capitais e fixe o conteúdo.","h":"jogo-dos-pares-capitais/index.html"},{"n":"Jogo dos Pares: Elementos","d":"Encontre os pares de elementos e fixe o conteúdo.","h":"jogo-dos-pares-elementos/index.html"},{"n":"Jogo dos Pares: Sinônimos","d":"Encontre os pares de sinônimos e fixe o conteúdo.","h":"jogo-dos-pares-sinonimos/index.html"},{"n":"Jogo dos Pares: Antônimos","d":"Encontre os pares de antônimos e fixe o conteúdo.","h":"jogo-dos-pares-antonimos/index.html"},{"n":"Jogo dos Pares: Citações","d":"Encontre os pares de citações e fixe o conteúdo.","h":"jogo-dos-pares-citacoes/index.html"},{"n":"Jogo dos Pares: Órgãos","d":"Encontre os pares de órgãos e fixe o conteúdo.","h":"jogo-dos-pares-orgaos/index.html"},{"n":"Jogo dos Pares: Datas Históricas","d":"Encontre os pares de datas históricas e fixe o conteúdo.","h":"jogo-dos-pares-datas-historicas/index.html"},{"n":"Repetição Espaçada: Fórmulas","d":"Fixe as principais fórmulas da matemática com repetição espaçada.","h":"repeticao-espacada-formulas/index.html"},{"n":"Repetição Espaçada: Inglês","d":"Vocabulário em inglês com repetição espaçada.","h":"repeticao-espacada-ingles/index.html"},{"n":"Planner de Estudos","d":"Organize tarefas com assunto, duração e data. Salvo no navegador.","h":"planner-de-estudos/index.html"},{"n":"Caderno de Anotações","d":"Anotações rápidas com Markdown simples. Salvo no navegador.","h":"caderno-de-anotacoes/index.html"},{"n":"Ginástica Cerebral","d":"Memorize sequências de dígitos que ficam cada vez maiores.","h":"ginastica-cerebral/index.html"},{"n":"Enigmas: Fácil","d":"Quebra-cabeças de lógica e raciocínio.","h":"enigmas-facil/index.html"},{"n":"Enigmas: Médio","d":"Quebra-cabeças de lógica e raciocínio.","h":"enigmas-medio/index.html"},{"n":"Enigmas: Difícil","d":"Quebra-cabeças de lógica e raciocínio.","h":"enigmas-dificil/index.html"},{"n":"Probabilidade","d":"Qual é a fração correta da probabilidade?","h":"probabilidade/index.html"},{"n":"Trigonometria Básica","d":"Valores de seno, cosseno e tangente dos ângulos notáveis.","h":"trigonometria-basica/index.html"},{"n":"Bandeiras do Mundo 1","d":"Identifique o país pela bandeira. Ronda 1.","h":"bandeiras-do-mundo-1/index.html"},{"n":"Bandeiras do Mundo 2","d":"Identifique o país pela bandeira. Ronda 2.","h":"bandeiras-do-mundo-2/index.html"},{"n":"Simulado: Matemática","d":"15 questões mistas com tempo limite de 5 minutos.","h":"simulado-matematica/index.html"},{"n":"Simulado: Ciências da Natureza","d":"15 questões mistas com tempo limite de 5 minutos.","h":"simulado-ciencias-da-natureza/index.html"},{"n":"Simulado: Ciências Humanas","d":"15 questões mistas com tempo limite de 5 minutos.","h":"simulado-ciencias-humanas/index.html"},{"n":"Geometria: Áreas","d":"Calcule áreas de triângulo, quadrado, círculo e retângulo em 60 segundos.","h":"geometria-areas/index.html"},{"n":"Geometria: Volumes","d":"Calcule volumes de prisma, cilindro e cubo em 60 segundos.","h":"geometria-volumes/index.html"},{"n":"Tabuada do 7","d":"Treine a tabuada do 7 o máximo que puder em 60 segundos.","h":"tabuada-do-7/index.html"},{"n":"Tabuada do 9","d":"Treine a tabuada do 9 o máximo que puder em 60 segundos.","h":"tabuada-do-9/index.html"},{"n":"Tabuada do 12","d":"Treine a tabuada do 12 o máximo que puder em 60 segundos.","h":"tabuada-do-12/index.html"},{"n":"Potências Rápidas","d":"Calcule potências como 3^4 em até 60 segundos.","h":"potencias-rapidas/index.html"},{"n":"Fórmulas de Área","d":"Calcule a área das figuras em até 60 segundos.","h":"formulas-de-area/index.html"},{"n":"Movimento Retílineo","d":"Resolva problemas de velocidade, tempo e distância em 60 segundos.","h":"movimento-retilineo/index.html"},{"n":"Símbolos Químicos","d":"Associe o elemento ao seu símbolo na tabela periódica.","h":"simbolos-quimicos/index.html"},{"n":"Capitais do Mundo","d":"Teste seus conhecimentos em capitais do planeta.","h":"capitais-do-mundo/index.html"},{"n":"Sinônimos Relâmpagos","d":"Escolha o sinônimo correto.","h":"sinonimos-relampagos/index.html"},{"n":"Cronologia","d":"Em que ano aconteceu o evento?","h":"cronologia/index.html"}];
+var D = [{"n":"Funções","d":"Visualizador matemático interativo de funções."},{"n":"Calculadora","d":"Calculadora de estudo para resolver expressões."},{"n":"Tabela Periódica","d":"Tabela periódica interativa dos elementos."},{"n":"Fórmulas","d":"Biblioteca de fórmulas das ciências da natureza."},{"n":"Citologia","d":"Explorador interativo das partes da célula."},{"n":"Sistemas do Corpo","d":"Atlas interativo dos sistemas do corpo humano."},{"n":"Atlas Interativo","d":"Mapa vetorial interativo para estudar geografia."},{"n":"Eras Geológicas","d":"Linha do tempo interativa da Terra."},{"n":"Pomodoro","d":"Cronômetro de foco para sessões de estudo."},{"n":"Plotter 3D","d":"Plotter de funções em três dimensões."},{"n":"CSS Challenge","d":"Clone de designs famosos para treinar CSS."},{"n":"Redação ENEM: Estrutura","d":"O esqueleto da dissertação-argumentativa, competência por competência."},{"n":"Redação ENEM: Repertório","d":"Citações, leis e pensadores prontos para usar em qualquer tema."},{"n":"Gramática: Classes de Palavras","d":"As 10 classes com função, exemplos e pegadinhas de prova."},{"n":"Gramática: Sintaxe Essencial","d":"Termos da oração e período composto sem decoreba vazia."},{"n":"Gramática: Pontuação e Crase","d":"Vírgula sem chute e crase com macete infalível."},{"n":"Literatura: Autores do Brasil","d":"Os 10 nomes que mais caem, com obra-chave e estilo de cada um."},{"n":"História: Colônia e Império","d":"Do pau-brasil à Proclamação da República em 5 paradas."},{"n":"História: Brasil República","d":"De Deodoro à redemocratização: as fases que a prova adora."},{"n":"Filosofia: Antiga e Medieval","d":"Dos pré-socráticos a Santo Agostinho: as bases do pensamento."},{"n":"Filosofia: Moderna e Contemporânea","d":"Da dúvida metódica à sociedade do cansaço."},{"n":"Biomas do Brasil","d":"Os 6 biomas: clima, vegetação e prova — com exemplos."},{"n":"Química: Estequiometria","d":"Cálculos químicos passo a passo, do mol à reação."},{"n":"Física: Cinemática","d":"Movimento uniforme e variado: conceitos, fórmulas e quando usar."},{"n":"Conectivos para Redação","d":"Os conectivos certos para cada função, com exemplos prontos."},{"n":"Inglês: Verbos Irregulares","d":"Os 40 verbos irregulares mais usados, com passado e particípio."},{"n":"Matemática: Fórmulas","d":"Áreas, volumes, porcentagem e equações em uma tabela só."},{"n":"Física: Grandezas e Unidades","d":"O Sistema Internacional e as unidades que caem em prova."},{"n":"Escolas Literárias","d":"Do Trovadorismo ao Modernismo em 10 marcos."},{"n":"Linha do Tempo: Brasil","d":"12 marcos de 1500 à Constituição cidadã."},{"n":"Linha do Tempo: Mundo","d":"10 marcos da escrita à queda do Muro."},{"n":"Equações do 1º Grau","d":"Aprenda o método e treine até dominar."},{"n":"Teorema de Pitágoras","d":"O teorema mais famoso, com treino guiado."},{"n":"Operações com Frações","d":"Somar, subtrair e multiplicar frações."},{"n":"Potências e Raízes","d":"O básico de potências com treino rápido."},{"n":"Porquês","d":"Porque, porquê, por que ou por quê? Acerte sempre."},{"n":"Homônimos e Parônimos","d":"Mau/mal, sessão/seção, a fim/afim e outras confusões."},{"n":"Crase na Prática","d":"Complete com A ou À e fixe a regra."},{"n":"Inglês: Verb To Be","d":"Am, is ou are? Complete as frases."},{"n":"Concordância Verbal","d":"O verbo concorda com o sujeito — complete certo."},{"n":"Acentuação","d":"Complete com a forma acentuada correta."},{"n":"Inglês: In, On, At","d":"As preposições de tempo e lugar mais cobradas."},{"n":"Cronologia do Brasil","d":"Ordene 6 marcos da história do Brasil."},{"n":"Ciclo da Água","d":"Ordene as etapas do ciclo hidrológico."},{"n":"Método Científico","d":"Ordene as etapas de uma pesquisa."},{"n":"Fotossíntese","d":"Ordene as etapas da fotossíntese."},{"n":"Revolução Francesa","d":"Ordene os fatos de 1789 a 1799."},{"n":"Eras da Terra","d":"Ordene da mais antiga à atual."},{"n":"Países e Capitais","d":"Ligue cada país à sua capital."},{"n":"Elementos e Símbolos","d":"Ligue cada elemento ao seu símbolo."},{"n":"Autores e Obras","d":"Ligue cada autor à sua obra."},{"n":"Inglês: Palavras","d":"Ligue cada palavra em inglês ao seu sentido."},{"n":"Grandezas e Unidades","d":"Ligue cada grandeza à sua unidade SI."},{"n":"Biomas e Marcas","d":"Ligue cada bioma à sua característica."},{"n":"Figuras de Linguagem","d":"Ligue cada figura à sua definição."},{"n":"Corpo Humano","d":"Ligue cada órgão à sua função."},{"n":"Caça-erros: Concordância","d":"Toque na parte errada de cada frase."},{"n":"Caça-erros: Crase","d":"Toque na parte errada de cada frase."},{"n":"Caça-erros: Pontuação","d":"Toque na parte errada de cada frase."},{"n":"Caça-erros: Contas","d":"Toque no passo errado de cada conta."},{"n":"Caça-erros: Inglês","d":"Toque na palavra errada de cada frase."},{"n":"Cruzada: Palavras","d":"Uma mini cruzada para aquecer."},{"n":"Cruzada: Animais","d":"Três palavras do mundo animal."},{"n":"Cruzada: Escola","d":"Palavras de escola e ciência."},{"n":"Sequências Aritméticas","d":"Descubra o próximo número da sequência aritmética."},{"n":"Sequências de Fibonacci","d":"Cada termo é a soma dos dois anteriores. Descubra o próximo."},{"n":"Estatística Rápida","d":"Calcule a média aritmética do conjunto em até 60 segundos."},{"n":"Anagramas: Fácil","d":"Desembrulhe as letras e forme a palavra."},{"n":"Anagramas: Médio","d":"Desembrulhe as letras e forme a palavra."},{"n":"Anagramas: Ciência","d":"Desembrulhe as letras e forme a palavra."},{"n":"V/F: Ciências","d":"Verdadeiro ou falso? 12 afirmações."},{"n":"V/F: História","d":"Verdadeiro ou falso? 12 afirmações."},{"n":"V/F: Geografia","d":"Verdadeiro ou falso? 12 afirmações."},{"n":"V/F: Matemática","d":"Verdadeiro ou falso? 12 afirmações."},{"n":"Palavras Escondidas: Animais","d":"Encontre as 6 palavras na grade."},{"n":"Palavras Escondidas: Frutas","d":"Encontre as 6 palavras na grade."},{"n":"Palavras Escondidas: Profissões","d":"Encontre as 6 palavras na grade."},{"n":"Jogo dos Pares: Animais","d":"Encontre os pares de animais e fixe o conteúdo."},{"n":"Jogo dos Pares: Capitais","d":"Encontre os pares de capitais e fixe o conteúdo."},{"n":"Jogo dos Pares: Elementos","d":"Encontre os pares de elementos e fixe o conteúdo."},{"n":"Jogo dos Pares: Citações","d":"Encontre os pares de citações e fixe o conteúdo."},{"n":"Jogo dos Pares: Datas Históricas","d":"Encontre os pares de datas históricas e fixe o conteúdo."},{"n":"Repetição Espaçada: Fórmulas","d":"Fixe as principais fórmulas da matemática com repetição espaçada."},{"n":"Repetição Espaçada: Inglês","d":"Vocabulário em inglês com repetição espaçada."},{"n":"Planner de Estudos","d":"Organize tarefas com assunto, duração e data. Salvo no navegador."},{"n":"Caderno de Anotações","d":"Anotações rápidas com Markdown simples. Salvo no navegador."},{"n":"Ginástica Cerebral","d":"Memorize sequências de dígitos que ficam cada vez maiores."},{"n":"Probabilidade","d":"Qual é a fração correta da probabilidade?"},{"n":"Trigonometria Básica","d":"Valores de seno, cosseno e tangente dos ângulos notáveis."},{"n":"Bandeiras do Mundo","d":"Identifique o país pela bandeira entre todas as bandeiras do jogo."},{"n":"Simulado: Matemática","d":"15 questões mistas com tempo limite de 5 minutos."},{"n":"Simulado: Ciências da Natureza","d":"15 questões mistas com tempo limite de 5 minutos."},{"n":"Simulado: Ciências Humanas","d":"15 questões mistas com tempo limite de 5 minutos."},{"n":"Geometria: Áreas","d":"Calcule áreas de triângulo, quadrado, círculo e retângulo em 60 segundos."},{"n":"Geometria: Volumes","d":"Calcule volumes de prisma, cilindro e cubo em 60 segundos."},{"n":"Tabuada do 7","d":"Treine a tabuada do 7 o máximo que puder em 60 segundos."},{"n":"Tabuada do 12","d":"Treine a tabuada do 12 o máximo que puder em 60 segundos."},{"n":"Movimento Retílineo","d":"Resolva problemas de velocidade, tempo e distância em 60 segundos."},{"n":"Capitais do Mundo","d":"Teste seus conhecimentos em capitais do planeta."},{"n":"Cronologia","d":"Em que ano aconteceu o evento?"}];
 var g = document.getElementById("grid");
+var vazio = document.getElementById("vazio");
 document.getElementById("busca").addEventListener("input", function(){
   var t = this.value.trim().toLowerCase();
-  var cs = g.children;
+  var cs = g.children, vis = 0;
   for(var i = 0; i < cs.length; i++){
     var d = D[i];
-    cs[i].style.display = (!t || (d.n + " " + d.d).toLowerCase().indexOf(t) >= 0) ? "" : "none";
+    var ok = (!t || (d.n + " " + d.d).toLowerCase().indexOf(t) >= 0);
+    cs[i].style.display = ok ? "" : "none";
+    if(ok) vis++;
   }
+  vazio.style.display = vis ? "none" : "";
 });
 </script>
 </body>

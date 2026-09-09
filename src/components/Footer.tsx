@@ -1,71 +1,115 @@
 import { ArrowUp, Mail } from "lucide-react";
 import { motion } from "framer-motion";
-import { categorias } from "../data/apps";
+import { Logo } from "./Navbar";
+
+const colunas = [
+  {
+    titulo: "Produto",
+    links: [
+      { texto: "Estudos", href: "#estudos" },
+      { texto: "Jogos", href: "#jogos" },
+      { texto: "Úteis", href: "#uteis" },
+      { texto: "Diretório de Estudos", href: "/ZCODE/Estudos/" },
+      { texto: "Diretório de Jogos", href: "/ZCODE/Jogos/" },
+      { texto: "Diretório de Úteis", href: "/ZCODE/Úteis/" },
+    ],
+  },
+  {
+    titulo: "Recursos",
+    links: [
+      { texto: "Central de ajuda", href: "/ZCODE/Recursos/ajuda.html" },
+      { texto: "Instalar a Zcode", href: "/ZCODE/Recursos/instalar.html" },
+      { texto: "Fale conosco", href: "/ZCODE/Recursos/contato.html" },
+      { texto: "Perguntas frequentes", href: "#faq" },
+    ],
+  },
+  {
+    titulo: "Plataforma",
+    links: [
+      { texto: "Por que a Zcode", href: "#sobre" },
+      { texto: "Instalar aplicativo", href: "#baixar" },
+      { texto: "Voltar ao topo", href: "#topo" },
+    ],
+  },
+];
 
 export default function Footer() {
   const ano = new Date().getFullYear();
 
   return (
-    <footer className="bg-ink text-paper">
-      <div className="mx-auto w-full max-w-7xl px-5 pb-8 pt-20 md:px-8 md:pt-28">
+    <footer className="border-t border-line bg-[#060907]">
+      <div className="mx-auto w-full max-w-7xl px-5 pb-8 pt-16 md:px-8 md:pt-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.65 }}
-          className="mb-20 flex flex-col gap-8 border-b border-white/15 pb-20 md:mb-24 md:flex-row md:items-end md:justify-between md:pb-24"
+          className="mb-14 flex flex-col gap-8 border-b border-line pb-14 md:flex-row md:items-end md:justify-between"
         >
           <div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/45">
-              Tem uma ideia?
-            </span>
-            <h2 className="mt-5 max-w-xl font-display text-5xl leading-[0.92] tracking-[-0.04em] md:text-7xl">
-              Ajude a escolher o próximo aplicativo.
+            <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-brand-400">
+              Tem uma ideia de aplicativo?
+            </p>
+            <h2 className="mt-4 max-w-xl font-display text-4xl font-extrabold leading-[1.05] tracking-[-0.02em] md:text-5xl">
+              Ajude a escolher o próximo lançamento.
             </h2>
           </div>
           <a
-            href="mailto:contato@zcode.dev?subject=Ideia%20de%20aplicativo"
-            className="inline-flex w-fit items-center gap-3 border border-white/30 px-5 py-3 font-body text-sm font-semibold text-white hover:border-white hover:bg-white hover:text-ink"
+            href="/ZCODE/Recursos/contato.html"
+            className="inline-flex w-fit items-center gap-2.5 rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-500"
           >
             <Mail className="size-4" />
             Enviar sugestão
           </a>
         </motion.div>
 
-        <div className="flex flex-col gap-10 border-b border-white/15 pb-10 md:flex-row md:items-center md:justify-between">
-          <a href="#topo" className="font-display text-3xl tracking-[-0.04em]">
-            Zcode
-          </a>
-
-          <ul className="flex flex-wrap items-center gap-x-7 gap-y-3">
-            {categorias.map((categoria) => (
-              <li key={categoria.id}>
-                <a
-                  href={`#${categoria.id}`}
-                  className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/50 hover:text-white"
-                >
-                  {categoria.titulo}
-                </a>
-              </li>
+        <div className="grid gap-10 pb-12 md:grid-cols-[1fr_2fr]">
+          <div>
+            <a href="#topo" aria-label="Zcode — início">
+              <Logo claro />
+            </a>
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink/55">
+              300 aplicativos gratuitos para estudos, jogos e trabalho.
+              Tudo no navegador, sem cadastro.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+            {colunas.map((coluna) => (
+              <div key={coluna.titulo}>
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink/40">
+                  {coluna.titulo}
+                </p>
+                <ul className="mt-4 space-y-2.5">
+                  {coluna.links.map((link) => (
+                    <li key={link.texto}>
+                      <a
+                        href={link.href}
+                        className="text-sm text-ink/65 hover:text-brand-300"
+                      >
+                        {link.texto}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+          </div>
+        </div>
 
+        <div className="flex flex-col items-start justify-between gap-4 border-t border-line pt-6 md:flex-row md:items-center">
+          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/35">
+            © {ano} Zcode — Todos os direitos reservados
+          </p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/35">
+            Feito para a web · pt-BR
+          </p>
           <a
             href="#topo"
             aria-label="Voltar ao topo"
-            className="grid size-10 place-items-center border border-white/25 hover:border-white hover:bg-white hover:text-ink"
+            className="grid size-10 place-items-center rounded-xl border border-line text-ink/60 hover:border-brand-500/50 hover:text-brand-300"
           >
             <ArrowUp className="size-4" />
           </a>
-        </div>
-
-        <div className="flex flex-col items-start justify-between gap-3 pt-6 md:flex-row md:items-center">
-          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/40">
-            © {ano} Zcode — Todos os direitos reservados
-          </p>
-          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/40">
-            Feito para a web · pt-BR
-          </p>
         </div>
       </div>
     </footer>

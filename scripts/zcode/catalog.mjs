@@ -6,14 +6,18 @@
 import * as D from "./data/estudos.mjs";
 import { UNIDADES } from "./data/uteis.mjs";
 import * as EST from "./engines/estudos.mjs";
+import * as EST2 from "./engines/estudos2.mjs";
+import * as E2 from "./data/estudos2.mjs";
 import * as JOG from "./engines/jogos.mjs";
+import * as JOG2 from "./engines/jogos2.mjs";
 import * as UT1 from "./engines/uteis.mjs";
 import * as UT2 from "./engines/uteis2.mjs";
 import * as UT2B from "./engines/uteis2b.mjs";
 import * as UT3 from "./engines/uteis3.mjs";
+import * as UT4 from "./engines/uteis4.mjs";
 
-export const UTEIS = { ...UT1, ...UT2, ...UT2B, ...UT3 };
-export const ENGINES = { estudos: EST.ESTUDOS, jogos: JOG.JOGOS, uteis: UTEIS };
+export const UTEIS = { ...UT1, ...UT2, ...UT2B, ...UT3, ...UT4 };
+export const ENGINES = { estudos: { ...EST.ESTUDOS, ...EST2 }, jogos: { ...JOG.JOGOS, ...JOG2.JOGOS2 }, uteis: UTEIS };
 
 /* ── helpers ─────────────────────────────────────────────── */
 const GEN = (arr) => "function(){return " + JSON.stringify(arr) + "}";
@@ -36,43 +40,94 @@ const E = [];
 const leg = (nome, desc, dir, page, imagem, destaque) =>
   E.push({ nome, desc, legacy: dir, page, imagem, destaque: !!destaque });
 
-leg("Funções", "Visualizador matemático interativo de funções.", "funcoes(01)", "index.html", "images/editorial/study-desk.jpg", true);
-leg("Calculadora", "Calculadora de estudo para resolver expressões.", "calculadorabasica(02)", "index.html", "images/editorial/study-desk.jpg");
-leg("Tabela Periódica", "Tabela periódica interativa dos elementos.", "tabelaperiodica(03)", "index.html", "images/editorial/study-desk.jpg");
-leg("Fórmulas", "Biblioteca de fórmulas das ciências da natureza.", "formulas(04)", "index.html", "images/editorial/study-desk.jpg");
-leg("Citologia", "Explorador interativo das partes da célula.", "citologia(05)", "index.html", "images/editorial/study-desk.jpg");
-leg("Sistemas do Corpo", "Atlas interativo dos sistemas do corpo humano.", "sistemas(06)", "index.html", "images/editorial/study-desk.jpg");
-leg("Atlas Interativo", "Mapa vetorial interativo para estudar geografia.", "Atlas(07)", "index.html", "images/editorial/study-desk.jpg");
-leg("Eras Geológicas", "Linha do tempo interativa da Terra.", "eras(08)", "index.html", "images/editorial/study-desk.jpg");
-leg("Pomodoro", "Cronômetro de foco para sessões de estudo.", "pomodoro(09)", "index.html", "images/editorial/study-desk.jpg");
-leg("Plotter 3D", "Plotter de funções em três dimensões.", "geometria(10)", "index.html", "images/editorial/study-desk.jpg");
-leg("CSS Challenge", "Clone de designs famosos para treinar CSS.", "learncss(11)", "index.html", "images/editorial/study-desk.jpg");
+leg("Funções", "Visualizador matemático interativo de funções.", "funcoes(01)", "index.html", "", true);
+leg("Calculadora", "Calculadora de estudo para resolver expressões.", "calculadorabasica(02)", "index.html", "");
+leg("Tabela Periódica", "Tabela periódica interativa dos elementos.", "tabelaperiodica(03)", "index.html", "");
+leg("Fórmulas", "Biblioteca de fórmulas das ciências da natureza.", "formulas(04)", "index.html", "");
+leg("Citologia", "Explorador interativo das partes da célula.", "citologia(05)", "index.html", "");
+leg("Sistemas do Corpo", "Atlas interativo dos sistemas do corpo humano.", "sistemas(06)", "index.html", "");
+leg("Atlas Interativo", "Mapa vetorial interativo para estudar geografia.", "Atlas(07)", "index.html", "");
+leg("Eras Geológicas", "Linha do tempo interativa da Terra.", "eras(08)", "index.html", "");
+leg("Pomodoro", "Cronômetro de foco para sessões de estudo.", "pomodoro(09)", "index.html", "");
+leg("Plotter 3D", "Plotter de funções em três dimensões.", "geometria(10)", "index.html", "");
+leg("CSS Challenge", "Clone de designs famosos para treinar CSS.", "learncss(11)", "index.html", "");
 
 const app = (nome, desc, engine, params, destaque) =>
   E.push({ nome, desc, engine, params, imagem: "", destaque: !!destaque });
+const e2 = (o, eng, destaque) => app(o.nome, o.sub, eng, o, destaque);
 
-/* flashcards ×14 */
-const DECK_TIT = {
-  matematica: "Matemática", ingles: "Inglês", historia: "História", ciencias: "Ciências",
-  biologia: "Biologia", fisica: "Física", quimica: "Química", geografia: "Geografia",
-  literatura: "Literatura", filosofia: "Filosofia", codigo: "Programação",
-  gramatica: "Gramática", arte: "Arte", esportes: "Esportes",
-};
-for (const k of Object.keys(DECK_TIT)) {
-  app("Flashcards: " + DECK_TIT[k], D.DECKS[k].length + " cartões para fixar o essencial do assunto.", "flashcards", { deck: D.DECKS[k] }, k === "matematica");
-}
+/* guias de estudo ×13 */
+e2(E2.GUIAS.redacaoEstrutura, "guia", true);
+e2(E2.GUIAS.redacaoRepertorio, "guia");
+e2(E2.GUIAS.classesGramaticais, "guia");
+e2(E2.GUIAS.sintaxe, "guia");
+e2(E2.GUIAS.pontuacaoCrase, "guia");
+e2(E2.GUIAS.literaturaAutores, "guia");
+e2(E2.GUIAS.historiaColonia, "guia");
+e2(E2.GUIAS.historiaRepublica, "guia");
+e2(E2.GUIAS.filosofiaAntiga, "guia");
+e2(E2.GUIAS.filosofiaModerna, "guia");
+e2(E2.GUIAS.biomas, "guia", true);
+e2(E2.GUIAS.quimicaEstequiometria, "guia");
+e2(E2.GUIAS.fisicaCinematica, "guia");
 
-/* quiz mcq ×16 */
-const QUIZ_TIT = {
-  cultura: "Cultura Geral", mat: "Matemática", hist: "História", geo: "Geografia",
-  cienc: "Ciências", ingles: "Inglês", logica: "Lógica", codigo: "Programação",
-  arte: "Arte", esportes: "Esportes", biologia: "Biologia", fisica: "Física",
-  quimica: "Química", brasil: "Brasil", cinemas: "Cinema", musica: "Música",
-};
-for (const k of Object.keys(QUIZ_TIT)) {
-  const itens = D.QUIZ[k].map((e) => q(e.q, e.op[e.a], e.op, e.dica));
-  app("Quiz: " + QUIZ_TIT[k], D.QUIZ[k].length + " questões de múltipla escolha sobre o tema.", "mcq", { gen: GEN(itens) }, k === "mat");
-}
+/* tabelas de referência ×4 */
+e2(E2.TABELAS.conectivos, "tabelaRef");
+e2(E2.TABELAS.verbosIrregulares, "tabelaRef");
+e2(E2.TABELAS.formulasMat, "tabelaRef");
+e2(E2.TABELAS.unidadesSI, "tabelaRef");
+
+/* linhas do tempo ×3 */
+e2(E2.LINHAS.escolasLiterarias, "linhaTempo", true);
+e2(E2.LINHAS.historiaBrasil, "linhaTempo");
+e2(E2.LINHAS.historiaGeral, "linhaTempo");
+
+/* passo a passo ×4 */
+e2(E2.PASSOS.equacoes, "passoAPasso");
+e2(E2.PASSOS.pitagoras, "passoAPasso");
+e2(E2.PASSOS.fracoes, "passoAPasso");
+e2(E2.PASSOS.potencias, "passoAPasso");
+
+/* completar ×7 */
+e2(E2.COMPLETAR.porques, "completar");
+e2(E2.COMPLETAR.homonimos, "completar");
+e2(E2.COMPLETAR.crase, "completar");
+e2(E2.COMPLETAR.tobe, "completar");
+e2(E2.COMPLETAR.concordancia, "completar");
+e2(E2.COMPLETAR.acentuacao, "completar");
+e2(E2.COMPLETAR.preposicoesEn, "completar");
+
+/* ordenar ×6 */
+e2(E2.ORDENAR.brasil, "ordenar");
+e2(E2.ORDENAR.agua, "ordenar");
+e2(E2.ORDENAR.metodo, "ordenar");
+e2(E2.ORDENAR.fotosintese, "ordenar");
+e2(E2.ORDENAR.francesa, "ordenar");
+e2(E2.ORDENAR.eras, "ordenar");
+
+/* relacionar ×8 */
+e2(E2.RELACIONAR.capitais, "relacionar");
+e2(E2.RELACIONAR.elementos, "relacionar");
+e2(E2.RELACIONAR.autores, "relacionar");
+e2(E2.RELACIONAR.ingles, "relacionar");
+e2(E2.RELACIONAR.grandezas, "relacionar");
+e2(E2.RELACIONAR.biomas, "relacionar");
+e2(E2.RELACIONAR.figuras, "relacionar");
+e2(E2.RELACIONAR.corpo, "relacionar");
+
+/* caça-erros ×5 */
+e2(E2.CACA.concordancia, "cacaErros");
+e2(E2.CACA.crase, "cacaErros");
+e2(E2.CACA.pontuacao, "cacaErros");
+e2(E2.CACA.contas, "cacaErros");
+e2(E2.CACA.ingles, "cacaErros");
+
+/* cruzadas ×3 */
+e2(E2.CRUZADAS.carro, "cruzadas");
+e2(E2.CRUZADAS.gato, "cruzadas");
+e2(E2.CRUZADAS.agua, "cruzadas");
+
+/* sequências mantidas ×2 */
 
 /* sequências ×4 (inputGame, gen autocontido) */
 const ZN_SRC = "var ZN=function(a,b){return a+Math.floor(Math.random()*(b-a+1))}";
@@ -81,36 +136,10 @@ const genSeq = (k) =>
   "function(){" + ZN_SRC + ";" + PRIMOS_SRC + ";" +
   "var r=(" + D.SEQUENCIAS[k].gen.toString() + ")(0);" +
   "return {t:r.show.join(\", \")+\" , …\", a:r.next, dica:r.dica}}";
+
 app("Sequências Aritméticas", "Descubra o próximo número da sequência aritmética.", "inputGame", { gen: genSeq("arit"), roundSeg: 60 });
-app("Sequências Geométricas", "Descubra o próximo número da sequência geométrica.", "inputGame", { gen: genSeq("geo"), roundSeg: 60 });
+
 app("Sequências de Fibonacci", "Cada termo é a soma dos dois anteriores. Descubra o próximo.", "inputGame", { gen: genSeq("fib"), roundSeg: 60 });
-app("Sequências de Primos", "Sequências de números primos. Descubra o próximo.", "inputGame", { gen: genSeq("primo"), roundSeg: 60 });
-
-/* conjugação ×3 (mcq) */
-const CONJ_TIT = { presente: "Presente", past: "Passado", futuro: "Futuro" };
-for (const k of Object.keys(CONJ_TIT)) {
-  const itens = D.CONJUGACAO[k].map((c) => q("Conjugue: " + c[0] + " (" + c[1] + ")", c[2][0], c[2], "Preste atenção na pessoa do verbo."));
-  app("Conjugação: " + CONJ_TIT[k], "Conjugue o verbo no tempo " + CONJ_TIT[k].toLowerCase() + ".", "mcq", { gen: GEN(itens) });
-}
-
-/* traduções (mcq) */
-{
-  const itens = D.TRADUCOES.map((t) => q("“" + t[0] + "” em inglês?", t[1], t[2]));
-  app("Tradução PT → EN", "Descubra a tradução correta em inglês.", "mcq", { gen: GEN(itens) });
-  const rev = D.TRADUCOES.map((t, i) => {
-    const outros = shuf(D.TRADUCOES.filter((_, j) => j !== i).map((u) => u[0])).slice(0, 3);
-    return q("“" + t[1] + "” em português?", t[0], [t[0], ...outros]);
-  });
-  app("Tradução EN → PT", "Descubra a tradução correta em português.", "mcq", { gen: GEN(rev) });
-}
-
-/* unidades, capitais (mcq) */
-{
-  const itens = D.UNIDADES.map((u) => q("Qual é a unidade de " + u[0] + " no Sistema Internacional?", u[1][u[2]], u[1]));
-  app("Unidades de Medida", "Qual é a unidade oficial no SI?", "mcq", { gen: GEN(itens) });
-  const itensC = D.CAPITAIS.map((c) => q("Qual é a capital de " + c[0] + "?", c[1], c[2]));
-  app("Capitais da Europa", "Associe o país à capital.", "mcq", { gen: GEN(itensC), total: 16 });
-}
 
 /* estatística (inputGame, gen autocontido) */
 app("Estatística Rápida", "Calcule a média aritmética do conjunto em até 60 segundos.", "inputGame", {
@@ -124,9 +153,11 @@ for (const k of Object.keys(ANAG_TIT)) {
   app("Anagramas: " + ANAG_TIT[k], "Desembrulhe as letras e forme a palavra.", "anagrama", { palavras: D.ANAGRAMAS[k].map((p) => p[1]) }, k === "med");
 }
 
-/* verdadeiro/falso ×6 */
+/* verdadeiro/falso ×4 */
+
 const TF_TIT = { ciencia: "Ciências", hist: "História", geo: "Geografia", cultura: "Cultura", esporte: "Esportes", mat: "Matemática" };
-for (const k of Object.keys(TF_TIT)) {
+
+for (const k of ["ciencia", "hist", "geo", "mat"]) {
   app("V/F: " + TF_TIT[k], "Verdadeiro ou falso? " + D.TF[k].length + " afirmações.", "tf", { itens: D.TF[k] });
 }
 
@@ -136,9 +167,11 @@ for (const k of Object.keys(WS_TIT)) {
   app("Palavras Escondidas: " + WS_TIT[k], "Encontre as " + D.ESMESCIDAS[k].length + " palavras na grade.", "ws", { palavras: D.ESMESCIDAS[k] });
 }
 
-/* pares ×8 */
+/* pares ×5 */
+
 const PARES_TIT = { animais: "Animais", capitais: "Capitais", elementos: "Elementos", sinonimos: "Sinônimos", ant: "Antônimos", citacoes: "Citações", orgaos: "Órgãos", datas: "Datas Históricas" };
-for (const k of Object.keys(PARES_TIT)) {
+
+for (const k of ["animais", "capitais", "elementos", "citacoes", "datas"]) {
   app("Jogo dos Pares: " + PARES_TIT[k], "Encontre os pares de " + PARES_TIT[k].toLowerCase() + " e fixe o conteúdo.", "pares", { paresData: D.PARES[k] }, k === "animais");
 }
 
@@ -150,13 +183,6 @@ app("Repetição Espaçada: Inglês", "Vocabulário em inglês com repetição e
 app("Planner de Estudos", "Organize tarefas com assunto, duração e data. Salvo no navegador.", "planner", {}, true);
 app("Caderno de Anotações", "Anotações rápidas com Markdown simples. Salvo no navegador.", "caderno", {});
 app("Ginástica Cerebral", "Memorize sequências de dígitos que ficam cada vez maiores.", "ginastica", {});
-
-/* enigmas ×3 (mcq) */
-const ENIG_TIT = { facil: "Fácil", med: "Médio", dif: "Difícil" };
-for (const k of Object.keys(ENIG_TIT)) {
-  const itens = D.ENIGMAS[k].map((e) => q(e[0], e[1][0], e[1]));
-  app("Enigmas: " + ENIG_TIT[k], "Quebra-cabeças de lógica e raciocínio.", "mcq", { gen: GEN(itens) });
-}
 
 /* probabilidade (mcq) */
 {
@@ -179,14 +205,10 @@ for (const k of Object.keys(ENIG_TIT)) {
   app("Trigonometria Básica", "Valores de seno, cosseno e tangente dos ângulos notáveis.", "mcq", { gen: GEN(itens) });
 }
 
-/* bandeiras ×2 (mcq) */
+/* bandeiras: todas em um app (mcq) */
 {
-  const metade = Math.ceil(D.BANDEIRAS.length / 2);
-  const partes = [D.BANDEIRAS.slice(0, metade), D.BANDEIRAS.slice(metade)];
-  partes.forEach((parte, i) => {
-    const itens = parte.map((b) => q("Qual país tem esta bandeira? " + b[0], b[1], b[2]));
-    app("Bandeiras do Mundo " + (i + 1), "Identifique o país pela bandeira. Ronda " + (i + 1) + ".", "mcq", { gen: GEN(itens) }, i === 0);
-  });
+  const itens = D.BANDEIRAS.map((b) => q("Qual país tem esta bandeira? " + b[0], b[1], b[2]));
+  app("Bandeiras do Mundo", "Identifique o país pela bandeira entre todas as bandeiras do jogo.", "mcq", { gen: GEN(itens) }, true);
 }
 
 /* simulados ×3 (mcq com timer) */
@@ -204,32 +226,8 @@ app("Geometria: Volumes", "Calcule volumes de prisma, cilindro e cubo em 60 segu
 const TAB = (n) =>
   "function(){var t=2+Math.floor(Math.random()*8);return {t:t+' × " + n + " = ?', a:t*" + n + "}}";
 app("Tabuada do 7", "Treine a tabuada do 7 o máximo que puder em 60 segundos.", "inputGame", { gen: TAB(7), roundSeg: 60 }, true);
-app("Tabuada do 9", "Treine a tabuada do 9 o máximo que puder em 60 segundos.", "inputGame", { gen: TAB(9), roundSeg: 60 });
+
 app("Tabuada do 12", "Treine a tabuada do 12 o máximo que puder em 60 segundos.", "inputGame", { gen: TAB(12), roundSeg: 60 });
-
-/* potências (inputGame) */
-app("Potências Rápidas", "Calcule potências como 3^4 em até 60 segundos.", "inputGame", {
-  gen: "function(){var b=2+Math.floor(Math.random()*4),e=2+Math.floor(Math.random()*4);return {t:b+'^'+e+' = ?', a:Math.pow(b,e), dica:b+' elevado a '+e}}",
-  roundSeg: 60,
-});
-
-/* fórmulas de área (inputGame) */
-{
-  const itens = [
-    { t: "Área do quadrado de lado 6 = ?", a: 36, dica: "A = l²" },
-    { t: "Área do retângulo 7 × 5 = ?", a: 35, dica: "A = b × h" },
-    { t: "Área do triângulo: base 10, altura 6 = ?", a: 30, dica: "A = b·h ÷ 2" },
-    { t: "Área do círculo de raio 2 (π = 3,14) = ?", a: 12.56, dica: "A = πr²" },
-    { t: "Área do trapézio: bases 6 e 4, altura 5 = ?", a: 25, dica: "A = (B + b)·h ÷ 2" },
-    { t: "Área do losango: diagonais 8 e 6 = ?", a: 24, dica: "A = D·d ÷ 2" },
-    { t: "Área do quadrado de lado 9 = ?", a: 81, dica: "A = l²" },
-    { t: "Área do triângulo: base 12, altura 8 = ?", a: 48, dica: "A = b·h ÷ 2" },
-  ];
-  app("Fórmulas de Área", "Calcule a área das figuras em até 60 segundos.", "inputGame", {
-    gen: "function(){var I=" + JSON.stringify(itens) + ";var x=I[Math.floor(Math.random()*I.length)];return {t:x.t, a:x.a, dica:x.dica}}",
-    roundSeg: 60,
-  });
-}
 
 /* movimento (inputGame) */
 {
@@ -248,20 +246,6 @@ app("Potências Rápidas", "Calcule potências como 3^4 em até 60 segundos.", "
   });
 }
 
-/* química (mcq) */
-{
-  const ELS = [
-    ["Ferro", "Fe"], ["Ouro", "Au"], ["Prata", "Ag"], ["Sódio", "Na"],
-    ["Potássio", "K"], ["Cálcio", "Ca"], ["Cloro", "Cl"], ["Carbono", "C"],
-    ["Hidrogênio", "H"], ["Oxigênio", "O"], ["Nitrogênio", "N"], ["Cobre", "Cu"],
-  ];
-  const itens = ELS.map((e, i) => {
-    const outros = shuf(ELS.filter((_, j) => j !== i).map((u) => u[1])).slice(0, 3);
-    return q("Qual é o símbolo do elemento " + e[0] + "?", e[1], [e[1], ...outros], "Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras.");
-  });
-  app("Símbolos Químicos", "Associe o elemento ao seu símbolo na tabela periódica.", "mcq", { gen: GEN(itens) });
-}
-
 /* capitais do mundo (mcq) */
 {
   const CAPS = [
@@ -274,17 +258,6 @@ app("Potências Rápidas", "Calcule potências como 3^4 em até 60 segundos.", "
     return q("Qual é a capital de " + c[0] + "?", c[1], [c[1], ...outros]);
   });
   app("Capitais do Mundo", "Teste seus conhecimentos em capitais do planeta.", "mcq", { gen: GEN(itens) });
-}
-
-/* sinônimos (mcq) */
-{
-  const EXTRAS = [["bonito", "lindo"], ["rápido", "veloz"], ["inteligente", "esperto"], ["difícil", "complicado"]];
-  const todos = [...D.PARES.sinonimos, ...EXTRAS];
-  const itens = todos.map((p) => {
-    const outros = shuf(todos.filter((x) => x !== p).map((x) => x[1])).slice(0, 3);
-    return q("Qual é o sinônimo de “" + p[0] + "”?", p[1], [p[1], ...outros]);
-  });
-  app("Sinônimos Relâmpagos", "Escolha o sinônimo correto.", "mcq", { gen: GEN(itens) });
 }
 
 /* cronologia (mcq) */
@@ -310,181 +283,131 @@ const J = [];
 const jleg = (nome, desc, dir, page, imagem, destaque) =>
   J.push({ nome, desc, legacy: dir, page, imagem, destaque: !!destaque });
 
-jleg("Bandeiras do Mundo", "Adivinhe o país pela bandeira.", "jogopaises(01)", "index.html", "images/editorial/chess-board.jpg", true);
-jleg("Roleta da Fortuna", "Gire a roleta e acerte as perguntas.", "rodafortuna(02)", "index.html", "images/editorial/chess-board.jpg");
-jleg("TRcraft", "Mundo voxel infinito para explorar e construir.", "minicraft(03)", "craft.html", "images/editorial/chess-board.jpg", true);
-jleg("Hunterz", "A caçada na floresta: desvie e sobreviva.", "estilhacos(04)", "index.html", "images/editorial/chess-board.jpg");
-jleg("MK: Ultimate Arena", "Jogo de luta com golpes especiais.", "mortalkombat(05)", "index.html", "images/editorial/chess-board.jpg");
-jleg("Fuja das Esferas", "Corra e fuja das esferas que te perseguem.", "fujaesferas(06)", "index.html", "images/editorial/chess-board.jpg");
-jleg("IFood Rider", "Corrida infinita entregando sem capotar.", "ifoodrunner(07)", "index.html", "images/editorial/chess-board.jpg");
+jleg("Bandeiras do Mundo", "Adivinhe o país pela bandeira.", "jogopaises(01)", "index.html", "", true);
+jleg("Roleta da Fortuna", "Gire a roleta e acerte as perguntas.", "rodafortuna(02)", "index.html", "");
+jleg("TRcraft", "Mundo voxel infinito para explorar e construir.", "minicraft(03)", "craft.html", "", true);
+jleg("Hunterz", "A caçada na floresta: desvie e sobreviva.", "estilhacos(04)", "index.html", "");
+jleg("MK: Ultimate Arena", "Jogo de luta com golpes especiais.", "mortalkombat(05)", "index.html", "");
+jleg("Fuja das Esferas", "Corra e fuja das esferas que te perseguem.", "fujaesferas(06)", "index.html", "");
+jleg("Delivery Rider", "Corrida infinita de entregas: desvie sem capotar.", "ifoodrunner(07)", "index.html", "");
 
 const japp = (nome, desc, engine, params, destaque) =>
   J.push({ nome, desc, engine, params, imagem: "", destaque: !!destaque });
 
-/* snake ×8 */
-japp("Snake Neon", "O clássico da cobrinha em neon. Coma e cresça!", "snake", { tema: "neon" }, true);
-japp("Snake Retrô", "Cobrinha verde estilo arcade dos anos 80.", "snake", { tema: "retrô" });
-japp("Snake Rosa", "A cobrinha rosa. Mesmas regras, outro charme.", "snake", { tema: "rosa" });
-japp("Snake Violeta", "Cobrinha violeta para quem gosta de roxo.", "snake", { tema: "violeta" });
-japp("Snake Amarelo", "Cobrinha amarela bem visível no escuro.", "snake", { tema: "amarelo" });
-japp("Snake Ciano", "Cobrinha ciana, rápida e fria.", "snake", { tema: "ciano" });
-japp("Turbo Snake", "Snake duas vezes mais rápido. Só para corajosos.", "snake", { tema: "neon", velocidade: 70 });
+/* --- jogos completos (engines novos) --- */
+japp("Tetris Clássico", "Empilhe as peças, complete linhas e suba de nível. Com peça fantasma.", "tetris", { modo: "classico" }, true);
+japp("Tetris Sprint", "Complete 40 linhas o mais rápido que puder.", "tetris", { modo: "sprint" });
+japp("Quebra-Blocos", "Rebata a bola e destrua os tijolos em 5 fases.", "breakout", { turbo: false }, true);
+japp("Quebra-Blocos Turbo", "8 fases em velocidade máxima.", "breakout", { turbo: true });
+japp("Pac-Labirinto", "Coma todos os pontos e fuja dos 4 fantasmas.", "pac", { mapa: 0 }, true);
+japp("Pac-Labirinto 2", "Um segundo labirinto, mais fechado e traiçoeiro.", "pac", { mapa: 1 });
+japp("Fuga das Esferas", "Sobreviva 60 segundos às esferas caçadoras. Use o dash!", "fuga", { modo: "tempo" }, true);
+japp("Fuga Infinita", "Sem limite de tempo: quanto você aguenta?", "fuga", { modo: "endless" });
+japp("Caçada na Floresta", "Colete os 8 cogumelos e desvie dos lobos.", "cacada", { noite: false });
+japp("Caçada Noturna", "A floresta escura: só a sua lanterna e os vagalumes.", "cacada", { noite: true });
+japp("Pulo Certeiro", "Plataforma com 3 fases: moedas, espinhos e a porta de saída.", "platformer", { pack: 0 });
+japp("Pulo Certeiro 2", "Mais 3 fases, mais altas e traiçoeiras.", "platformer", { pack: 1 });
+japp("Corrida Maluca", "Desvie do tráfego, pegue moedas e não deixe o tanque zerar.", "corrida", { noite: false });
+japp("Corrida Noturna", "A mesma estrada, no escuro dos faróis.", "corrida", { noite: true });
+japp("Sobreviva aos Zumbis", "Ondas de zumbis com tiro automático e itens de cura.", "zumbis", { dificil: false }, true);
+japp("Noite dos Zumbis", "Zumbis mais rápidos no escuro. Segure as ondas.", "zumbis", { dificil: true });
+japp("Esquadrão Estelar", "Shooter espacial com power-ups e chefes a cada 5 ondas.", "shmup", { turbo: false }, true);
+japp("Esquadrão Turbo", "Formação densa e chefes agressivos.", "shmup", { turbo: true });
+japp("Mini-Golfe", "6 buracos: corredores, areia e tacadas contadas.", "golfe", { pack: 0 });
+japp("Mini-Golfe Pro", "6 buracos difíceis para quem zerou o primeiro.", "golfe", { pack: 1 });
+japp("Damas", "Damas contra a CPU: capturas obrigatórias e damas voadoras.", "damas", { nivel: "normal" });
+japp("Damas Difícil", "A CPU analisa mais fundo. Boa sorte.", "damas", { nivel: "dificil" });
+japp("Lig-4", "Acerte 4 em linha antes da CPU.", "lig4", { nivel: "normal" });
+japp("Lig-4 Difícil", "CPU com análise profunda. Quase imbatível.", "lig4", { nivel: "dificil" });
+japp("Resta Um", "O clássico tabuleiro inglês. Reste uma peça — no centro!", "resta1", { tabuleiro: "ingles" });
+japp("Resta Um Europeu", "O tabuleiro francês, com 36 peças.", "resta1", { tabuleiro: "europeu" });
+japp("Torre de Hanói", "4 discos: leve a torre inteira para a última haste.", "hanoi", { discos: 4 });
+japp("Hanói Mestre", "6 discos e 63 lances mínimos. Paciência!", "hanoi", { discos: 6 });
+japp("Nonogram 5×5", "Pinte pelos números e revele 3 desenhos.", "nonogram", { pack: "facil" });
+japp("Nonogram 10×10", "Dois painéis grandes com dicas e verificação.", "nonogram", { pack: "medio" });
+japp("Apague as Luzes 5×5", "Toque para inverter as vizinhas e apague tudo.", "lights", { n: 5 });
+japp("Apague as Luzes 7×7", "Grade grande, sempre com solução garantida.", "lights", { n: 7 });
+japp("Defesa da Base", "Tower defense: 20 ondas, 3 torres e melhorias.", "defesa", { modo: "normal" }, true);
+japp("Defesa Infinita", "Ondas sem fim. Até onde a base aguenta?", "defesa", { modo: "endless" });
+japp("Adedonha Solo", "Letra sorteada, 6 categorias e 90 segundos.", "adedonha", {});
+
+/* --- clássicos mantidos --- */
+japp("Snake Neon", "O clássico da cobrinha. Coma, cresça e bata o recorde.", "snake", { tema: "neon" }, true);
 japp("Snake Sem Muro", "Atravesse as bordas do tabuleiro e saia do outro lado.", "snake", { tema: "neon", wrap: true });
-
-/* 2048 ×6 */
-japp("2048 Clássico", "Junte os blocos e chegue à tile 2048.", "jogo2048", { n: 4, alvo: 2048 }, true);
-japp("1024 Compacto", "Mesma mecânica, meta mais curta: chegue a 1024.", "jogo2048", { n: 4, alvo: 1024 });
-japp("512 Mini", "Grade 3×3 e meta de 512. Aperte o raciocínio.", "jogo2048", { n: 3, alvo: 512 });
+japp("2048 Clássico", "Junte os blocos e chegue à peça 2048.", "jogo2048", { n: 4, alvo: 2048 }, true);
 japp("2048 XL", "Grade 5×5 com muito mais espaço para manobrar.", "jogo2048", { n: 5, alvo: 2048 });
-japp("4096 Extremo", "Para quem não se contenta com 2048.", "jogo2048", { n: 4, alvo: 4096 });
-japp("8192 Lendário", "O desafio lendário: alcance a tile 8192.", "jogo2048", { n: 4, alvo: 8192 });
 
-/* memoria ×12 */
+/* memoria ×5 */
 const MEM = [
   ["Frutas", ["Maçã", "", "Morango", "Abacaxi", "Abacate"], true],
   ["Animais", ["Cachorro", "Gato", "Rato", "", "Coelho"], false],
-  ["Esportes", ["Bola", "Basquete", "Tênis", "", ""], false],
   ["Espaço", ["Nave", "Mundo", "Lua", "⭐", "Cometa"], false],
-  ["Comida", ["Pizza", "Hambúrguer", "Batata", "", ""], false],
-  ["Natureza", ["Pinheiro", "Cacto", "Girassol", "Cogumelo", ""], false],
-  ["Objetos", ["Mochila", "Chave", "⌚", "", ""], false],
-  ["Corações", ["Vermelho", "Laranja", "Amarelo", "Verde", "Azul"], false],
   ["Música", ["Violão", "Piano", "Trompete", "", "Bateria"], false],
   ["Clima", ["Sol", "Neve", "Energia", "Arco-íris", "Tempestade"], false],
-  ["Festas", ["Concluído", "Presente", "Balão", "Bolo", ""], false],
-  ["Carros", ["Carro", "", "", "", "Carro"], false],
 ];
 for (const [t, emo, d] of MEM) japp("Memória: " + t, "Encontre os pares de " + t.toLowerCase() + " no menor número de jogadas.", "memoria", { emoji: emo, cols: 3 }, d);
 
-/* velha ×2 */
 japp("Velha vs CPU", "Jogo da velha contra o computador.", "velha", { cpu: true });
 japp("Velha a Dois", "Jogo da velha para dois jogadores no mesmo aparelho.", "velha", { cpu: false });
-
-/* minas ×5 */
 japp("Campo Minado: Fácil", "Tabuleiro 8×8 com 8 minas.", "minas", { rows: 8, cols: 8, bombs: 8 });
 japp("Campo Minado: Clássico", "O clássico 9×9 com 10 minas.", "minas", { rows: 9, cols: 9, bombs: 10 }, true);
 japp("Campo Minado: Médio", "12×12 com 20 minas. Cuidado!", "minas", { rows: 12, cols: 12, bombs: 20 });
 japp("Campo Minado: Difícil", "14×14 com 30 minas. Só experts.", "minas", { rows: 14, cols: 14, bombs: 30 });
-japp("Campo Minado: Expert", "16×16 com 40 minas. Boa sorte.", "minas", { rows: 16, cols: 16, bombs: 40 });
-
-/* pong ×2 */
 japp("Pong Neon", "Pong em neon contra a CPU.", "pong", { neon: true }, true);
 japp("Pong Clássico", "Pong estilo original, sem neons.", "pong", { neon: false });
-
-/* simon ×2 */
 japp("Simon Diz", "Repita a sequência de luzes e sons.", "simon", { turbo: false }, true);
 japp("Simon Turbo", "Simon com sequências mais rápidas.", "simon", { turbo: true });
-
-/* reflexos ×4 */
 japp("Reflexos: Tempo", "Clique quando aparecer o verde o mais rápido possível.", "reflexos", { modo: "tempo" });
 japp("Reflexos: Turbo", "Versão turbo: o verde aparece mais rápido e imprevisível.", "reflexos", { modo: "turbo" });
 japp("Reflexos: Pare no Meio", "Mova o cursor e pare o mais perto possível do centro.", "reflexos", { modo: "pare" });
-japp("Reflexos: Cores", "Memorize a cor e clique no nome dela em 30 segundos.", "reflexos", { modo: "cor" });
 
-/* cacador ×5 */
+/* cacador ×2 */
 const CAC = [
   ["Caça-Frutas", ["Maçã", ""], false],
-  ["Caça-Doce", ["Rosquinha", "Doce"], false],
-  ["Caça-Ferramentas", ["Martelo", "Ferramenta"], false],
-  ["Caça-Símbolos", ["⭐", "Cristal"], false],
   ["Caça-Moedas", ["Moeda", "Moeda"], false],
 ];
 for (const [t, emo, d] of CAC) japp(t, "Pegue os itens que caem antes que saiam da tela. 30 segundos.", "cacador", { emoji: emo }, d);
 
-/* forca ×5 */
-japp("Forca: Animais", "Palavras paraenses… digo, de bichos!", "forca", {
+japp("Forca: Animais", "Adivinhe o animal antes de completar o boneco.", "forca", {
   palavras: ["cavalo", "tatu", "jacare", "arara", "onca", "capivara", "tucano", "morcego", "cobra", "sapo"],
 }, true);
 japp("Forca: Frutas", "Adivinhe a fruta antes de completar o boneco.", "forca", {
   palavras: ["mangueira", "goiaba", "abacaxi", "maracuja", "pitaya", "carambola", "jabuticaba", "mamon"],
 });
-japp("Forca: Profissões", "Palavras de quem trabalha para você passar.", "forca", {
+japp("Forca: Profissões", "Adivinhe a profissão letra a letra.", "forca", {
   palavras: ["padeiro", "dentista", "carpinteiro", "mecanico", "programador", "pedreiro", "pintor", "piloto"],
 });
 japp("Forca: Lugares", "Cidades, países e lugares do Brasil e do mundo.", "forca", {
   palavras: ["amazonas", "recife", "lisboa", "patagonia", "patagonia", "marrakech", "belgrado", "salvador"],
 });
-japp("Forca: Palavras Longas", "Para quem já domina a forca: só palavras longas.", "forca", {
-  palavras: ["xale", "burburinho", "borboleta", "borboleta", "carambola", "jornalista", "borboleteiro"],
-});
-
-/* adivinhe ×3 */
-japp("Adivinhe o Número (100)", "O número está entre 1 e 100. Acerte em poucas tentativas.", "adivinhe", { max: 100 });
-japp("Adivinhe o Número (500)", "Entre 1 e 500: pense em busca binária!", "adivinhe", { max: 500 });
-japp("Adivinhe o Número (1000)", "Entre 1 e 1000. O logaritmo é seu amigo.", "adivinhe", { max: 1000 });
-
-/* sudoku ×4 */
 japp("Sudoku 4×4", "Sudoku de entrada: grade 4×4.", "sudoku", { n: 4, buracos: 8 });
 japp("Sudoku 6×6", "Sudoku intermediário: grade 6×6.", "sudoku", { n: 6, buracos: 12 });
 japp("Sudoku 9×9", "O clássico: grade 9×9.", "sudoku", { n: 9, buracos: 20 }, true);
 japp("Sudoku 9×9: Difícil", "Grade 9×9 com poucos números iniciais.", "sudoku", { n: 9, buracos: 30 });
-
-/* quinze ×2 */
 japp("Quebra-Cabeça 8", "Ordene as peças 1 a 8 (grade 3×3).", "quinze", { n: 3 });
 japp("Quebra-Cabeça 15", "Ordene as peças 1 a 15 (grade 4×4).", "quinze", { n: 4 });
-
-/* asteroides ×2 */
-japp("Asteroides Neon", "Destroie asteroides em estilo neon.", "asteroides", { neon: true });
-japp("Asteroides Clássico", "Astrominado estilo arcade original.", "asteroides", { neon: false });
-
-/* invasores ×2 */
+japp("Asteroides", "Destroie os asteroides e desvie dos fragmentos.", "asteroides", { neon: true });
 japp("Invasores Espaciais", "Defenda a Terra das fileiras de invasores.", "invasores", { turbo: false });
 japp("Invasores Turbo", "Invasores mais rápidos e sem piedade.", "invasores", { turbo: true });
-
-/* flappy ×2 */
-japp("Flappy Pipa", "Toque para voar. A pipa verde não para.", "flappy", { tema: "verde" }, true);
-japp("Flappy Lua", "A pipa atravessa a noite lunar.", "flappy", { tema: "lua" });
-
-/* runner ×4 */
+japp("Flappy Pipa", "Toque para voar sem bater.", "flappy", { tema: "verde" }, true);
 japp("Runner Neon", "Corra e pule obstáculos em cenário neon.", "runner", { tema: "neon" }, true);
-japp("Runner Dino", "O clássico dinossauro em versão Zcode.", "runner", { tema: "dino" });
-japp("Runner Lua", "Corrida noturna em ritmo de sátiro… de lua.", "runner", { tema: "lua" });
-japp("Runner Neo", "Corrida em roxo cyberpunk.", "runner", { tema: "neomex" });
-
-/* alvo ×2 */
+japp("Runner Dino", "Corra, pule e desvie numa corrida pré-histórica.", "runner", { tema: "dino" });
 japp("Alvo Móvel", "Acerte o alvo antes que ele mude de lugar.", "alvo", { turbo: false });
 japp("Alvo Turbo", "O alvo não fica parado: versão turbo.", "alvo", { turbo: true });
-
-/* pilha ×2 */
 japp("Pilha de Blocos", "Empilhe blocos sem deixar cair. Quanto mais alto, melhor.", "pilha", { neon: false }, true);
-japp("Pilha Neon", "O empilhador em estilo neon.", "pilha", { neon: true });
-
-/* stroop ×2 */
-japp("Jogo Stroop", "Diga a COR da tinta, não a palavra.", "stroop", { turbo: false });
-japp("Stroop Turbo", "Stroop com tempo encurtado.", "stroop", { turbo: true });
-
-/* boliche ×1 */
 japp("Boliche", "Arraste a bola e derrube as 10 pinos.", "boliche", {}, true);
-
-/* dadoDuelo ×2 */
 japp("Duelo do 7", "Vence quem chegar primeiro a somar 7 com dois dados.", "dadoDuelo", { alvo: 7 });
 japp("Duelo do 12", "A soma máxima: chegue a 12 primeiro.", "dadoDuelo", { alvo: 12 });
-
-/* blackjack ×1 */
 japp("Blackjack 21", "Pegue até 21 sem estourar. Contra o dealer.", "blackjack", {}, true);
-
-/* labirinto ×4 */
 japp("Labirinto 9", "Encontre a saída no labirinto 9×9.", "labirinto", { n: 9 });
-japp("Labirinto 13", "Labirinto 13×13, sem pressa — mas com paredes.", "labirinto", { n: 13 });
 japp("Labirinto 11 com Fantasma", "Saia do labirinto antes que o fantasma te pegue.", "labirinto", { n: 11, perseguido: true }, true);
 japp("Labirinto 17 com Fantasma", "Labirinto grande, fantasma ágil. Sorte!", "labirinto", { n: 17, perseguido: true });
-
-/* bolhas ×2 */
 japp("Bolhas", "Estoure todas as bolhas antes do tempo acabar.", "bolhas", { turbo: false });
 japp("Bolhas Turbo", "Bolhas mais rápidas: reflexo afiado.", "bolhas", { turbo: true });
-
-/* esquiva ×2 */
 japp("Esquiva", "Desvie dos blocos que caem do topo.", "esquiva", { neon: false });
-japp("Esquiva Neon", "A esquiva em neons psicodélicos.", "esquiva", { neon: true });
-
-/* pintor ×2 */
 japp("Pintor 6×6", "Repita o padrão de cores célula por célula.", "pintor", { n: 6 });
 japp("Pintor 8×8", "Padrão 8×8: memória de cores em grau avançado.", "pintor", { n: 8 });
-
-/* tapTempo ×1 */
 japp("Tap Tempo", "Toque no ritmo exato do metrônomo. Precisão!", "tapTempo", {});
-
-/* pegaQuedas ×2 */
 japp("Pega Frutas", "Gire a cesta e pegue as frutas que caem.", "pegaQuedas", { noite: false }, true);
 japp("Pega Frutas: Noite", "O mesmo jogo, agora no escuro. Cuidado com as bombas.", "pegaQuedas", { noite: true });
 
@@ -493,11 +416,11 @@ const U = [];
 const uleg = (nome, desc, dir, page, imagem, destaque) =>
   U.push({ nome, desc, legacy: dir, page, imagem, destaque: !!destaque });
 
-uleg("Fauna Sonora", "Ouça o canto real dos animais.", "Sons(01)", "fauna.html", "images/editorial/study-notes.jpg", true);
-uleg("Encurtador de Links", "Encurte e acompanhe seus links.", "diminuilink(02)", "index.html", "images/editorial/study-notes.jpg");
-uleg("Lançador de Dados", "D3, D6, D20 e mais em 3D.", "dados(03)", "index.html", "images/editorial/study-notes.jpg");
-uleg("Sorteador de Grupos", "Divida pessoas em grupos aleatórios.", "sorteargrupos(04)", "index.html", "images/editorial/study-notes.jpg");
-uleg("Gerador de Gradiente", "Crie gradientes CSS e copie o código.", "cssatual(05)", "index.html", "images/editorial/study-notes.jpg");
+uleg("Fauna Sonora", "Ouça o canto real dos animais.", "Sons(01)", "fauna.html", "", true);
+uleg("Encurtador de Links", "Encurte e acompanhe seus links.", "diminuilink(02)", "index.html", "");
+uleg("Lançador de Dados", "D3, D6, D20 e mais em 3D.", "dados(03)", "index.html", "");
+uleg("Sorteador de Grupos", "Divida pessoas em grupos aleatórios.", "sorteargrupos(04)", "index.html", "");
+uleg("Gerador de Gradiente", "Crie gradientes CSS e copie o código.", "cssatual(05)", "index.html", "");
 
 const uapp = (nome, desc, engine, params, destaque) =>
   U.push({ nome, desc, engine, params, imagem: "", destaque: !!destaque });
@@ -512,7 +435,6 @@ for (const k of Object.keys(CONV)) {
 }
 
 uapp("Calculadora Científica", "Raízes, potências, trig, log e mais.", "calcCientifica", {}, true);
-uapp("Calculadora de Percentual", "Quanto é X% de Y? E o aumento/desconto?", "percentual", {});
 uapp("Cronômetro", "Cronômetro com voltas e precisão de 100 ms.", "cronometro", {}, true);
 uapp("Timer de Contagem", "Contagem regressiva com alarme sonoro.", "timer", {}, true);
 uapp("Relógio Mundial", "Hora local em 18 cidades do mundo, ao vivo.", "relogioMundial", {});
@@ -532,7 +454,6 @@ uapp("Gerador de UUID", "Crie UUIDs v4 em lote.", "uuid", {});
 uapp("Gerador de Números", "Números aleatórios com intervalo e sem repetição.", "aleatorio", {});
 uapp("Sorteador de Opções", "Digite opções e deixe o sorteio escolher.", "sorteador", { modo: "opcoes" });
 uapp("Sorteador de Nomes", "Sorteie um nome de uma lista (prêmios, equipes).", "sorteador", { modo: "nomes" });
-uapp("Cara ou Coroa", "Moeda virtual para decisões difíceis.", "moeda", {});
 uapp("Estatísticas de Texto", "Palavras, caracteres, frases e tempo de leitura.", "textoStats", {});
 uapp("Conversor de Maiúsculas", "camelCase, SNAKE_CASE, kebab-case e mais 7 modos.", "caseConv", {});
 uapp("Codificador de URL", "Encode/decode de parâmetros de URL.", "urlEnc", {});
@@ -545,11 +466,6 @@ uapp("Conversor HTML/Entidades", "Converta texto para entidades HTML e vice-vers
 uapp("Imagem para Base64", "Cole uma imagem e copie o data-URI.", "imgB64", {});
 uapp("Gerador de QR Code", "Transforme qualquer texto ou URL em QR Code.", "qr", {}, true);
 uapp("Calculadora de IMC", "Índice de massa corporal com faixa de referência.", "imc", {}, true);
-uapp("Calculadora de Gorjeta", "Divida a conta e calcule a gorjeta.", "gorjeta", {});
-uapp("Divisão de Conta", "Quanto cada um paga, com ou sem gorjeta.", "dividaConta", {});
-uapp("Juros Compostos", "Montante de juros compostos vs simples.", "juros", {});
-uapp("Prestação de Empréstimo", "Prestação mensal no sistema PRICE.", "prestacao", {});
-uapp("Juros Simples", "A fórmula J = C·i·t na prática.", "jurosSimples", {});
 uapp("Gasto Calórico (TMB)", "Calcule seu metabolismo basal e gasto diário.", "tmb", {});
 uapp("Orçamento Pessoal", "Registre entradas e saídas, mês a mês.", "orcamento", {});
 uapp("Meta de Água", "Acompanhe seu consumo diário de água.", "agua", {});
@@ -567,29 +483,19 @@ uapp("Flexbox Playground", "Brinque com flexbox e copie o CSS.", "cssFlex", {});
 uapp("CSS Grid Playground", "Explore grid-template com prévia interativa.", "cssGrid", {});
 uapp("Curvas Bezier", "Ajuste cubic-bezier e veja a animação.", "cssBezier", {});
 uapp("Tipografia", "Componha fonte, peso, linha e espaçamento.", "tipografia", {});
-uapp("Palíndromo", "Verifique se a frase é lida igual aos dois sentidos.", "palindromo", {});
 uapp("Máscara de Telefone", "Digite e veja o número formatado ao vivo.", "fone", {});
 uapp("Validador de CPF", "Validação dos dígitos verificadores em tempo real.", "cpf", {}, true);
 uapp("Conversor de Números Romanos", "Vá e volta entre arábicos e romanos.", "romano", {});
 uapp("Conversor de Bases", "Binário, octal, decimal e hexadecimal em sincronia.", "bases", {});
 uapp("Texto ↔ Hex", "Converta texto para bytes hex e vice-versa.", "hexTexto", {});
-uapp("Cifra ROT13", "Cifre e decifre com o clássico ROT13.", "rot13", {});
 uapp("Sorte de Ordem", "Sorteie a ordem de uma lista de participantes.", "ordem", {});
-uapp("Conversor de Ângulos", "Graus ↔ radianos, complemento e suplemento.", "angulos", {});
-uapp("Pitágoras", "Hipotenusa ou cateto, com os ângulos do triângulo.", "pitagoras", {});
-uapp("Áreas de Formas", "Área e perímetro de 5 formas geométricas.", "areaFormas", {});
-uapp("Média Ponderada", "Some notas com pesos e veja sua média final.", "mediaPond", {});
-uapp("Nota da Recuperação", "Qual nota você precisa para alcançar a média?", "notaFinal", {});
 uapp("Salário Líquido", "Simulação de INSS e IRRF sobre o bruto.", "salario", {});
 uapp("Custo de Viagem", "Combustível, pedágio e hospedagem por pessoa.", "viagem", {});
 uapp("Distância entre Pontos", "Haversine: distância real entre coordenadas.", "distancia", {});
-uapp("Velocidade Média", "Calcule km/h, m/s e mph a partir de distância e tempo.", "velocidade", {});
-uapp("Escala de Mapa", "Converta medidas de mapa em distância real.", "proporcao", {});
 uapp("Área de Terreno", "m², hectares e alqueires de um terreno retangular.", "terreno", {});
 uapp("Calculadora de Cimento", "Cimento, areia e brita para sua laje.", "cimento", {});
 uapp("Calculadora de Tinta", "Litros e latas de tinta para sua parede.", "tinta", {});
 uapp("Consumo de Energia", "Estime a conta de luz de um aparelho.", "energia", {});
-uapp("Tempo de Download", "Quanto tempo leva para baixar aquele arquivo?", "download", {});
 uapp("Gerador de Personagem", "Nomes e classes aleatórias para seu RPG.", "personagem", {});
 uapp("Frase do Dia", "Citações curtas para inspirar o dia.", "frases", {});
 uapp("Timestamp UNIX", "Converta datas e timestamps UNIX nos dois sentidos.", "timestamp", {});
@@ -597,7 +503,26 @@ uapp("Metrônomo", "BPM ajustável com tap tempo.", "metronomo", {});
 uapp("Diário de Humor", "Registre seu humor e veja a tendência do mês.", "humor", {});
 uapp("Rastreador de Metas", "Metas com barra de progresso e contagem.", "metas", {});
 uapp("Número por Extenso", "Escreva qualquer número em palavras.", "porExtenso", {});
-uapp("Comparador de Números", "Qual é maior, e por quanto?", "comparador", {});
+
+/* ferramentas profissionais ×18 */
+uapp("Simulador de Financiamento", "PRICE × SAC com tabela de amortização completa.", "amortizacao", {}, true);
+uapp("Investimento com Aportes", "Juros compostos com gráfico de evolução anual.", "investimento", { modo: "geral" }, true);
+uapp("Aposentadoria: Simulador", "Quanto juntar e qual renda mensal esperar.", "investimento", { modo: "aposentadoria" });
+uapp("Kanban", "Quadro A fazer/Fazendo/Feito salvo no navegador.", "kanban", {});
+uapp("Currículo Profissional", "Preencha e imprima um currículo pronto em PDF.", "curriculo", {}, true);
+uapp("Redimensionar Imagem", "Mude o tamanho e o formato sem sair do navegador.", "imagem", { modo: "redimensionar" });
+uapp("Comprimir Imagem", "Reduza o peso de fotos com controle de qualidade.", "imagem", { modo: "comprimir" });
+uapp("Paleta de Imagem", "Extraia as cores dominantes de qualquer foto.", "paleta", {});
+uapp("Decodificador JWT", "Header, payload e validade de qualquer token.", "jwt", {});
+uapp("Cliente REST", "Mini Postman: teste APIs GET/POST no navegador.", "rest", {});
+uapp("Analisador de URL", "Quebre qualquer URL em partes e parâmetros.", "urlparse", {});
+uapp("Explicador de Cron", "Traduza expressões cron para português.", "crontab", {});
+uapp("Quanto Cobrar (Freelancer)", "Sua hora ideal a partir de salário, custos e margem.", "freelancer", {});
+uapp("Sorteador de Times", "Divida participantes em times equilibrados.", "times", {});
+uapp("Validador de CNPJ", "Dígitos verificadores em tempo real.", "cnpj", {});
+uapp("Extrator de Contatos", "Ache e-mails, telefones e links em qualquer texto.", "extrator", {});
+uapp("Dias Úteis", "Conte dias úteis entre datas, descontando feriados.", "diasUteis", {});
+uapp("Dados de Teste", "Pessoas fictícias para formulários e testes.", "fakedata", {});
 
 /* ── export ─────────────────────────────────────────────── */
 export const CATALOGO = { estudos: E, jogos: J, uteis: U };

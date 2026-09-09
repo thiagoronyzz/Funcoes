@@ -110,7 +110,7 @@ function ModalComoInstalar({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] grid place-items-end bg-ink/60 backdrop-blur-sm p-0 sm:place-items-center sm:p-6"
+          className="fixed inset-0 z-[100] grid place-items-end bg-black/70 backdrop-blur-sm p-0 sm:place-items-center sm:p-6"
           onClick={fechar}
         >
           <motion.div

@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="pt-BR" data-cat="estudos">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Redação ENEM: Estrutura — Zcode</title>
+<meta name="description" content="O esqueleto da dissertação-argumentativa, competência por competência.">
+<meta name="theme-color" content="#090d0b">
+<meta name="application-name" content="Zcode">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2064%2064'%3E%3Crect%20width%3D'64'%20height%3D'64'%20rx%3D'14'%20fill%3D'%230b0f0d'%2F%3E%3Crect%20x%3D'1'%20y%3D'1'%20width%3D'62'%20height%3D'62'%20rx%3D'13'%20fill%3D'none'%20stroke%3D'rgba(255%2C255%2C255%2C0.16)'%20stroke-width%3D'2'%2F%3E%3Cpath%20d%3D'M20%2018h24L20%2046h24'%20fill%3D'none'%20stroke%3D'%2310b981'%20stroke-width%3D'7'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --z-bg:#090d0b; --z-bg2:#0c1210; --z-surface:#101715; --z-surface2:#162019;
+  --z-line:rgba(255,255,255,.09); --z-line2:rgba(255,255,255,.17);
+  --z-text:#edf2ef; --z-muted:#8e9b94;
+  --z-brand:#10b981; --z-brand-hi:#34d399; --z-brand-deep:#059669;
+  --z-brand-soft:rgba(16,185,129,.12);
+  --z-cyan:#38bdf8; --z-pink:#a78bfa; --z-lime:#4ade80; --z-amber:#fbbf24;
+  --z-red:#f87171; --z-ok:#34d399; --z-radius:12px;
+  --z-fd:"Sora",system-ui,sans-serif;
+  --z-f:"Inter",system-ui,sans-serif;
+  --z-fm:"JetBrains Mono",ui-monospace,monospace;
+  --z-acc:var(--z-brand-hi);
+  color-scheme:dark;
+}
+html[data-cat="estudos"]{--z-acc:var(--z-cyan)}
+html[data-cat="jogos"]{--z-acc:var(--z-pink)}
+html[data-cat="uteis"]{--z-acc:var(--z-lime)}
+html[data-cat="social"]{--z-acc:var(--z-amber)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--z-bg);
+  background-image:radial-gradient(1100px 340px at 50% -120px,rgba(16,185,129,.09),transparent 70%);
+  background-attachment:fixed;
+  color:var(--z-text); font-family:var(--z-f); font-size:15px; line-height:1.6;
+  min-height:100dvh; -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--z-brand);color:#04120c}
+a{color:var(--z-brand-hi)}
+h1,h2,h3,.fd{font-family:var(--z-fd);letter-spacing:-.02em}
+.mono{font-family:var(--z-fm)}
+.dim{color:var(--z-muted)} .acc{color:var(--z-acc)}
+.center{text-align:center} .row{display:flex;gap:10px;align-items:center}
+.wrap{flex-wrap:wrap} .between{justify-content:space-between}
+.col{display:flex;flex-direction:column;gap:10px}
+.mt{margin-top:14px} .mb{margin-bottom:14px} .grow{flex:1}
+.hidden{display:none!important}
+:focus-visible{outline:2px solid var(--z-brand-hi);outline-offset:2px;border-radius:6px}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#243029;border-radius:99px;border:2px solid var(--z-bg)}
+
+/* ── topo ─────────────────────────────────────────────── */
+.ztop{
+  position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;
+  height:58px;padding:0 16px;border-bottom:1px solid var(--z-line);
+  background:rgba(9,13,11,.86);backdrop-filter:blur(12px);
+}
+.ztop-brand{display:inline-flex;align-items:center;gap:9px;color:var(--z-text);
+  font-family:var(--z-fd);font-weight:800;font-size:17px;line-height:1;text-decoration:none;flex:none}
+.zlogo{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;
+  background:linear-gradient(135deg,#10b981,#0d8a63);color:#04120c;font-size:16px;font-weight:800;
+  box-shadow:0 4px 14px -4px rgba(16,185,129,.55)}
+.ztop-mid{min-width:0}
+.ztop-mid strong{display:block;font-size:14px;font-weight:600;letter-spacing:-.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.zchip{display:inline-flex;align-items:center;gap:6px;font-family:var(--z-fm);font-size:10.5px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--z-acc);
+  background:color-mix(in srgb,var(--z-acc) 12%, transparent);
+  border:1px solid color-mix(in srgb,var(--z-acc) 32%, transparent);
+  padding:3px 10px;border-radius:99px;white-space:nowrap}
+.zback{margin-left:auto;font-size:13px;font-weight:600;text-decoration:none;
+  color:var(--z-muted);border:1px solid var(--z-line2);border-radius:9px;padding:8px 14px;
+  transition:.2s;white-space:nowrap;background:transparent;cursor:pointer;font-family:var(--z-f)}
+.zback:hover{color:var(--z-text);border-color:var(--z-acc)}
+
+/* ── layout ───────────────────────────────────────────── */
+.zmain{max-width:1020px;margin:0 auto;padding:30px 18px 80px}
+.zhero{margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--z-line)}
+.zhero h1{font-size:clamp(26px,4.5vw,38px);font-weight:800;line-height:1.08;letter-spacing:-.03em}
+.zhero h1 em{font-style:normal;color:var(--z-acc)}
+.zhero p{color:var(--z-muted);margin-top:8px;max-width:660px;font-size:15.5px}
+.zfoot{border-top:1px solid var(--z-line);padding:20px 16px 28px;text-align:center;
+  font-family:var(--z-fm);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--z-muted)}
+.zfoot b{color:var(--z-text);font-weight:600}
+
+/* ── cartões / painéis ────────────────────────────────── */
+.zcard{background:linear-gradient(180deg,rgba(255,255,255,.025),transparent 40%),var(--z-surface);
+  border:1px solid var(--z-line);border-radius:var(--z-radius);padding:18px;
+  box-shadow:0 18px 40px -28px rgba(0,0,0,.8)}
+.zcard.pad{padding:24px}
+.zgrid{display:grid;gap:12px}
+.zg2{grid-template-columns:repeat(2,1fr)}
+.zg3{grid-template-columns:repeat(3,1fr)}
+.zg4{grid-template-columns:repeat(4,1fr)}
+.zbig{font-family:var(--z-fd);font-size:clamp(40px,9vw,68px);font-weight:800;line-height:1;
+  font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+.zstat{display:flex;flex-direction:column;gap:2px}
+.zstat span{font-family:var(--z-fm);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--z-muted)}
+.zstat b{font-family:var(--z-fd);font-size:20px;font-weight:700}
+
+/* ── tabelas / chamadas / código / selos ──────────────── */
+.ztable{width:100%;border-collapse:collapse;font-size:14px}
+.ztable th{font-family:var(--z-fm);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--z-muted);font-weight:500;text-align:left;padding:10px 12px;border-bottom:1px solid var(--z-line2)}
+.ztable td{padding:11px 12px;border-bottom:1px solid var(--z-line);font-variant-numeric:tabular-nums}
+.ztable tr:last-child td{border-bottom:0}
+.ztable tr:hover td{background:rgba(255,255,255,.02)}
+.zbadge{display:inline-flex;align-items:center;font-size:11.5px;font-weight:700;
+  padding:3px 10px;border-radius:99px;background:var(--z-brand-soft);color:var(--z-brand-hi);
+  border:1px solid rgba(16,185,129,.3);white-space:nowrap}
+.zcallout{border:1px solid var(--z-line2);border-left:3px solid var(--z-acc);
+  background:rgba(255,255,255,.025);border-radius:10px;padding:13px 16px;font-size:14px}
+.zcallout b{color:var(--z-acc)}
+.zcode{font-family:var(--z-fm);font-size:13px;line-height:1.6;background:#070b09;
+  border:1px solid var(--z-line);border-radius:10px;padding:14px 16px;overflow-x:auto;white-space:pre}
+
+/* ── botões / campos ──────────────────────────────────── */
+.zbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+  font-family:var(--z-f);font-weight:700;font-size:14.5px;
+  color:#04120c;background:var(--z-acc);border:1px solid transparent;border-radius:10px;
+  padding:11px 20px;transition:.18s;text-decoration:none;user-select:none}
+.zbtn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.zbtn:active{transform:translateY(0)}
+.zbtn:disabled{opacity:.4;cursor:not-allowed;transform:none;filter:none}
+.zbtn.ghost{background:rgba(255,255,255,.03);color:var(--z-text);border-color:var(--z-line2)}
+.zbtn.ghost:hover{border-color:var(--z-acc);color:var(--z-acc)}
+.zbtn.danger{background:var(--z-red);color:#1c0606}
+.zbtn.sm{padding:7px 13px;font-size:12.5px;border-radius:8px}
+.zbtn.big{padding:14px 28px;font-size:16px;border-radius:12px}
+.zbtn.w{width:100%}
+.zinput,.zselect,.ztextarea{width:100%;background:#0b100d;border:1px solid var(--z-line2);
+  color:var(--z-text);border-radius:10px;padding:11px 14px;font-family:var(--z-f);font-size:15px;
+  outline:none;transition:.18s}
+.zinput:focus,.zselect:focus,.ztextarea:focus{border-color:var(--z-acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--z-acc) 22%,transparent)}
+.ztextarea{min-height:130px;resize:vertical;font-family:var(--z-fm);font-size:13px;line-height:1.5}
+.zselect{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--z-muted) 50%),linear-gradient(135deg,var(--z-muted) 50%,transparent 50%);
+  background-position:calc(100% - 18px) 55%,calc(100% - 13px) 55%;background-size:5px 5px;background-repeat:no-repeat;padding-right:38px}
+.zselect option{background:#101715}
+.zlabel{display:block;font-family:var(--z-fm);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--z-muted);margin-bottom:6px}
+
+/* ── opções (quiz) ────────────────────────────────────── */
+.zopty{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
+  background:rgba(255,255,255,.03);color:var(--z-text);border:1px solid var(--z-line2);
+  border-radius:10px;padding:13px 16px;font-family:var(--z-f);font-size:15px;transition:.16s}
+.zopty:hover:not(:disabled){border-color:var(--z-acc);transform:translateX(3px)}
+.zopty i{font-style:normal;font-family:var(--z-fm);font-size:11px;color:var(--z-muted);
+  width:24px;height:24px;border-radius:8px;display:grid;place-items:center;
+  background:rgba(255,255,255,.06);flex:none}
+.zopty.ok{border-color:var(--z-ok);background:rgba(52,211,153,.1);color:var(--z-ok)}
+.zopty.err{border-color:var(--z-red);background:rgba(248,113,113,.1);color:var(--z-red)}
+.zopty:disabled{cursor:default}
+
+/* ── barra / progresso / toast / modal ────────────────── */
+.zprog{height:8px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+.zprog i{display:block;height:100%;border-radius:99px;background:var(--z-acc);transition:width .3s}
+.ztoast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);z-index:99;
+  background:#f2f5f3;color:#0a0e0c;font-weight:700;font-size:13.5px;padding:11px 22px;
+  border-radius:10px;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 18px 40px -12px rgba(0,0,0,.7)}
+.ztoast.on{opacity:1;transform:translate(-50%,0)}
+.zmodal{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;
+  background:rgba(2,5,4,.72);backdrop-filter:blur(6px)}
+.zbox{width:min(460px,100%);background:var(--z-surface);border:1px solid var(--z-line2);
+  border-radius:16px;padding:26px;text-align:center;box-shadow:0 30px 60px -20px rgba(0,0,0,.8)}
+.zbox h3{font-size:24px;margin-bottom:8px}
+.zbox p{color:var(--z-muted);margin-bottom:18px}
+.zkbd{font-family:var(--z-fm);font-size:11px;border:1px solid var(--z-line2);border-bottom-width:2px;
+  border-radius:7px;padding:2px 7px;background:rgba(255,255,255,.05)}
+canvas.zc{display:block;width:100%;border-radius:14px;border:1px solid var(--z-line);
+  background:#070b09;touch-action:none}
+@media (max-width:560px){
+  .zg3,.zg4{grid-template-columns:repeat(2,1fr)}
+  .zmain{padding-top:20px}
+  .ztop-mid{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+
+
+.guia-corpo{margin-top:10px;font-size:15px;line-height:1.7;color:var(--z-text)}
+.guia-corpo p{margin:0 0 10px}
+.guia-corpo ul,.guia-corpo ol{margin:0 0 12px 20px}
+.guia-corpo li{margin-bottom:6px}
+.guia-corpo b,.guia-corpo strong{color:var(--z-brand-hi)}
+.guia-corpo table{width:100%;border-collapse:collapse;margin:0 0 12px;font-size:14px}
+.guia-corpo th{font-family:var(--z-fm);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--z-muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--z-line2)}
+.guia-corpo td{padding:8px 10px;border-bottom:1px solid var(--z-line);vertical-align:top}
+.guia-corpo blockquote{border-left:3px solid var(--z-acc);margin:0 0 12px;padding:8px 14px;background:rgba(255,255,255,.03);border-radius:0 10px 10px 0;color:var(--z-muted)}
+.guia-corpo code{font-family:var(--z-fm);font-size:13px;background:rgba(255,255,255,.07);padding:1px 6px;border-radius:6px}
+@media print{
+  .ztop,.zfoot,#busca,#imprimir,.zprog,#prog,.guia-corpo label{display:none!important}
+  body{background:#fff;color:#111}
+  .zcard{border-color:#ddd;box-shadow:none;break-inside:avoid}
+}</style>
+</head>
+<body data-app="redacao-enem-estrutura">
+<header class="ztop">
+  <a class="ztop-brand" href="/" aria-label="Zcode — início"><span class="zlogo">Z</span>code</a>
+  <div class="ztop-mid">
+    <strong>Redação ENEM: Estrutura</strong>
+  </div>
+  <span class="zchip">Estudos</span>
+  
+    <button id="zmute" class="zback" type="button" title="Ativar ou desligar o som" style="margin-left:0">Som ligado</button>
+  <a class="zback" href="/">← Início</a>
+</header>
+<main class="zmain" id="zmain">
+
+<div class="zhero"><h1>Redação ENEM: Estrutura</h1><p>O esqueleto da dissertação-argumentativa, competência por competência.</p></div>
+
+<div class="row mb wrap">
+  <input class="zinput grow" id="busca" placeholder="Buscar neste guia…" autocomplete="off" style="min-width:200px">
+  <button class="zbtn ghost sm" id="imprimir" type="button">Imprimir / PDF</button>
+</div>
+<div class="zprog mb"><i id="barra" style="width:0%"></i></div>
+<p class="dim mb" id="prog" style="font-size:13px"></p>
+<div class="col" id="secoes"></div>
+</main>
+<footer class="zfoot"><b>Zcode</b> · plataforma de aplicativos · Estudos</footer>
+<script>
+
+if (typeof CanvasRenderingContext2D !== "undefined" && CanvasRenderingContext2D.prototype && !CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+    if (typeof r === "number") r = [r, r, r, r];
+    if (!r) r = [0, 0, 0, 0];
+    this.beginPath();
+    this.moveTo(x + r[0], y);
+    this.arcTo(x + w, y, x + w, y + h, r[1]);
+    this.arcTo(x + w, y + h, x, y + h, r[2]);
+    this.arcTo(x, y + h, x, y, r[3]);
+    this.arcTo(x, y, x + w, y, r[0]);
+    this.closePath();
+    return this;
+  };
+}
+window.Z=(function(){
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var toastTimer=null;
+  function toast(msg,ms){
+    var t=$("#ztoast");
+    if(!t){t=document.createElement("div");t.id="ztoast";t.className="ztoast";document.body.appendChild(t)}
+    t.textContent=msg;t.classList.add("on");
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(function(){t.classList.remove("on")},ms||2200);
+  }
+  var store={
+    get:function(k,d){try{var v=localStorage.getItem("zcode:"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
+    set:function(k,v){try{localStorage.setItem("zcode:"+k,JSON.stringify(v))}catch(e){}},
+    best:function(k){return store.get("best:"+k,0)},
+    setBest:function(k,v){if(v>store.best(k))store.set("best:"+k,v)}
+  };
+  var actx=null,muted=false;
+  function ensureCtx(){
+    try{
+      var AC=window.AudioContext||window.webkitAudioContext;
+      if(!AC)return null;
+      if(!actx)actx=new AC();
+      if(actx.state==="suspended")actx.resume();
+      return actx;
+    }catch(e){return null}
+  }
+  function snd(freq,dur,type,vol){
+    if(muted)return;
+    var c=ensureCtx();if(!c)return;
+    try{
+      var o=c.createOscillator(),g=c.createGain();
+      o.type=type||"sine";o.frequency.value=freq||520;
+      g.gain.value=vol||0.05;
+      g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+(dur||0.09));
+      o.connect(g);g.connect(c.destination);
+      o.start();o.stop(c.currentTime+(dur||0.09));
+    }catch(e){}
+  }
+  function onKey(map){
+    document.addEventListener("keydown",function(e){
+      var k=e.key,low=k.length===1?k.toLowerCase():k;
+      if(map[k]||map[low]){e.preventDefault();(map[k]||map[low])()}
+    });
+  }
+  function rnd(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+  function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
+  function shuffle(arr){
+    var a=arr.slice(),i,j,t;
+    for(i=a.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=a[i];a[i]=a[j];a[j]=t}
+    return a;
+  }
+  function copy(t){
+    toast("Copiado!");
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).catch(function(){fallback()});
+    }else fallback();
+    function fallback(){
+      var ta=document.createElement("textarea");ta.value=t;
+      document.body.appendChild(ta);ta.select();
+      try{document.execCommand("copy")}catch(e){}
+      ta.remove();
+    }
+  }
+  function fmt(n,d){
+    try{return Number(n).toLocaleString("pt-BR",{minimumFractionDigits:d||0,maximumFractionDigits:d==null?3:(d||0)})}
+    catch(e){return String(n)}
+  }
+  function el(tag,cls,html){
+    var e=document.createElement(tag);
+    if(cls)e.className=cls;
+    if(html!=null)e.innerHTML=html;
+    return e;
+  }
+  function esc(s){
+    return String(s).replace(/[&<>"']/g,function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+  return {$:$,$:$$,toast:toast,store:store,snd:snd,onKey:onKey,rnd:rnd,pick:pick,shuffle:shuffle,copy:copy,fmt:fmt,el:el,esc:esc,
+    mute:function(){muted=!muted;return muted}};
+})();
+
+
+var zm=document.getElementById("zmute");
+if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
+
+(function(){
+  var SECOES=[{"t":"As 5 competências","h":"<p>A redação vale <b>1000 pontos</b>, 200 por competência. Decore o que cada uma cobra:</p><table><tr><th>Comp.</th><th>O que avalia</th></tr><tr><td><b>I</b></td><td>Domínio da norma culta: ortografia, concordância, regência, pontuação.</td></tr><tr><td><b>II</b></td><td>Compreender a proposta e aplicar repertório <b>produtivo</b> (que desenvolve o tema).</td></tr><tr><td><b>III</b></td><td>Argumentar com projeto de texto: tese clara, argumentos e coesão.</td></tr><tr><td><b>IV</b></td><td>Coesão: conectivos dentro e entre parágrafos, sem repetição.</td></tr><tr><td><b>V</b></td><td>Proposta de intervenção com <b>agente + ação + modo + efeito</b>, respeitando os direitos humanos.</td></tr></table>"},{"t":"Introdução: tese + repertório","h":"<p>Em 5 a 7 linhas, apresente o tema, um repertório legitimador e a sua <b>tese</b> (opinião central).</p><ul><li><b>Contextualize:</b> dado, fato histórico ou citação que situe o problema.</li><li><b>Problematize:</b> mostre por que o tema é um desafio hoje.</li><li><b>Tese:</b> 1 frase com sua posição + prévia dos 2 argumentos (um por parágrafo de desenvolvimento).</li></ul><blockquote>Modelo: repertório → ligação com o tema → tese com 2 argumentos anunciados.</blockquote>"},{"t":"Desenvolvimento: 2 parágrafos","h":"<p>Cada parágrafo desenvolve <b>um argumento</b> em 4 movimentos:</p><ol><li><b>Tópico frasal:</b> 1ª frase anuncia a ideia do parágrafo.</li><li><b>Repertório:</b> dado, citação, filme, lei ou fato histórico.</li><li><b>Análise:</b> explique COMO o repertório prova seu argumento (a parte mais importante).</li><li><b>Fechamento:</b> retome a tese com outras palavras.</li></ol><p>Sem análise, o repertório vira enfeite e a competência II despenca.</p>"},{"t":"Conclusão: proposta completa","h":"<p>A proposta precisa de 5 elementos para nota máxima na competência V:</p><ul><li><b>Agente:</b> quem resolve (governo, escola, mídia, família, ONGs).</li><li><b>Ação:</b> o que será feito (verbo no infinitivo ou futuro).</li><li><b>Modo:</b> como será feito (por meio de…).</li><li><b>Efeito:</b> resultado esperado (a fim de…).</li><li><b>Detalhamento:</b> aprofunde UM dos elementos acima.</li></ul><p>Proposta que viola direitos humanos <b>zera a competência V</b>.</p>"},{"t":"O que zera a redação","h":"<ul><li>Fuga total ao tema ou ao tipo dissertativo-argumentativo.</li><li>Texto com menos de <b>7 linhas</b> ou em branco.</li><li>Improperios, desenhos ou parte deliberadamente desconectada.</li><li>Assinatura, nome ou marca que identifique o autor.</li><li>Cópia integral dos textos motivadores.</li></ul><p>Escrever narração, poema ou carta no lugar da dissertação também zera.</p>"}];
+  var CHAVE="guia-red-estr";
+  var lidas=Z.store.get(CHAVE,{});
+  function salva(){Z.store.set(CHAVE,lidas);}
+  function render(filtro){
+    var box=document.getElementById("secoes");
+    box.innerHTML="";
+    var t=(filtro||"").toLowerCase(),vis=0,tot=0;
+    for(var i=0;i<SECOES.length;i++){
+      (function(i){
+        var s=SECOES[i];tot++;
+        var txt=(s.t+" "+s.h).toLowerCase();
+        if(t&&txt.indexOf(t)<0)return;
+        vis++;
+        var card=Z.el("div","zcard pad");
+        var head=Z.el("div","row between wrap");
+        var h=Z.el("h3");h.textContent=s.t;
+        var lab=Z.el("label","row");
+        lab.style.cssText="gap:6px;font-size:12.5px;color:var(--z-muted);cursor:pointer;flex:none";
+        var cb=document.createElement("input");
+        cb.type="checkbox";cb.checked=!!lidas[i];
+        cb.style.cssText="width:16px;height:16px;accent-color:#10b981;cursor:pointer";
+        cb.addEventListener("change",function(){lidas[i]=cb.checked;salva();progresso();});
+        lab.appendChild(cb);
+        var sp=document.createElement("span");sp.textContent="Lida";lab.appendChild(sp);
+        head.appendChild(h);head.appendChild(lab);
+        card.appendChild(head);
+        var corpo=Z.el("div","guia-corpo");corpo.innerHTML=s.h;
+        card.appendChild(corpo);
+        box.appendChild(card);
+      })(i);
+    }
+    if(!vis){
+      var v=Z.el("div","zcard pad center");
+      v.innerHTML="<p class='dim'>Nenhuma seção encontrada para essa busca.</p>";
+      box.appendChild(v);
+    }
+    progresso();
+  }
+  function progresso(){
+    var n=0;
+    for(var i=0;i<SECOES.length;i++)if(lidas[i])n++;
+    document.getElementById("barra").style.width=(n/SECOES.length*100)+"%";
+    document.getElementById("prog").textContent=n+" de "+SECOES.length+" seções lidas";
+  }
+  document.getElementById("busca").addEventListener("input",function(){render(this.value);});
+  document.getElementById("imprimir").addEventListener("click",function(){window.print();});
+  render("");
+})();
+
+</script>
+</body>
+</html>

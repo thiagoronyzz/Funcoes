@@ -6,6 +6,8 @@
 import * as D from "./data/estudos.mjs";
 import { UNIDADES } from "./data/uteis.mjs";
 import * as EST from "./engines/estudos.mjs";
+import * as EST2 from "./engines/estudos2.mjs";
+import * as E2 from "./data/estudos2.mjs";
 import * as JOG from "./engines/jogos.mjs";
 import * as JOG2 from "./engines/jogos2.mjs";
 import * as UT1 from "./engines/uteis.mjs";
@@ -14,7 +16,7 @@ import * as UT2B from "./engines/uteis2b.mjs";
 import * as UT3 from "./engines/uteis3.mjs";
 
 export const UTEIS = { ...UT1, ...UT2, ...UT2B, ...UT3 };
-export const ENGINES = { estudos: EST.ESTUDOS, jogos: { ...JOG.JOGOS, ...JOG2.JOGOS2 }, uteis: UTEIS };
+export const ENGINES = { estudos: { ...EST.ESTUDOS, ...EST2 }, jogos: { ...JOG.JOGOS, ...JOG2.JOGOS2 }, uteis: UTEIS };
 
 /* ── helpers ─────────────────────────────────────────────── */
 const GEN = (arr) => "function(){return " + JSON.stringify(arr) + "}";
@@ -51,29 +53,80 @@ leg("CSS Challenge", "Clone de designs famosos para treinar CSS.", "learncss(11)
 
 const app = (nome, desc, engine, params, destaque) =>
   E.push({ nome, desc, engine, params, imagem: "", destaque: !!destaque });
+const e2 = (o, eng, destaque) => app(o.nome, o.sub, eng, o, destaque);
 
-/* flashcards ×14 */
-const DECK_TIT = {
-  matematica: "Matemática", ingles: "Inglês", historia: "História", ciencias: "Ciências",
-  biologia: "Biologia", fisica: "Física", quimica: "Química", geografia: "Geografia",
-  literatura: "Literatura", filosofia: "Filosofia", codigo: "Programação",
-  gramatica: "Gramática", arte: "Arte", esportes: "Esportes",
-};
-for (const k of Object.keys(DECK_TIT)) {
-  app("Flashcards: " + DECK_TIT[k], D.DECKS[k].length + " cartões para fixar o essencial do assunto.", "flashcards", { deck: D.DECKS[k] }, k === "matematica");
-}
+/* guias de estudo ×13 */
+e2(E2.GUIAS.redacaoEstrutura, "guia", true);
+e2(E2.GUIAS.redacaoRepertorio, "guia");
+e2(E2.GUIAS.classesGramaticais, "guia");
+e2(E2.GUIAS.sintaxe, "guia");
+e2(E2.GUIAS.pontuacaoCrase, "guia");
+e2(E2.GUIAS.literaturaAutores, "guia");
+e2(E2.GUIAS.historiaColonia, "guia");
+e2(E2.GUIAS.historiaRepublica, "guia");
+e2(E2.GUIAS.filosofiaAntiga, "guia");
+e2(E2.GUIAS.filosofiaModerna, "guia");
+e2(E2.GUIAS.biomas, "guia", true);
+e2(E2.GUIAS.quimicaEstequiometria, "guia");
+e2(E2.GUIAS.fisicaCinematica, "guia");
 
-/* quiz mcq ×16 */
-const QUIZ_TIT = {
-  cultura: "Cultura Geral", mat: "Matemática", hist: "História", geo: "Geografia",
-  cienc: "Ciências", ingles: "Inglês", logica: "Lógica", codigo: "Programação",
-  arte: "Arte", esportes: "Esportes", biologia: "Biologia", fisica: "Física",
-  quimica: "Química", brasil: "Brasil", cinemas: "Cinema", musica: "Música",
-};
-for (const k of Object.keys(QUIZ_TIT)) {
-  const itens = D.QUIZ[k].map((e) => q(e.q, e.op[e.a], e.op, e.dica));
-  app("Quiz: " + QUIZ_TIT[k], D.QUIZ[k].length + " questões de múltipla escolha sobre o tema.", "mcq", { gen: GEN(itens) }, k === "mat");
-}
+/* tabelas de referência ×4 */
+e2(E2.TABELAS.conectivos, "tabelaRef");
+e2(E2.TABELAS.verbosIrregulares, "tabelaRef");
+e2(E2.TABELAS.formulasMat, "tabelaRef");
+e2(E2.TABELAS.unidadesSI, "tabelaRef");
+
+/* linhas do tempo ×3 */
+e2(E2.LINHAS.escolasLiterarias, "linhaTempo", true);
+e2(E2.LINHAS.historiaBrasil, "linhaTempo");
+e2(E2.LINHAS.historiaGeral, "linhaTempo");
+
+/* passo a passo ×4 */
+e2(E2.PASSOS.equacoes, "passoAPasso");
+e2(E2.PASSOS.pitagoras, "passoAPasso");
+e2(E2.PASSOS.fracoes, "passoAPasso");
+e2(E2.PASSOS.potencias, "passoAPasso");
+
+/* completar ×7 */
+e2(E2.COMPLETAR.porques, "completar");
+e2(E2.COMPLETAR.homonimos, "completar");
+e2(E2.COMPLETAR.crase, "completar");
+e2(E2.COMPLETAR.tobe, "completar");
+e2(E2.COMPLETAR.concordancia, "completar");
+e2(E2.COMPLETAR.acentuacao, "completar");
+e2(E2.COMPLETAR.preposicoesEn, "completar");
+
+/* ordenar ×6 */
+e2(E2.ORDENAR.brasil, "ordenar");
+e2(E2.ORDENAR.agua, "ordenar");
+e2(E2.ORDENAR.metodo, "ordenar");
+e2(E2.ORDENAR.fotosintese, "ordenar");
+e2(E2.ORDENAR.francesa, "ordenar");
+e2(E2.ORDENAR.eras, "ordenar");
+
+/* relacionar ×8 */
+e2(E2.RELACIONAR.capitais, "relacionar");
+e2(E2.RELACIONAR.elementos, "relacionar");
+e2(E2.RELACIONAR.autores, "relacionar");
+e2(E2.RELACIONAR.ingles, "relacionar");
+e2(E2.RELACIONAR.grandezas, "relacionar");
+e2(E2.RELACIONAR.biomas, "relacionar");
+e2(E2.RELACIONAR.figuras, "relacionar");
+e2(E2.RELACIONAR.corpo, "relacionar");
+
+/* caça-erros ×5 */
+e2(E2.CACA.concordancia, "cacaErros");
+e2(E2.CACA.crase, "cacaErros");
+e2(E2.CACA.pontuacao, "cacaErros");
+e2(E2.CACA.contas, "cacaErros");
+e2(E2.CACA.ingles, "cacaErros");
+
+/* cruzadas ×3 */
+e2(E2.CRUZADAS.carro, "cruzadas");
+e2(E2.CRUZADAS.gato, "cruzadas");
+e2(E2.CRUZADAS.agua, "cruzadas");
+
+/* sequências mantidas ×2 */
 
 /* sequências ×4 (inputGame, gen autocontido) */
 const ZN_SRC = "var ZN=function(a,b){return a+Math.floor(Math.random()*(b-a+1))}";
@@ -82,36 +135,10 @@ const genSeq = (k) =>
   "function(){" + ZN_SRC + ";" + PRIMOS_SRC + ";" +
   "var r=(" + D.SEQUENCIAS[k].gen.toString() + ")(0);" +
   "return {t:r.show.join(\", \")+\" , …\", a:r.next, dica:r.dica}}";
+
 app("Sequências Aritméticas", "Descubra o próximo número da sequência aritmética.", "inputGame", { gen: genSeq("arit"), roundSeg: 60 });
-app("Sequências Geométricas", "Descubra o próximo número da sequência geométrica.", "inputGame", { gen: genSeq("geo"), roundSeg: 60 });
+
 app("Sequências de Fibonacci", "Cada termo é a soma dos dois anteriores. Descubra o próximo.", "inputGame", { gen: genSeq("fib"), roundSeg: 60 });
-app("Sequências de Primos", "Sequências de números primos. Descubra o próximo.", "inputGame", { gen: genSeq("primo"), roundSeg: 60 });
-
-/* conjugação ×3 (mcq) */
-const CONJ_TIT = { presente: "Presente", past: "Passado", futuro: "Futuro" };
-for (const k of Object.keys(CONJ_TIT)) {
-  const itens = D.CONJUGACAO[k].map((c) => q("Conjugue: " + c[0] + " (" + c[1] + ")", c[2][0], c[2], "Preste atenção na pessoa do verbo."));
-  app("Conjugação: " + CONJ_TIT[k], "Conjugue o verbo no tempo " + CONJ_TIT[k].toLowerCase() + ".", "mcq", { gen: GEN(itens) });
-}
-
-/* traduções (mcq) */
-{
-  const itens = D.TRADUCOES.map((t) => q("“" + t[0] + "” em inglês?", t[1], t[2]));
-  app("Tradução PT → EN", "Descubra a tradução correta em inglês.", "mcq", { gen: GEN(itens) });
-  const rev = D.TRADUCOES.map((t, i) => {
-    const outros = shuf(D.TRADUCOES.filter((_, j) => j !== i).map((u) => u[0])).slice(0, 3);
-    return q("“" + t[1] + "” em português?", t[0], [t[0], ...outros]);
-  });
-  app("Tradução EN → PT", "Descubra a tradução correta em português.", "mcq", { gen: GEN(rev) });
-}
-
-/* unidades, capitais (mcq) */
-{
-  const itens = D.UNIDADES.map((u) => q("Qual é a unidade de " + u[0] + " no Sistema Internacional?", u[1][u[2]], u[1]));
-  app("Unidades de Medida", "Qual é a unidade oficial no SI?", "mcq", { gen: GEN(itens) });
-  const itensC = D.CAPITAIS.map((c) => q("Qual é a capital de " + c[0] + "?", c[1], c[2]));
-  app("Capitais da Europa", "Associe o país à capital.", "mcq", { gen: GEN(itensC), total: 16 });
-}
 
 /* estatística (inputGame, gen autocontido) */
 app("Estatística Rápida", "Calcule a média aritmética do conjunto em até 60 segundos.", "inputGame", {
@@ -125,9 +152,11 @@ for (const k of Object.keys(ANAG_TIT)) {
   app("Anagramas: " + ANAG_TIT[k], "Desembrulhe as letras e forme a palavra.", "anagrama", { palavras: D.ANAGRAMAS[k].map((p) => p[1]) }, k === "med");
 }
 
-/* verdadeiro/falso ×6 */
+/* verdadeiro/falso ×4 */
+
 const TF_TIT = { ciencia: "Ciências", hist: "História", geo: "Geografia", cultura: "Cultura", esporte: "Esportes", mat: "Matemática" };
-for (const k of Object.keys(TF_TIT)) {
+
+for (const k of ["ciencia", "hist", "geo", "mat"]) {
   app("V/F: " + TF_TIT[k], "Verdadeiro ou falso? " + D.TF[k].length + " afirmações.", "tf", { itens: D.TF[k] });
 }
 
@@ -137,9 +166,11 @@ for (const k of Object.keys(WS_TIT)) {
   app("Palavras Escondidas: " + WS_TIT[k], "Encontre as " + D.ESMESCIDAS[k].length + " palavras na grade.", "ws", { palavras: D.ESMESCIDAS[k] });
 }
 
-/* pares ×8 */
+/* pares ×5 */
+
 const PARES_TIT = { animais: "Animais", capitais: "Capitais", elementos: "Elementos", sinonimos: "Sinônimos", ant: "Antônimos", citacoes: "Citações", orgaos: "Órgãos", datas: "Datas Históricas" };
-for (const k of Object.keys(PARES_TIT)) {
+
+for (const k of ["animais", "capitais", "elementos", "citacoes", "datas"]) {
   app("Jogo dos Pares: " + PARES_TIT[k], "Encontre os pares de " + PARES_TIT[k].toLowerCase() + " e fixe o conteúdo.", "pares", { paresData: D.PARES[k] }, k === "animais");
 }
 
@@ -151,13 +182,6 @@ app("Repetição Espaçada: Inglês", "Vocabulário em inglês com repetição e
 app("Planner de Estudos", "Organize tarefas com assunto, duração e data. Salvo no navegador.", "planner", {}, true);
 app("Caderno de Anotações", "Anotações rápidas com Markdown simples. Salvo no navegador.", "caderno", {});
 app("Ginástica Cerebral", "Memorize sequências de dígitos que ficam cada vez maiores.", "ginastica", {});
-
-/* enigmas ×3 (mcq) */
-const ENIG_TIT = { facil: "Fácil", med: "Médio", dif: "Difícil" };
-for (const k of Object.keys(ENIG_TIT)) {
-  const itens = D.ENIGMAS[k].map((e) => q(e[0], e[1][0], e[1]));
-  app("Enigmas: " + ENIG_TIT[k], "Quebra-cabeças de lógica e raciocínio.", "mcq", { gen: GEN(itens) });
-}
 
 /* probabilidade (mcq) */
 {
@@ -180,14 +204,10 @@ for (const k of Object.keys(ENIG_TIT)) {
   app("Trigonometria Básica", "Valores de seno, cosseno e tangente dos ângulos notáveis.", "mcq", { gen: GEN(itens) });
 }
 
-/* bandeiras ×2 (mcq) */
+/* bandeiras: todas em um app (mcq) */
 {
-  const metade = Math.ceil(D.BANDEIRAS.length / 2);
-  const partes = [D.BANDEIRAS.slice(0, metade), D.BANDEIRAS.slice(metade)];
-  partes.forEach((parte, i) => {
-    const itens = parte.map((b) => q("Qual país tem esta bandeira? " + b[0], b[1], b[2]));
-    app("Bandeiras do Mundo " + (i + 1), "Identifique o país pela bandeira. Ronda " + (i + 1) + ".", "mcq", { gen: GEN(itens) }, i === 0);
-  });
+  const itens = D.BANDEIRAS.map((b) => q("Qual país tem esta bandeira? " + b[0], b[1], b[2]));
+  app("Bandeiras do Mundo", "Identifique o país pela bandeira entre todas as bandeiras do jogo.", "mcq", { gen: GEN(itens) }, true);
 }
 
 /* simulados ×3 (mcq com timer) */
@@ -205,32 +225,8 @@ app("Geometria: Volumes", "Calcule volumes de prisma, cilindro e cubo em 60 segu
 const TAB = (n) =>
   "function(){var t=2+Math.floor(Math.random()*8);return {t:t+' × " + n + " = ?', a:t*" + n + "}}";
 app("Tabuada do 7", "Treine a tabuada do 7 o máximo que puder em 60 segundos.", "inputGame", { gen: TAB(7), roundSeg: 60 }, true);
-app("Tabuada do 9", "Treine a tabuada do 9 o máximo que puder em 60 segundos.", "inputGame", { gen: TAB(9), roundSeg: 60 });
+
 app("Tabuada do 12", "Treine a tabuada do 12 o máximo que puder em 60 segundos.", "inputGame", { gen: TAB(12), roundSeg: 60 });
-
-/* potências (inputGame) */
-app("Potências Rápidas", "Calcule potências como 3^4 em até 60 segundos.", "inputGame", {
-  gen: "function(){var b=2+Math.floor(Math.random()*4),e=2+Math.floor(Math.random()*4);return {t:b+'^'+e+' = ?', a:Math.pow(b,e), dica:b+' elevado a '+e}}",
-  roundSeg: 60,
-});
-
-/* fórmulas de área (inputGame) */
-{
-  const itens = [
-    { t: "Área do quadrado de lado 6 = ?", a: 36, dica: "A = l²" },
-    { t: "Área do retângulo 7 × 5 = ?", a: 35, dica: "A = b × h" },
-    { t: "Área do triângulo: base 10, altura 6 = ?", a: 30, dica: "A = b·h ÷ 2" },
-    { t: "Área do círculo de raio 2 (π = 3,14) = ?", a: 12.56, dica: "A = πr²" },
-    { t: "Área do trapézio: bases 6 e 4, altura 5 = ?", a: 25, dica: "A = (B + b)·h ÷ 2" },
-    { t: "Área do losango: diagonais 8 e 6 = ?", a: 24, dica: "A = D·d ÷ 2" },
-    { t: "Área do quadrado de lado 9 = ?", a: 81, dica: "A = l²" },
-    { t: "Área do triângulo: base 12, altura 8 = ?", a: 48, dica: "A = b·h ÷ 2" },
-  ];
-  app("Fórmulas de Área", "Calcule a área das figuras em até 60 segundos.", "inputGame", {
-    gen: "function(){var I=" + JSON.stringify(itens) + ";var x=I[Math.floor(Math.random()*I.length)];return {t:x.t, a:x.a, dica:x.dica}}",
-    roundSeg: 60,
-  });
-}
 
 /* movimento (inputGame) */
 {
@@ -249,20 +245,6 @@ app("Potências Rápidas", "Calcule potências como 3^4 em até 60 segundos.", "
   });
 }
 
-/* química (mcq) */
-{
-  const ELS = [
-    ["Ferro", "Fe"], ["Ouro", "Au"], ["Prata", "Ag"], ["Sódio", "Na"],
-    ["Potássio", "K"], ["Cálcio", "Ca"], ["Cloro", "Cl"], ["Carbono", "C"],
-    ["Hidrogênio", "H"], ["Oxigênio", "O"], ["Nitrogênio", "N"], ["Cobre", "Cu"],
-  ];
-  const itens = ELS.map((e, i) => {
-    const outros = shuf(ELS.filter((_, j) => j !== i).map((u) => u[1])).slice(0, 3);
-    return q("Qual é o símbolo do elemento " + e[0] + "?", e[1], [e[1], ...outros], "Na tabela periódica, cada elemento tem uma sigla de 1 ou 2 letras.");
-  });
-  app("Símbolos Químicos", "Associe o elemento ao seu símbolo na tabela periódica.", "mcq", { gen: GEN(itens) });
-}
-
 /* capitais do mundo (mcq) */
 {
   const CAPS = [
@@ -275,17 +257,6 @@ app("Potências Rápidas", "Calcule potências como 3^4 em até 60 segundos.", "
     return q("Qual é a capital de " + c[0] + "?", c[1], [c[1], ...outros]);
   });
   app("Capitais do Mundo", "Teste seus conhecimentos em capitais do planeta.", "mcq", { gen: GEN(itens) });
-}
-
-/* sinônimos (mcq) */
-{
-  const EXTRAS = [["bonito", "lindo"], ["rápido", "veloz"], ["inteligente", "esperto"], ["difícil", "complicado"]];
-  const todos = [...D.PARES.sinonimos, ...EXTRAS];
-  const itens = todos.map((p) => {
-    const outros = shuf(todos.filter((x) => x !== p).map((x) => x[1])).slice(0, 3);
-    return q("Qual é o sinônimo de “" + p[0] + "”?", p[1], [p[1], ...outros]);
-  });
-  app("Sinônimos Relâmpagos", "Escolha o sinônimo correto.", "mcq", { gen: GEN(itens) });
 }
 
 /* cronologia (mcq) */

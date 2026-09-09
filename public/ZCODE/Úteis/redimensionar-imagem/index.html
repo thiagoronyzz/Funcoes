@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="pt-BR" data-cat="estudos">
+<html lang="pt-BR" data-cat="uteis">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Trigonometria Básica — Zcode</title>
-<meta name="description" content="Valores de seno, cosseno e tangente dos ângulos notáveis.">
+<title>Redimensionar Imagem — Zcode</title>
+<meta name="description" content="Mude o tamanho e o formato sem sair do navegador.">
 <meta name="theme-color" content="#090d0b">
 <meta name="application-name" content="Zcode">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2064%2064'%3E%3Crect%20width%3D'64'%20height%3D'64'%20rx%3D'14'%20fill%3D'%230b0f0d'%2F%3E%3Crect%20x%3D'1'%20y%3D'1'%20width%3D'62'%20height%3D'62'%20rx%3D'13'%20fill%3D'none'%20stroke%3D'rgba(255%2C255%2C255%2C0.16)'%20stroke-width%3D'2'%2F%3E%3Cpath%20d%3D'M20%2018h24L20%2046h24'%20fill%3D'none'%20stroke%3D'%2310b981'%20stroke-width%3D'7'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E">
@@ -183,49 +183,41 @@ canvas.zc{display:block;width:100%;border-radius:14px;border:1px solid var(--z-l
 }
 </style>
 </head>
-<body data-app="trigonometria-basica">
+<body data-app="redimensionar-imagem">
 <header class="ztop">
   <a class="ztop-brand" href="/" aria-label="Zcode — início"><span class="zlogo">Z</span>code</a>
   <div class="ztop-mid">
-    <strong>Trigonometria Básica</strong>
+    <strong>Redimensionar Imagem</strong>
   </div>
-  <span class="zchip">Estudos</span>
+  <span class="zchip">Úteis</span>
   
     <button id="zmute" class="zback" type="button" title="Ativar ou desligar o som" style="margin-left:0">Som ligado</button>
   <a class="zback" href="/">← Início</a>
 </header>
 <main class="zmain" id="zmain">
 
-<div class="zhero">
-  <h1>Trigonometria Básica</h1>
-  <p>Valores de seno, cosseno e tangente dos ângulos notáveis.</p>
-</div>
-<div class="zcard pad" id="jogo">
-  <div class="row between mb wrap">
-    <span class="zchip" id="qnum">1/15</span>
-    
-    <span class="zchip" id="score">Acertos: 0</span>
+<div class="zhero"><h1>Redimensionar Imagem</h1><p>Mude o tamanho e o formato sem sair do navegador.</p></div>
+<div class="zcard pad" style="max-width:640px;margin:0 auto">
+  <span class="zlabel">Escolha a imagem</span>
+  <input class="zinput mb" id="arq" type="file" accept="image/*">
+  <div class="zgrid zg3 mb">
+    <div><span class="zlabel">Largura (px)</span><input class="zinput" id="larg" type="number" min="1" value="800"></div>
+    <div><span class="zlabel">Altura (px)</span><input class="zinput" id="alt" type="number" min="1" value="600"></div>
+    <div><span class="zlabel">Formato</span><select class="zselect" id="fmt"><option value="image/jpeg">JPEG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option></select></div>
   </div>
-  <div class="zprog mb"><i id="barra" style="width:0%"></i></div>
-  <h3 id="pergunta" class="fd" style="font-size:21px;line-height:1.35;margin-bottom:18px;min-height:56px"></h3>
-  <div class="col" id="opcoes"></div>
-  <div class="row between mt" id="rodape" style="display:none">
-    <span class="dim" id="dica" style="font-size:13.5px;max-width:60%"></span>
-    <button class="zbtn" id="prox" type="button">Próxima →</button>
+  <div class="row mb wrap">
+    <button class="zbtn sm" id="go" type="button" disabled>Processar</button>
+    <a class="zbtn ghost sm" id="down" style="display:none">Baixar resultado</a>
   </div>
-</div>
-<div class="zcard pad center hidden" id="fim">
-  <p class="zchip mb" style="display:inline-flex">Resultado</p>
-  <div class="zbig acc" id="fimnum">0%</div>
-  <p class="dim mb" id="fimtxt"></p>
-  <div class="row center" style="justify-content:center">
-    <button class="zbtn ghost" id="rever" type="button">Ver erros</button>
-    <button class="zbtn" id="reinicia" type="button">Jogar de novo</button>
+  <p class="dim" id="info" style="font-size:13px"></p>
+  <div class="row wrap" style="gap:12px">
+    <div style="flex:1;min-width:200px"><p class="zlabel">Original</p><img id="prev1" style="max-width:100%;border-radius:10px;display:none"></div>
+    <div style="flex:1;min-width:200px"><p class="zlabel">Resultado</p><img id="prev2" style="max-width:100%;border-radius:10px;display:none"></div>
   </div>
-  <div class="col mt hidden" id="listaErros"></div>
+  <p class="dim mt" style="font-size:12px">Tudo acontece no seu navegador — a imagem nunca sai do seu aparelho.</p>
 </div>
 </main>
-<footer class="zfoot"><b>Zcode</b> · plataforma de aplicativos · Estudos</footer>
+<footer class="zfoot"><b>Zcode</b> · plataforma de aplicativos · Úteis</footer>
 <script>
 
 if (typeof CanvasRenderingContext2D !== "undefined" && CanvasRenderingContext2D.prototype && !CanvasRenderingContext2D.prototype.roundRect) {
@@ -329,99 +321,48 @@ window.Z=(function(){
 var zm=document.getElementById("zmute");
 if(zm){zm.addEventListener("click",function(){zm.textContent=Z.mute()?"Som desligado":"Som ligado"})}
 
-var P = (function(){ var g = function(){return [{"t":"sen(30°) = ?","op":["1/2","√3/3","√3/2","√2/2"],"a":0},{"t":"sen(45°) = ?","op":["1","√2/2","√2/2","√3/2"],"a":1},{"t":"sen(60°) = ?","op":["√3/2","0","1/2","√3"],"a":0},{"t":"sen(0°) = ?","op":["0","0","1","1"],"a":0},{"t":"sen(90°) = ?","op":["1","∞","0","1/2"],"a":0},{"t":"cos(30°) = ?","op":["1/2","√3/3","√2/2","√3/2"],"a":3},{"t":"cos(45°) = ?","op":["√2/2","1","√2/2","1/2"],"a":0},{"t":"cos(60°) = ?","op":["√3/2","1","1/2","√3"],"a":2},{"t":"cos(0°) = ?","op":["0","1","0","0"],"a":1},{"t":"cos(90°) = ?","op":["1","∞","√3/2","0"],"a":3},{"t":"tan(30°) = ?","op":["√3/2","√3/3","1/2","1"],"a":1},{"t":"tan(45°) = ?","op":["1","√3","√2/2","√2/2"],"a":0},{"t":"tan(60°) = ?","op":["0","√3/2","√3","1/2"],"a":2},{"t":"tan(0°) = ?","op":["1","0","∞","0"],"a":1},{"t":"tan(90°) = ?","op":["0","√3/3","1","∞"],"a":3}]}; return g(); })();
-var TOTAL = 15;
-var TEMPO = 0;
-var i = 0, acertos = 0, erros = [], bloqueado = false, timerId = null, restante = TEMPO;
-var $q = function(id){return document.getElementById(id)};
-function bar(){ var el=$q("barra"); if(el) el.style.width = ((i)/(TOTAL)*100)+"%"; }
-function score(){ var el=$q("score"); if(el) el.textContent = "Acertos: "+acertos; }
-function nova(){
-  bloqueado = false;
-  var p = P[i % P.length];
-  if(!p){ fim(); return; }
-  $q("qnum").textContent = (i+1)+"/"+TOTAL;
-  $q("pergunta").innerHTML = p.t;
-  $q("rodape").style.display = "none";
-  var box = $q("opcoes"); box.innerHTML = "";
-  var letras = ["A","B","C","D","E","F"];
-  p.op.forEach(function(op, idx){
-    var b = document.createElement("button");
-    b.className = "zopty"; b.type = "button";
-    b.innerHTML = "<i>"+(letras[idx]||idx+1)+"</i><span>"+op+"</span>";
-    b.addEventListener("click", function(){ responder(idx, b); });
-    box.appendChild(b);
+(function(){
+  function $id(x){return document.getElementById(x)}
+  var REDIM=true;
+  var img=new Image(),temImg=false;
+  function kb(n){return n>1048576?(n/1048576).toFixed(2)+" MB":Math.max(1,Math.round(n/1024))+" KB"}
+  $id("arq").addEventListener("change",function(){
+    var f=this.files&&this.files[0];
+    if(!f)return;
+    var url=URL.createObjectURL(f);
+    img.onload=function(){
+      temImg=true;
+      $id("prev1").src=url;$id("prev1").style.display="block";
+      $id("go").disabled=false;
+      if(REDIM){$id("larg").value=img.naturalWidth;$id("alt").value=img.naturalHeight;}
+      $id("info").textContent="Original: "+img.naturalWidth+"×"+img.naturalHeight+" · "+kb(f.size);
+    };
+    img.src=url;
   });
-  bar(); score();
-  if(TEMPO && !timerId){
-    $q("timer").textContent = "Tempo "+restante+"s";
-    timerId = setInterval(function(){
-      restante--;
-      $q("timer").textContent = "Tempo "+Math.max(restante,0)+"s";
-      if(restante <= 0){
-        clearInterval(timerId); timerId = null;
-        fim();
-      }
-    }, 1000);
-  }
-}
-function responder(idx, btn){
-  if(bloqueado) return;
-  bloqueado = true;
-  clearInterval(timerId);
-  var p = P[i % P.length];
-  var botoes = Array.prototype.slice.call($q("opcoes").children);
-  botoes.forEach(function(b){ b.disabled = true; });
-  if(idx === p.a){
-    btn.classList.add("ok"); acertos++;
-    Z.snd(880, 0.09, "sine");
-  } else {
-    btn.classList.add("err");
-    botoes[p.a].classList.add("ok");
-    Z.snd(160, 0.16, "sawtooth", 0.04);
-    erros.push({t: p.t, certo: p.op[p.a], seu: p.op[idx]});
-  }
-  $q("dica").textContent = p.dica || "";
-  score();
-  $q("rodape").style.display = "flex";
-}
-$prox();
-function fim(){
-  clearInterval(timerId);
-  $q("jogo").classList.add("hidden");
-  $q("fim").classList.remove("hidden");
-  var pct = Math.round((acertos / TOTAL) * 100);
-  $q("fimnum").textContent = pct + "%";
-  $q("fimtxt").textContent = acertos + " de " + TOTAL + " acertos";
-  var lista = $q("listaErros"); lista.innerHTML = "";
-  erros.forEach(function(e, k){
-    var d = Z.el("div", "zcard");
-    d.style.padding = "12px 14px"; d.style.textAlign = "left";
-    d.innerHTML = "<b class='acc'>" + (k + 1) + "</b> " + e.t + "<div class='dim' style='font-size:13px'>Resposta: " + e.certo + (e.seu ? " · Você: " + e.seu : "") + "</div>";
-    lista.appendChild(d);
+  var qEl=$id("qual");
+  if(qEl)qEl.addEventListener("input",function(){$id("qv").textContent=this.value;});
+  $id("go").addEventListener("click",function(){
+    if(!temImg)return;
+    var cv=document.createElement("canvas");
+    var W,H;
+    if(REDIM){W=parseInt($id("larg").value,10)||img.naturalWidth;H=parseInt($id("alt").value,10)||img.naturalHeight;}
+    else{W=img.naturalWidth;H=img.naturalHeight;}
+    cv.width=W;cv.height=H;
+    var ctx=cv.getContext("2d");
+    if(!ctx){Z.toast("Canvas indisponível");return;}
+    ctx.drawImage(img,0,0,W,H);
+    var tipo=$id("fmt").value;
+    var qual=qEl?(parseInt(qEl.value,10)/100):0.85;
+    cv.toBlob(function(blob){
+      if(!blob){Z.toast("Falha ao processar");return;}
+      var url=URL.createObjectURL(blob);
+      $id("prev2").src=url;$id("prev2").style.display="block";
+      var d=$id("down");d.style.display="inline-block";d.href=url;
+      d.download="imagem-"+W+"x"+H+"."+tipo.split("/")[1];
+      $id("info").textContent="Resultado: "+W+"×"+H+" · "+kb(blob.size);
+    },tipo,qual);
   });
-}
-function reiniciar(){
-  clearInterval(timerId); timerId = null; restante = TEMPO;
-  i = 0; acertos = 0; erros = [];
-  P = Z.shuffle(P);
-  $q("fim").classList.add("hidden");
-  $q("listaErros").classList.add("hidden");
-  $q("jogo").classList.remove("hidden");
-  nova();
-}
-$prox();
-function $prox(){ $q("prox").addEventListener("click", function(){ i++; if(i >= TOTAL){ fim(); } else nova(); }); }
-$reinicia();
-function $reinicia(){ $q("reinicia").addEventListener("click", reiniciar); }
-$rever();
-function $rever(){
-  $q("rever").addEventListener("click", function(){
-    var l = $q("listaErros"); l.classList.toggle("hidden");
-    this.textContent = l.classList.contains("hidden") ? "Ver erros" : "Ocultar erros";
-  });
-}
-reiniciar();
+})();
 
 </script>
 </body>

@@ -14,8 +14,9 @@ import * as UT1 from "./engines/uteis.mjs";
 import * as UT2 from "./engines/uteis2.mjs";
 import * as UT2B from "./engines/uteis2b.mjs";
 import * as UT3 from "./engines/uteis3.mjs";
+import * as UT4 from "./engines/uteis4.mjs";
 
-export const UTEIS = { ...UT1, ...UT2, ...UT2B, ...UT3 };
+export const UTEIS = { ...UT1, ...UT2, ...UT2B, ...UT3, ...UT4 };
 export const ENGINES = { estudos: { ...EST.ESTUDOS, ...EST2 }, jogos: { ...JOG.JOGOS, ...JOG2.JOGOS2 }, uteis: UTEIS };
 
 /* ── helpers ─────────────────────────────────────────────── */
@@ -39,17 +40,17 @@ const E = [];
 const leg = (nome, desc, dir, page, imagem, destaque) =>
   E.push({ nome, desc, legacy: dir, page, imagem, destaque: !!destaque });
 
-leg("Funções", "Visualizador matemático interativo de funções.", "funcoes(01)", "index.html", "images/editorial/study-desk.jpg", true);
-leg("Calculadora", "Calculadora de estudo para resolver expressões.", "calculadorabasica(02)", "index.html", "images/editorial/study-desk.jpg");
-leg("Tabela Periódica", "Tabela periódica interativa dos elementos.", "tabelaperiodica(03)", "index.html", "images/editorial/study-desk.jpg");
-leg("Fórmulas", "Biblioteca de fórmulas das ciências da natureza.", "formulas(04)", "index.html", "images/editorial/study-desk.jpg");
-leg("Citologia", "Explorador interativo das partes da célula.", "citologia(05)", "index.html", "images/editorial/study-desk.jpg");
-leg("Sistemas do Corpo", "Atlas interativo dos sistemas do corpo humano.", "sistemas(06)", "index.html", "images/editorial/study-desk.jpg");
-leg("Atlas Interativo", "Mapa vetorial interativo para estudar geografia.", "Atlas(07)", "index.html", "images/editorial/study-desk.jpg");
-leg("Eras Geológicas", "Linha do tempo interativa da Terra.", "eras(08)", "index.html", "images/editorial/study-desk.jpg");
-leg("Pomodoro", "Cronômetro de foco para sessões de estudo.", "pomodoro(09)", "index.html", "images/editorial/study-desk.jpg");
-leg("Plotter 3D", "Plotter de funções em três dimensões.", "geometria(10)", "index.html", "images/editorial/study-desk.jpg");
-leg("CSS Challenge", "Clone de designs famosos para treinar CSS.", "learncss(11)", "index.html", "images/editorial/study-desk.jpg");
+leg("Funções", "Visualizador matemático interativo de funções.", "funcoes(01)", "index.html", "", true);
+leg("Calculadora", "Calculadora de estudo para resolver expressões.", "calculadorabasica(02)", "index.html", "");
+leg("Tabela Periódica", "Tabela periódica interativa dos elementos.", "tabelaperiodica(03)", "index.html", "");
+leg("Fórmulas", "Biblioteca de fórmulas das ciências da natureza.", "formulas(04)", "index.html", "");
+leg("Citologia", "Explorador interativo das partes da célula.", "citologia(05)", "index.html", "");
+leg("Sistemas do Corpo", "Atlas interativo dos sistemas do corpo humano.", "sistemas(06)", "index.html", "");
+leg("Atlas Interativo", "Mapa vetorial interativo para estudar geografia.", "Atlas(07)", "index.html", "");
+leg("Eras Geológicas", "Linha do tempo interativa da Terra.", "eras(08)", "index.html", "");
+leg("Pomodoro", "Cronômetro de foco para sessões de estudo.", "pomodoro(09)", "index.html", "");
+leg("Plotter 3D", "Plotter de funções em três dimensões.", "geometria(10)", "index.html", "");
+leg("CSS Challenge", "Clone de designs famosos para treinar CSS.", "learncss(11)", "index.html", "");
 
 const app = (nome, desc, engine, params, destaque) =>
   E.push({ nome, desc, engine, params, imagem: "", destaque: !!destaque });
@@ -415,11 +416,11 @@ const U = [];
 const uleg = (nome, desc, dir, page, imagem, destaque) =>
   U.push({ nome, desc, legacy: dir, page, imagem, destaque: !!destaque });
 
-uleg("Fauna Sonora", "Ouça o canto real dos animais.", "Sons(01)", "fauna.html", "images/editorial/study-notes.jpg", true);
-uleg("Encurtador de Links", "Encurte e acompanhe seus links.", "diminuilink(02)", "index.html", "images/editorial/study-notes.jpg");
-uleg("Lançador de Dados", "D3, D6, D20 e mais em 3D.", "dados(03)", "index.html", "images/editorial/study-notes.jpg");
-uleg("Sorteador de Grupos", "Divida pessoas em grupos aleatórios.", "sorteargrupos(04)", "index.html", "images/editorial/study-notes.jpg");
-uleg("Gerador de Gradiente", "Crie gradientes CSS e copie o código.", "cssatual(05)", "index.html", "images/editorial/study-notes.jpg");
+uleg("Fauna Sonora", "Ouça o canto real dos animais.", "Sons(01)", "fauna.html", "", true);
+uleg("Encurtador de Links", "Encurte e acompanhe seus links.", "diminuilink(02)", "index.html", "");
+uleg("Lançador de Dados", "D3, D6, D20 e mais em 3D.", "dados(03)", "index.html", "");
+uleg("Sorteador de Grupos", "Divida pessoas em grupos aleatórios.", "sorteargrupos(04)", "index.html", "");
+uleg("Gerador de Gradiente", "Crie gradientes CSS e copie o código.", "cssatual(05)", "index.html", "");
 
 const uapp = (nome, desc, engine, params, destaque) =>
   U.push({ nome, desc, engine, params, imagem: "", destaque: !!destaque });
@@ -434,7 +435,6 @@ for (const k of Object.keys(CONV)) {
 }
 
 uapp("Calculadora Científica", "Raízes, potências, trig, log e mais.", "calcCientifica", {}, true);
-uapp("Calculadora de Percentual", "Quanto é X% de Y? E o aumento/desconto?", "percentual", {});
 uapp("Cronômetro", "Cronômetro com voltas e precisão de 100 ms.", "cronometro", {}, true);
 uapp("Timer de Contagem", "Contagem regressiva com alarme sonoro.", "timer", {}, true);
 uapp("Relógio Mundial", "Hora local em 18 cidades do mundo, ao vivo.", "relogioMundial", {});
@@ -454,7 +454,6 @@ uapp("Gerador de UUID", "Crie UUIDs v4 em lote.", "uuid", {});
 uapp("Gerador de Números", "Números aleatórios com intervalo e sem repetição.", "aleatorio", {});
 uapp("Sorteador de Opções", "Digite opções e deixe o sorteio escolher.", "sorteador", { modo: "opcoes" });
 uapp("Sorteador de Nomes", "Sorteie um nome de uma lista (prêmios, equipes).", "sorteador", { modo: "nomes" });
-uapp("Cara ou Coroa", "Moeda virtual para decisões difíceis.", "moeda", {});
 uapp("Estatísticas de Texto", "Palavras, caracteres, frases e tempo de leitura.", "textoStats", {});
 uapp("Conversor de Maiúsculas", "camelCase, SNAKE_CASE, kebab-case e mais 7 modos.", "caseConv", {});
 uapp("Codificador de URL", "Encode/decode de parâmetros de URL.", "urlEnc", {});
@@ -467,11 +466,6 @@ uapp("Conversor HTML/Entidades", "Converta texto para entidades HTML e vice-vers
 uapp("Imagem para Base64", "Cole uma imagem e copie o data-URI.", "imgB64", {});
 uapp("Gerador de QR Code", "Transforme qualquer texto ou URL em QR Code.", "qr", {}, true);
 uapp("Calculadora de IMC", "Índice de massa corporal com faixa de referência.", "imc", {}, true);
-uapp("Calculadora de Gorjeta", "Divida a conta e calcule a gorjeta.", "gorjeta", {});
-uapp("Divisão de Conta", "Quanto cada um paga, com ou sem gorjeta.", "dividaConta", {});
-uapp("Juros Compostos", "Montante de juros compostos vs simples.", "juros", {});
-uapp("Prestação de Empréstimo", "Prestação mensal no sistema PRICE.", "prestacao", {});
-uapp("Juros Simples", "A fórmula J = C·i·t na prática.", "jurosSimples", {});
 uapp("Gasto Calórico (TMB)", "Calcule seu metabolismo basal e gasto diário.", "tmb", {});
 uapp("Orçamento Pessoal", "Registre entradas e saídas, mês a mês.", "orcamento", {});
 uapp("Meta de Água", "Acompanhe seu consumo diário de água.", "agua", {});
@@ -489,29 +483,19 @@ uapp("Flexbox Playground", "Brinque com flexbox e copie o CSS.", "cssFlex", {});
 uapp("CSS Grid Playground", "Explore grid-template com prévia interativa.", "cssGrid", {});
 uapp("Curvas Bezier", "Ajuste cubic-bezier e veja a animação.", "cssBezier", {});
 uapp("Tipografia", "Componha fonte, peso, linha e espaçamento.", "tipografia", {});
-uapp("Palíndromo", "Verifique se a frase é lida igual aos dois sentidos.", "palindromo", {});
 uapp("Máscara de Telefone", "Digite e veja o número formatado ao vivo.", "fone", {});
 uapp("Validador de CPF", "Validação dos dígitos verificadores em tempo real.", "cpf", {}, true);
 uapp("Conversor de Números Romanos", "Vá e volta entre arábicos e romanos.", "romano", {});
 uapp("Conversor de Bases", "Binário, octal, decimal e hexadecimal em sincronia.", "bases", {});
 uapp("Texto ↔ Hex", "Converta texto para bytes hex e vice-versa.", "hexTexto", {});
-uapp("Cifra ROT13", "Cifre e decifre com o clássico ROT13.", "rot13", {});
 uapp("Sorte de Ordem", "Sorteie a ordem de uma lista de participantes.", "ordem", {});
-uapp("Conversor de Ângulos", "Graus ↔ radianos, complemento e suplemento.", "angulos", {});
-uapp("Pitágoras", "Hipotenusa ou cateto, com os ângulos do triângulo.", "pitagoras", {});
-uapp("Áreas de Formas", "Área e perímetro de 5 formas geométricas.", "areaFormas", {});
-uapp("Média Ponderada", "Some notas com pesos e veja sua média final.", "mediaPond", {});
-uapp("Nota da Recuperação", "Qual nota você precisa para alcançar a média?", "notaFinal", {});
 uapp("Salário Líquido", "Simulação de INSS e IRRF sobre o bruto.", "salario", {});
 uapp("Custo de Viagem", "Combustível, pedágio e hospedagem por pessoa.", "viagem", {});
 uapp("Distância entre Pontos", "Haversine: distância real entre coordenadas.", "distancia", {});
-uapp("Velocidade Média", "Calcule km/h, m/s e mph a partir de distância e tempo.", "velocidade", {});
-uapp("Escala de Mapa", "Converta medidas de mapa em distância real.", "proporcao", {});
 uapp("Área de Terreno", "m², hectares e alqueires de um terreno retangular.", "terreno", {});
 uapp("Calculadora de Cimento", "Cimento, areia e brita para sua laje.", "cimento", {});
 uapp("Calculadora de Tinta", "Litros e latas de tinta para sua parede.", "tinta", {});
 uapp("Consumo de Energia", "Estime a conta de luz de um aparelho.", "energia", {});
-uapp("Tempo de Download", "Quanto tempo leva para baixar aquele arquivo?", "download", {});
 uapp("Gerador de Personagem", "Nomes e classes aleatórias para seu RPG.", "personagem", {});
 uapp("Frase do Dia", "Citações curtas para inspirar o dia.", "frases", {});
 uapp("Timestamp UNIX", "Converta datas e timestamps UNIX nos dois sentidos.", "timestamp", {});
@@ -519,7 +503,26 @@ uapp("Metrônomo", "BPM ajustável com tap tempo.", "metronomo", {});
 uapp("Diário de Humor", "Registre seu humor e veja a tendência do mês.", "humor", {});
 uapp("Rastreador de Metas", "Metas com barra de progresso e contagem.", "metas", {});
 uapp("Número por Extenso", "Escreva qualquer número em palavras.", "porExtenso", {});
-uapp("Comparador de Números", "Qual é maior, e por quanto?", "comparador", {});
+
+/* ferramentas profissionais ×18 */
+uapp("Simulador de Financiamento", "PRICE × SAC com tabela de amortização completa.", "amortizacao", {}, true);
+uapp("Investimento com Aportes", "Juros compostos com gráfico de evolução anual.", "investimento", { modo: "geral" }, true);
+uapp("Aposentadoria: Simulador", "Quanto juntar e qual renda mensal esperar.", "investimento", { modo: "aposentadoria" });
+uapp("Kanban", "Quadro A fazer/Fazendo/Feito salvo no navegador.", "kanban", {});
+uapp("Currículo Profissional", "Preencha e imprima um currículo pronto em PDF.", "curriculo", {}, true);
+uapp("Redimensionar Imagem", "Mude o tamanho e o formato sem sair do navegador.", "imagem", { modo: "redimensionar" });
+uapp("Comprimir Imagem", "Reduza o peso de fotos com controle de qualidade.", "imagem", { modo: "comprimir" });
+uapp("Paleta de Imagem", "Extraia as cores dominantes de qualquer foto.", "paleta", {});
+uapp("Decodificador JWT", "Header, payload e validade de qualquer token.", "jwt", {});
+uapp("Cliente REST", "Mini Postman: teste APIs GET/POST no navegador.", "rest", {});
+uapp("Analisador de URL", "Quebre qualquer URL em partes e parâmetros.", "urlparse", {});
+uapp("Explicador de Cron", "Traduza expressões cron para português.", "crontab", {});
+uapp("Quanto Cobrar (Freelancer)", "Sua hora ideal a partir de salário, custos e margem.", "freelancer", {});
+uapp("Sorteador de Times", "Divida participantes em times equilibrados.", "times", {});
+uapp("Validador de CNPJ", "Dígitos verificadores em tempo real.", "cnpj", {});
+uapp("Extrator de Contatos", "Ache e-mails, telefones e links em qualquer texto.", "extrator", {});
+uapp("Dias Úteis", "Conte dias úteis entre datas, descontando feriados.", "diasUteis", {});
+uapp("Dados de Teste", "Pessoas fictícias para formulários e testes.", "fakedata", {});
 
 /* ── export ─────────────────────────────────────────────── */
 export const CATALOGO = { estudos: E, jogos: J, uteis: U };

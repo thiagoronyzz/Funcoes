@@ -3,8 +3,8 @@ import * as EST1 from "./engines/estudos.mjs";
 import * as EST2 from "./engines/estudos2.mjs";
 import * as UT1 from "./engines/uteis.mjs";
 import * as UT2 from "./engines/uteis2.mjs";
-import * as JOG1 from "./engines/jogos.mjs";
-import * as JOG2 from "./engines/jogos2.mjs";
+import { JOGOS_ARCADE } from "./engines/jogos_arcade.mjs";
+import { JOGOS_PUZZLE } from "./engines/jogos_puzzle.mjs";
 
 import { getEstudos } from "./catalog_estudos.mjs";
 import { getUteis } from "./catalog_uteis.mjs";
@@ -13,7 +13,7 @@ import { getJogos } from "./catalog_jogos.mjs";
 export const ENGINES = {
   estudos: { ...EST1.ESTUDOS, ...EST2.ESTUDOS2 },
   uteis: { ...UT1.UTEIS1, ...UT2.UTEIS2 },
-  jogos: { ...JOG1.JOGOS1, ...JOG2.JOGOS2 },
+  jogos: { ...JOGOS_ARCADE, ...JOGOS_PUZZLE },
 };
 
 export const E = getEstudos();
@@ -30,8 +30,9 @@ export function validar() {
     const nomes = new Set();
     for (const e of CATALOGO[c]) {
       if (!e.nome || !e.desc) er.push(`${c}: app sem nome/desc`);
-      if (nomes.has(e.nome)) er.push(`${c}: nome duplicado "${e.nome}"`);
-      nomes.add(e.nome);
+      const chave = e.nome + "|" + e.desc;
+      if (nomes.has(chave)) er.push(`${c}: entrada duplicada "${e.nome}"`);
+      nomes.add(chave);
       if (!e.legacy && !e.engine) er.push(`${c}: "${e.nome}" sem engine nem legacy`);
     }
   }

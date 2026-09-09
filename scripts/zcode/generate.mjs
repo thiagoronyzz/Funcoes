@@ -6,6 +6,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { CATALOGO, ENGINES, validar } from "./catalog.mjs";
 import { appShell, KIT_CSS, KIT_JS, PALETA, CATEGORIAS } from "./kit.mjs";
+import { GBASE, GCSS } from "./engines/gbase.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const ZDIR = path.join(ROOT, "public", "ZCODE");
@@ -92,7 +93,7 @@ function landingHtml(catId) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>${info.titulo} — Zcode</title>
-<meta name="description" content="100 apps de ${info.titulo.toLowerCase()} da plataforma Zcode.">
+<meta name="description" content="${CATALOGO[catId].length} apps de ${info.titulo.toLowerCase()} da plataforma Zcode.">
 <meta name="theme-color" content="${PALETA.bg}">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23f3f0ea'/%3E%3Cpath d='M20 18h24L20 46h24' fill='none' stroke='%23252422' stroke-width='7' stroke-linecap='square'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -115,14 +116,14 @@ function landingHtml(catId) {
 <main class="zmain">
   <div class="zhero">
     <h1>${info.titulo}</h1>
-    <p>100 aplicativos · escolha o seu</p>
+    <p>${CATALOGO[catId].length} aplicativos · escolha o seu</p>
     <input class="zinput" id="busca" placeholder="Buscar neste catálogo…" autocomplete="off">
   </div>
   <div class="lgrid" id="grid">
 ${cards}
   </div>
 </main>
-<footer class="zfoot"><b>Zcode</b> · 300 aplicativos em 3 categorias</footer>
+<footer class="zfoot"><b>Zcode</b> · ${CATALOGO.estudos.length + CATALOGO.jogos.length + CATALOGO.uteis.length} aplicativos em 3 categorias</footer>
 <script>
 ${KIT_JS}
 var D = ${data};
@@ -148,7 +149,7 @@ const SOCIAL_APPS = [
 ];
 const CAT_META = {
   estudos: { rotulo: "Categoria.01", titulo: "Estudos", descricao: "Ferramentas para aprender melhor: foco, revisão, quizzes e tudo que ajuda na hora de estudar." },
-  jogos: { rotulo: "Categoria.02", titulo: "Jogos", descricao: "Arcade clássico e jogos de reflexo: treine a mão, o olho e o cérebro." },
+  jogos: { rotulo: "Categoria.02", titulo: "Jogos", descricao: "270 jogos originais: arcade, estratégia, puzzle, gestão e narrativa — cada um com mecânica própria." },
   uteis: { rotulo: "Categoria.03", titulo: "Úteis", descricao: "Calculadoras, conversores e ferramentas do dia a dia que resolvem em segundos." },
   social: { rotulo: "Categoria.04", titulo: "Social", descricao: "Onde me encontrar e interagir: chats, links e experimentos comunitários da plataforma." },
 };
@@ -226,14 +227,15 @@ function main() {
         try { args.total = new Function("return " + args.gen + "()")().length; } catch { /* mantém padrão */ }
       }
       const r = engine(args);
+      const ehJogo = id === "jogos";
       const html = appShell({
         cat: id,
         nome: e.nome,
         desc: e.desc,
         slug: slugs[i],
         body: r.body,
-        js: r.js,
-        css: r.css,
+        js: ehJogo ? GBASE + "\n" + r.js : r.js,
+        css: ehJogo ? (r.css || "") + GCSS : r.css,
         audio: true,
       });
       const p = path.join(dir, slugs[i], "index.html");

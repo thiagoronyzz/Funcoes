@@ -99,6 +99,9 @@ Além do que já existe no mercado, o app traz **22 ferramentas autorais**, desc
 | **Sugestor de cortes** | Combina picos de áudio e movimento para sugerir onde cortar. |
 | **Paleta → legenda** | Extrai as cores dominantes do vídeo e aplica nas legendas. |
 | **Zonas seguras** | Sobreposições das áreas cobertas pela interface de Reels, TikTok e Shorts. |
+| **Gerador de mídia procedural** | Cria fundos animados, partículas, contagem regressiva, cartões de texto e barras de cor sem arquivo externo. |
+| **Estúdio de música procedural** | Compõe trilhas em 8 estilos (lo-fi, trap, cinema, chiptune…) e exporta em WAV. |
+| **Banco de SFX sintetizado** | 16 efeitos sonoros gerados por síntese, prontos para arrastar na timeline. |
 | **Mapa de energia** | Faixas de calor mostrando fala, silêncio e intensidade ao longo do tempo. |
 | **Storyboard** | Folha de contato com 12 quadros numerados para revisão. |
 | **Receitas de look** | Seus looks salvos viram `.editzz-look.json` para reutilizar e compartilhar. |

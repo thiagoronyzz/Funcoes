@@ -1,0 +1,1807 @@
+<!doctype html>
+<html lang="pt-BR" data-cat="jogos">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Frentes Totais 1939 — Zcode</title>
+<meta name="description" content="Estratégia militar da Segunda Guerra Mundial no mapa real: linhas de frente, cercos, invasões relâmpago e partidas de 30 a 60 minutos.">
+<style>
+:root{
+  --bg:#080d13; --panel:#0e1620; --panel2:#131f2b; --line:rgba(255,255,255,.09);
+  --txt:#e6edf3; --dim:#8b98a5; --acc:#f59e0b; --acc2:#ef4444; --ok:#22c55e;
+  --mono:ui-monospace,"JetBrains Mono",Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--txt);font:14px/1.45 "Inter",system-ui,sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+#app{display:flex;flex-direction:column;height:100dvh}
+
+/* ---------- topo ---------- */
+#top{display:flex;align-items:center;gap:14px;padding:0 12px;height:52px;background:linear-gradient(180deg,#111c27,#0b131b);border-bottom:1px solid var(--line);flex:0 0 auto}
+#brand{font:700 13px/1 var(--mono);letter-spacing:.14em;color:var(--acc);white-space:nowrap}
+#brand b{color:#fff}
+#res{display:flex;gap:8px}
+.res{display:flex;align-items:center;gap:6px;background:#0b131b;border:1px solid var(--line);border-radius:6px;padding:5px 9px;font:600 12px/1 var(--mono)}
+.res .rk{color:var(--dim);font-size:13px}
+.res i{font-style:normal;font-size:9px;color:var(--dim)}
+.res i.up{color:#4ade80}.res i.dn{color:#f87171}
+#clockbox{display:flex;flex-direction:column;line-height:1.1;margin-left:4px}
+#clock{font:600 13px/1 var(--mono)}
+#era{font-size:10px;color:var(--dim);letter-spacing:.04em}
+#vpbar{flex:1;display:flex;flex-direction:column;gap:2px;min-width:150px;max-width:330px}
+.vprow{display:flex;align-items:center;gap:5px;font:600 10px/1 var(--mono)}
+.vprow .dot{width:8px;height:8px;border-radius:2px;flex:0 0 auto}
+.vprow .vn{width:20px;color:var(--dim)}
+.vprow .vbar{flex:1;height:6px;background:#0b131b;border-radius:3px;overflow:hidden}
+.vprow .vbar i{display:block;height:100%;border-radius:3px;transition:width .4s}
+.vprow b{width:22px;text-align:right}
+#ctrl{display:flex;align-items:center;gap:6px}
+#spd{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+#spd button{padding:6px 9px;font:600 11px/1 var(--mono);color:var(--dim)}
+#spd button.on{background:var(--acc);color:#111}
+#pausa{padding:7px 12px;border:1px solid var(--line);border-radius:6px;font:600 12px/1 var(--mono)}
+#layer{font:600 10px/1 var(--mono);color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+
+/* ---------- palco ---------- */
+#stage{flex:1;position:relative;overflow:hidden;background:#060d14}
+#map{position:absolute;inset:0;display:block;cursor:crosshair}
+#alerts{position:absolute;left:10px;top:10px;width:236px;display:flex;flex-direction:column;gap:6px;pointer-events:none;z-index:3}
+.al{background:rgba(10,16,22,.9);border-left:3px solid var(--dim);border-radius:5px;padding:6px 9px;font-size:11px;animation:fade .3s}
+.al b{display:block;font-size:11.5px}
+.al i{font-style:normal;color:var(--dim);font-size:10px}
+.al.info{border-color:#3b82f6}.al.warn{border-color:var(--acc)}.al.good{border-color:var(--ok)}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1}}
+#panel{position:absolute;right:8px;top:8px;bottom:8px;width:250px;background:rgba(10,16,22,.92);border:1px solid var(--line);border-radius:8px;overflow-y:auto;padding:6px;z-index:3}
+#panel::-webkit-scrollbar{width:6px}#panel::-webkit-scrollbar-thumb{background:#243342;border-radius:3px}
+.nrow{display:flex;align-items:center;gap:6px;padding:4px 5px;border-radius:5px;font-size:11px}
+.nrow+.nrow{border-top:1px solid rgba(255,255,255,.05)}
+.nrow.me{background:rgba(245,158,11,.12)}
+.flag{display:inline-flex;align-items:center;justify-content:center;width:24px;height:15px;border-radius:2px;font:700 8px/1 var(--mono);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.8);flex:0 0 auto;border:1px solid rgba(255,255,255,.25)}
+.flag.sm{width:20px;height:13px;font-size:7px}
+.nname{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nname em{display:block;font-style:normal;font-size:9px;color:var(--dim)}
+.nvp{font:600 11px/1 var(--mono);width:24px;text-align:right}
+.nrel{font:600 9px/1 var(--mono);width:46px;text-align:right}
+.nbtns{display:flex;gap:3px}
+.nbtns button{font:600 9px/1 var(--mono);padding:3px 5px;border:1px solid var(--line);border-radius:4px;color:var(--dim)}
+.nbtns button:hover{color:#fff;border-color:#4b5b6b;background:#16222e}
+.nbtns .wr:hover{color:#fca5a5;border-color:#7f1d1d}
+.nbtns .an:hover{color:#bbf7d0;border-color:#166534}
+#legend{position:absolute;left:10px;bottom:10px;background:rgba(10,16,22,.85);border:1px solid var(--line);border-radius:6px;padding:6px 9px;font:10px/1.6 var(--mono);color:var(--dim);z-index:3}
+#legend b{color:var(--txt)}
+
+/* ---------- rodapé ---------- */
+#bottom{flex:0 0 auto;display:flex;align-items:stretch;gap:10px;padding:8px 12px;background:linear-gradient(0deg,#111c27,#0b131b);border-top:1px solid var(--line);min-height:88px}
+#prod{display:flex;gap:6px;flex-wrap:wrap}
+.pb{display:flex;flex-direction:column;gap:1px;align-items:flex-start;background:#0d1721;border:1px solid var(--line);border-radius:7px;padding:6px 9px;min-width:112px;transition:.15s}
+.pb:hover{border-color:#4b5b6b;background:#142130}
+.pb.off{opacity:.42}
+.pb.alt{min-width:104px;border-style:dashed}
+.pi{font-size:12px}
+.pn{font:600 11px/1.1 "Inter",sans-serif}
+.pc{font:9px/1 var(--mono);color:var(--dim)}
+#queue{display:flex;flex-direction:column;gap:3px;min-width:74px;justify-content:center}
+.q{font:600 10px/1 var(--mono);background:#0d1721;border:1px solid var(--line);border-radius:4px;padding:3px 6px;color:#fbbf24}
+#garrison{flex:1;display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;padding-left:10px;border-left:1px solid var(--line)}
+.ghead{width:100%;font:600 11px/1.2 "Inter",sans-serif;color:var(--txt)}
+.ghead em{font-style:normal;color:var(--dim);font-weight:400;font-size:10px;margin-left:6px}
+.chip{display:flex;align-items:center;gap:4px;background:#0d1721;border:1px solid var(--line);border-radius:6px;padding:4px 7px;font:10px/1 var(--mono);opacity:.4}
+.chip.on{opacity:1;border-color:#3f5566;background:#142130}
+.chip b{color:#fff}
+.chip i{font-style:normal;color:var(--dim)}
+.hint{font-size:11px;color:var(--dim)}
+
+#tip{position:fixed;display:none;background:rgba(8,13,19,.96);border:1px solid var(--line);border-radius:6px;padding:7px 10px;font-size:11.5px;max-width:250px;pointer-events:none;z-index:40;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+#tip b{color:#fff}
+
+/* ---------- telas ---------- */
+.screen{position:fixed;inset:0;background:radial-gradient(1200px 700px at 50% 0%,#16232f,#070c11 70%);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;overflow-y:auto}
+.screen h1{font:800 30px/1 "Inter",sans-serif;letter-spacing:-.02em}
+.screen h1 span{color:var(--acc)}
+.screen .sub{color:var(--dim);font-size:13px;max-width:640px;text-align:center}
+#nations{display:grid;grid-template-columns:repeat(auto-fit,minmax(212px,1fr));gap:9px;max-width:940px;width:100%}
+.ncard{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;background:#0e1720;border:1px solid var(--line);border-radius:9px;padding:11px 12px;transition:.15s}
+.ncard:hover{border-color:#4b5b6b;transform:translateY(-2px)}
+.ncard.on{border-color:var(--acc);background:#161d18;box-shadow:0 0 0 1px rgba(245,158,11,.35)}
+.nflag{display:flex;align-items:center;justify-content:center;width:34px;height:21px;border-radius:3px;font:700 10px/1 var(--mono);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.25);margin-bottom:3px}
+.nn{font:700 15px/1.1 "Inter",sans-serif}
+.nb{font:700 10px/1.3 var(--mono);color:var(--acc);letter-spacing:.04em;text-transform:uppercase}
+.nd{font-size:11.5px;color:var(--dim)}
+.np{font-size:11px;color:#cbd5e1;margin-top:2px}
+.np b{color:#fff}
+.ns{font:9.5px/1.3 var(--mono);color:#64748b}
+.opts{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.opt{display:flex;gap:4px;background:#0e1720;border:1px solid var(--line);border-radius:8px;padding:5px}
+.opt label{font:600 10px/1 var(--mono);color:var(--dim);align-self:center;padding:0 6px;letter-spacing:.06em}
+.opt button{padding:6px 11px;border-radius:5px;font:600 11px/1 var(--mono);color:var(--dim)}
+.opt button.on{background:var(--acc);color:#111}
+#startBtn,.bigbtn{margin-top:4px;padding:13px 34px;background:var(--acc);color:#14100a;font:800 14px/1 "Inter",sans-serif;border-radius:9px;letter-spacing:.02em}
+#startBtn:hover,.bigbtn:hover{background:#fbbf24}
+#manual{max-width:940px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:6px}
+.mcard{background:rgba(14,23,32,.7);border:1px solid var(--line);border-radius:8px;padding:9px 11px}
+.mcard b{display:block;font-size:12px;margin-bottom:2px;color:var(--acc)}
+.mcard p{font-size:11px;color:var(--dim)}
+#over{display:none}
+#over h1{font-size:38px}
+#overTitle.win{color:#4ade80}#overTitle.lose{color:#f87171}
+#overTitle span{font-size:16px;color:var(--dim);font-weight:500}
+#overSub{color:var(--dim);font-size:12.5px}
+#overBody table{border-collapse:collapse;font-size:12px;min-width:420px}
+#overBody th{font:600 10px/1 var(--mono);color:var(--dim);text-transform:uppercase;letter-spacing:.06em;padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
+#overBody td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.05)}
+#overBody tr.me{background:rgba(245,158,11,.1)}
+#overBody td b{color:#fff}
+@media (max-width:900px){
+  #panel{width:190px}.nbtns{flex-wrap:wrap}#alerts{display:none}
+  #vpbar{display:none}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <div id="brand">FRENTES TOTAIS <b>1939</b></div>
+    <div id="res"></div>
+    <div id="clockbox"><span id="clock">Dia 1 · 00:00</span><span id="era">1939 · Escalada</span></div>
+    <div id="vpbar"></div>
+    <div id="ctrl">
+      <div id="spd"><button data-spd="1">1×</button><button data-spd="2">2×</button><button data-spd="4">4×</button></div>
+      <button id="pausa">❚❚</button>
+      <span id="layer">político</span>
+    </div>
+  </header>
+
+  <main id="stage">
+    <canvas id="map"></canvas>
+    <div id="alerts"></div>
+    <aside id="panel"></aside>
+    <div id="legend">
+      <b>Arraste</b> da sua província → vizinha para atacar<br>
+      <b>Botão direito</b> cancela ordens / recolhe navios<br>
+      <b>Q W E R</b> produz · <b>Espaço</b> pausa · <b>L</b> camadas · <b>1 2 3</b> velocidade
+    </div>
+  </main>
+
+  <footer id="bottom">
+    <div id="prod"></div>
+    <div id="queue"></div>
+    <div id="garrison"></div>
+  </footer>
+</div>
+
+<div id="tip"></div>
+
+<div id="setup" class="screen">
+  <h1>FRENTES TOTAIS <span>1939</span></h1>
+  <p class="sub">Estratégia militar acelerada na Segunda Guerra Mundial. Escolha uma potência histórica, forme frentes, cerque exércitos inimigos e conquiste território — sem burocracia, em partidas curtas e decisivas.</p>
+  <div id="nations"></div>
+  <div class="opts">
+    <div class="opt" id="durs"><label>DURAÇÃO</label>
+      <button data-d="curta">Blitz 30 min</button><button data-d="padrao">Campanha 45 min</button><button data-d="longa">Guerra Total 60 min</button>
+    </div>
+    <div class="opt" id="diffs"><label>DIFERENÇA</label>
+      <button data-d="1">Recruta</button><button data-d="2">Normal</button><button data-d="3">Veterano</button>
+    </div>
+  </div>
+  <button id="startBtn">Começar</button>
+  <div id="manual">
+    <div class="mcard"><b>1. Frente e setas</b><p>Cada fronteira entre nações inimigas vira uma linha de frente incandescente. Arraste da sua província para a vizinha e a seta mostra a probabilidade de vitória antes do clique.</p></div>
+    <div class="mcard"><b>2. Cerco (Encircle)</b><p>Corte a rota até a capital inimiga e as divisões dele ficam sem suprimento: ataque cai pela metade, desgaste por hora e rendição em 2,5 h. O contorno vermelho mostra o bolsão.</p></div>
+    <div class="mcard"><b>3. Combustível é rei</b><p>Blindados, aviões e frotas queimam petróleo. Sem ele, tanques param e aviões ficam no chão. Conquiste campos de petróleo ou importe com ouro.</p></div>
+    <div class="mcard"><b>4. Bots com personalidade</b><p>Expansionista ataca cedo, Oportunista apunhala pelas costas, Diplomata financia aliados e o jogo inteiro se volta contra quem lidera.</p></div>
+  </div>
+</div>
+
+<div id="over" class="screen">
+  <h1 id="overTitle"></h1>
+  <p id="overSub"></p>
+  <div id="overBody"></div>
+  <button class="bigbtn" onclick="restart()">Nova partida</button>
+</div>
+
+<script>
+const GEO={"COLS":71,"ROWS":45,"LON0":-11,"LAT0":29,"LON1":42,"LAT1":63,"P":{"eurasia":[[32.8,63],[42,63],[42,31],[34.6,31.3],[34.9,32.5],[35,33.5],[35.3,34.7],[35.7,35.9],[36.3,36.5],[34,36.3],[31,36.3],[29,36.4],[27.3,36.8],[26.4,38.6],[26.2,40.3],[25,40.9],[23.5,40.6],[22.6,40.5],[19.4,40.5],[18.6,42.1],[16.2,43],[13.6,45.6],[13.2,46.4],[12.2,46.8],[10.5,46.6],[9.3,46.3],[8.5,46],[7.4,45.9],[6.9,45.2],[7,44.3],[7.6,43.8],[6.3,43.1],[5.2,42.9],[4,43.1],[3,42.9],[3.2,42.4],[1.7,42.7],[0.7,42.9],[-1.8,43.4],[-1.3,46],[-2.2,47.3],[-4.8,48.6],[-1.5,49.4],[2,51],[4,51.5],[7,53.6],[8.2,55.3],[8.6,56.8],[10.6,57.7],[10.2,56.4],[10,55.4],[9.8,54.9],[11,54.4],[13,54.2],[14.3,54.1],[16.5,54.5],[18.6,54.6],[20,54.9],[21,55.3],[21.1,56],[21,57],[23.5,57.2],[24.5,58.5],[24,59.5],[26,59.6],[28,59.7],[30.3,60],[31.5,61.5]],"africa":[[-5.9,35.9],[-5.2,35.6],[-3.9,35.25],[-2.5,35.3],[-0.6,35.7],[0.6,35.9],[2.5,36.7],[3.5,36.8],[5.5,36.8],[8,36.9],[9.2,37.1],[10.3,37.1],[10.8,36],[10.7,34.8],[10.2,33.9],[11.2,33.4],[13.2,32.9],[15.1,32.4],[16.6,31],[17.5,30.4],[19,30.3],[20.5,31.4],[22,32.5],[23.5,32.1],[25,31.5],[27,31.2],[30,31.2],[32,31.25],[34.2,31.3],[33.2,29.5],[33,29],[-11,29],[-11,33],[-9.3,32.8],[-6.9,34]],"scandinavia":[[13.1,55.4],[14.6,56.1],[16.6,56.5],[16.5,57.6],[17.6,58.7],[18.9,59.4],[17.5,61],[18.5,62.5],[20,63.4],[21.5,64.5],[23.5,65.6],[24.6,65.9],[25.6,65],[24.5,64.4],[21.6,63.1],[21.4,61.9],[22.5,60.5],[25,60.1],[27,60.5],[28.8,60.8],[30.3,60],[31.5,61.5],[33,63.2],[33.4,65],[33.5,66.6],[30,67.5],[26,69],[22,69.6],[19,68.5],[17,67.5],[15.5,66.4],[13.5,65.5],[12,64.7],[10,63.6],[7.5,63],[5.5,62],[5,60.5],[6.2,59],[7,58.05],[9,58.1],[10.6,58.95],[11.2,58.7],[11.9,57.7],[12.85,56.6],[12.7,56.05]],"britain":[[-5.6,50.05],[-3,50.6],[1.4,51],[1.7,52.6],[0.3,53.6],[-0.3,54.6],[-1.3,55.6],[-2.1,56.6],[-3,58.5],[-5.2,58.6],[-5.6,57.2],[-5,56],[-4.6,55.4],[-3.2,54.8],[-3.6,54.1],[-4.8,53.4],[-4.1,52.9],[-5.3,51.9],[-4,51.6],[-3,51.4],[-4.5,51.2]],"ireland":[[-10,51.6],[-9,53],[-10,54.3],[-8,55.3],[-6,55.2],[-5.5,54],[-6,52.5],[-7.5,52],[-9.5,51.5]],"iberia":[[-9.5,43.8],[-8,43.6],[-4,43.6],[-1.8,43.4],[0.7,42.9],[3.3,42.4],[3.2,41.9],[0.2,39.5],[-0.3,38.4],[-1.5,37.2],[-4.4,36.7],[-6.3,36.8],[-7.4,37.2],[-8.9,37],[-9.5,38.7],[-8.8,41.9]],"italy":[[7.5,43.9],[8.9,44.4],[10.3,44],[11.2,42.4],[12,41.5],[13.5,41.2],[14.2,40.8],[15.5,40],[15.9,39.7],[15.6,38.1],[16.5,38.9],[17.2,39.1],[17,40.5],[18.4,40.1],[18,41],[16.2,41.9],[15.2,42.4],[14,42.4],[13.5,43.6],[12.5,44.2],[12.3,45.4],[13.6,45.7],[13.2,46.4],[12.2,46.8],[10.5,46.6],[9.3,46.3],[8.5,46],[7.4,45.9],[6.9,45.2],[7,44.3]],"greece":[[19.4,40.5],[21,41.3],[22.9,41.3],[26.3,41.3],[26.3,40.2],[24.5,40],[24.3,39.2],[24.4,38],[23.9,37.4],[23,37.2],[22.5,36.9],[22,37.6],[21.6,38.4],[21,39],[20.4,39.6],[19.6,40.2]],"sicily":[[12.4,38],[14,38.3],[15.2,38.4],[15.35,37],[12.4,37.4]],"sardinia":[[8.2,41.2],[9.6,41.2],[9.7,39.1],[8.4,38.9]],"corsica":[[8.6,42.6],[9.5,42.9],[9.4,41.4],[8.6,41.5]],"crete":[[23.5,35.5],[26.3,35.3],[25.9,34.9],[23.5,35]],"cyprus":[[32.3,35.2],[34,35.7],[33.8,34.6],[32.5,34.7]],"zealand":[[12.05,55.95],[12.85,56.15],[12.75,55.35],[12.05,55.5]]},"SR":[["suez",32.3,33.3,29.3,31.1],["aqaba",34.75,35.7,29.3,31],["redsea",32.6,36,29,29.6],["gibraltar",-6.4,-4.9,35.3,36.7],["alboran",-1.6,4.2,36.35,37.3],["kattegat",10.6,12.35,56.6,58],["skagerrak",7.4,10.7,57.75,59.1],["oresund",12.9,13.4,55.2,56.4],["channel",0.35,2.7,49.85,51.45],["balticS",12.7,19.2,54.35,55.35],["dardanelles",26,27.6,39.8,40.7],["marmara",27.4,28.75,40.3,41.6],["messina",15.45,15.75,37.9,38.35]],"SP":[["blacksea",[[27.8,41],[28.9,43.2],[30,46.4],[33,46.6],[33.6,45.5],[35.2,44.4],[36.6,45.3],[38,44.8],[40.5,43.5],[41.6,42],[39.5,40.6],[36.5,40.5],[33,40.8],[30,40.8]]],["azov",[[34.9,45.5],[39.5,45.9],[39,47.2],[35,47]]]],"CR":[[33.4,45.4],[33.6,44.5],[35.2,44.4],[36.6,45.3],[35.5,46.1],[33.6,45.9]],"SZ":[["BLK","Mar Negro",27.5,42,40.2,47.5],["MED","Mediterrâneo",-6,36,29,41.8],["BAL","Báltico",11.5,31,53,66],["NTH","Mar do Norte",-4,11,50.2,62],["ATL","Atlântico",-11,12,29,63]],"SEEDS":[["GBR","Grã-Bretanha",10,0,6,7,"planicie",[[-4.8,55.8],[-2.5,54.5],[-1.5,52.8],[0.6,51.4],[1.4,52.6],[-3,51.5],[-4.5,50.3],[-2,53.5],[-1.2,55],[-3.2,56.5]]],["IRL","Irlanda",1,0,2,1,"planicie",[[-8.2,53.4],[-7,52.3],[-9,54.2],[-6.5,54.8]]],["NOR","Noruega",3,0,2,2,"montanha",[[5.8,58.2],[6.6,59.5],[6.2,60.8],[8.2,61.8],[10.5,62.3],[12.3,62.9],[10.6,59.2]]],["SWE","Suécia",4,0,2,2,"floresta",[[13.4,55.6],[14.6,56.6],[15.6,57.6],[16.6,58.6],[17.6,59.5],[16.6,60.6],[17.6,61.6],[18.8,62.4],[19,63],[15,57]]],["FIN","Finlândia",2,0,2,2,"floresta",[[22.5,60.3],[24.5,59.9],[27.5,60.6],[29.5,61.5],[30.5,62.5],[28,63],[25,63.4],[22.5,62.5],[21.8,61.2]]],["DEN","Dinamarca",2,0,1,1,"planicie",[[9,56.5],[9.6,55.5],[12.4,55.7],[10.2,57.2],[8.6,55.2]]],["NLD","Países Baixos",4,0,2,2,"planicie",[[5.6,52.3],[6.2,51.5],[5.2,53.2]]],["BEL","Bélgica",4,0,2,2,"planicie",[[4.6,50.7],[5.2,50.2],[4.2,51.2]]],["FRN","França-Norte",7,0,4,6,"planicie",[[2.5,49.5],[1.5,48.8],[0.5,49.2],[3.5,49],[4.5,49.5],[2,48.5],[-1,48.2],[0,47.5]]],["FRS","França-Sul",4,0,3,4,"planicie",[[3.5,45],[2,44.5],[5,44.5],[4.5,43.5],[2,43.2],[0.5,44.8],[6.5,44.5]]],["COR","Córsega",0,0,0,1,"montanha",[[9,42.2]]],["ESP","Espanha",3,0,4,4,"montanha",[[-4,40.3],[-3,42.5],[-6,40],[-1.5,41.5],[0.5,42],[-5.5,37.5],[-4,38.5],[-7,38.5],[-2,36.9]]],["POR","Portugal",1,0,2,1,"planicie",[[-8.2,39.8],[-8.5,41.5],[-7.5,37.5]]],["SUI","Suíça",3,0,1,2,"montanha",[[8.2,46.9],[7.5,46.4],[9.2,46.6]]],["AUT","Áustria",3,0,2,2,"montanha",[[14.3,47.5],[13,47.3],[15.5,47.2],[16,48],[12.5,47.2]]],["GEN","Alemanha-Norte",9,0,6,7,"planicie",[[10,52.5],[9,53],[11.5,52.5],[12.5,53],[8.5,51.5],[13.5,53.6],[12,54.2]]],["GES","Alemanha-Sul",7,0,4,5,"floresta",[[10.5,48.7],[9,49],[12,48.5],[8.5,48.5],[13,49]]],["CZE","Checoslováquia",5,0,3,3,"floresta",[[15.8,49.8],[14,50],[17.5,49.5],[18.5,50.2],[16.5,48.8]]],["POL","Polônia",3,0,4,4,"planicie",[[19.5,52],[18,52.5],[21.5,52],[23,52.5],[20.5,53.5],[18.5,53.8],[22.5,51],[24,50.8]]],["PRU","Prússia Oriental",2,0,1,2,"planicie",[[21.5,54.2],[20,54],[22.5,54.8],[19.8,54.8]]],["HUN","Hungria",3,0,3,2,"planicie",[[19.2,47.2],[18,47.5],[21,47.5],[20,48.5],[20.5,46.5],[18.5,46.2]]],["ROM","Romênia",3,6,4,5,"planicie",[[25,46],[23.5,45.8],[26.5,45.5],[27.5,46.5],[28.5,45.5],[24,44.5],[26,44],[22.5,44.5],[28,44]]],["BUL","Bulgária",1,0,2,2,"montanha",[[25,42.7],[23.5,42.5],[26.5,42.5],[27.5,43.5],[24.5,41.8],[26.5,41.8]]],["YUG","Iugoslávia",2,0,4,3,"montanha",[[18.2,44.3],[16,44.5],[19.5,45.5],[21,45],[17.5,43],[19.5,43.5],[15.5,45.5],[21.5,44],[14.5,45.6]]],["ALB","Albânia",0,0,1,1,"montanha",[[20,41.3],[19.8,40.5]]],["GRE","Grécia",1,0,2,2,"montanha",[[22.6,39.6],[21.5,40.3],[23.8,40.5],[24.5,38.5],[22.5,38],[21.8,37.2]]],["CRE","Creta",0,0,0,1,"montanha",[[24.8,35.2],[23.5,35.3],[26,35.2]]],["ITN","Itália-Norte",7,0,4,5,"planicie",[[10.5,45],[9,45.3],[11.5,44.8],[13,45.8],[12.5,44.5],[8.5,45],[13.3,46]]],["ITS","Itália-Sul",3,0,3,3,"montanha",[[15,41],[13.5,41.8],[16.5,41],[17,40],[14.5,40.5],[12.5,41.5],[16,39]]],["SIC","Sicília",1,0,1,2,"planicie",[[14,37.6],[13,37.8],[15.1,38]]],["SAR","Sardenha",0,0,1,1,"montanha",[[9,40],[9.2,39.5],[8.8,40.8]]],["BAL","Países Bálticos",1,0,2,2,"floresta",[[24.5,57.3],[23,56.5],[25.5,56.5],[26.5,57.8],[24,58.5],[22,57.5],[21.5,56.5]]],["BLR","Bielorrússia",2,0,3,3,"floresta",[[28.5,54],[27,55],[29.5,54.5],[30.5,53.5],[26.5,53.5],[25.5,54.5]]],["UKR","Ucrânia",6,0,5,5,"planicie",[[32,49],[30,48.5],[34,48.5],[36,48.5],[38,49],[33,50.5],[31,51],[35,51.5],[37.5,50.5],[39.5,49.5],[30.5,46.7],[32.5,46.6],[34.5,46.4],[36.5,46.9],[38.2,47.2]]],["CRI","Crimeia",1,0,1,2,"planicie",[[34,45.1],[34.8,44.9],[35.6,45.2],[34.4,45.7]]],["KAU","Cáucaso",2,7,2,4,"montanha",[[40.5,43.5],[39,43],[41.5,42.5],[40,44.5],[38.5,44.5]]],["MOS","Rússia (Moscou)",8,0,7,8,"floresta",[[37.5,56.5],[35.5,56],[39.5,56.5],[41.5,57],[38.5,58.5],[41.5,59],[41,61.5],[40,54.5],[41.5,54.5],[41.5,52.5],[41.5,63]]],["LEN","Leningrado",5,0,3,5,"floresta",[[30.5,59.3],[31.5,60.8],[32.5,62.2],[33.5,63.2],[29.5,59.8],[30.5,61.5]]],["TUR","Turquia",2,0,4,3,"montanha",[[33,39.3],[30,38.5],[35.5,38.5],[38,38.5],[40.5,39],[41.5,40],[27.5,38.5],[29.5,40.5],[32,41],[36.5,41.5],[39.5,41]]],["SYR","Síria-Líbano",1,0,2,2,"deserto",[[37,34.5],[36,35.5],[38.5,34],[40,34.5],[41,35.5],[35.5,33],[36,32.5]]],["IRQ","Iraque",1,5,2,3,"deserto",[[40.5,32.5],[41.5,31.5],[41.5,33.5],[40,30.5]]],["PAL","Palestina",0,0,1,1,"deserto",[[35,31.6],[34.6,31.2],[35.3,30.8]]],["MAR","Marrocos",1,0,3,2,"deserto",[[-6.5,32],[-8,31],[-4,32.5],[-2,33.5],[-6,29.5],[-1,30.5],[-9.5,30.5],[-5.4,35.7],[-4.2,35.3],[-2.8,35.2],[-1.2,35.5]]],["ALG","Argélia",1,0,2,2,"deserto",[[2.5,34.5],[0,33],[4,33.5],[7,34.5],[2,30],[6,31],[-1,31.5],[-0.4,35.6],[0.8,35.8],[2,36.3]]],["TUN","Tunísia",1,0,1,2,"deserto",[[9.5,35.5],[10.5,34],[9,33.5]]],["LBY","Tripolitânia",0,0,1,2,"deserto",[[13,31.6],[12,30.5],[15,30],[16,29.5]]],["CIR","Cirenaica",0,0,1,2,"deserto",[[21,31.2],[20,30],[23,31],[24,29.8]]],["EGY","Egito",2,0,3,4,"deserto",[[30,30],[28,30.5],[31.5,29.8],[26,30],[32.5,30.5]]]]};
+
+</script>
+<script>
+/* ============================================================
+   FRENTES TOTAIS 1939 — protótipo jogável (vertical slice)
+   Mapa: teatro Europa / Mediterrâneo / Norte da África
+   ============================================================ */
+const COLS=GEO.COLS, ROWS=GEO.ROWS, LON0=GEO.LON0, LAT0=GEO.LAT0;
+const DLON=(GEO.LON1-GEO.LON0)/COLS, DLAT=(GEO.LAT1-GEO.LAT0)/ROWS;
+
+function inPoly(x,y,p){let c=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const xi=p[i][0],yi=p[i][1],xj=p[j][0],yj=p[j][1];if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))c=!c;}return c;}
+
+/* ---------- terreno / unidades / nações ---------- */
+const TER={
+  planicie:{nome:'Planície',atk:1.00,def:1.00,cor:'#4b5c3a'},
+  floresta:{nome:'Floresta',atk:0.85,def:1.15,cor:'#33512f'},
+  montanha:{nome:'Montanha',atk:0.60,def:1.55,tank:0.45,cor:'#6b6255'},
+  deserto:{nome:'Deserto',atk:1.05,def:0.80,tank:1.10,cor:'#8a7550'}
+};
+const UNIT={
+  INF:{id:'INF',nome:'Infantaria',ico:'▲',atk:5.5,def:8.5,brk:3,org:70,spd:1.0,fuel:0.003,cost:10,mp:90,time:45,sup:true},
+  TAN:{id:'TAN',nome:'Blindados',ico:'■',atk:14,def:5.0,brk:16,org:55,spd:1.9,fuel:0.045,cost:26,mp:50,time:90,sup:true},
+  AIR:{id:'AIR',nome:'Aviação',ico:'✈',atk:9,def:2,brk:0,org:60,spd:0,fuel:0.035,cost:18,mp:25,time:70,support:true},
+  NAV:{id:'NAV',nome:'Marinha',ico:'⚓',atk:7,def:3,brk:0,org:70,spd:0,fuel:0.020,cost:34,mp:35,time:120,naval:true}
+};
+const NATIONS=[
+ {id:'DEU',code:'DE',nome:'Alemanha',cor:'#5b6472',stripes:['#1f2937','#e5e7eb','#b91c1c'],ang:0,cap:'GEN',
+  start:['GEN','GES','AUT','CZE','PRU'],army:{INF:7,TAN:4,AIR:2,NAV:1},prof:'exp',
+  bonus:'Blitzkrieg',desc:'Blindados +20% ataque e +15% velocidade. Combustível crônico: só 55% do petróleo rende.',
+  mods:{tankAtk:1.20,spd:1.15,fuel:0.55},power:'Keil und Kessel'},
+ {id:'SUN',code:'SU',nome:'URSS',cor:'#b91c1c',stripes:['#dc2626','#f59e0b'],ang:45,cap:'MOS',
+  start:['MOS','LEN','BLR','UKR','KAU','CRI'],army:{INF:10,TAN:3,AIR:1,NAV:1},prof:'def',
+  bonus:'Terra Queimada',desc:'+35% defesa em território próprio, profundidade estratégica: invasor perde suprimento a cada província. Oficiais purgados: -10% organização.',
+  mods:{defHome:1.35,org:0.90,attrInv:1.0},power:'Ordem nº 227'},
+ {id:'GBR',code:'GB',nome:'Reino Unido',cor:'#1e3a8a',stripes:['#1e3a8a','#ffffff','#dc2626'],ang:45,cap:'GBR',
+  start:['GBR','EGY','PAL','IRQ'],army:{INF:3,TAN:1,AIR:2,NAV:6},prof:'dip',
+  bonus:'Império + Royal Navy',desc:'Domínios ultramarinos, frota dominante (bloqueio corta suprimento inimigo) e ouro abundante. Exército profissional pequeno.',
+  mods:{nav:1.25,gold:1.35,mp:0.75},power:'Bloqueio Total'},
+ {id:'FRA',code:'FR',nome:'França',cor:'#1e40af',stripes:['#1e40af','#f8fafc','#dc2626'],ang:90,cap:'FRN',
+  start:['FRN','FRS','COR','ALG','TUN'],army:{INF:6,TAN:2,AIR:1,NAV:3},prof:'def',
+  bonus:'Linha Maginot',desc:'Fortes iniciais +2 e +20% defesa em terra própria. Doutrina lenta: -10% ataque.',
+  mods:{defHome:1.20,atk:0.90,fort:2},power:'Resistência Nacional'},
+ {id:'ITA',code:'IT',nome:'Itália',cor:'#166534',stripes:['#008c45','#f4f5f0','#cd212a'],ang:90,cap:'ITN',
+  start:['ITN','ITS','SIC','SAR','LBY','CIR','ALB'],army:{INF:5,TAN:2,AIR:1,NAV:4},prof:'exp',
+  bonus:'Guerra Paralela',desc:'Marinha forte no Mediterrâneo e infantaria barata (-15% custo). Indústria fraca: -20% produção.',
+  mods:{infCost:0.85,ind:0.80,nav:1.10},power:'Mare Nostrum'},
+ {id:'ESP',code:'ES',nome:'Espanha',cor:'#b91c1c',stripes:['#aa151b','#f1bf00','#aa151b'],ang:0,cap:'ESP',
+  start:['ESP','MAR'],army:{INF:4,TAN:1,AIR:1,NAV:2},prof:'opo',
+  bonus:'Divisão Azul',desc:'Infantaria veterana (experiência inicial 2) e neutralidade lucrativa: +40% ouro enquanto não estiver em guerra.',
+  mods:{exp:2,goldNeutro:1.40},power:'Requisição Nacional'},
+ {id:'TUR',code:'TR',nome:'Turquia',cor:'#7f1d1d',stripes:['#e30a17','#ffffff'],ang:0,cap:'TUR',
+  start:['TUR','SYR'],army:{INF:4,TAN:0,AIR:0,NAV:1},prof:'dip',
+  bonus:'Fortaleza da Anatólia',desc:'Montanhas dão +25% defesa extra e o país é duro de invadir. Indústria mínima.',
+  mods:{defHome:1.25,mont:1.25,ind:0.75},power:'Defesa de Gallipoli'},
+ {id:'POL',code:'PL',nome:'Polônia',cor:'#e5e7eb',stripes:['#ffffff','#dc143c'],ang:0,cap:'POL',
+  start:['POL','ROM'],army:{INF:5,TAN:1,AIR:1,NAV:0},prof:'def',
+  bonus:'Cavalaria de Poniatowski',desc:'+25% defesa em planície e aliados fiéis (relações sobem sozinhas). Cercada: começa sob ameaça.',
+  mods:{planDef:1.25},power:'Última Carga'}
+];
+const MINORS=[
+ {id:'IRL',code:'IE',nome:'Irlanda',cor:'#3f7d4f',stripes:['#169b62','#ffffff','#ff883e'],ang:90,start:['IRL'],army:1},
+ {id:'NOR',code:'NO',nome:'Noruega',cor:'#7f1d1d',stripes:['#ba0c2f','#ffffff','#00205b'],ang:0,start:['NOR'],army:2},
+ {id:'SWE',code:'SE',nome:'Suécia',cor:'#1e40af',stripes:['#006aa7','#fecc00'],ang:0,start:['SWE'],army:2},
+ {id:'FIN',code:'FI',nome:'Finlândia',cor:'#1e3a8a',stripes:['#ffffff','#003580'],ang:0,start:['FIN'],army:2},
+ {id:'DEN',code:'DK',nome:'Dinamarca',cor:'#b91c1c',stripes:['#c60c30','#ffffff'],ang:0,start:['DEN'],army:1},
+ {id:'NLD',code:'NL',nome:'Países Baixos',cor:'#c2410c',stripes:['#ae1c28','#ffffff','#21468b'],ang:0,start:['NLD'],army:2},
+ {id:'BEL',code:'BE',nome:'Bélgica',cor:'#a16207',stripes:['#000000','#fae042','#ed2939'],ang:90,start:['BEL'],army:2},
+ {id:'SUI',code:'CH',nome:'Suíça',cor:'#b91c1c',stripes:['#ff0000','#ffffff'],ang:0,start:['SUI'],army:2},
+ {id:'POR',code:'PT',nome:'Portugal',cor:'#166534',stripes:['#006600','#ff0000','#ffe600'],ang:90,start:['POR'],army:1},
+ {id:'HUN',code:'HU',nome:'Hungria',cor:'#166534',stripes:['#ce2939','#ffffff','#477050'],ang:0,start:['HUN'],army:2},
+ {id:'BUL',code:'BG',nome:'Bulgária',cor:'#166534',stripes:['#ffffff','#00966e','#d62612'],ang:0,start:['BUL'],army:2},
+ {id:'YUG',code:'YU',nome:'Iugoslávia',cor:'#1e3a8a',stripes:['#0c4076','#ffffff','#ed2939'],ang:0,start:['YUG'],army:3},
+ {id:'GRE',code:'GR',nome:'Grécia',cor:'#1e3a8a',stripes:['#0d5eaf','#ffffff'],ang:0,start:['GRE','CRE'],army:3},
+ {id:'BAL',code:'BA',nome:'Países Bálticos',cor:'#0f766e',stripes:['#ffffff','#0f766e'],ang:0,start:['BAL'],army:2}
+];
+const NEU={id:'NEU',code:'—',nome:'Neutro',cor:'#8a8378',stripes:['#8a8378','#6b6459'],ang:45};
+const PROFILES={
+  exp:{nome:'Expansionista',cor:'#ef4444',thr:1.28,agg:1.35,def:0.35},
+  opo:{nome:'Oportunista',cor:'#f59e0b',thr:1.55,agg:0.85,def:0.45},
+  dip:{nome:'Diplomata de Guerra',cor:'#3b82f6',thr:1.85,agg:0.65,def:0.60},
+  def:{nome:'Muralha',cor:'#22c55e',thr:1.40,agg:0.75,def:0.65}
+};
+
+/* ---------- construção do mapa ---------- */
+const MAP={land:[],prov:[],sea:[],provs:{},order:[]};
+function buildMap(){
+  for(let r=0;r<ROWS;r++){const row=[];for(let c=0;c<COLS;c++){
+    const lon=LON0+(c+0.5)*DLON, lat=LAT0+(ROWS-r-0.5)*DLAT;
+    let isL=false;
+    for(const k in GEO.P){if(inPoly(lon,lat,GEO.P[k])){isL=true;break;}}
+    if(isL)for(const s of GEO.SR){if(lon>=s[1]&&lon<=s[2]&&lat>=s[3]&&lat<=s[4]){isL=false;break;}}
+    if(isL)for(const s of GEO.SP){if(inPoly(lon,lat,s[1])){isL=false;break;}}
+    if(!isL&&inPoly(lon,lat,GEO.CR))isL=true;
+    row.push(isL);}
+    MAP.land.push(row);}
+  for(let r=0;r<ROWS;r++){const row=[];for(let c=0;c<COLS;c++){
+    if(MAP.land[r][c]){row.push(-1);continue;}
+    const lon=LON0+(c+0.5)*DLON, lat=LAT0+(ROWS-r-0.5)*DLAT;let z=-1;
+    for(let i=0;i<GEO.SZ.length;i++){const s=GEO.SZ[i];if(lon>=s[2]&&lon<=s[3]&&lat>=s[4]&&lat<=s[5]){z=i;break;}}
+    row.push(z);}
+    MAP.sea.push(row);}
+  const KX=Math.cos(47*Math.PI/180);
+  const idx=[];for(let r=0;r<ROWS;r++)idx.push(new Array(COLS).fill(-1));
+  const pts=[];GEO.SEEDS.forEach((s,i)=>s[7].forEach(([lon,lat])=>pts.push([lon,lat,i])));
+  for(let r=0;r<ROWS;r++){for(let c=0;c<COLS;c++){if(!MAP.land[r][c])continue;
+    const lon=LON0+(c+0.5)*DLON, lat=LAT0+(ROWS-r-0.5)*DLAT;
+    let best=-1,bd=1e9;
+    for(let i=0;i<pts.length;i++){const dx=(pts[i][0]-lon)*KX,dy=pts[i][1]-lat;const d=dx*dx+dy*dy;if(d<bd){bd=d;best=pts[i][2];}}
+    idx[r][c]=best;}}
+  MAP.prov=idx;
+  const cells=GEO.SEEDS.map(()=>[]);
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const p=idx[r][c];if(p>=0)cells[p].push([r,c]);}
+  const contact={};
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const a=idx[r][c];if(a<0)continue;
+    if(c+1<COLS){const b=idx[r][c+1];if(b>=0&&b!==a){const k=Math.min(a,b)+'_'+Math.max(a,b);contact[k]=(contact[k]||0)+1;}}
+    if(r+1<ROWS){const b=idx[r+1][c];if(b>=0&&b!==a){const k=Math.min(a,b)+'_'+Math.max(a,b);contact[k]=(contact[k]||0)+1;}}}
+  for(let i=0;i<GEO.SEEDS.length;i++){
+    const s=GEO.SEEDS[i], cs=cells[i];
+    let sr=0,sc=0;cs.forEach(([r,c])=>{sr+=r;sc+=c;});
+    const adj=[];for(const k in contact){const [a,b]=k.split('_').map(Number);
+      if(contact[k]>=2){if(a===i)adj.push(GEO.SEEDS[b][0]);else if(b===i)adj.push(GEO.SEEDS[a][0]);}}
+    const sea=[];const seen={};
+    for(const [r,c] of cs){
+      for(let dr=-2;dr<=2;dr++)for(let dc=-2;dc<=2;dc++){
+        const nr=r+dr,nc=c+dc;if(nr<0||nc<0||nr>=ROWS||nc>=COLS)continue;
+        const z=MAP.sea[nr][nc];if(z>=0&&!seen[z]){seen[z]=1;sea.push(GEO.SZ[z][0]);}}}
+    MAP.order.push(s[0]);
+    MAP.provs[s[0]]={id:s[0],nome:s[1],ind:s[2],oil:s[3],man:s[4],vp:s[5],ter:s[6],cells:cs,adj:adj,sea:sea,
+      cx:cs.length?sc/cs.length:0, cy:cs.length?sr/cs.length:0, owner:'NEU',divs:[],fort:0,sup:true,pocket:0,bat:null,flash:0};
+  }
+}
+MAP.zoneProvs={};
+for(const k in MAP.provs)for(const z of MAP.provs[k].sea){(MAP.zoneProvs[z]=MAP.zoneProvs[z]||[]).push(k);}
+buildMap();
+
+/* ---------- estado ---------- */
+const G={
+  t:0,dur:4320,speed:1,paused:true,over:false,started:false,era:0,
+  nat:{},orders:[],seq:1,log:[],alerts:[],layer:'politico',
+  me:'DEU',sel:null,selAll:true,drag:null,hoverP:null,hoverZ:null,
+  navy:{},ship:{},vpTotal:0,lastTick:0,acc:0,diff:1,result:null,aiClock:{}
+};
+for(const z of GEO.SZ) G.navy[z[0]]={};
+
+function natOf(id){return G.nat[id]||null;}
+function provOf(id){return MAP.provs[id];}
+function ownerNat(pid){return G.nat[MAP.provs[pid].owner]||NEU;}
+
+let DIVSEQ=1;
+function mkDiv(type,natId,exp,str,org){
+  const u=UNIT[type];
+  return {id:DIVSEQ++,type:type,nat:natId,str:str!==undefined?str:100,org:org!==undefined?org:u.org,
+          exp:exp||0,mv:0,bat:0};
+}
+function divAlive(d){return d.str>4;}
+function divPower(d,atk){
+  const u=UNIT[d.type];
+  const base=atk?u.atk:u.def;
+  const f=(d.str/100)*(0.35+0.65*(d.org/u.org));
+  return base*f;
+}
+function stackPower(divs,atk,terrain,natId,isHome){
+  let p=0,hasTank=false,hasInf=false;
+  for(const d of divs){if(!divAlive(d))continue;
+    if(d.type==='TAN')hasTank=true; if(d.type==='INF')hasInf=true;
+    if(UNIT[d.type].support)continue;
+    let v=divPower(d,atk);
+    const T=TER[terrain]||TER.planicie;
+    let m=atk?T.atk:(T.def||1);
+    if(d.type==='TAN'&&T.tank)m*=T.tank;
+    const n=natOf(d.nat);
+    if(n&&n.mods){
+      if(d.type==='TAN'&&n.mods.tankAtk)m*=n.mods.tankAtk;
+      if(!atk&&n.mods.defHome&&isHome)m*=n.mods.defHome;
+      if(atk&&n.mods.atk)m*=n.mods.atk;
+      if(!atk&&n.mods.planDef&&terrain==='planicie')m*=n.mods.planDef;
+      if(!atk&&n.mods.mont&&terrain==='montanha')m*=n.mods.mont;
+    }
+    p+=v*m;
+  }
+  if(hasTank&&hasInf)p*=1.12; // armas combinadas
+  if(hasTank&&!hasInf)p*=0.85; // blindados sem apoio
+  return p;
+}
+function airPower(natId,pid){
+  let p=0;
+  for(const q of MAP.provs[pid].adj){const pr=MAP.provs[q];if(pr.owner!==natId)continue;
+    for(const d of pr.divs)if(d.type==='AIR'&&divAlive(d))p+=divPower(d,true)*0.5;}
+  const pr=MAP.provs[pid];
+  for(const d of pr.divs)if(d.type==='AIR'&&divAlive(d))p+=divPower(d,true);
+  return p;
+}
+function navalSupport(natId,pid){
+  let best=0;
+  for(const z of MAP.provs[pid].sea){
+    const ctrl=zoneControl(z);
+    if(ctrl===natId){const s=G.navy[z][natId]||0;if(s>best)best=s;}
+  }
+  return Math.min(0.30,0.05*best);
+}
+function zoneControl(z){
+  const zz=G.navy[z];let best=null,bv=0;
+  for(const k in zz){if(zz[k]>bv){bv=zz[k];best=k;}}
+  return bv>0?best:null;
+}
+function natProvs(id){const out=[];for(const k in MAP.provs)if(MAP.provs[k].owner===id)out.push(k);return out;}
+function natVP(id){let v=0;for(const k in MAP.provs)if(MAP.provs[k].owner===id)v+=MAP.provs[k].vp;return v;}
+function isEnemy(a,b){if(!a||!b||a===b)return false;const na=G.nat[a],nb=G.nat[b];
+  if(!na||!nb)return false;return !!(na.atWar[b]||nb.atWar[a]);}
+function atWarWith(id){const n=G.nat[id];return n?Object.keys(n.atWar).filter(k=>n.atWar[k]):[];}
+
+/* ---------- setup da partida ---------- */
+function startMatch(meId,dur,diff){
+  G.dur=dur;G.me=meId;G.diff=diff;G.t=0;G.era=0;G.over=false;G.result=null;
+  G.orders=[];
+  for(const k in MAP.provs){const p=MAP.provs[k];p.divs=[];p.fort=0;p.sup=true;p.pocket=0;p.bat=null;p.flash=0;}
+  for(const z of GEO.SZ)G.navy[z[0]]={};
+  G.nat={};
+  const all=NATIONS.concat(MINORS);
+  for(const n of all){
+    const isMinor=!!n.army&&typeof n.army==='number';
+    G.nat[n.id]={
+      id:n.id,code:n.code,nome:n.nome,cor:n.cor,stripes:n.stripes,ang:n.ang,
+      cap:n.cap||n.start[0],start:n.start.slice(),minor:isMinor,human:n.id===meId,
+      prof:n.prof||'opo',bonus:n.bonus||'—',desc:n.desc||'—',power:n.power||'—',mods:n.mods||{},
+      fuel:60,man:0,ind:0,indPts:12,gold:140,atWar:{},relations:{},queue:[],
+      ships:0,kills:0,lost:0,taken:0,aiT:0,truce:0,aid:0,anger:{},lastWar:0
+    };
+    if(n.id==='DEU')G.nat[n.id].fuel=30;
+  }
+  for(const a of all)for(const b of all){
+    if(a.id===b.id)continue;
+    G.nat[a.id].relations[b.id]= (a.id===meId||b.id===meId)?10: (G.nat[a.id].minor||G.nat[b.id].minor? 15 : 0);
+  }
+  // territórios
+  for(const n of all)for(const p of n.start){
+    MAP.provs[p].owner=n.id;
+    if(p===G.nat[n.id].cap)MAP.provs[p].fort=1;
+  }
+  // exércitos
+  for(const n of all){
+    const nat=G.nat[n.id];
+    const ps=n.start.slice();
+    let list=[];
+    if(nat.minor){ for(let i=0;i<n.army;i++)list.push('INF'); }
+    else { for(const k in n.army)for(let i=0;i<n.army[k];i++)list.push(k); }
+    const exp=Math.min(2,(nat.mods.exp||0));
+    let i=0;
+    const capIdx=ps.indexOf(nat.cap); if(capIdx>0){ps.unshift(ps.splice(capIdx,1)[0]);}
+    for(const t of list){
+      const pid=ps[i%ps.length];
+      if(UNIT[t].naval){nat.ships++;continue;}
+      const d=mkDiv(t,n.id,exp);
+      if(nat.mods.org)d.org=Math.round(d.org*nat.mods.org);
+      MAP.provs[pid].divs.push(d);i++;
+    }
+    nat.man=Math.round(natManpower(n.id)*120)+400;
+    nat.ind=natIndustry(n.id);
+  }
+  // frota inicial nas zonas
+  for(const n of all){
+    const nat=G.nat[n.id];
+    if(nat.ships>0){
+      const zs={};
+      for(const p of n.start)for(const z of MAP.provs[p].sea)zs[z]=(zs[z]||0)+1;
+      let best=null,bv=-1;for(const z in zs)if(zs[z]>bv){bv=zs[z];best=z;}
+      if(!best)best='ATL';
+      G.navy[best][n.id]=(G.navy[best][n.id]||0)+nat.ships;nat.ships=0;
+    }
+  }
+  G.vpTotal=0;for(const k in MAP.provs)G.vpTotal+=MAP.provs[k].vp;
+  G.log=[];G.alerts=[];
+  alerta('info','Partida iniciada — '+G.nat[meId].nome,'Comande suas frentes. Clique e arraste para atacar.');
+  G.started=true;G.paused=false;G.speed=1;
+  refreshUI();
+}
+function natManpower(id){let m=0;for(const k in MAP.provs){const p=MAP.provs[k];if(p.owner===id)m+=p.man;}const n=G.nat[id];if(n&&n.mods.mp)m*=n.mods.mp;return m;}
+function natIndustry(id){let m=0;for(const k in MAP.provs){const p=MAP.provs[k];if(p.owner===id)m+=p.ind;}const n=G.nat[id];if(n&&n.mods.ind)m*=n.mods.ind;return m;}
+function natOil(id){let m=0;for(const k in MAP.provs){const p=MAP.provs[k];if(p.owner===id)m+=p.oil;}return m;}
+function alerta(tipo,txt,sub){
+  G.alerts.unshift({tipo:tipo,txt:txt,sub:sub||'',t:G.t});
+  if(G.alerts.length>14)G.alerts.pop();
+  G.log.unshift({t:G.t,tipo:tipo,txt:txt});
+  if(G.log.length>60)G.log.pop();
+  renderAlerts();
+}
+
+/* ============================ SIMULAÇÃO ============================ */
+function fuelFactor(id){
+  const n=G.nat[id];if(!n)return 1;
+  if(n.fuel>25)return 1;
+  if(n.fuel>8)return 0.88;
+  if(n.fuel>0)return 0.70;
+  return 0.45;
+}
+function supplyFactor(pid,id){
+  const p=MAP.provs[pid];
+  if(p.owner===id)return p.sup?1:0.55;
+  return 1;
+}
+function dmg(d,orgLoss){
+  d.org-=orgLoss;
+  d.str-=orgLoss*0.30;
+  if(d.str<0)d.str=0;
+  if(d.org<0)d.org=0;
+}
+function provGarrison(pid){return MAP.provs[pid].divs.filter(d=>divAlive(d)&&!UNIT[d.type].naval);}
+
+function issueOrder(from,to,natId,divs,auto,chain){
+  const p=MAP.provs[from];
+  const sel=divs.filter(d=>divAlive(d)&&!UNIT[d.type].naval&&!UNIT[d.type].support);
+  if(!sel.length)return null;
+  for(const d of sel){const i=p.divs.indexOf(d);if(i>=0)p.divs.splice(i,1);}
+  const spd=Math.min.apply(null,sel.map(d=>UNIT[d.type].spd));
+  const n=G.nat[natId];
+  const ter=TER[MAP.provs[to].ter]||TER.planicie;
+  const base=(MAP.provs[to].owner===natId)?4:6;
+  const travel=Math.max(2,Math.round(base*(ter.def?1+(ter.def-1)*0.6:1)/(spd*(n&&n.mods.spd?n.mods.spd:1))));
+  const o={id:G.seq++,from:from,to:to,nat:natId,divs:sel,ttrav:travel,phase:'move',auto:!!auto,
+           chain:chain&&chain.length?chain.slice():null,since:G.t};
+  G.orders.push(o);
+  return o;
+}
+function cancelOrder(o){
+  const i=G.orders.indexOf(o);if(i<0)return;
+  G.orders.splice(i,1);
+  const back=MAP.provs[o.from];
+  if(back.owner===o.nat){for(const d of o.divs)if(divAlive(d))back.divs.push(d);}
+  else { for(const d of o.divs){const q=nearestOwned(o.from,o.nat);if(q)(q?MAP.provs[q]:back).divs.push(d);} }
+}
+function nearestOwned(pid,natId){
+  let best=null,bd=99;
+  for(const k in MAP.provs){const p=MAP.provs[k];if(p.owner!==natId)continue;
+    const d=Math.abs(p.cx-MAP.provs[pid].cx)+Math.abs(p.cy-MAP.provs[pid].cy);if(d<bd){bd=d;best=k;}}
+  return best;
+}
+function ordersFrom(pid){return G.orders.filter(o=>o.from===pid||o.to===pid);}
+
+function capture(p,o){
+  G.captures=(G.captures||0)+1;
+  const old=p.owner, natA=o.nat;
+  const defs=p.divs.filter(d=>divAlive(d));
+  if(defs.length){
+    const retreatTo=p.adj.filter(q=>MAP.provs[q].owner===old&&!provUnderAttack(q));
+    if(retreatTo.length&&p.sup){
+      const t=retreatTo[0];
+      for(const d of defs){d.org=Math.max(12,d.org*0.6);d.str=Math.max(20,d.str);MAP.provs[t].divs.push(d);
+        if(G.nat[old])G.nat[old].lost+=0;}
+      alerta('warn',G.nat[old].nome+' recua de '+p.nome,'Guarnição escapou para '+MAP.provs[t].nome+'.');
+    } else {
+      for(const d of defs){d.str=0;}
+      G.nat[natA].kills+=defs.length;
+      G.nat[natA].indPts+=defs.length*1.5;
+      G.nat[natA].gold+=defs.length*8;
+      G.nat[old].lost+=defs.length;
+      alerta('good',defs.length+' divisão(ões) cercadas em '+p.nome,'Rendição: +'+defs.length+' abates para '+G.nat[natA].nome);
+    }
+  }
+  p.divs=[];
+  p.owner=natA;p.sup=true;p.pocket=0;p.fort=Math.max(0,p.fort-1);p.flash=1;
+  for(const d of o.divs){
+    if(!divAlive(d))continue;
+    d.org=Math.max(15,d.org-6);d.exp=Math.min(4,d.exp+0.05);
+    p.divs.push(d);
+  }
+  G.nat[natA].taken++;
+  if(old!=='NEU'&&G.nat[old]){
+    G.nat[old].atWar[natA]=true;G.nat[natA].atWar[old]=true;
+    setRel(old,natA,-70);
+    for(const k in G.nat){if(k===old||k===natA)continue;setRel(k,natA,-6);}
+    if(old===G.me||natA===G.me)alerta('warn','Guerra declarada!',G.nat[natA].nome+' × '+G.nat[old].nome);
+    if(!natProvs(old).length)eliminate(old,natA);
+  }
+  if(p.vp>=4)alerta(natA===G.me?'good':'info',p.nome+' conquistada',G.nat[natA].nome+' tomou '+p.nome+' (+'+p.vp+' PV)');
+  const i=G.orders.indexOf(o);if(i>=0)G.orders.splice(i,1);
+  if(o.auto||(o.chain&&o.chain.length)){
+    let nxt=null;
+    if(o.chain&&o.chain.length){nxt=o.chain.shift();
+      if(!MAP.provs[p.id].adj.includes(nxt))nxt=null;}
+    if(!nxt){let best=null,bv=1e9;
+      for(const q of p.adj){if(MAP.provs[q].owner===natA)continue;
+        const v=stackPower(provGarrison(q),false,MAP.provs[q].ter,MAP.provs[q].owner,true);
+        if(v<bv){bv=v;best=q;}}}
+    if(nxt&&best!==null){const od=issueOrder(p.id,nxt,natA,p.divs.filter(d=>d.org>25),true,o.chain);
+      if(od&&o.chain)od.chain=o.chain;}
+  }
+  refreshUI();
+}
+function provUnderAttack(pid){return G.orders.some(o=>o.to===pid&&o.nat!==MAP.provs[pid].owner);}
+function eliminate(id,by){
+  const n=G.nat[id];if(!n)return;
+  n.alive=false;
+  for(const k in MAP.provs){const p=MAP.provs[k];
+    if(p.owner===id){p.owner=by;p.divs=[];}
+  }
+  alerta('info',n.nome+' foi eliminada',G.nat[by]?G.nat[by].nome+' anexou o território.':'');
+  for(const o of G.orders.slice())if(o.nat===id)cancelOrder(o);
+}
+function setRel(a,b,v){
+  if(!G.nat[a]||!G.nat[b]||a===b)return;
+  G.nat[a].relations[b]=Math.max(-100,Math.min(100,(G.nat[a].relations[b]||0)+v));
+  G.nat[b].relations[a]=Math.max(-100,Math.min(100,(G.nat[b].relations[a]||0)+v*0.8));
+}
+
+/* ---------- batalhas ---------- */
+function resolveBattle(o){
+  const p=MAP.provs[o.to];
+  const atkDivs=o.divs.filter(divAlive);
+  if(!atkDivs.length){const i=G.orders.indexOf(o);if(i>=0)G.orders.splice(i,1);return;}
+  const defDivs=provGarrison(o.to);
+  if(!defDivs.length){capture(p,o);return;}
+  const nA=G.nat[o.nat], nD=G.nat[p.owner]||NEU;
+  const fA=fuelFactor(o.nat)*(o.nat?1:1), fD=fuelFactor(p.owner);
+  const sA=supplyFactor(o.from,o.nat), sD=p.sup?1:0.55;
+  let pa=stackPower(atkDivs,true,p.ter,o.nat,false)*fA*sA;
+  let pd=stackPower(defDivs,false,p.ter,p.owner,true)*fD*sD*(1+0.30*p.fort);
+  const airA=airPower(o.nat,o.to)*(nA.fuel>1?1:0.25);
+  const airD=airPower(p.owner,o.to)*(nD.fuel>1?1:0.25);
+  pa*=(1+Math.min(0.55,0.55*airA/Math.max(1,pd)))*(1+navalSupport(o.nat,o.to));
+  pd*=(1+Math.min(0.55,0.55*airD/Math.max(1,pa)))*(1+navalSupport(p.owner,o.to));
+  const ratio=pa/Math.max(0.7,pd);
+  const dOrg=Math.min(9,1.65*Math.pow(ratio,0.85));
+  const aOrg=Math.min(7,1.15*Math.pow(1/Math.max(0.15,ratio),0.85)*0.70);
+  for(const d of defDivs){dmg(d,dOrg*(0.75+Math.random()*0.5));d.bat=3;}
+  for(const d of atkDivs){dmg(d,aOrg*(0.75+Math.random()*0.5));d.bat=3;}
+  // desgaste aéreo
+  for(const q of [o.to].concat(p.adj)){const pr=MAP.provs[q];
+    for(const d of pr.divs)if(d.type==='AIR'&&divAlive(d)){d.str-=0.5;if(d.org>0)d.org-=0.4;}}
+  o.bat={r:ratio,pa:pa,pd:pd};
+  p.bat={r:ratio,pa:pa,pd:pd,nat:o.nat};
+  const broken=defDivs.every(d=>d.org<8||d.str<15);
+  if(broken)capture(p,o);
+  else if(atkDivs.every(d=>d.org<8||d.str<15)){
+    // ataque fracassado: recua
+    const back=o.from;
+    for(const d of atkDivs){d.org=Math.max(8,d.org*0.7);if(MAP.provs[back].owner===o.nat)MAP.provs[back].divs.push(d);else p.divs.push(d);}
+    o.divs=[];
+    const i=G.orders.indexOf(o);if(i>=0)G.orders.splice(i,1);
+    if(o.nat===G.me)alerta('warn','Ataque falhou em '+p.nome,'Suas divisões recuaram para '+MAP.provs[back].nome+'.');
+  }
+}
+/* ---------- suprimento ---------- */
+function supplyTick(){
+  for(const id in G.nat){
+    const n=G.nat[id];if(!n.alive&&n.alive!==undefined&&n.alive===false)continue;
+    const ps=natProvs(id);if(!ps.length)continue;
+    const sup={};
+    const seeds=[];
+    if(MAP.provs[n.cap]&&MAP.provs[n.cap].owner===id)seeds.push(n.cap);
+    for(const k of ps){
+      const p=MAP.provs[k];
+      let port=false;
+      for(const z of p.sea){const c=zoneControl(z);
+        if(c===id)port=true;
+        else if(c&&isEnemy(c,id)){port=port&&false;}
+      }
+      if(port)seeds.push(k);
+    }
+    const q=seeds.slice();
+    while(q.length){const k=q.pop();if(sup[k])continue;sup[k]=true;
+      for(const a of MAP.provs[k].adj)if(MAP.provs[a].owner===id&&!sup[a])q.push(a);}
+    for(const k of ps){
+      const p=MAP.provs[k];
+      p.sup=!!sup[k];
+      if(!p.sup){
+        p.pocket++;
+        for(const d of p.divs){if(!divAlive(d))continue;
+          d.str-=0.30;d.org-=0.45;
+          if(d.str<0)d.str=0;if(d.org<0)d.org=0;}
+        if(p.pocket>150){
+          let enc=null;
+          for(const a of p.adj){const q2=MAP.provs[a];if(q2.owner!==id&&isEnemy(q2.owner,id)){enc=q2.owner;break;}}
+          const lost=p.divs.filter(divAlive).length;
+          if(enc){G.nat[enc].kills+=lost;G.nat[enc].gold+=lost*10;G.nat[enc].indPts+=lost*1.2;}
+          G.nat[id].lost+=lost;
+          p.divs=[];
+          if(id===G.me)alerta('warn','Bolsão rendido: '+p.nome,lost+' divisões perdidas por falta de suprimento.');
+        }
+      } else p.pocket=0;
+    }
+  }
+}
+/* ---------- economia ---------- */
+function economyTick(){
+  for(const id in G.nat){
+    const n=G.nat[id];
+    const ps=natProvs(id);
+    if(!ps.length){continue;}
+    n.ind=natIndustry(id);
+    const oil=natOil(id);
+    const fuelInc=(0.05+oil*0.05+n.ind*0.002)*(n.mods.fuel||1);
+    let cons=0;
+    for(const k of ps)for(const d of MAP.provs[k].divs)if(divAlive(d))cons+=UNIT[d.type].fuel;
+    for(const z in G.navy){const s=G.navy[z][id]||0;cons+=s*0.006;}
+    for(const o of G.orders)if(o.nat===id)for(const d of o.divs)if(divAlive(d))cons+=UNIT[d.type].fuel*1.6;
+    n.fuelCap=200+n.ind*6+oil*45;
+    n.fuel=Math.max(0,Math.min(n.fuelCap,n.fuel+fuelInc-cons));
+    n.fuelInc=fuelInc-cons;
+    const goldInc=(0.010*n.ind+0.010*oil+0.004*natVP(id))*(n.mods.gold||1)*((!atWarWith(id).length&&n.mods.goldNeutro)?n.mods.goldNeutro:1);
+    n.gold+=goldInc;n.goldInc=goldInc;
+    // produção
+    const mpFactor=(n.man>0?1:0.4);
+    n.indPts+=n.ind*0.0062*mpFactor*(n.mods.ind||1)*productionMul();
+    if(n.queue.length){
+      const q=n.queue[0];
+      q.t-=1;
+      if(q.t<=0){
+        n.queue.shift();
+        if(q.type==='NAV'){n.ships++;}
+        else{
+          const home=(MAP.provs[n.cap]&&MAP.provs[n.cap].owner===id)?n.cap:ps[0];
+          const d=mkDiv(q.type,id,Math.min(2,(n.mods.exp||0)));
+          MAP.provs[home].divs.push(d);
+          if(id===G.me)alerta('info',UNIT[q.type].nome+' pronta em '+MAP.provs[home].nome,'Divisão entrou em serviço.');
+        }
+      }
+    }
+    // reforços
+    let budget=Math.min(n.indPts*0.30,2.0);
+    const hurt=[];
+    for(const k of ps)for(const d of MAP.provs[k].divs)if(divAlive(d)&&d.str<100)hurt.push(d);
+    hurt.sort((a,b)=>a.str-b.str);
+    for(const d of hurt){
+      if(budget<0.04||n.man<2)break;
+      const want=Math.min(1.6,100-d.str);
+      const cost=want*0.14,mp=want*1.8;
+      if(budget<cost||n.man<mp)continue;
+      d.str=Math.min(100,d.str+want);
+      n.indPts-=cost;n.man-=mp;budget-=cost;
+    }
+    // compra automática de combustível (bots)
+    if(!n.human&&n.fuel<25&&n.gold>55){n.gold-=40;n.fuel+=35;}
+  }
+}
+function enqueue(id,type){
+  const n=G.nat[id],u=UNIT[type];
+  let cost=u.cost*(type==='INF'?(n.mods.infCost||1):1);
+  const warn=(m1,m2)=>{if(id===G.me)alerta('warn',m1,m2);};
+  if(n.man<u.mp){warn('Mão de obra insuficiente','Use Leva em Massa (30⦿) ou conquiste território.');return;}
+  if(n.indPts<cost){warn('Indústria insuficiente','Aguarde acumular pontos de produção.');return;}
+  n.indPts-=cost;n.man-=u.mp;
+  n.queue.push({type:type,t:u.time});
+}
+function levyMass(id){
+  const n=G.nat[id];
+  if(n.gold<30){if(id===G.me)alerta('warn','Ouro insuficiente','A Leva em Massa custa 30 de ouro.');return;}
+  n.gold-=30;n.man+=420;n.ind=Math.max(1,n.ind*0.88);
+  const ps=natProvs(id);for(const k of ps){const p=MAP.provs[k];
+    if(p.divs.length<3&&p.owner===id){
+      const d=mkDiv('INF',id,0,70,40);p.divs.push(d);break;}}
+  if(id===G.me)alerta('info','Leva em Massa decretada','+420 mão de obra, -12% indústria e tropas verdes.');
+}
+function buyFuel(id){
+  const n=G.nat[id];
+  if(n.gold<35){if(id===G.me)alerta('warn','Ouro insuficiente','Importar petróleo custa 35 de ouro.');return;}
+  n.gold-=35;n.fuel+=45;
+}
+/* ---------- tick principal ---------- */
+function simTick(){
+  if(G.over)return;
+  G.t++;
+  const eraT=G.dur/3;
+  const ne=G.t<eraT*1?0:(G.t<eraT*2?1:2);
+  if(ne!==G.era){G.era=ne;alerta('info',['Fase 1 — Escalada','Fase 2 — Guerra Total','Fase 3 — Ofensiva Final'][ne],
+    ['Produção e reforços aceleram.','Produção +45%: a máquina de guerra está no máximo.','Produção +70%: ofensivas finais, cercos decidem a partida.'][ne]);}
+  supplyTick();
+  economyTick();
+  for(const o of G.orders.slice()){
+    if(o.phase==='move'){
+      o.ttrav--;
+      if(o.ttrav<=0){
+        if(MAP.provs[o.to].owner===o.nat){
+          for(const d of o.divs)if(divAlive(d))MAP.provs[o.to].divs.push(d);
+          const i=G.orders.indexOf(o);if(i>=0)G.orders.splice(i,1);
+        } else if(isEnemy(o.nat,MAP.provs[o.to].owner)||true){
+          o.phase='fight';
+        }
+      }
+    } else {
+      resolveBattle(o);
+      for(const k in MAP.provs)MAP.provs[k].bat=MAP.provs[k].bat&&G.orders.some(x=>x.to===k&&x.phase==='fight')?MAP.provs[k].bat:null;
+    }
+  }
+  for(const k in MAP.provs){const p=MAP.provs[k];if(p.flash>0)p.flash-=0.12;if(p.flash<0)p.flash=0;}
+  aiTick();
+  checkVictory();
+}
+function productionMul(){return [1.0,1.2,1.45,1.7][G.era]||1;}
+
+/* ============================ IA DOS BOTS ============================ */
+function declareWar(a,b,quiet){
+  if(a===b||!G.nat[a]||!G.nat[b])return;
+  if(G.nat[a].atWar[b])return;
+  G.nat[a].atWar[b]=true;G.nat[b].atWar[a]=true;
+  setRel(a,b,-100);
+  if(!quiet)alerta('warn','Guerra: '+G.nat[a].nome+' × '+G.nat[b].nome,G.nat[a].nome+' declarou guerra a '+G.nat[b].nome+'.');
+}
+function makePeace(a,b){
+  if(!G.nat[a]||!G.nat[b])return;
+  delete G.nat[a].atWar[b];delete G.nat[b].atWar[a];
+  setRel(a,b,15);
+}
+function annex(id,by){
+  const n=G.nat[id];if(!n)return false;
+  const ps=natProvs(id);
+  for(const k of ps){MAP.provs[k].owner=by;MAP.provs[k].divs=[];}
+  n.start=[];n.alive=false;
+  alerta(by===G.me?'good':'info',G.nat[by].nome+' anexou '+n.nome,'Anexação pacífica concluída.');
+  for(const o of G.orders.slice())if(o.nat===id)cancelOrder(o);
+  return true;
+}
+function offerAlliance(a,b){
+  const na=G.nat[a],nb=G.nat[b];
+  if(!na||!nb||na.atWar[b])return false;
+  let score=(na.relations[b]||0)+(nb.relations[a]||0);
+  const lead=leader();
+  if(lead&&lead.id!==b)score+= (natVP(lead.id)/Math.max(1,G.vpTotal)>0.32?18:0);
+  score+= (nb.minor?10:0) - (nb.human?-5:0);
+  if(score<25)return false;
+  setRel(a,b,35);na.ally=na.ally||{};na.ally[b]=true;nb.ally=nb.ally||{};nb.ally[a]=true;
+  alerta(a===G.me?'good':'info','Aliança formada: '+na.nome+' + '+nb.nome,'Agora lutam juntos.');
+  return true;
+}
+function sendAid(a,b){
+  const na=G.nat[a];
+  if(na.gold<60)return false;
+  na.gold-=60;G.nat[b].gold+=45;G.nat[b].fuel+=25;
+  setRel(a,b,18);na.aid=(na.aid||0)+1;
+  alerta('info',na.nome+' enviou ajuda a '+G.nat[b].nome,'Empréstimo-and-Lease: +45 ouro, +25 combustível.');
+  return true;
+}
+function leader(){
+  let best=null,bv=-1;
+  for(const k in G.nat){const v=natVP(k);if(v>bv){bv=v;best=G.nat[k];}}
+  return best;
+}
+function aiLatency(n){
+  const base={exp:12,opo:17,dip:21,def:16}[n.prof]||18;
+  const dm={1:1.7,2:1.1,3:0.7}[G.diff]||1.1;
+  return Math.max(6,Math.round(base*dm));
+}
+function aiAct(n){
+  const id=n.id;
+  const ps=natProvs(id);
+  if(!ps.length)return;
+  const prof=PROFILES[n.prof]||PROFILES.opo;
+  const lead=leader();
+  const leadShare=lead?natVP(lead.id)/Math.max(1,G.vpTotal):0;
+  const anyWar=atWarWith(id);
+  /* 1. produção */
+  const totalDivs=ps.reduce((a,k)=>a+MAP.provs[k].divs.filter(divAlive).length,0);
+  const cap=Math.min(26,4+ps.length*2.2);
+  if(n.man<160&&n.gold>90&&Math.random()<0.25)levyMass(id);
+  if(n.queue.length<2&&totalDivs<cap&&n.indPts>6){
+    const mix={exp:[['TAN',0.40],['INF',0.40],['AIR',0.15],['NAV',0.05]],
+               opo:[['INF',0.45],['TAN',0.25],['AIR',0.15],['NAV',0.15]],
+               dip:[['INF',0.40],['AIR',0.20],['NAV',0.22],['TAN',0.18]],
+               def:[['INF',0.50],['AIR',0.22],['TAN',0.15],['NAV',0.13]]}[n.prof];
+    let r=Math.random(),pick='INF';
+    for(const [t,w] of mix){if(r<w){pick=t;break;}r-=w;}
+    enqueue(id,pick);
+  }
+  /* 2. frota */
+  if(n.ships>0){
+    let bestZ=null,bv=-1;
+    for(const k of ps)for(const z of MAP.provs[k].sea){
+      let v=1;const c=zoneControl(z);
+      if(c&&isEnemy(c,id))v=4;
+      if(v>bv){bv=v;bestZ=z;}
+    }
+    if(bestZ){G.navy[bestZ][id]=(G.navy[bestZ][id]||0)+n.ships;n.ships=0;}
+  }
+  /* 3. defesa */
+  const front=[];
+  for(const k of ps){
+    const p=MAP.provs[k];
+    let threat=0;
+    for(const a of p.adj){
+      const q=MAP.provs[a];
+      if(q.owner===id||!isEnemy(id,q.owner))continue;
+      threat+=stackPower(provGarrison(a),true,p.ter,q.owner,false);
+    }
+    if(threat>0)front.push({k:k,threat:threat,mine:stackPower(provGarrison(k),false,p.ter,id,true)});
+  }
+  front.sort((a,b)=>b.threat-b.mine-(a.threat-a.mine));
+  for(const f of front){
+    if(f.threat<=f.mine*0.95)continue;
+    // pedir ajuda da retaguarda
+    let best=null,bd=1e9;
+    for(const k of ps){
+      const p=MAP.provs[k];
+      if(p.adj.some(a=>MAP.provs[a].owner!==id&&isEnemy(id,MAP.provs[a].owner)))continue;
+      if(G.orders.some(o=>o.from===k))continue;
+      const g=provGarrison(k);
+      if(g.length<2)continue;
+      if(k===n.cap&&g.length<3)continue;
+      const d=Math.abs(p.cx-MAP.provs[f.k].cx)+Math.abs(p.cy-MAP.provs[f.k].cy);
+      if(d<bd){bd=d;best=k;}
+    }
+    if(best){
+      const g=provGarrison(best).slice(0,Math.max(1,Math.floor(provGarrison(best).length*0.6)));
+      if(MAP.provs[best].adj.includes(f.k))issueOrder(best,f.k,id,g,false,null);
+      else {
+        // marchar via província amiga intermediária
+        const mid=MAP.provs[best].adj.find(a=>MAP.provs[a].owner===id&&MAP.provs[a].adj.includes(f.k));
+        if(mid)issueOrder(best,mid,id,g,false,[f.k]);
+      }
+      break;
+    }
+  }
+  /* 4. ataque */
+  const targets=[];
+  for(const k of ps){
+    const p=MAP.provs[k];
+    for(const a of p.adj){
+      const q=MAP.provs[a];
+      if(q.owner===id)continue;
+      if(n.ally&&n.ally[q.owner])continue;
+      const hostile=isEnemy(id,q.owner);
+      const rel=(n.relations[q.owner]||0);
+      if(!hostile){
+        const amb=({exp:1.00,opo:0.55,dip:0.35,def:0.45}[n.prof]||0.5)*(0.35+G.era*0.30)
+          +((leadShare>0.32&&q.owner===lead.id)?0.55:0)
+          +((G.nat[q.owner]&&G.nat[q.owner].minor)?0.30:0)
+          -(rel/100);
+        if(Math.random()>amb)continue;
+        if(rel>45)continue;
+      }
+      if(G.orders.some(o=>o.to===a&&o.nat===id))continue;
+      const fear=natVP(q.owner)>natVP(id)*1.8&&q.owner!==(lead?lead.id:'');
+      const def=stackPower(provGarrison(a),false,q.ter,q.owner,true)*(q.sup?1:0.55)*(1+0.3*q.fort);
+      if(fear&&stackPower(provGarrison(k),true,q.ter,id,false)<def*2.4)continue;
+      const score=(q.vp*1.2+q.oil*3.0+(isCapital(a)?5:0)+(hostile?2:0)+(q.sup?0:-2))/Math.max(0.5,def);
+      targets.push({from:k,to:a,def:def,score:score,hostile:hostile});
+    }
+  }
+  targets.sort((a,b)=>b.score-a.score);
+  const used={};
+  let attacks=0;
+  for(const t of targets){
+    if(attacks>=3)break;
+    if(used[t.from])continue;
+    const g=provGarrison(t.from);
+    if(g.length<2)continue;
+    let thr=prof.thr;
+    if(leadShare>0.32&&MAP.provs[t.to].owner===lead.id)thr*=0.85;
+    if(MAP.provs[t.to].oil>0)thr*=0.90;
+    const need=t.def*thr;
+    const maxTake=Math.max(1,g.length-1);
+    const sorted=g.slice().sort((a,b)=>divPower(b,true)-divPower(a,true));
+    const send=[];let acc=0;
+    for(const d of sorted){if(send.length>=maxTake)break;send.push(d);acc+=divPower(d,true)*0.9;if(acc>=need)break;}
+    if(!send.length)continue;
+    if(acc<need)continue;
+    if(!t.hostile){
+      if(acc<t.def*1.35)continue;
+      declareWar(id,MAP.provs[t.to].owner);
+    }
+    issueOrder(t.from,t.to,id,send,n.prof==='exp'&&G.orders.length<5,null);
+    used[t.from]=true;attacks++;
+  }
+  /* 4b. invasões anfíbias (a partir da Fase 2 ou se controlar o mar) */
+  if(G.era>=1&&attacks<3){
+    for(const k of ps){
+      const p=MAP.provs[k];
+      if(!p.sea.length)continue;
+      const g=provGarrison(k);
+      if(g.length<3)continue;
+      if(G.orders.some(o=>o.from===k))continue;
+      let launched=false;
+      for(const z of p.sea){
+        if(zoneControl(z)!==id)continue;
+        const cands=(MAP.zoneProvs[z]||[]).filter(a=>{
+          const q=MAP.provs[a];
+          if(q.owner===id)return false;
+          if(n.ally&&n.ally[q.owner])return false;
+          if(q.adj.some(x=>MAP.provs[x].owner===id))return false; // prefere alvo por terra
+          if(G.orders.some(o=>o.to===a&&o.nat===id))return false;
+          return true;
+        });
+        cands.sort((a,b)=>(MAP.provs[b].vp+MAP.provs[b].oil*2)/(0.5+stackPower(provGarrison(b),false,MAP.provs[b].ter,MAP.provs[b].owner,true))
+                          -(MAP.provs[a].vp+MAP.provs[a].oil*2)/(0.5+stackPower(provGarrison(a),false,MAP.provs[a].ter,MAP.provs[a].owner,true)));
+        for(const a of cands){
+          const q=MAP.provs[a];
+          const def=stackPower(provGarrison(a),false,q.ter,q.owner,true)*(q.sup?1:0.55)*(1+0.3*q.fort);
+          const send=g.slice(0,Math.max(2,Math.ceil(g.length*0.7)));
+          const acc=stackPower(send,true,q.ter,id,false);
+          if(acc<def*1.7)continue;
+          const amb=({exp:0.9,opo:0.6,dip:0.5,def:0.35}[n.prof]||0.5)*(0.5+G.era*0.4);
+          if(Math.random()>amb)continue;
+          if(!isEnemy(id,q.owner))declareWar(id,q.owner);
+          const o=issueOrder(k,a,id,send,false,null);
+          if(o){o.ttrav=Math.round(o.ttrav*2.4);for(const d of o.divs)d.org=Math.max(12,d.org-14);
+            if(id===G.me)alerta('info','Invasão anfíbia lançada',G.nat[id].nome+' desembarca em '+q.nome+'.');}
+          launched=true;break;
+        }
+        if(launched)break;
+      }
+      if(launched){attacks++;break;}
+    }
+  }
+
+  /* 5. diplomacia */
+  if(n.prof==='dip'){
+    if(Math.random()<0.35){
+      let best=null,bv=-100;
+      for(const k in G.nat){if(k===id||G.nat[k].minor)continue;
+        if(isEnemy(id,k))continue;
+        const r=(n.relations[k]||0);if(r>bv){bv=r;best=k;}}
+      if(!best)return;
+      if(n.ally&&n.ally[best]){ if(n.gold>260&&Math.random()<0.4)sendAid(id,best); return; }
+      if(bv<70&&n.gold>200&&Math.random()<0.5)sendAid(id,best);
+      else offerAlliance(id,best);
+    }
+  }
+  if(n.prof==='opo'){
+    if(Math.random()<0.30){
+      for(const t of targets){
+        if(t.hostile)continue;
+        const q=MAP.provs[t.to];
+        if(q.owner==='NEU')continue;
+        if((n.relations[q.owner]||0)<20&&t.avail>t.def*2.2&&atWarWith(q.owner).length>0){
+          declareWar(id,q.owner);break;
+        }
+      }
+    }
+  }
+  if(leadShare>0.32&&lead&&lead.id!==id&&!isEnemy(id,lead.id))setRel(id,lead.id,-6);
+  if(anyWar.length&&Math.random()<0.15){
+    const e=anyWar[Math.floor(Math.random()*anyWar.length)];
+    if(natVP(e)>natVP(id)*1.6&&n.gold>300&&Math.random()<0.4){/* procura aliado */}
+  }
+}
+function aiTick(){
+  for(const id in G.nat){
+    const n=G.nat[id];
+    if(n.human||n.minor)continue;
+    if(typeof n.alive==='boolean'&&!n.alive)continue;
+    if(!natProvs(id).length)continue;
+    n.aiT=(n.aiT||0)-1;
+    if(n.aiT<=0){n.aiT=aiLatency(n);try{aiAct(n);}catch(e){console.warn('AI',id,e);}}
+  }
+  // nações menores neutras: leve reforço
+  for(const id in G.nat){
+    const n=G.nat[id];
+    if(!n.minor)continue;
+    const ps=natProvs(id);if(!ps.length)continue;
+    if(atWarWith(id).length&&Math.random()<0.03&&n.indPts>16&&provGarrison(id).length<5)enqueue(id,'INF');
+  }
+}
+function isCapital(pid){
+  for(const k in G.nat)if(G.nat[k].cap===pid)return true;
+  return false;
+}
+function checkVictory(){
+  const lead=leader();
+  if(!lead)return;
+  const share=natVP(lead.id)/Math.max(1,G.vpTotal);
+  if(share>=0.55||G.t>=G.dur){
+    G.over=true;G.result=[];
+    const arr=[];
+    for(const k in G.nat){const n=G.nat[k];
+      arr.push({id:k,nome:n.nome,cor:n.cor,code:n.code,vp:natVP(k),kills:n.kills,lost:n.lost,taken:n.taken,prov:natProvs(k).length});}
+    arr.sort((a,b)=>b.vp-a.vp);
+    G.result=arr;
+    showEnd(arr[0],share>=0.55?'Domínio':'Tempo esgotado');
+  }
+}
+
+/* ============================ RENDER ============================ */
+const CS=16, LW=COLS*CS, LH=ROWS*CS;
+let cv,ctx,scale=1,ox=0,oy=0,dpr=1;
+const zoneInfo={};
+const patCache={};
+function cellXY(r,c){return [c*CS,r*CS];}
+function initRender(){
+  cv=document.getElementById('map');
+  ctx=cv.getContext('2d');
+  for(const z of GEO.SZ){
+    let sr=0,sc=0,n=0,mr=0,mc=0;
+    for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(MAP.sea[r][c]===GEO.SZ.indexOf(z)){sr+=r;sc+=c;n++;mr=Math.max(mr,r);mc=Math.max(mc,c);}
+    zoneInfo[z[0]]={nome:z[1],cx:n?sc/n:0,cy:n?sr/n:0,n:n};
+  }
+  for(const k in MAP.provs){
+    const p=MAP.provs[k];
+    const path=new Path2D();
+    for(const [r,c] of p.cells)path.rect(c*CS,r*CS,CS+0.5,CS+0.5);
+    p.path=path;
+  }
+  window.addEventListener('resize',resizeCanvas);
+  resizeCanvas();
+}
+function resizeCanvas(){
+  if(!cv)return;
+  const st=document.getElementById('stage');
+  const r=st.getBoundingClientRect();
+  dpr=Math.min(2,window.devicePixelRatio||1);
+  const w=Math.max(320,r.width),h=Math.max(240,r.height);
+  cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);
+  cv.style.width=w+'px';cv.style.height=h+'px';
+  scale=Math.min(cv.width/LW,cv.height/LH);
+  ox=(cv.width-LW*scale)/2;oy=(cv.height-LH*scale)/2;
+}
+function toLogical(ev){
+  const r=cv.getBoundingClientRect();
+  const px=(ev.clientX-r.left)*dpr, py=(ev.clientY-r.top)*dpr;
+  return {x:(px-ox)/scale,y:(py-oy)/scale};
+}
+function natPattern(n){
+  if(patCache[n.id])return patCache[n.id];
+  const s=20,c=document.createElement('canvas');c.width=s;c.height=s;
+  const x=c.getContext('2d');
+  const cols=n.stripes&&n.stripes.length?n.stripes:[n.cor];
+  x.save();x.translate(s/2,s/2);x.rotate((n.ang||0)*Math.PI/180);x.translate(-s*1.5,-s*1.5);
+  const band=(s*3)/cols.length;
+  for(let i=0;i<cols.length;i++){x.fillStyle=cols[i];x.fillRect(0,i*band,s*3,band+0.5);}
+  x.restore();
+  const p=ctx.createPattern(c,'repeat');
+  patCache[n.id]=p;return p;
+}
+function shade(hex,f){
+  const h=hex.replace('#','');
+  let r=parseInt(h.substring(0,2),16),g=parseInt(h.substring(2,4),16),b=parseInt(h.substring(4,6),16);
+  if(f>0){r+=(255-r)*f;g+=(255-g)*f;b+=(255-b)*f;}else{r*=(1+f);g*=(1+f);b*=(1+f);}
+  return 'rgb('+(r|0)+','+(g|0)+','+(b|0)+')';
+}
+function drawFlagBadge(x,y,nat,small){
+  const w=small?20:24,h=small?13:15;
+  ctx.save();
+  ctx.fillStyle='rgba(8,12,18,.85)';
+  ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=0.8;
+  roundRect(x-w/2,y-h/2,w,h,2);ctx.fill();ctx.stroke();
+  const cols=nat.stripes&&nat.stripes.length?nat.stripes:[nat.cor];
+  ctx.save();ctx.beginPath();roundRect(x-w/2+1,y-h/2+1,w-2,h-2,1.5);ctx.clip();
+  const band=(h-2)/cols.length;
+  for(let i=0;i<cols.length;i++){ctx.fillStyle=cols[i];ctx.fillRect(x-w/2+1,y-h/2+1+i*band,w-2,band+0.4);}
+  ctx.restore();
+  ctx.fillStyle='rgba(0,0,0,.75)';
+  ctx.font='bold '+(small?8:9)+'px ui-monospace,monospace';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(nat.code,x+0.3,y+0.5);
+  ctx.fillStyle='rgba(255,255,255,.85)';
+  ctx.fillText(nat.code,x,y);
+  ctx.restore();
+}
+function roundRect(x,y,w,h,r){
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+}
+function noiseOf(r,c){const v=Math.sin(r*12.9898+c*78.233)*43758.5453;return v-Math.floor(v);}
+
+function draw(){
+  if(!ctx)return;
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.fillStyle='#060d14';ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.setTransform(scale,0,0,scale,ox,oy);
+  /* mar */
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+    const z=MAP.sea[r][c];if(z<0)continue;
+    const base=['#0d2436','#0e2a3d','#103044','#0f2739','#0b1e2e'][z%5];
+    ctx.fillStyle=base;
+    ctx.fillRect(c*CS,r*CS,CS+0.5,CS+0.5);
+  }
+  /* terra */
+  const L=G.layer;
+  for(const k in MAP.provs){
+    const p=MAP.provs[k];
+    const nat=G.nat[p.owner]||NEU;
+    const T=TER[p.ter]||TER.planicie;
+    if(L==='terreno'){ctx.fillStyle=T.cor;}
+    else if(L==='recursos'){
+      let col='#3f4a3a';
+      if(p.oil>0)col='#7c2d12';else if(p.ind>=7)col='#4c3f72';else if(p.ind>=3)col='#3f4a5c';
+      ctx.fillStyle=col;
+    }
+    else ctx.fillStyle=T.cor;
+    ctx.fill(p.path);
+    if(L!=='terreno'&&L!=='recursos'){
+      ctx.save();ctx.globalAlpha=0.72;ctx.fillStyle=nat.cor;ctx.fill(p.path);ctx.restore();
+      ctx.save();ctx.globalAlpha=0.18;ctx.fillStyle=natPattern(nat);ctx.fill(p.path);ctx.restore();
+    }
+    if(L==='suprimento'){
+      ctx.save();
+      ctx.globalAlpha=0.55;
+      ctx.fillStyle=p.sup?'rgba(34,197,94,.55)':'rgba(239,68,68,.75)';
+      ctx.fill(p.path);ctx.restore();
+    }
+  }
+  /* textura */
+  ctx.save();ctx.globalAlpha=0.06;
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){if(!MAP.land[r][c])continue;
+    const n=noiseOf(r,c);ctx.fillStyle=n>0.5?'#ffffff':'#000000';ctx.fillRect(c*CS,r*CS,CS+0.5,CS+0.5);}
+  ctx.restore();
+  /* fronteiras internas + frentes */
+  const gc={};for(const k in MAP.provs)gc[k]=provGarrison(k).length;
+  ctx.lineCap='round';
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+    const a=MAP.prov[r][c];if(a<0)continue;
+    const A=MAP.provs[MAP.order[a]];
+    const check=(nr,nc,horiz)=>{
+      if(nr<0||nc<0||nr>=ROWS||nc>=COLS)return;
+      const b=MAP.prov[nr][nc];
+      const x=c*CS,y=r*CS;
+      if(b<0){
+        if(L==='terreno'){ctx.strokeStyle='rgba(0,0,0,.25)';ctx.lineWidth=1;
+          ctx.beginPath();if(horiz){ctx.moveTo(x+CS,y);ctx.lineTo(x+CS,y+CS);}else{ctx.moveTo(x,y+CS);ctx.lineTo(x+CS,y+CS);}ctx.stroke();}
+        return;
+      }
+      if(b===a)return;
+      const B=MAP.provs[MAP.order[b]];
+      const war=isEnemy(A.owner,B.owner);
+      const natA=G.nat[A.owner]||NEU;
+      if(war){
+        const active=(gc[A.id]>0)||(gc[B.id]>0);
+        ctx.save();
+        ctx.shadowColor=active?'rgba(255,120,60,.95)':'rgba(255,120,60,.35)';
+        ctx.shadowBlur=active?7:2;
+        ctx.strokeStyle=active?'#ffb347':'#8a6a4a';
+        ctx.lineWidth=active?3:2;
+        ctx.beginPath();
+        if(horiz){ctx.moveTo(x+CS,y);ctx.lineTo(x+CS,y+CS);}else{ctx.moveTo(x,y+CS);ctx.lineTo(x+CS,y+CS);}
+        ctx.stroke();ctx.restore();
+      } else {
+        ctx.strokeStyle='rgba(0,0,0,.42)';ctx.lineWidth=1.4;
+        ctx.beginPath();
+        if(horiz){ctx.moveTo(x+CS,y);ctx.lineTo(x+CS,y+CS);}else{ctx.moveTo(x,y+CS);ctx.lineTo(x+CS,y+CS);}
+        ctx.stroke();
+        ctx.strokeStyle='rgba(255,255,255,.10)';ctx.lineWidth=0.7;
+        ctx.beginPath();
+        if(horiz){ctx.moveTo(x+CS+0.8,y);ctx.lineTo(x+CS+0.8,y+CS);}else{ctx.moveTo(x,y+CS+0.8);ctx.lineTo(x+CS,y+CS+0.8);}
+        ctx.stroke();
+      }
+    };
+    check(r,c+1,true);check(r+1,c,false);
+  }
+  /* bolsões */
+  for(const k in MAP.provs){
+    const p=MAP.provs[k];
+    if(p.sup||p.owner==='NEU')continue;
+    ctx.save();
+    ctx.strokeStyle='rgba(248,113,113,.95)';ctx.lineWidth=1.6;ctx.setLineDash([4,3]);
+    ctx.stroke(p.path);ctx.setLineDash([]);
+    ctx.restore();
+    const x=p.cx*CS,y=p.cy*CS;
+    ctx.fillStyle='rgba(248,113,113,.95)';ctx.font='bold 9px ui-monospace,monospace';ctx.textAlign='center';
+    ctx.fillText('CERCADO '+Math.max(0,Math.ceil((150-p.pocket)/60))+'h',x,y-16);
+  }
+  /* rótulos + bandeiras */
+  for(const k in MAP.provs){
+    const p=MAP.provs[k];
+    const nat=G.nat[p.owner]||NEU;
+    const x=p.cx*CS,y=p.cy*CS;
+    const big=p.cells.length>=14;
+    drawFlagBadge(x,y-6,nat,!big);
+    if(big){
+      ctx.font='9px "Inter",system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillStyle='rgba(0,0,0,.65)';ctx.fillText(p.nome,x+0.6,y+7.6);
+      ctx.fillStyle='rgba(255,255,255,.9)';ctx.fillText(p.nome,x,y+7);
+    }
+    if(p.fort>0){
+      ctx.fillStyle='rgba(0,0,0,.6)';ctx.font='9px monospace';ctx.textAlign='left';
+      ctx.fillText('▤'.repeat(Math.min(3,p.fort)),x-10,y+18);
+    }
+    if(L==='recursos'&&(p.oil>0||p.ind>0)){
+      ctx.font='8px monospace';ctx.textAlign='center';ctx.fillStyle='#fde68a';
+      let s='';if(p.oil>0)s+='⛽'+p.oil;if(p.ind>=3)s+=' ⚙'+p.ind;
+      ctx.fillText(s,x,y+18);
+    }
+    /* tropas */
+    const g=p.divs.filter(divAlive);
+    if(g.length){
+      const cnt={};
+      for(const d of g)cnt[d.type]=(cnt[d.type]||0)+1;
+      const keys=Object.keys(cnt);
+      const bw=Math.min(30,keys.length*15);
+      const bx=x-bw/2,by=big?y+12:y+8;
+      ctx.fillStyle='rgba(6,10,16,.72)';
+      roundRect(bx,by,bw,11,3);ctx.fill();
+      let i=0;
+      for(const t of keys){
+        const u=UNIT[t];
+        const cx2=bx+7.5+i*15;
+        ctx.fillStyle=t==='TAN'?'#f59e0b':(t==='AIR'?'#60a5fa':(t==='NAV'?'#22d3ee':'#e5e7eb'));
+        ctx.font='8px ui-monospace,monospace';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText(u.ico+cnt[t],cx2,by+5.5);
+        i++;
+      }
+      /* barra de organização */
+      let org=0,st=0;for(const d of g){org+=d.org/UNIT[d.type].org;st+=d.str;}
+      org/=g.length;st/=g.length;
+      ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(bx,by+12,bw,2.5);
+      ctx.fillStyle=org>0.6?'#22c55e':(org>0.3?'#f59e0b':'#ef4444');
+      ctx.fillRect(bx,by+12,bw*org,2.5);
+    }
+    /* batalha */
+    if(p.bat){
+      const t=Date.now()/220;
+      ctx.save();
+      ctx.strokeStyle='rgba(255,140,60,'+(0.5+0.4*Math.sin(t*3))+')';
+      ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,10+4*Math.sin(t*3),0,6.3);ctx.stroke();
+      ctx.restore();
+      const r=p.bat.r||1;
+      ctx.fillStyle='rgba(0,0,0,.7)';ctx.fillRect(x-16,y-26,32,4);
+      ctx.fillStyle=r>1.6?'#22c55e':(r>1?'#f59e0b':'#ef4444');
+      ctx.fillRect(x-16,y-26,32*Math.min(1,r/2.5),4);
+      ctx.fillStyle='#fff';ctx.font='bold 8px ui-monospace,monospace';ctx.textAlign='center';
+      ctx.fillText(r.toFixed(1)+'×',x,y-29);
+    }
+  }
+  /* zonas navais */
+  for(const k in zoneInfo){
+    const z=zoneInfo[k];if(!z.n)continue;
+    const x=z.cx*CS,y=z.cy*CS;
+    const ctrl=zoneControl(k);
+    ctx.save();
+    ctx.font='8px "Inter",system-ui,sans-serif';ctx.textAlign='center';
+    ctx.fillStyle='rgba(148,197,235,.55)';ctx.fillText(z.nome,x,y-6);
+    ctx.restore();
+    const ships=G.navy[k]||{};
+    let i=0;
+    for(const id in ships){
+      if(!ships[id])continue;
+      const n=G.nat[id]||NEU;
+      const sx=x-10+(i%3)*10, sy=y+2+Math.floor(i/3)*9;
+      ctx.fillStyle=n.cor;
+      roundRect(sx-8,sy-6,16,11,2);ctx.fill();
+      ctx.strokeStyle=ctrl===id?'#fbbf24':'rgba(255,255,255,.2)';ctx.lineWidth=ctrl===id?1.6:0.7;ctx.stroke();
+      ctx.fillStyle='#fff';ctx.font='bold 7px ui-monospace,monospace';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText('⚓'+ships[id],sx,sy);
+      i++;
+    }
+    if(G.hoverZ===k){
+      ctx.save();ctx.strokeStyle='rgba(251,191,36,.9)';ctx.lineWidth=1.5;
+      for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)if(MAP.sea[r][c]===GEO.SZ.findIndex(z2=>z2[0]===k)){
+        ctx.strokeStyle='rgba(251,191,36,.35)';ctx.strokeRect(c*CS,r*CS,CS,CS);}
+      ctx.restore();
+    }
+  }
+  /* ordens (setas) */
+  const dash=(Date.now()/40)%16;
+  for(const o of G.orders){
+    const A=MAP.provs[o.from],B=MAP.provs[o.to];
+    const n=G.nat[o.nat]||NEU;
+    const x1=A.cx*CS,y1=A.cy*CS,x2=B.cx*CS,y2=B.cy*CS;
+    const mx=(x1+x2)/2,my=(y1+y2)/2-(Math.abs(x2-x1)+Math.abs(y2-y1))*0.10-6;
+    const w=Math.min(6,2+o.divs.filter(divAlive).length*0.8);
+    ctx.save();
+    ctx.strokeStyle=o.phase==='move'?'rgba(255,255,255,.75)':n.cor;
+    ctx.lineWidth=w;ctx.lineCap='round';
+    ctx.setLineDash(o.phase==='move'?[7,5]:[]);ctx.lineDashOffset=-dash;
+    ctx.shadowColor=n.cor;ctx.shadowBlur=8;
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.quadraticCurveTo(mx,my,x2,y2);ctx.stroke();
+    ctx.setLineDash([]);
+    /* ponta */
+    const ang=Math.atan2(y2-my,x2-mx);
+    ctx.translate(x2,y2);ctx.rotate(ang);
+    ctx.fillStyle=n.cor;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(-9,-4.5);ctx.lineTo(-9,4.5);ctx.closePath();ctx.fill();
+    ctx.restore();
+    if(o.phase==='move'){
+      ctx.fillStyle='rgba(255,255,255,.9)';ctx.font='bold 9px ui-monospace,monospace';ctx.textAlign='center';
+      ctx.fillText(o.divs.filter(divAlive).length+'▶ '+o.ttrav,(x1+x2)/2,(y1+y2)/2-(Math.abs(y2-y1))*0.05-12);
+    }
+  }
+  /* drag */
+  if(G.drag&&G.drag.to){
+    const A=MAP.provs[G.drag.from];
+    const x1=A.cx*CS,y1=A.cy*CS,x2=G.drag.tx,y2=G.drag.ty;
+    const ok=G.drag.ok;
+    ctx.save();
+    ctx.strokeStyle=ok?'#22c55e':'#ef4444';ctx.lineWidth=3;ctx.setLineDash([6,4]);
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.restore();
+  }
+  /* seleção */
+  if(G.sel){
+    const p=MAP.provs[G.sel];
+    ctx.save();ctx.strokeStyle='#ffffff';ctx.lineWidth=2;ctx.setLineDash([5,3]);
+    ctx.stroke(p.path);ctx.setLineDash([]);ctx.restore();
+  }
+  if(G.hoverP&&G.hoverP!==G.sel){
+    const p=MAP.provs[G.hoverP];
+    ctx.save();ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=1.6;ctx.stroke(p.path);ctx.restore();
+  }
+  ctx.setTransform(1,0,0,1,0,0);
+}
+
+/* ============================ UI / INPUT ============================ */
+const $=id=>document.getElementById(id);
+const DUR={curta:7200,padrao:10800,longa:14400};
+let DURSEL='padrao', DIFFSEL=2;
+
+const MESES=['Set','Out','Nov','Dez','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago'];
+function fmtClock(t){
+  const day=Math.floor(t/24);
+  const mi=Math.floor(day/30);
+  const m=MESES[mi%12], y=1939+Math.floor(mi/12);
+  return m+' '+y+' · dia '+(day%30+1);
+}
+function selDivs(pid){
+  const p=MAP.provs[pid];
+  const all=p.divs.filter(d=>divAlive(d)&&!UNIT[d.type].support&&!UNIT[d.type].naval);
+  const set=G.selChips[pid];
+  if(!set)return all;
+  const r=all.filter(d=>set[d.id]);
+  return r.length?r:all;
+}
+function toggleChip(pid,did){
+  const p=MAP.provs[pid];
+  if(!G.selChips[pid]){
+    const s={};p.divs.forEach(d=>{if(divAlive(d)&&!UNIT[d.type].support&&!UNIT[d.type].naval)s[d.id]=true;});
+    G.selChips[pid]=s;
+  }
+  G.selChips[pid][did]=!G.selChips[pid][did];
+  renderGarrison();
+}
+function canOrder(from,to){
+  if(from===to)return false;
+  const A=MAP.provs[from],B=MAP.provs[to];
+  if(A.adj.includes(to))return 'terra';
+  for(const z of A.sea)if(B.sea.includes(z)){
+    const c=zoneControl(z);
+    if(!c||c===A.owner)return 'anfibio';
+  }
+  return false;
+}
+function battleOdds(from,to,natId,divs){
+  const A=MAP.provs[from],B=MAP.provs[to];
+  const Bn=G.nat[B.owner]||NEU;
+  let pa=stackPower(divs,true,B.ter,natId,false)*fuelFactor(natId)*(A.sup?1:0.55);
+  let pd=stackPower(provGarrison(to),false,B.ter,B.owner,true)*fuelFactor(B.owner)*(B.sup?1:0.55)*(1+0.3*B.fort);
+  pa*=(1+Math.min(0.55,0.55*airPower(natId,to)/Math.max(1,pd)))*(1+navalSupport(natId,to));
+  pd*=(1+Math.min(0.55,0.55*airPower(B.owner,to)/Math.max(1,pa)))*(1+navalSupport(B.owner,to));
+  return {pa:pa,pd:pd,r:pa/Math.max(0.7,pd)};
+}
+/* ---------- topo ---------- */
+function resState(v,good,bad){
+  if(v<=bad)return '#ef4444';
+  if(v<good)return '#f59e0b';
+  return '#e5e7eb';
+}
+function updateTop(){
+  const n=G.nat[G.me];if(!n)return;
+  const fuelPct=Math.min(140,n.fuel);
+  $('res').innerHTML=
+   '<div class="res" title="Combustível: move blindados, aviões e frotas"><span class="rk">⛽</span><b style="color:'+resState(fuelPct,35,10)+'">'+Math.round(n.fuel)+'</b><i class="'+(n.fuelInc>=0?'up':'dn')+'">'+(n.fuelInc>=0?'+':'')+(n.fuelInc||0).toFixed(2)+'</i></div>'+
+   '<div class="res" title="Mão de obra: recruta e reforça divisões"><span class="rk">☖</span><b style="color:'+resState(n.man,600,150)+'">'+Math.round(n.man)+'</b></div>'+
+   '<div class="res" title="Indústria: produz divisões e reforços"><span class="rk">⚙</span><b>'+n.ind.toFixed(0)+'</b><i class="up">'+Math.round(n.indPts)+' pts</i></div>'+
+   '<div class="res" title="Ouro: importa petróleo, financia aliados e anexa neutros"><span class="rk">⦿</span><b style="color:'+resState(n.gold,60,20)+'">'+Math.round(n.gold)+'</b><i class="up">+'+(n.goldInc||0).toFixed(2)+'</i></div>';
+  $('clock').textContent=fmtClock(G.t);
+  $('era').textContent=['Fase 1 · Escalada','Fase 2 · Guerra Total','Fase 3 · Ofensiva Final'][G.era];
+  const arr=[];
+  for(const k in G.nat)arr.push({id:k,nome:G.nat[k].nome,code:G.nat[k].code,cor:G.nat[k].cor,vp:natVP(k)});
+  arr.sort((a,b)=>b.vp-a.vp);
+  const tot=Math.max(1,G.vpTotal);
+  $('vpbar').innerHTML=arr.slice(0,6).map(a=>
+    '<div class="vprow"><span class="dot" style="background:'+a.cor+'"></span><span class="vn">'+a.code+'</span>'+
+    '<span class="vbar"><i style="width:'+(a.vp/tot*100).toFixed(1)+'%;background:'+a.cor+'"></i></span><b>'+a.vp+'</b></div>').join('');
+  $('spd').querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.spd===G.speed));
+  $('pausa').textContent=G.paused?'▶':'❚❚';
+}
+/* ---------- painel de nações ---------- */
+function refreshUI(){
+  const me=G.nat[G.me];if(!me)return;
+  const rows=[];
+  const arr=[];for(const k in G.nat)arr.push(G.nat[k]);
+  arr.sort((a,b)=>natVP(b.id)-natVP(a.id));
+  for(const n of arr){
+    if(natProvs(n.id).length===0&&!n.alive)continue;
+    const rel=Math.round(me.relations[n.id]||0);
+    const war=isEnemy(G.me,n.id);
+    const ally=me.ally&&me.ally[n.id];
+    const rc=rel>40?'#22c55e':(rel>0?'#a3e635':(rel>-30?'#f59e0b':'#ef4444'));
+    rows.push('<div class="nrow'+(n.id===G.me?' me':'')+'">'+
+      '<span class="flag" style="'+flagCss(n)+'">'+n.code+'</span>'+
+      '<span class="nname">'+n.nome+'<em>'+(n.minor?'neutro':PROFILES[n.prof].nome)+'</em></span>'+
+      '<span class="nvp">'+natVP(n.id)+'</span>'+
+      '<span class="nrel" style="color:'+rc+'">'+(war?'GUERRA':(ally?'ALIADO':rel))+'</span>'+
+      (n.id===G.me?'':'<span class="nbtns">'+
+        (war?'<button onclick="act(\'paz\',\''+n.id+'\')">Paz</button>':
+          (ally?'<button onclick="act(\'romper\',\''+n.id+'\')">Romper</button>':'<button onclick="act(\'aliar\',\''+n.id+'\')">Aliar</button>'))+
+        (war?'':'<button onclick="act(\'ajuda\',\''+n.id+'\')" title="Envia 60 ouro">Ajuda</button>')+
+        (war?'':'<button class="wr" onclick="act(\'guerra\',\''+n.id+'\')">Atacar</button>')+
+        (n.minor&&!war?'<button class="an" onclick="act(\'anexar\',\''+n.id+'\')">Anexar</button>':'')+
+       '</span>')+
+      '</div>');
+  }
+  $('panel').innerHTML=rows.join('');
+  renderGarrison();renderProd();updateTop();
+}
+function flagCss(n){
+  const cols=n.stripes&&n.stripes.length?n.stripes:[n.cor];
+  const g=cols.map((c,i)=>c+' '+(i*100/cols.length)+'%,'+c+' '+((i+1)*100/cols.length)+'%').join(',');
+  return 'background:linear-gradient('+(n.ang||0)+'deg,'+g+')';
+}
+function act(kind,id){
+  const me=G.nat[G.me];
+  if(kind==='aliar'){ if(me.gold<50){alerta('warn','Ouro insuficiente','Aliança custa 50 de ouro.');return;}
+    me.gold-=50; if(!offerAlliance(G.me,id)){me.gold+=50;alerta('warn','Aliança recusada',G.nat[id].nome+' não confia em você (relação baixa).');}}
+  else if(kind==='ajuda'){ if(!sendAid(G.me,id))alerta('warn','Sem ouro suficiente','Ajuda custa 60 de ouro.');}
+  else if(kind==='guerra'){ declareWar(G.me,id); }
+  else if(kind==='paz'){ if(me.gold<80){alerta('warn','Paz custa 80 de ouro','Acumule ouro para negociar.');return;}
+    me.gold-=80;makePeace(G.me,id);}
+  else if(kind==='romper'){ delete me.ally[id];setRel(G.me,id,-45);alerta('warn','Aliança rompida','Relação caiu 45 pontos.');}
+  else if(kind==='anexar'){
+    const cost=70+natVP(id)*22;
+    if(me.gold<cost){alerta('warn','Ouro insuficiente','Anexar custa '+cost+' de ouro.');return;}
+    if((me.relations[id]||0)<35){alerta('warn','Relação baixa','Aumente a relação (Ajudar/Aliar) antes de anexar.');return;}
+    me.gold-=cost;annex(id,G.me);
+  }
+  refreshUI();
+}
+/* ---------- guarnição / produção ---------- */
+function renderGarrison(){
+  const box=$('garrison');
+  if(!G.sel){box.innerHTML='<span class="hint">Clique numa província para ver e selecionar as divisões.</span>';return;}
+  const p=MAP.provs[G.sel];
+  const all=p.divs.filter(d=>divAlive(d)&&!UNIT[d.type].support&&!UNIT[d.type].naval);
+  const set=G.selChips[G.sel];
+  box.innerHTML='<div class="ghead">'+p.nome+' <em>'+TER[p.ter].nome+(p.oil?' · ⛽'+p.oil:'')+(p.ind?' · ⚙'+p.ind:'')+(p.sup?'':' · <b style="color:#ef4444">SEM SUPRIMENTO</b>')+'</em></div>'+
+    (all.length?all.map(d=>{
+      const on=!set||set[d.id];
+      return '<button class="chip'+(on?' on':'')+'" onclick="toggleChip(\''+G.sel+'\','+d.id+')" title="Organização '+Math.round(d.org)+'% · Força '+Math.round(d.str)+'% · Exp '+d.exp.toFixed(1)+'">'+
+        '<span style="color:'+(d.type==='TAN'?'#f59e0b':'#e5e7eb')+'">'+UNIT[d.type].ico+'</span> '+
+        '<b>'+Math.round(d.str)+'</b><i>'+Math.round(d.org)+'</i></button>';
+    }).join(''):'<span class="hint">Sem divisões terrestres.</span>');
+}
+function renderProd(){
+  const n=G.nat[G.me];if(!n)return;
+  $('prod').innerHTML=['INF','TAN','AIR','NAV'].map(t=>{
+    const u=UNIT[t];
+    const cost=Math.round(u.cost*(t==='INF'?(n.mods.infCost||1):1));
+    const ok=n.indPts>=cost&&n.man>=u.mp;
+    return '<button class="pb'+(ok?'':' off')+'" onclick="enqueue(G.me,\''+t+'\')" title="'+u.nome+' — custo '+cost+' indústria, '+u.mp+' mão de obra, '+u.time+' min">'+
+      '<span class="pi" style="color:'+(t==='TAN'?'#f59e0b':t==='AIR'?'#60a5fa':t==='NAV'?'#22d3ee':'#e5e7eb')+'">'+u.ico+'</span>'+
+      '<span class="pn">'+u.nome+'</span><span class="pc">'+cost+'⚙ · '+u.mp+'☖</span></button>';
+  }).join('')+
+  '<button class="pb alt" onclick="buyFuel(G.me)"><span class="pi">⛽</span><span class="pn">Importar Petróleo</span><span class="pc">35⦿ → +45</span></button>'+
+  '<button class="pb alt" onclick="levyMass(G.me)"><span class="pi">☖</span><span class="pn">Leva em Massa</span><span class="pc">30⦿ → +380</span></button>';
+  const q=$('queue');
+  q.innerHTML=n.queue.length?n.queue.map(x=>'<span class="q" title="'+UNIT[x.type].nome+'">'+UNIT[x.type].ico+' '+x.t+'</span>').join(''):'<span class="hint">Fila vazia</span>';
+}
+function renderAlerts(){
+  $('alerts').innerHTML=G.alerts.slice(0,5).map(a=>
+    '<div class="al '+a.tipo+'"><b>'+a.txt+'</b>'+(a.sub?'<i>'+a.sub+'</i>':'')+'</div>').join('');
+}
+/* ---------- input ---------- */
+function provAt(x,y){
+  const c=Math.floor(x/CS),r=Math.floor(y/CS);
+  if(r<0||c<0||r>=ROWS||c>=COLS)return null;
+  const p=MAP.prov[r][c];
+  return p>=0?MAP.order[p]:null;
+}
+function zoneAt(x,y){
+  const c=Math.floor(x/CS),r=Math.floor(y/CS);
+  if(r<0||c<0||r>=ROWS||c>=COLS)return null;
+  const z=MAP.sea[r][c];
+  return z>=0?GEO.SZ[z][0]:null;
+}
+function bindInput(){
+  const st=$('stage');
+  cv.addEventListener('mousedown',e=>{
+    const p=toLogical(e);
+    const pid=provAt(p.x,p.y);
+    if(e.button===2)return;
+    if(pid){
+      G.sel=pid;renderGarrison();
+      if(MAP.provs[pid].owner===G.me&&selDivs(pid).length){
+        G.drag={from:pid,tx:p.x,ty:p.y,to:null,ok:false};
+      }
+    }
+  });
+  cv.addEventListener('mousemove',e=>{
+    const p=toLogical(e);
+    const pid=provAt(p.x,p.y);
+    G.hoverP=pid;G.hoverZ=pid?null:zoneAt(p.x,p.y);
+    if(G.drag){
+      G.drag.tx=p.x;G.drag.ty=p.y;G.drag.to=pid;
+      G.drag.ok=pid?!!canOrder(G.drag.from,pid):false;
+      if(pid&&pid!==G.drag.from&&G.drag.ok){
+        const divs=selDivs(G.drag.from);
+        const od=battleOdds(G.drag.from,pid,G.me,divs);
+        const tipo=canOrder(G.drag.from,pid);
+        const txt=(tipo==='anfibio'?'Invasão anfíbia':'Ataque')+' · '+G.nat[MAP.provs[pid].owner].nome+
+          '<br>Força '+od.pa.toFixed(1)+' × '+od.pd.toFixed(1)+' = <b>'+od.r.toFixed(2)+'×</b>'+
+          '<br>'+(od.r>1.7?'Ruptura provável':(od.r>1.05?'Vitória provável':(od.r>0.75?'Disputado':'Derrota provável')))+
+          (pocketPreview(G.drag.from,pid)?'<br><b style="color:#22c55e">CERCO: corta suprimento!</b>':'');
+        showTip(txt,e.clientX,e.clientY);
+      } else hideTip();
+    } else if(pid)showTip(provTip(pid),e.clientX,e.clientY);
+    else if(G.hoverZ)showTip(zoneTip(G.hoverZ),e.clientX,e.clientY);
+    else hideTip();
+  });
+  cv.addEventListener('mouseup',e=>{
+    const p=toLogical(e);
+    const pid=provAt(p.x,p.y);
+    if(G.drag&&pid&&pid!==G.drag.from&&canOrder(G.drag.from,pid)){
+      const divs=selDivs(G.drag.from);
+      const kind=canOrder(G.drag.from,pid);
+      if(MAP.provs[pid].owner!==G.me&&!isEnemy(G.me,MAP.provs[pid].owner))declareWar(G.me,MAP.provs[pid].owner);
+      const o=issueOrder(G.drag.from,pid,G.me,divs,false,null);
+      if(o&&kind==='anfibio'){
+        o.ttrav=Math.round(o.ttrav*2.4);
+        for(const d of o.divs){d.org=Math.max(10,d.org-14);}
+        alerta('info','Invasão anfíbia em '+MAP.provs[pid].nome,'Desembarque sofre choque de organização.');
+      }
+      G.selChips[G.drag.from]=null;
+      renderGarrison();renderProd();
+    }
+    G.drag=null;hideTip();
+  });
+  cv.addEventListener('mouseleave',()=>{G.drag=null;G.hoverP=null;G.hoverZ=null;hideTip();});
+  cv.addEventListener('contextmenu',e=>{
+    e.preventDefault();
+    const p=toLogical(e);
+    const pid=provAt(p.x,p.y);
+    const z=pid?null:zoneAt(p.x,p.y);
+    if(pid){
+      const os=ordersFrom(pid).filter(o=>o.nat===G.me);
+      for(const o of os)cancelOrder(o);
+      if(os.length)alerta('info','Ordens canceladas','Divisões voltaram à origem.');
+    } else if(z){
+      const n=G.nat[G.me];
+      let moved=false;
+      for(const zz in G.navy){
+        if(G.navy[zz][G.me]>0){G.navy[zz][G.me]--;n.ships++;moved=true;break;}
+      }
+      if(!moved&&n.ships>0){G.navy[z][G.me]=(G.navy[z][G.me]||0)+1;n.ships--;}
+      alerta('info','Frota reposicionada',n.ships+' navio(s) na reserva.');
+    }
+  });
+  cv.addEventListener('click',e=>{
+    const p=toLogical(e);
+    const z=zoneAt(p.x,p.y);
+    if(z&&!provAt(p.x,p.y)){
+      const n=G.nat[G.me];
+      if(n.ships>0){G.navy[z][G.me]=(G.navy[z][G.me]||0)+1;n.ships--;alerta('info','Navio enviado a '+zoneInfo[z].nome,'Controle naval: '+(zoneControl(z)?G.nat[zoneControl(z)].nome:'disputado'));}
+      else alerta('warn','Sem navios na reserva','Recolha navios com botão direito em outra zona.');
+    }
+  });
+  document.addEventListener('keydown',e=>{
+    if(!G.started||G.over)return;
+    const k=e.key.toLowerCase();
+    if(k===' '){G.paused=!G.paused;e.preventDefault();updateTop();}
+    else if(k==='1')setSpeed(1);else if(k==='2')setSpeed(2);else if(k==='3')setSpeed(4);
+    else if(k==='q')enqueue(G.me,'INF');else if(k==='w')enqueue(G.me,'TAN');
+    else if(k==='e')enqueue(G.me,'AIR');else if(k==='r')enqueue(G.me,'NAV');
+    else if(k==='l'){const L=['politico','suprimento','recursos','terreno'];G.layer=L[(L.indexOf(G.layer)+1)%L.length];$('layer').textContent=G.layer;}
+    else if(k==='p'){G.paused=!G.paused;updateTop();}
+    else if(k==='escape'){G.sel=null;renderGarrison();}
+    refreshUI();
+  });
+}
+function pocketPreview(from,to){
+  // cerco: se tomar 'to' corta o caminho de alguma província inimiga até a capital
+  const B=MAP.provs[to],owner=B.owner;
+  if(owner===G.me||owner==='NEU')return false;
+  const cap=G.nat[owner]?G.nat[owner].cap:null;
+  if(!cap)return false;
+  const blocked={};blocked[to]=true;
+  const seeds=[cap];const seen={};
+  if(MAP.provs[cap].owner!==owner)return false;
+  while(seeds.length){const k=seeds.pop();if(seen[k]||blocked[k])continue;seen[k]=true;
+    for(const a of MAP.provs[k].adj)if(MAP.provs[a].owner===owner&&!seen[a])seeds.push(a);}
+  let cut=0;
+  for(const q in MAP.provs){const p=MAP.provs[q];
+    if(p.owner!==owner)continue;
+    if(!seen[q]&&!p.sea.length)cut++;}
+  return cut>0;
+}
+function provTip(pid){
+  const p=MAP.provs[pid],n=G.nat[p.owner]||NEU;
+  const g=provGarrison(pid);
+  return '<b>'+p.nome+'</b> '+n.code+' · '+TER[p.ter].nome+
+    '<br>PV '+p.vp+(p.oil?' · ⛽'+p.oil:'')+(p.ind?' · ⚙'+p.ind:'')+(p.man?' · ☖'+p.man:'')+
+    (p.fort?' · Forte '+p.fort:'')+
+    '<br>Guarnição: '+g.length+' div. · Força '+(g.length?Math.round(g.reduce((a,d)=>a+d.str,0)/g.length):0)+'%'+
+    (p.sup?'':' · <b style="color:#ef4444">cercado</b>')+
+    (p.owner===G.me?'<br><i>Clique e arraste para atacar. Botão direito cancela.</i>':'');
+}
+function zoneTip(z){
+  const c=zoneControl(z);
+  const info=zoneInfo[z];
+  let s='<b>'+info.nome+'</b><br>Controle: '+(c?G.nat[c].nome:'disputado');
+  for(const k in G.navy[z])if(G.navy[z][k])s+='<br>'+G.nat[k].code+' ⚓'+G.navy[z][k];
+  s+='<br><i>Clique: envia 1 navio · Botão direito: recolhe</i>';
+  return s;
+}
+function showTip(html,x,y){
+  const t=$('tip');t.innerHTML=html;t.style.display='block';
+  const w=t.offsetWidth,h=t.offsetHeight;
+  t.style.left=Math.min(window.innerWidth-w-8,x+16)+'px';
+  t.style.top=Math.min(window.innerHeight-h-8,y+16)+'px';
+}
+function hideTip(){$('tip').style.display='none';}
+function setSpeed(s){G.speed=s;G.paused=false;updateTop();}
+/* ---------- telas ---------- */
+function buildSetup(){
+  $('nations').innerHTML=NATIONS.map(n=>
+    '<button class="ncard" onclick="pick(\''+n.id+'\')" data-id="'+n.id+'">'+
+      '<span class="nflag" style="'+flagCss(n)+'">'+n.code+'</span>'+
+      '<span class="nn">'+n.nome+'</span>'+
+      '<span class="nb">'+n.bonus+'</span>'+
+      '<span class="nd">'+n.desc+'</span>'+
+      '<span class="np">Poder: <b>'+n.power+'</b></span>'+
+      '<span class="ns">'+n.start.length+' províncias · capital '+MAP.provs[n.cap].nome+'</span>'+
+    '</button>').join('');
+}
+let PICK='DEU';
+function pick(id){
+  PICK=id;
+  document.querySelectorAll('.ncard').forEach(c=>c.classList.toggle('on',c.dataset.id===id));
+  const n=NATIONS.filter(x=>x.id===id)[0];
+  if(n&&$('startBtn'))$('startBtn').textContent='Começar como '+n.nome;
+}
+function buildDur(){
+  document.querySelectorAll('#durs button').forEach(b=>{
+    b.classList.toggle('on',b.dataset.d===DURSEL);
+    b.onclick=()=>{DURSEL=b.dataset.d;buildDur();};
+  });
+  document.querySelectorAll('#diffs button').forEach(b=>{
+    b.classList.toggle('on',+b.dataset.d===DIFFSEL);
+    b.onclick=()=>{DIFFSEL=+b.dataset.d;buildDur();};
+  });
+}
+
+/* ============================ LOOP / TELAS ============================ */
+let last=0,acc=0,frames=0,panelHover=false;
+function loop(ts){
+  requestAnimationFrame(loop);
+  const dt=Math.min(0.3,(ts-last)/1000)||0;last=ts;
+  if(!G.started)return;
+  if(!G.paused&&!G.over){
+    acc+=dt*4*G.speed;
+    let guard=0;
+    while(acc>=1&&guard<24){acc-=1;simTick();guard++;}
+  }
+  draw();
+  frames++;
+  if(frames%6===0)updateTop();
+  if(frames%12===0){renderGarrisonSoft();renderProdSoft();}
+  if(frames%90===0&&!panelHover)refreshUI();
+}
+function renderGarrisonSoft(){
+  if(G.sel&&$('garrison')){
+    const p=MAP.provs[G.sel];
+    const all=p.divs.filter(d=>divAlive(d)&&!UNIT[d.type].support&&!UNIT[d.type].naval);
+    const set=G.selChips[G.sel];
+    const boxes=$('garrison').querySelectorAll('.chip');
+    all.forEach((d,i)=>{const b=boxes[i];if(!b)return;
+      const on=!set||set[d.id];b.classList.toggle('on',on);
+      b.querySelector('b').textContent=Math.round(d.str);
+      b.querySelector('i').textContent=Math.round(d.org);});
+  }
+}
+function renderProdSoft(){
+  if($('queue')){
+    const n=G.nat[G.me];if(!n)return;
+    $('queue').innerHTML=n.queue.length?n.queue.map(x=>'<span class="q">'+UNIT[x.type].ico+' '+x.t+'</span>').join(''):'<span class="hint">Fila vazia</span>';
+  }
+}
+function showEnd(win,reason){
+  G.over=true;G.paused=true;
+  const arr=G.result||[];
+  const me=arr.find(a=>a.id===G.me);
+  const pos=arr.findIndex(a=>a.id===G.me)+1;
+  const victory=win&&win.id===G.me;
+  $('overTitle').innerHTML=(victory?'VITÓRIA':'DERROTA')+' <span>· '+(reason||'')+'</span>';
+  $('overTitle').className=victory?'win':'lose';
+  $('overSub').innerHTML='Você terminou em <b>'+pos+'º</b> lugar com <b>'+(me?me.vp:0)+' PV</b> · '+
+    (me?me.prov:0)+' províncias · '+Math.round(me?me.kills:0)+' divisões destruídas · '+Math.round(me?me.lost:0)+' perdidas';
+  $('overBody').innerHTML='<table><tr><th>#</th><th>Nação</th><th>PV</th><th>Prov.</th><th>Abates</th><th>Perdas</th></tr>'+
+    arr.slice(0,10).map((a,i)=>'<tr'+(a.id===G.me?' class="me"':'')+'><td>'+(i+1)+'</td><td><span class="flag sm" style="'+flagCss(G.nat[a.id])+'">'+a.code+'</span> '+a.nome+'</td><td><b>'+a.vp+'</b></td><td>'+a.prov+'</td><td>'+Math.round(a.kills)+'</td><td>'+Math.round(a.lost)+'</td></tr>').join('')+'</table>';
+  $('over').style.display='flex';
+}
+function restart(){
+  $('over').style.display='none';
+  $('setup').style.display='flex';
+  G.started=false;G.over=false;
+  buildSetup();
+}
+function boot(){
+  initRender();
+  buildSetup();
+  buildDur();
+  bindInput();
+  pick('DEU');
+  G.selChips={};
+  $('startBtn').onclick=()=>{
+    startMatch(PICK,DUR[DURSEL],DIFFSEL);
+    G.selChips={};
+    $('setup').style.display='none';
+  };
+  $('pausa').onclick=()=>{G.paused=!G.paused;updateTop();};
+  $('spd').querySelectorAll('button').forEach(b=>{b.onclick=()=>setSpeed(+b.dataset.spd);});
+  $('panel').addEventListener('mouseenter',()=>panelHover=true);
+  $('panel').addEventListener('mouseleave',()=>panelHover=false);
+  requestAnimationFrame(loop);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+
+</script>
+</body>
+</html>

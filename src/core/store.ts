@@ -769,7 +769,11 @@ class Store {
       for (const a of parsed.assets) {
         const stored = await db.getMedia(a.id);
         if (stored?.blob) {
-          const url = URL.createObjectURL(stored.blob);
+          let url = db.restoredUrls.get(a.id);
+          if (!url) {
+            url = URL.createObjectURL(stored.blob);
+            db.restoredUrls.set(a.id, url);
+          }
           assets.push({ ...a, url });
         } else {
           assets.push(a);
@@ -806,7 +810,9 @@ class Store {
       const text = await file.text();
       const parsed = JSON.parse(text) as { project: Project; assets?: MediaAsset[] };
       if (!parsed.project?.tracks) throw new Error("formato inválido");
-      this.loadProject(parsed.project);
+      // o .editzz.json não carrega os arquivos: mantém os metadados dos assets
+      // (nome, tamanho, duração) para religar a mídia depois, sem URLs.
+      this.loadProject(parsed.project, (parsed.assets ?? []).map((a) => ({ ...a, url: "" })));
       this.set({ view: "video" });
       this.toast("Projeto importado", parsed.project.name, "ok");
     } catch {

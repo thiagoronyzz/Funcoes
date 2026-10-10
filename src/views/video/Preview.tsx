@@ -11,7 +11,7 @@ import {
   VolumeX,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { usePlayback } from "@/hooks/usePlayback";
+import { PREVIEW_VOLUME, setPreviewVolume, usePlayback } from "@/hooks/usePlayback";
 import { projectDuration } from "@/core/model";
 import { store, useEditzz } from "@/core/store";
 import { transport, useTransport } from "@/core/transport";
@@ -23,7 +23,7 @@ export default function Preview() {
   const { t, playing } = useTransport();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
-  const [masterVol, setMasterVol] = useState(1);
+  const [masterVol, setMasterVol] = useState(PREVIEW_VOLUME.value);
   const { draw } = usePlayback(canvasRef);
 
   const duration = useMemo(() => projectDuration(state.project), [state.project]);
@@ -181,8 +181,10 @@ export default function Preview() {
             size="sm"
             title="Silenciar prévia"
             onClick={() => {
-              setMasterVol((v) => (v > 0 ? 0 : 1));
-              store.toast(masterVol > 0 ? "Prévia muda" : "Prévia com som", undefined, "info");
+              const next = masterVol > 0 ? 0 : 1;
+              setMasterVol(next);
+              setPreviewVolume(next);
+              store.toast(next > 0 ? "Prévia com som" : "Prévia muda", undefined, "info");
             }}
           >
             {masterVol > 0 ? <Volume2 className="size-3.5" /> : <VolumeX className="size-3.5" />}
@@ -193,7 +195,11 @@ export default function Preview() {
             max={1}
             step={0.01}
             value={masterVol}
-            onChange={(e) => setMasterVol(parseFloat(e.target.value))}
+            onChange={(e) => {
+              const v = parseFloat(e.target.value);
+              setMasterVol(v);
+              setPreviewVolume(v);
+            }}
             className="w-20"
             title="Volume da prévia"
           />

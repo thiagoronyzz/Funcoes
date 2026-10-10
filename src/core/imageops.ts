@@ -787,7 +787,6 @@ export function applyRasterOp(canvas: HTMLCanvasElement, op: RasterOp) {
         }
       });
       ctx.putImageData(img, 0, 0);
-      ctx.putImageData(img, 0, 0);
       break;
     }
     case "liquify_push":
@@ -800,7 +799,6 @@ export function applyRasterOp(canvas: HTMLCanvasElement, op: RasterOp) {
         const cx = p.x * w;
         const cy = p.y * h;
         const move = op.deltas?.[i] ?? { dx: 0, dy: 0 };
-        const maxX = Math.max(1, Math.round(radius));
         for (let y = Math.max(0, cy - radius); y < Math.min(h, cy + radius); y++) {
           for (let x = Math.max(0, cx - radius); x < Math.min(w, cx + radius); x++) {
             const dx = x - cx;
@@ -829,7 +827,6 @@ export function applyRasterOp(canvas: HTMLCanvasElement, op: RasterOp) {
             img.data[di + 3] = copy[si + 3];
           }
         }
-        void maxX;
       });
       ctx.putImageData(img, 0, 0);
       break;

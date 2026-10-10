@@ -75,26 +75,25 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const View = () => {
-    switch (state.view) {
-      case "video":
-        return <VideoStudio />;
-      case "foto":
-        return <PhotoStudio />;
-      case "midia":
-        return <MidiaStudio />;
-      case "audio":
-        return <AudioStudio />;
-      case "modelos":
-        return <Templates />;
-      case "recursos":
-        return <Resources />;
-      case "ajuda":
-        return <Help />;
-      default:
-        return <Home />;
-    }
-  };
+  /* elemento direto (e não um componente inline) para não remontar a view a cada mudança de estado */
+  const view =
+    state.view === "video" ? (
+      <VideoStudio />
+    ) : state.view === "foto" ? (
+      <PhotoStudio />
+    ) : state.view === "midia" ? (
+      <MidiaStudio />
+    ) : state.view === "audio" ? (
+      <AudioStudio />
+    ) : state.view === "modelos" ? (
+      <Templates />
+    ) : state.view === "recursos" ? (
+      <Resources />
+    ) : state.view === "ajuda" ? (
+      <Help />
+    ) : (
+      <Home />
+    );
 
   return (
     <div className="flex h-dvh min-h-0 flex-col bg-bg text-ink">
@@ -162,9 +161,7 @@ export default function App() {
       </header>
 
       {/* conteúdo */}
-      <main className="min-h-0 flex-1 overflow-hidden">
-        <View />
-      </main>
+      <main className="min-h-0 flex-1 overflow-hidden">{view}</main>
 
       <Toasts />
       <span className="pointer-events-none fixed bottom-2 left-1/2 z-[60] -translate-x-1/2 rounded-full border border-line bg-panel/90 px-2.5 py-1 text-[9.5px] text-dim backdrop-blur">

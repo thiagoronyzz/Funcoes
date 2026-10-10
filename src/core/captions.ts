@@ -77,7 +77,7 @@ export function parseSubtitles(raw: string): ParsedCue[] {
       .replace(/<[^>]+>/g, "")
       .trim();
     if (!text) return;
-    cues.push({ start: parseStamp(from) || 0, end: parseStamp(to.split(" ")[0]) || 0, text });
+    cues.push({ start: parseStamp(from) || 0, end: parseStamp(to.trim().split(/\s+/)[0]) || 0, text });
   });
   return cues;
 }

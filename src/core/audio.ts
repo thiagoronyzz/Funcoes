@@ -224,7 +224,6 @@ export async function processBuffer(input: AudioBuffer, opts: ProcessOptions, on
 
   const ratio = Math.pow(2, pitch / 12);
   const targetLen = Math.max(1, Math.round((input.length / Math.max(0.05, ratio)) / tempo));
-  const ctx = audioCtx();
   const offline = new OfflineAudioContext(input.numberOfChannels, targetLen, input.sampleRate);
   const src = offline.createBufferSource();
   src.buffer = input;
@@ -280,9 +279,27 @@ export async function processBuffer(input: AudioBuffer, opts: ProcessOptions, on
   src.start(0);
   void onProgress;
   const rendered = await offline.startRendering();
-  void ctx;
   if (opts.denoise && opts.denoise > 0) applyNoiseGate(rendered, opts.denoise / 100);
-  return rendered;
+  return limitPeak(rendered);
+}
+
+/** Evita estouro digital: se o pico passar do teto, reduz tudo proporcionalmente. */
+function limitPeak(buffer: AudioBuffer, ceiling = 0.98): AudioBuffer {
+  let peak = 0;
+  for (let c = 0; c < buffer.numberOfChannels; c++) {
+    const d = buffer.getChannelData(c);
+    for (let i = 0; i < d.length; i++) {
+      const v = Math.abs(d[i]);
+      if (v > peak) peak = v;
+    }
+  }
+  if (peak <= ceiling || peak === 0) return buffer;
+  const k = ceiling / peak;
+  for (let c = 0; c < buffer.numberOfChannels; c++) {
+    const d = buffer.getChannelData(c);
+    for (let i = 0; i < d.length; i++) d[i] *= k;
+  }
+  return buffer;
 }
 
 function normalizeGain(buffer: AudioBuffer): number {

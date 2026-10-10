@@ -107,7 +107,6 @@ Além do que já existe no mercado, o app traz **22 ferramentas autorais**, desc
 | **Leitor de EXIF** | Lê câmera, exposição, ISO, abertura e data do JPEG. |
 | **Verificador de legibilidade** | Mede o contraste legenda × fundo e avisa quando fica abaixo de 4,5:1. |
 | **Duplicar com receita** | Cria uma cópia do projeto inteiro com um novo look aplicado. |
-| **Duplicar com receita** | (idem acima — atalho no painel Exportar) |
 
 ### 📤 Exportação
 

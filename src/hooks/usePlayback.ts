@@ -6,6 +6,16 @@ import { clipEnd, projectDuration } from "@/core/model";
 import { store, useEditzz } from "@/core/store";
 import { transport, useTransport } from "@/core/transport";
 
+/** Volume do monitor de prévia (compartilhado com o painel da prévia). */
+export const PREVIEW_VOLUME = { value: 1 };
+let activeMixer: ProjectAudioMixer | null = null;
+
+/** Ajusta o volume da prévia ao vivo (se houver reprodução em andamento). */
+export function setPreviewVolume(v: number) {
+  PREVIEW_VOLUME.value = v;
+  activeMixer?.setMaster(v);
+}
+
 /**
  * Loop de reprodução do editzz:
  *  · parado  → renderiza o quadro do playhead sempre que o projeto muda;
@@ -84,6 +94,7 @@ export function usePlayback(canvasRef: RefObject<HTMLCanvasElement | null>) {
     if (!playing) {
       mixerRef.current?.stop();
       mixerRef.current = null;
+      if (activeMixer === mixerRef.current) activeMixer = null;
       pool.pauseAll();
       return;
     }
@@ -94,7 +105,9 @@ export function usePlayback(canvasRef: RefObject<HTMLCanvasElement | null>) {
 
     const mixer = new ProjectAudioMixer();
     mixerRef.current = mixer;
+    activeMixer = mixer;
     void mixer.start(stateRef.current.project, stateRef.current.assets, startTime);
+    mixer.setMaster(PREVIEW_VOLUME.value);
 
     const loop = () => {
       const s = stateRef.current;
@@ -129,6 +142,7 @@ export function usePlayback(canvasRef: RefObject<HTMLCanvasElement | null>) {
       cancelAnimationFrame(raf);
       mixerRef.current?.stop();
       mixerRef.current = null;
+      if (activeMixer === mixer) activeMixer = null;
       pool.pauseAll();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

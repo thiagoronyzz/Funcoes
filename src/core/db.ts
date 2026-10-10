@@ -46,7 +46,7 @@ function tx<T>(store: string, mode: IDBTransactionMode, fn: (s: IDBObjectStore) 
           try {
             const t = db.transaction(store, mode);
             const req = fn(t.objectStore(store));
-            req.onsuccess = () => resolve(req.result as T);
+            req.onsuccess = () => resolve((req.result as T) ?? null);
             req.onerror = () => resolve(null);
           } catch {
             resolve(null);
@@ -68,5 +68,5 @@ export const listProjectRecords = () =>
 export const deleteProjectRecord = (id: string) => tx(STORE_PROJECTS, "readwrite", (s) => s.delete(id));
 export const readProjectRecord = (id: string) => tx<StoredProject>(STORE_PROJECTS, "readonly", (s) => s.get(id));
 
-/** Cache síncrono de URLs de mídia restauradas do banco. */
+/** Cache de URLs de mídia restauradas do banco (evita recriar object URLs a cada abertura). */
 export const restoredUrls = new Map<string, string>();

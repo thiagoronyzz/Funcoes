@@ -1,7 +1,4 @@
-# dependências
 node_modules/
-
-# build
 dist/
 build/
 .vite/
@@ -9,14 +6,19 @@ build/
 
 # logs
 npm-debug.log*
-yarn-debug.log*
 yarn-error.log*
 
 # ambiente
 .env
 .env.*
-!.env.example
 
 # sistema
 .DS_Store
 Thumbs.db
+
+# mídia gerada em testes
+tmp/
+*.mp4
+*.webm
+# tipos
+*.tsbuildinfo

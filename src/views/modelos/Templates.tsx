@@ -25,7 +25,7 @@ interface Recipe {
 const RECIPES: Record<string, Recipe> = {
   reels_rapido: {
     aspect: [1080, 1920],
-    look: "vivid_pop",
+    look: "viral_pop",
     bg: { type: "blur", from: "#0b0b12", to: "#1b1b2a" },
     transition: "zoom_in",
     captions: "tiktok_box",
@@ -35,7 +35,7 @@ const RECIPES: Record<string, Recipe> = {
   },
   vlog_viagem: {
     aspect: [1920, 1080],
-    look: "film_kodak",
+    look: "kodak_2383",
     bg: { type: "gradient", from: "#0f172a", to: "#1e293b" },
     transition: "dissolve",
     addTitle: { text: "MINHA VIAGEM", animation: "slide_up", font: "Space Grotesk", size: 92, uppercase: true },
@@ -44,7 +44,7 @@ const RECIPES: Record<string, Recipe> = {
   },
   antes_depois: {
     aspect: [1080, 1080],
-    look: "clean_neutral",
+    look: "studio_beauty",
     bg: { type: "color", from: "#07070b", to: "#07070b" },
     transition: "wipe_l",
     captions: "outline_white",
@@ -52,17 +52,17 @@ const RECIPES: Record<string, Recipe> = {
   },
   trailer_cinema: {
     aspect: [2048, 858],
-    look: "cinematic_teal",
+    look: "moody_teal",
     bg: { type: "color", from: "#000000", to: "#000000" },
     addTitle: { text: "EM BREVE", animation: "blur_in", font: "Georgia", size: 96, uppercase: true },
     sfx: "braam",
     music: "cinematic",
-    effects: [{ id: "grain", params: { amount: 30 } }, { id: "vignette_strong", params: { amount: 45 } }],
+    effects: [{ id: "old_film", params: { amount: 30 } }, { id: "vignette_strong", params: { amount: 45 } }],
     steps: ["Formato cinema 2.39:1", "Braam adicionado", "Grão e vinheta cinematográficos"],
   },
   tutorial_legenda: {
     aspect: [1920, 1080],
-    look: "clean_neutral",
+    look: "studio_beauty",
     bg: { type: "color", from: "#0b0b12", to: "#0b0b12" },
     captions: "minimal",
     addTitle: { text: "PASSO 1", animation: "pop", font: "Inter", size: 72, uppercase: true, bgColor: "#a3e635", color: "#0b0b12" },
@@ -70,7 +70,7 @@ const RECIPES: Record<string, Recipe> = {
   },
   slides_musica: {
     aspect: [1080, 1350],
-    look: "vintage_fade",
+    look: "faded_matte",
     bg: { type: "gradient", from: "#3b0764", to: "#0e7490" },
     transition: "zoom_in",
     music: "ambient",
@@ -78,7 +78,7 @@ const RECIPES: Record<string, Recipe> = {
   },
   gameplay_hype: {
     aspect: [1080, 1920],
-    look: "vivid_pop",
+    look: "viral_pop",
     bg: { type: "color", from: "#07070b", to: "#07070b" },
     transition: "glitch",
     captions: "neon",
@@ -88,15 +88,15 @@ const RECIPES: Record<string, Recipe> = {
   },
   podcast_clip: {
     aspect: [1080, 1080],
-    look: "clean_neutral",
+    look: "editorial",
     bg: { type: "color", from: "#1e293b", to: "#1e293b" },
     captions: "podcast",
-    effects: [{ id: "bloom_soft", params: { amount: 25 } }],
+    effects: [{ id: "bloom", params: { amount: 25 } }],
     steps: ["Formato quadrado", "Legenda estilo podcast", "Multicam alternado 2s", "Remover silêncio no painel de ferramentas"],
   },
   produto_loja: {
     aspect: [1080, 1080],
-    look: "clean_bright",
+    look: "snow_clean",
     bg: { type: "gradient", from: "#f8fafc", to: "#e2e8f0" },
     addTitle: { text: "R$ 199,90", animation: "pop", font: "Inter", size: 78, uppercase: false, bgColor: "#0b0b12dd", color: "#a3e635" },
     sfx: "ding",
@@ -112,7 +112,7 @@ const RECIPES: Record<string, Recipe> = {
   },
   lyric_karaoke: {
     aspect: [1080, 1920],
-    look: "vivid_pop",
+    look: "viral_pop",
     bg: { type: "gradient", from: "#4c1d95", to: "#be185d" },
     captions: "karaoke_yellow",
     music: "pop",
@@ -120,7 +120,7 @@ const RECIPES: Record<string, Recipe> = {
   },
   aula_quadro: {
     aspect: [1920, 1080],
-    look: "clean_bright",
+    look: "studio_beauty",
     bg: { type: "pattern", from: "#0b1220", to: "#101a2e", pattern: "grid" },
     addTitle: { text: "AULA COMPLETA", animation: "fade_in", font: "Inter", size: 68, uppercase: true, bgColor: "#a855f7dd", color: "#ffffff" },
     steps: ["Fundo de grade técnica", "Título de abertura", "Adicione setas e formas no painel de formas", "Narre com o estúdio de áudio"],

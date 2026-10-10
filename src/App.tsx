@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useEffect } from "react";
 import type { ViewId } from "@/core/store";
-import { store, useEditzz } from "@/core/store";
+import { useEditzz } from "@/core/store";
 import { Toasts } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import AudioStudio from "@/views/audio/AudioStudio";
@@ -164,18 +164,12 @@ export default function App() {
       <main className="min-h-0 flex-1 overflow-hidden">{view}</main>
 
       <Toasts />
-      <span className="pointer-events-none fixed bottom-2 left-1/2 z-[60] -translate-x-1/2 rounded-full border border-line bg-panel/90 px-2.5 py-1 text-[9.5px] text-dim backdrop-blur">
+
+      {/* rodapé fixo no fluxo (não flutua sobre os painéis) */}
+      <footer className="flex h-6 shrink-0 items-center justify-center gap-1.5 border-t border-line bg-panel/60 text-[9.5px] text-dim">
+        <span className="size-1.5 rounded-full bg-lime" />
         editzz · edição local de vídeo e foto · seus arquivos ficam no seu dispositivo
-      </span>
-      {!state.assets.length && state.view !== "inicio" && (
-        <button
-          type="button"
-          onClick={() => store.toast("Acervo vazio", "Importe arquivos ou gere mídia no estúdio de mídia (tecla 3).", "info")}
-          className="pointer-events-none fixed bottom-8 left-1/2 z-[55] hidden -translate-x-1/2 text-[10px] text-dim"
-        >
-          dica: importe mídia para começar
-        </button>
-      )}
+      </footer>
     </div>
   );
 }

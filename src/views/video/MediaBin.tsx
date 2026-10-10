@@ -16,11 +16,11 @@ import { useRef, useState } from "react";
 import { generateMusic, assetFromAudioBuffer } from "@/core/audio";
 import { buildStarterAssets, generateVideoBlob, defaultGenOptions, assetFromVideoBlob } from "@/core/generate";
 import { importFilesPersist, pool, recordMicrophone } from "@/core/media";
-import { createDefaultProject } from "@/core/model";
+import { createClip, createDefaultProject, projectDuration, type Clip, type Track } from "@/core/model";
 import { store, useEditzz } from "@/core/store";
 import { Btn, Chip, EmptyState, Loading } from "@/components/ui";
 import { EXPORT_PRESETS, MUSIC_STYLES } from "@/lib/presets";
-import { cn, fmtBytes, fmtDuration, fmtTime, pickFiles } from "@/lib/utils";
+import { cn, fmtBytes, fmtDuration, fmtTime, pickFiles, uid } from "@/lib/utils";
 import type { MediaAsset } from "@/core/model";
 
 export default function MediaBin() {
@@ -62,13 +62,64 @@ export default function MediaBin() {
       const buffer = await generateMusic({ style: "lofi", bpm: 78, seconds: 16 });
       const { asset: audio } = assetFromAudioBuffer("Trilha lo-fi (gerada)", buffer);
       s.addAssets([audio]);
-      store.toast("Pacote de exemplo pronto", "3 imagens, 1 clipe de vídeo e 1 trilha", "ok");
+      const usados = [...images, ...s.state.assets.filter((a) => a.generator === "neon").slice(0, 1), audio].filter(Boolean);
+      montarNaTimeline(usados);
+      store.toast("Projeto de exemplo montado", "Clipes em sequência na timeline + trilha lo-fi. Aperte Espaço para reproduzir.", "ok");
     } catch {
       store.toast("Falha ao gerar exemplo", "Seu navegador pode limitar a gravação de canvas.", "erro");
     } finally {
       setBusy(null);
       setProgress(0);
     }
+  };
+
+  /** Joga as mídias de exemplo na timeline em sequência, com transições — um projeto pronto para explorar. */
+  const montarNaTimeline = (assets: MediaAsset[]) => {
+    const visuals = assets.filter((a) => a.kind !== "audio");
+    const trilha = assets.find((a) => a.kind === "audio");
+    if (!visuals.length) return;
+    s.commit("Montar exemplo na timeline", (p) => {
+      const tracks = [...p.tracks];
+      const videoTrack = tracks.find((t) => t.kind === "video") ?? tracks[0];
+      let audioTrack = tracks.find((t) => t.kind === "audio");
+      if (!audioTrack) {
+        audioTrack = {
+          id: uid("trk"), name: "Áudio 1", kind: "audio", height: 54,
+          muted: false, hidden: false, locked: false, solo: false,
+        } as Track;
+        tracks.push(audioTrack);
+      }
+      let at = projectDuration(p);
+      const novos: Clip[] = visuals.map((a, i) => {
+        const dur = a.kind === "video" ? Math.min(6, Math.max(2, a.duration || 4)) : 3.5;
+        const clip = createClip({
+          kind: a.kind === "video" ? "video" : "image",
+          assetId: a.id,
+          trackId: videoTrack.id,
+          start: at,
+          duration: dur,
+          name: a.name,
+        });
+        if (i > 0) clip.transitionIn = { id: "dissolve", duration: 0.6 };
+        at += dur;
+        return clip;
+      });
+      if (trilha) {
+        novos.push(
+          createClip({
+            kind: "audio",
+            assetId: trilha.id,
+            trackId: audioTrack.id,
+            start: projectDuration(p),
+            duration: Math.max(4, Math.min(trilha.duration || 16, at - projectDuration(p))),
+            name: trilha.name,
+          })
+        );
+      }
+      return { ...p, tracks, clips: [...p.clips, ...novos] };
+    });
+    s.setPlayhead(0);
+    s.select([]);
   };
 
   const quickMusic = async (style: string) => {

@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 const STATUS_META: Record<FeatureStatus, { label: string; color: string; icon: typeof CheckCircle2 }> = {
   pronto: { label: "pronto no editzz", color: "#a3e635", icon: CheckCircle2 },
-  original: { label: "ferramenta própria", color: "#a855f7", icon: Sparkles },
+  original: { label: "ferramenta própria", color: "#d7a45a", icon: Sparkles },
   roadmap: { label: "roadmap", color: "#fbbf24", icon: CircleDot },
 };
 
@@ -43,9 +43,9 @@ export default function Resources() {
           <div className="mt-3 grid gap-2 sm:grid-cols-4">
             {[
               { label: "Editores estudados", value: stats.apps, color: "#22d3ee" },
-              { label: "Recursos mapeados", value: stats.total, color: "#a855f7" },
+              { label: "Recursos mapeados", value: stats.total, color: "#d7a45a" },
               { label: "Já implementados", value: stats.pronto, color: "#a3e635" },
-              { label: "Ferramentas próprias", value: NOVAS_FERRAMENTAS.length, color: "#f472b6" },
+              { label: "Ferramentas próprias", value: NOVAS_FERRAMENTAS.length, color: "#d58f73" },
             ].map((card) => (
               <div key={card.label} className="rounded-xl border border-line bg-panel2/40 p-3">
                 <p className="font-display text-2xl font-bold" style={{ color: card.color }}>
@@ -98,7 +98,7 @@ export default function Resources() {
                 </div>
                 <p className="text-[10.5px] leading-relaxed text-muted">{tool.desc}</p>
                 <p className="mt-1.5 font-mono text-[9.5px] text-dim">{tool.where}</p>
-                <Badge color="#a855f7">{tool.kind}</Badge>
+                <Badge color="#d7a45a">{tool.kind}</Badge>
               </div>
             ))}
           </div>

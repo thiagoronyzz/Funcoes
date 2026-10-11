@@ -287,7 +287,7 @@ export default function Timeline() {
                   style={{ height: track.height }}
                 >
                   <GripVertical className="size-3 shrink-0 text-dim/60" />
-                  <Icon className="size-3.5 shrink-0" style={{ color: track.kind === "audio" ? "#22d3ee" : track.kind === "text" ? "#fbbf24" : "#a855f7" }} />
+                  <Icon className="size-3.5 shrink-0" style={{ color: track.kind === "audio" ? "#22d3ee" : track.kind === "text" ? "#fbbf24" : "#d7a45a" }} />
                   <span className="min-w-0 flex-1 truncate text-[11px] text-ink/90">{track.name}</span>
                   <div className="flex items-center gap-0.5 opacity-60 transition group-hover:opacity-100">
                     <button
@@ -518,7 +518,7 @@ function ClipBlock({
       {isAudio && energy && (
         <div className="pointer-events-none absolute inset-x-0 bottom-0 flex h-full items-end gap-px opacity-45">
           {energy.map((v, i) => (
-            <span key={i} className="flex-1 rounded-t-sm bg-[#f472b6]" style={{ height: `${v * 100}%` }} />
+            <span key={i} className="flex-1 rounded-t-sm bg-[#d58f73]" style={{ height: `${v * 100}%` }} />
           ))}
         </div>
       )}

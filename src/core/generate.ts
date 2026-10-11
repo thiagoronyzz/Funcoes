@@ -55,8 +55,8 @@ export interface GenOptions {
 export const defaultGenOptions = (): GenOptions => ({
   width: 1280,
   height: 720,
-  c1: "#7c3aed",
-  c2: "#22d3ee",
+  c1: "#d7a45a",
+  c2: "#526f6c",
   text: "editzz",
   seed: 7,
 });
@@ -404,9 +404,9 @@ export async function assetFromVideoBlob(name: string, blob: Blob, generator: st
 export async function buildStarterAssets(): Promise<{ images: MediaAsset[]; audio: MediaAsset | null }> {
   const images: MediaAsset[] = [];
   const specs: [string, GenKind, Partial<GenOptions>][] = [
-    ["Fundo gradiente (gerado)", "gradiente", { c1: "#7c3aed", c2: "#22d3ee" }],
-    ["Cartão de abertura", "cartao", { c1: "#111827", c2: "#4c1d95", text: "editzz" }],
-    ["Bokeh colorido", "bokeh", { c1: "#f472b6", c2: "#22d3ee" }],
+    ["Fundo gradiente (gerado)", "gradiente", { c1: "#d7a45a", c2: "#526f6c" }],
+    ["Cartão de abertura", "cartao", { c1: "#171a1c", c2: "#526f6c", text: "editzz" }],
+    ["Bokeh colorido", "bokeh", { c1: "#d58f73", c2: "#78aaa5" }],
     ["Grade técnica", "grade", {}],
     ["Plasma abstrato", "plasma", {}],
   ];

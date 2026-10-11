@@ -1,6 +1,6 @@
 import {
-  Box,
   BookOpen,
+  Box,
   Compass,
   Home as HomeIcon,
   Image as ImageIcon,
@@ -26,7 +26,7 @@ import Resources from "@/views/recursos/Resources";
 import VideoStudio from "@/views/video/VideoStudio";
 
 const NAV: { id: ViewId; label: string; icon: typeof HomeIcon; hint: string }[] = [
-  { id: "inicio", label: "Início", icon: HomeIcon, hint: "Visão geral e atalhos" },
+  { id: "inicio", label: "Visão geral", icon: HomeIcon, hint: "Projetos e atalhos" },
   { id: "video", label: "Vídeo", icon: Video, hint: "Timeline, prévia, efeitos e exportação" },
   { id: "foto", label: "Foto", icon: ImageIcon, hint: "Retoque não destrutivo e arte" },
   { id: "midia", label: "Mídia", icon: Box, hint: "Acervo e gerador procedural" },
@@ -38,14 +38,18 @@ const NAV: { id: ViewId; label: string; icon: typeof HomeIcon; hint: string }[] 
 
 export default function App() {
   const { state, store: s } = useEditzz();
+  const activeNav = NAV.find((item) => item.id === state.view) ?? NAV[0];
 
   /* atalhos globais */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const key = e.key.toLowerCase();
+      const target = e.target as HTMLElement | null;
+      const tag = target?.tagName;
+      const editingText = target?.isContentEditable || tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
+
       if ((e.ctrlKey || e.metaKey) && key === "z") {
-        const tag = (e.target as HTMLElement)?.tagName;
-        if (tag === "INPUT" || tag === "TEXTAREA") return;
+        if (editingText || state.view === "foto") return;
         e.preventDefault();
         if (e.shiftKey) s.redo();
         else s.undo();
@@ -54,9 +58,7 @@ export default function App() {
         e.preventDefault();
         void s.persist();
       }
-      if (!e.ctrlKey && !e.metaKey && !e.altKey) {
-        const tag = (e.target as HTMLElement)?.tagName;
-        if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      if (!e.ctrlKey && !e.metaKey && !e.altKey && !editingText) {
         if (key === "1") s.setView("video");
         if (key === "2") s.setView("foto");
         if (key === "3") s.setView("midia");
@@ -66,8 +68,7 @@ export default function App() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [s, state.view]);
 
   /* lista de projetos salvos ao abrir */
   useEffect(() => {
@@ -96,80 +97,96 @@ export default function App() {
     );
 
   return (
-    <div className="flex h-dvh min-h-0 flex-col bg-bg text-ink">
-      {/* topo */}
-      <header className="flex shrink-0 items-center gap-2 border-b border-line bg-panel/80 px-3 py-2 backdrop-blur">
-        <button
-          type="button"
-          onClick={() => s.setView("inicio")}
-          className="flex items-center gap-2 rounded-lg px-1 py-0.5 transition hover:bg-white/5"
-          title="Início"
-        >
-          <span className="grad-bg flex size-7 items-center justify-center rounded-lg font-display text-[12px] font-bold text-white">ez</span>
-          <span className="hidden font-display text-[14px] font-bold tracking-tight text-ink sm:block">
-            edit<span className="text-gradient">zz</span>
-          </span>
-        </button>
+    <div className="app-shell">
+      <header className="app-topbar">
+        <div className="app-brand-cell">
+          <button
+            type="button"
+            onClick={() => s.setView("inicio")}
+            className="app-brand focus-ring"
+            title="Voltar para a visão geral"
+            aria-label="editzz — visão geral"
+          >
+            <img src="/editzz-mark.svg" alt="" className="app-brand-mark" />
+            <span className="app-brand-wordmark">editzz</span>
+          </button>
+        </div>
 
-        <nav className="scroll-thin flex min-w-0 flex-1 items-center gap-1 overflow-x-auto">
+        <div className="app-topbar-main">
+          <div className="app-workspace-context">
+            <span className="app-context-kicker">ESPAÇO DE TRABALHO</span>
+            <span className="app-context-title">{activeNav.label}</span>
+          </div>
+
+          <div className="app-topbar-actions">
+            {state.busy && (
+              <span className="app-busy-indicator" role="status" aria-live="polite">
+                <Loader2 className="size-3.5 animate-spin" />
+                <span>{state.busy}</span>
+              </span>
+            )}
+            <span className="app-history-label" title="Última ação no projeto">
+              {state.historyLabel}
+            </span>
+            <button
+              type="button"
+              onClick={() => void s.persist()}
+              title="Salvar projeto no navegador (Ctrl+S)"
+              className="app-save-button focus-ring"
+            >
+              <Save className="size-4" />
+              <span>Salvar</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => s.setView("video")}
+              title="Abrir o estúdio de vídeo"
+              className={cn("app-editor-button focus-ring", state.view === "video" && "is-current")}
+              aria-current={state.view === "video" ? "page" : undefined}
+            >
+              <Scissors className="size-4" />
+              <span>Editor de vídeo</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <aside className="app-sidebar" aria-label="Navegação principal">
+        <p className="app-sidebar-caption">ESTÚDIO</p>
+        <nav className="app-nav">
           {NAV.map((item) => (
             <button
               key={item.id}
               type="button"
               title={item.hint}
+              aria-label={item.label}
+              aria-current={state.view === item.id ? "page" : undefined}
               onClick={() => s.setView(item.id)}
-              className={cn(
-                "flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11.5px] transition",
-                state.view === item.id ? "bg-vio/20 text-white ring-1 ring-vio/50" : "text-muted hover:bg-white/5 hover:text-ink"
-              )}
+              className={cn("app-nav-item focus-ring", state.view === item.id && "is-active")}
             >
-              <item.icon className="size-3.5" />
-              <span className="hidden md:inline">{item.label}</span>
+              <item.icon className="app-nav-icon" aria-hidden="true" />
+              <span className="app-nav-label">{item.label}</span>
             </button>
           ))}
         </nav>
-
-        <div className="flex shrink-0 items-center gap-2">
-          {state.busy && (
-            <span className="flex items-center gap-1.5 rounded-lg border border-vio/40 bg-vio/10 px-2 py-1 text-[10.5px] text-ink">
-              <Loader2 className="size-3 animate-spin text-vio" />
-              <span className="hidden max-w-48 truncate sm:inline">{state.busy}</span>
-            </span>
-          )}
-          <span className="hidden font-mono text-[10px] text-dim lg:inline">
-            {state.historyLabel}
-          </span>
-          <button
-            type="button"
-            onClick={() => void s.persist()}
-            title="Salvar projeto no navegador (Ctrl+S)"
-            className="flex items-center gap-1.5 rounded-lg border border-line bg-panel2/60 px-2 py-1 text-[10.5px] text-muted transition hover:text-ink"
-          >
-            <Save className="size-3.5" />
-            <span className="hidden sm:inline">salvar</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => s.setView("video")}
-            title="Atalho para o estúdio de vídeo"
-            className="flex items-center gap-1.5 rounded-lg border border-line bg-panel2/60 px-2 py-1 text-[10.5px] text-muted transition hover:text-ink"
-          >
-            <Scissors className="size-3.5" />
-            <span className="hidden sm:inline">editar</span>
-          </button>
+        <div className="app-sidebar-local">
+          <span className="app-online-dot" />
+          <div>
+            <span className="app-sidebar-local-title">Privacidade local</span>
+            <span className="app-sidebar-local-note">Arquivos no seu dispositivo</span>
+          </div>
         </div>
-      </header>
+      </aside>
 
-      {/* conteúdo */}
-      <main className="min-h-0 flex-1 overflow-hidden">{view}</main>
+      <main className="app-main">{view}</main>
+
+      <footer className="app-statusbar">
+        <span className="app-status-primary"><span className="app-online-dot" /> Tudo salvo localmente</span>
+        <span className="app-status-meta">{state.project.width} × {state.project.height} · {state.project.fps} fps</span>
+        <span className="app-status-meta app-status-shortcuts">Ctrl+S salvar · 1–4 alternar estúdio · 0 início</span>
+      </footer>
 
       <Toasts />
-
-      {/* rodapé fixo no fluxo (não flutua sobre os painéis) */}
-      <footer className="flex h-6 shrink-0 items-center justify-center gap-1.5 border-t border-line bg-panel/60 text-[9.5px] text-dim">
-        <span className="size-1.5 rounded-full bg-lime" />
-        editzz · edição local de vídeo e foto · seus arquivos ficam no seu dispositivo
-      </footer>
     </div>
   );
 }

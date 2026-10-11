@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="sky" x1="64" y1="20" x2="430" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B6B425"/>
+      <stop offset=".48" stop-color="#7B9417"/>
+      <stop offset="1" stop-color="#3B7411"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="matrix(394 321 -282 346 113 69)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D2C934" stop-opacity=".3"/>
+      <stop offset="1" stop-color="#D2C934" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="62" fill="url(#sky)"/>
+  <rect width="512" height="512" rx="62" fill="url(#glow)"/>
+  <g fill="#050605">
+    <path d="M462 248 359 219 250 222 148 169 124 174 170 226 111 229 57 203 40 213 81 252 40 291 57 301 111 275 170 278 124 330 148 335 250 282 359 285 462 256Z"/>
+    <path d="m162 231-48-68-26 3 31 66-55 5-35-20-14 10 34 25-34 25 14 10 35-20 55 5-31 66 26 3 48-68 27-2v-38Z"/>
+    <path d="m315 225 50-121 18 13-18 112Z"/>
+    <path d="m296 282 108 73-8 17-137-75Z"/>
+  </g>
+  <path d="m314 103 22 32-8 63-22-5 17-42-22 1Z" fill="#0B0D09"/>
+</svg>

@@ -359,7 +359,7 @@ export const CAPTION_STYLES = [
   { id: "minimal", name: "Minimalista", bg: "transparent", color: "#f8fafc", stroke: 0, uppercase: false, weight: 500, size: 40, radius: 0, padding: 0 },
   { id: "podcast", name: "Podcast", bg: "#1e293bdd", color: "#e2e8f0", stroke: 0, uppercase: false, weight: 600, size: 42, radius: 14, padding: 16 },
   { id: "comic", name: "Quadrinhos", bg: "#facc15", color: "#0f172a", stroke: 4, uppercase: true, weight: 800, size: 46, radius: 6, padding: 12 },
-  { id: "gradient", name: "Gradiente", bg: "#7c3aedcc", color: "#ffffff", stroke: 0, uppercase: true, weight: 800, size: 48, radius: 12, padding: 14 },
+  { id: "gradient", name: "Gradiente", bg: "#51412ddd", color: "#ffffff", stroke: 0, uppercase: true, weight: 800, size: 48, radius: 12, padding: 14 },
 ];
 
 export interface TextStylePreset {
@@ -384,7 +384,7 @@ export const TEXT_PRESETS: TextStylePreset[] = [
   { id: "neon_sign", name: "Letreiro neon", font: "Space Grotesk", weight: 800, size: 76, color: "#22d3ee", uppercase: true, shadow: true, animation: "neon_flicker" },
   { id: "caixa_alta", name: "Caixa destacada", font: "Inter", weight: 800, size: 64, color: "#0b0b12", bgColor: "#a3e635", uppercase: true, animation: "slide_up" },
   { id: "legenda_yt", name: "Legenda YouTube", font: "Inter", weight: 600, size: 52, color: "#ffffff", bgColor: "#000000aa", animation: "fade_in" },
-  { id: "lower_third", name: "Lower third", font: "Inter", weight: 600, size: 48, color: "#ffffff", bgColor: "#7c3aed", animation: "slide_left" },
+  { id: "lower_third", name: "Lower third", font: "Inter", weight: 600, size: 48, color: "#ffffff", bgColor: "#51412d", animation: "slide_left" },
   { id: "retro_80s", name: "Retrô 80s", font: "Courier New", weight: 700, size: 66, color: "#f472b6", uppercase: true, shadow: true, animation: "glitch_text" },
   { id: "contagem", name: "Contagem regressiva", font: "Space Grotesk", weight: 700, size: 200, color: "#ffffff", animation: "pop" },
   { id: "serif_cinema", name: "Cinema serifado", font: "Georgia", weight: 400, size: 72, color: "#f8fafc", letterSpacing: 6, animation: "blur_in" },

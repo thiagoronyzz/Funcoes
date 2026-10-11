@@ -102,7 +102,6 @@ export default function MidiaStudio() {
   return (
     <div className="flex h-full min-h-0 flex-col gap-2 p-2">
       <div className="panel flex flex-wrap items-center gap-1.5 px-2 py-1.5">
-        <span className="grad-bg hidden size-6 items-center justify-center rounded-lg text-[11px] font-bold text-white sm:flex">ez</span>
         <span className="font-display text-[12.5px] font-semibold text-ink">Estúdio de mídia</span>
         <Badge color="#22d3ee">gerador procedural</Badge>
         <Chip>{state.assets.length} itens</Chip>
@@ -128,7 +127,7 @@ export default function MidiaStudio() {
         </div>
       </div>
 
-      <div className="grid min-h-0 flex-1 gap-2 xl:grid-cols-[minmax(0,1fr)_420px]">
+      <div className="media-studio-layout">
         {/* biblioteca */}
         <div className="panel flex min-h-0 flex-col p-2">
           <div className="mb-2 flex flex-wrap items-center gap-1.5">

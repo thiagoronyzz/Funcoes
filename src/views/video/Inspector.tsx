@@ -364,7 +364,7 @@ export default function Inspector() {
                   </button>
                 ))}
               </div>
-              <Slider label="Intensidade do look" value={clip.lookIntensity} min={0} max={100} onChange={(v) => patchAll({ lookIntensity: v })} format={(v) => `${v.toFixed(0)}%`} accent="#f472b6" />
+              <Slider label="Intensidade do look" value={clip.lookIntensity} min={0} max={100} onChange={(v) => patchAll({ lookIntensity: v })} format={(v) => `${v.toFixed(0)}%`} accent="var(--app-accent)" />
               <div className="flex flex-wrap gap-1">
                 {LOOK_GROUPS.slice(0, 6).map((g) => (
                   <Chip key={g} onClick={() => patchAll({ look: LOOKS.find((l) => l.group === g)?.id ?? "none" }, "Look por grupo")}>
@@ -567,7 +567,7 @@ export default function Inspector() {
                 step={0.05}
                 onChange={(v) => patch({ curveAmount: v }, "Curva de velocidade")}
                 format={(v) => `${v.toFixed(2)}x`}
-                accent="#f472b6"
+                accent="var(--app-accent)"
               />
               <p className="text-[10.5px] leading-relaxed text-dim">
                 O tempo de origem é calculado integrando a curva quadro a quadro — igual às rampas dos editores profissionais.
@@ -598,7 +598,7 @@ export default function Inspector() {
                   if (clip.transitionOut) s.setTransition(clip.id, "out", clip.transitionOut.id, v);
                 }}
                 format={(v) => `${v.toFixed(2)}s`}
-                accent="#a855f7"
+                accent="var(--app-accent)"
               />
             </Section>
           </>
@@ -827,7 +827,7 @@ function TextPanel({ clip, patch }: { clip: Clip; patch: (p: Partial<Clip>, labe
           <>
             <div className="flex items-center gap-2">
               <input type="color" value={ts.strokeColor} onChange={(e) => set({ strokeColor: e.target.value })} className="size-8" />
-              <Slider label="Espessura" value={ts.strokeWidth} min={1} max={30} onChange={(v) => set({ strokeWidth: v })} accent="#f472b6" />
+              <Slider label="Espessura" value={ts.strokeWidth} min={1} max={30} onChange={(v) => set({ strokeWidth: v })} accent="var(--app-accent)" />
             </div>
           </>
         )}
@@ -1084,7 +1084,7 @@ function AudioPanel({ clip, patch }: { clip: Clip; patch: (p: Partial<Clip>, lab
 
       <Section title="Voz" icon={<Music2 className="size-3.5 text-pink" />} defaultOpen={false}>
         <Sel label="Efeito de voz" value={clip.audio.voice} onChange={(v) => set({ voice: v })} options={VOICE_EFFECTS.map((v) => ({ value: v.id, label: v.name }))} />
-        <Slider label="Tom (pitch)" value={clip.audio.pitch} min={-12} max={12} onChange={(v) => set({ pitch: v })} unit=" semitons" accent="#f472b6" />
+        <Slider label="Tom (pitch)" value={clip.audio.pitch} min={-12} max={12} onChange={(v) => set({ pitch: v })} unit=" semitons" accent="var(--app-accent)" />
         <p className="text-[10.5px] leading-relaxed text-dim">
           O efeito é aplicado ao processar o clipe (botão “Aplicar voz”), gerando um novo arquivo de áudio na timeline.
         </p>

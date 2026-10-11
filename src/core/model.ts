@@ -279,8 +279,8 @@ export const defaultTextStyle = (content = "Seu texto aqui"): TextStyle => ({
   size: 72,
   color: "#ffffff",
   gradientEnabled: false,
-  gradientFrom: "#a855f7",
-  gradientTo: "#22d3ee",
+  gradientFrom: "#d7a45a",
+  gradientTo: "#78aaa5",
   gradientAngle: 45,
   align: "center",
   letterSpacing: 0,
@@ -307,8 +307,8 @@ export const defaultTextStyle = (content = "Seu texto aqui"): TextStyle => ({
 
 export const defaultShapeCfg = (shape = "rect"): ShapeCfg => ({
   shape,
-  fill: "#a855f7",
-  fill2: "#22d3ee",
+  fill: "#d7a45a",
+  fill2: "#78aaa5",
   gradient: false,
   strokeColor: "#ffffff",
   strokeWidth: 0,

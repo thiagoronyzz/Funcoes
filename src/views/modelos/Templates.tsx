@@ -122,7 +122,7 @@ const RECIPES: Record<string, Recipe> = {
     aspect: [1920, 1080],
     look: "studio_beauty",
     bg: { type: "pattern", from: "#0b1220", to: "#101a2e", pattern: "grid" },
-    addTitle: { text: "AULA COMPLETA", animation: "fade_in", font: "Inter", size: 68, uppercase: true, bgColor: "#a855f7dd", color: "#ffffff" },
+    addTitle: { text: "AULA COMPLETA", animation: "fade_in", font: "Inter", size: 68, uppercase: true, bgColor: "#4b3c27dd", color: "#ffffff" },
     steps: ["Fundo de grade técnica", "Título de abertura", "Adicione setas e formas no painel de formas", "Narre com o estúdio de áudio"],
   },
 };

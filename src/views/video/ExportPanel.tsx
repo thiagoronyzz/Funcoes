@@ -219,7 +219,7 @@ export default function ExportPanel() {
             <div className="space-y-1.5 rounded-xl border border-line bg-panel2/60 p-2">
               <div className="flex items-center justify-between text-[10.5px]">
                 <span className="text-ink">{progress.message}</span>
-                <Badge color={progress.phase === "concluído" ? "#a3e635" : "#a855f7"}>{progress.phase}</Badge>
+                <Badge color={progress.phase === "concluído" ? "#a3e635" : "#d7a45a"}>{progress.phase}</Badge>
               </div>
               <ProgressBar value={progress.progress} />
               <p className="text-[10px] text-dim">

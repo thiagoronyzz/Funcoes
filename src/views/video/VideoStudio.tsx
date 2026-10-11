@@ -44,7 +44,6 @@ export default function VideoStudio() {
     <div className="flex h-full min-h-0 flex-col gap-2 p-2">
       {/* ── barra do projeto ── */}
       <div className="panel flex flex-wrap items-center gap-1.5 px-2 py-1.5">
-        <span className="grad-bg hidden size-6 items-center justify-center rounded-lg text-[11px] font-bold text-white sm:flex">ez</span>
         <input
           value={state.project.name}
           onChange={(e) => s.renameProject(e.target.value)}
@@ -114,12 +113,12 @@ export default function VideoStudio() {
       </div>
 
       {/* ── corpo ── */}
-      <div className="grid min-h-0 flex-1 gap-2 xl:grid-cols-[300px_minmax(0,1fr)_330px]">
-        <div className="panel hidden min-h-0 flex-col p-2 xl:flex">
+      <div className="video-editor-layout">
+        <div className="video-editor-media panel min-h-0 flex-col p-2">
           <MediaBin />
         </div>
 
-        <div className="flex min-h-0 flex-col gap-2">
+        <div className="video-editor-center">
           <div className="panel flex min-h-0 flex-[1.35] flex-col p-2">
             <Preview />
           </div>
@@ -129,7 +128,7 @@ export default function VideoStudio() {
           </div>
         </div>
 
-        <div className="panel flex min-h-0 flex-col">
+        <div className="video-editor-inspector panel min-h-0 flex-col">
           <Tabs
             className="m-2"
             value={right}
@@ -411,8 +410,8 @@ function TransitionsStrip() {
             )}
           >
             <span className="relative block h-12 overflow-hidden rounded-lg">
-              <span className="absolute inset-0 bg-[linear-gradient(135deg,#a855f7,#22d3ee)]" />
-              <span className="absolute inset-0 bg-[linear-gradient(135deg,#f472b6,#fbbf24)] opacity-70 mix-blend-screen" />
+              <span className="absolute inset-0 bg-[#34403f]" />
+              <span className="absolute inset-0 bg-[#d7a45a] opacity-25 mix-blend-screen" />
               <span
                 className={cn(
                   "absolute inset-0 bg-bg2/85 transition-transform duration-700",

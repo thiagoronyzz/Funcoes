@@ -95,7 +95,7 @@ export default function Preview() {
               s.togglePlay();
               transport.setPlaying(!playing);
             }}
-            className="grad-bg focus-ring flex size-9 items-center justify-center rounded-full text-white shadow-lg"
+            className="grad-bg focus-ring flex size-9 items-center justify-center rounded-full text-[#1d1a16] shadow-lg"
             title="Reproduzir / pausar (Espaço)"
           >
             {playing ? <Pause className="size-4" /> : <Play className="size-4 translate-x-px" />}

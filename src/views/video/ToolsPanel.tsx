@@ -410,7 +410,7 @@ export default function ToolsPanel() {
       const buffer = await pool.decodeAudio(audio);
       if (!buffer) throw new Error("decode");
       const beats = detectBeats(buffer);
-      const markers: Marker[] = beats.map((t) => ({ id: uid("mk"), t, label: "batida", color: "#f472b6", kind: "batida" }));
+      const markers: Marker[] = beats.map((t) => ({ id: uid("mk"), t, label: "batida", color: "#d58f73", kind: "batida" }));
       s.setMarkers([...state.project.markers.filter((m) => m.kind !== "batida"), ...markers], "Marcadores de batida");
       setEnergy(await energyForAsset(audio, 200));
       store.toast(`${beats.length} batidas marcadas`, "Use “Cortar no ritmo” para fatiar os clipes nelas.", "ok");
@@ -496,7 +496,7 @@ export default function ToolsPanel() {
         const textTrack = state.project.tracks.find((t) => t.kind === "text")?.id ?? state.project.tracks[0].id;
         const textClip = createTextClip(textTrack, clip.start, clip.duration, "Siga-me 👀");
         textClip.keyframes = { x: kfX, y: kfY };
-        textClip.text = { ...textClip.text!, animation: "none", size: 56, bgEnabled: true, bgColor: "#a855f7dd", radius: 14, padding: 12, weight: 700 };
+        textClip.text = { ...textClip.text!, animation: "none", size: 56, bgEnabled: true, bgColor: "#282b29dd", radius: 14, padding: 12, weight: 700 };
         s.commit("Anexar texto rastreado", (p) => ({ ...p, clips: [...p.clips, textClip] }));
         store.toast("Texto preso ao objeto", "O texto segue o ponto rastreado com keyframes.", "ok");
       }
@@ -640,7 +640,7 @@ export default function ToolsPanel() {
           {energyView.length > 0 && (
             <div className="flex h-16 items-end gap-px rounded-lg border border-line bg-bg2/60 p-1">
               {energyView.map((v, i) => (
-                <span key={i} className="flex-1 rounded-t-sm bg-[linear-gradient(180deg,#f472b6,#a855f7)]" style={{ height: `${Math.max(3, v * 100)}%` }} />
+                <span key={i} className="flex-1 rounded-t-sm bg-vio/85" style={{ height: `${Math.max(3, v * 100)}%` }} />
               ))}
             </div>
           )}

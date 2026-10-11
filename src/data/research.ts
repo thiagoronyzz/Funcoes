@@ -144,7 +144,7 @@ const PREMIERE: EditorReference = {
   vendor: "Adobe",
   tier: "pago",
   tagline: "Padrão de mercado em edição não linear profissional.",
-  color: "#a855f7",
+  color: "#d7a45a",
   groups: [
     {
       group: "Timeline e montagem",
@@ -246,7 +246,7 @@ const AFTER_EFFECTS: EditorReference = {
   vendor: "Adobe",
   tier: "pago",
   tagline: "Animação e composição quadro a quadro.",
-  color: "#c084fc",
+  color: "#d7a45a",
   groups: [
     {
       group: "Animação e composição",
@@ -496,7 +496,7 @@ const PICSART: EditorReference = {
   vendor: "Picsart",
   tier: "freemium",
   tagline: "Edição criativa com IA, remoção de objeto e retoque de rosto.",
-  color: "#e879f9",
+  color: "#78aaa5",
   groups: [
     {
       group: "Recursos",

@@ -39,7 +39,7 @@ export function Btn({
   };
   const variants: Record<BtnVariant, string> = {
     primary:
-      "text-white shadow-[0_6px_24px_-10px_rgba(168,85,247,0.9)] bg-[linear-gradient(120deg,#a855f7,#7c3aed_55%,#22d3ee)] hover:brightness-110",
+      "bg-vio text-[#1d1a16] shadow-sm hover:bg-vio2",
     ghost: "text-muted hover:text-ink hover:bg-white/5",
     outline: "border border-line bg-panel2/80 text-ink hover:border-line2 hover:bg-panel3",
     soft: "bg-white/6 text-ink hover:bg-white/10 border border-white/8",
@@ -56,7 +56,7 @@ export function Btn({
         "focus-ring inline-flex select-none items-center justify-center font-medium transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-40",
         sizes[size],
         variants[variant],
-        active && "ring-1 ring-vio/60 bg-vio/15 text-white",
+        active && "ring-1 ring-vio/60 bg-vio/15 text-ink",
         full && "w-full",
         className
       )}
@@ -93,7 +93,7 @@ export function IconBtn({
       className={cn(
         "focus-ring inline-flex items-center justify-center rounded-lg disabled:cursor-not-allowed disabled:opacity-40 border border-transparent text-muted transition hover:bg-white/8 hover:text-ink",
         size === "sm" ? "size-7" : "size-9",
-        active && "border-vio/50 bg-vio/15 text-white",
+        active && "border-vio/50 bg-vio/15 text-ink",
         className
       )}
     >
@@ -114,7 +114,7 @@ export function Slider({
   onReset,
   format,
   unit,
-  accent = "#a855f7",
+  accent = "var(--app-accent)",
   compact,
 }: {
   label: string;
@@ -164,7 +164,7 @@ export function Slider({
         onChange={(e) => onChange(parseFloat(e.target.value))}
         className="w-full"
         style={{
-          background: `linear-gradient(90deg, ${accent} ${pct}%, #262640 ${pct}%)`,
+          background: `linear-gradient(90deg, ${accent} ${pct}%, #343b3e ${pct}%)`,
           borderRadius: 999,
           height: 4,
           marginTop: 6,
@@ -362,7 +362,7 @@ export function Chip({
       className={cn(
         "focus-ring inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium transition",
         active
-          ? "border-vio/60 bg-vio/18 text-white"
+          ? "border-vio/60 bg-vio/18 text-[#1d1a16]"
           : "border-line bg-panel2/60 text-muted hover:border-line2 hover:text-ink",
         className
       )}
@@ -393,7 +393,7 @@ export function Tabs<T extends string>({
           onClick={() => onChange(t.id)}
           className={cn(
             "focus-ring inline-flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-[11.5px] font-medium transition",
-            value === t.id ? "bg-[linear-gradient(120deg,#a855f7,#22d3ee)] text-white shadow-lg" : "text-muted hover:bg-white/6 hover:text-ink"
+            value === t.id ? "bg-vio text-[#1d1a16] shadow-sm" : "text-muted hover:bg-white/6 hover:text-ink"
           )}
         >
           {t.icon}
@@ -509,13 +509,13 @@ export function ProgressBar({ value, className, color }: { value: number; classN
     <div className={cn("h-1.5 w-full overflow-hidden rounded-full bg-bg2", className)}>
       <div
         className="h-full rounded-full transition-all duration-200"
-        style={{ width: `${Math.min(100, Math.max(0, value * 100))}%`, background: color ?? "linear-gradient(90deg,#a855f7,#22d3ee)" }}
+        style={{ width: `${Math.min(100, Math.max(0, value * 100))}%`, background: color ?? "var(--app-accent)" }}
       />
     </div>
   );
 }
 
-export function Badge({ children, color = "#a855f7", className }: { children: ReactNode; color?: string; className?: string }) {
+export function Badge({ children, color = "#d7a45a", className }: { children: ReactNode; color?: string; className?: string }) {
   return (
     <span
       className={cn("inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide", className)}
@@ -529,7 +529,7 @@ export function Badge({ children, color = "#a855f7", className }: { children: Re
 export function Toasts() {
   const { state, store: s } = useEditzz();
   const tones: Record<string, string> = {
-    info: "#22d3ee",
+    info: "#78aaa5",
     ok: "#34d399",
     warn: "#fbbf24",
     erro: "#fb7185",
@@ -548,7 +548,7 @@ export function Toasts() {
             className="pointer-events-auto cursor-pointer overflow-hidden rounded-xl border border-line bg-panel/95 p-3 shadow-2xl backdrop-blur"
           >
             <div className="flex items-start gap-2.5">
-              <span className="mt-1 size-2 shrink-0 rounded-full" style={{ background: tones[t.kind] ?? "#a855f7" }} />
+              <span className="mt-1 size-2 shrink-0 rounded-full" style={{ background: tones[t.kind] ?? "#d7a45a" }} />
               <div className="min-w-0">
                 <p className="text-[12.5px] font-semibold text-ink">{t.title}</p>
                 {t.desc && <p className="mt-0.5 text-[11px] leading-snug text-muted">{t.desc}</p>}
@@ -560,7 +560,7 @@ export function Toasts() {
                 animate={{ width: 0 }}
                 transition={{ duration: 4.2, ease: "linear" }}
                 className="h-full"
-                style={{ background: tones[t.kind] ?? "#a855f7" }}
+                style={{ background: tones[t.kind] ?? "#d7a45a" }}
               />
             </div>
           </motion.div>

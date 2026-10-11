@@ -446,9 +446,17 @@ export default function PhotoStudio() {
     <div className="flex h-full min-h-0 flex-col gap-2 p-2">
       {/* barra superior */}
       <div className="panel flex flex-wrap items-center gap-1.5 px-2 py-1.5">
-        <span className="grad-bg hidden size-6 items-center justify-center rounded-lg text-[11px] font-bold text-white sm:flex">ez</span>
         <span className="font-display text-[12.5px] font-semibold text-ink">Estúdio de foto</span>
-        <Badge color="#f472b6">não destrutivo</Badge>
+        {photos.length > 1 && (
+          <Sel
+            compact
+            className="photo-quick-select"
+            value={photo?.id ?? ""}
+            onChange={setPhotoId}
+            options={photos.map((item) => ({ value: item.id, label: item.name }))}
+          />
+        )}
+        <Badge color="#d58f73">não destrutivo</Badge>
         {photo && <Chip>{photo.name}</Chip>}
         <Chip>{ops.length} pinceladas</Chip>
         <Chip>{overlays.length} camadas</Chip>
@@ -495,9 +503,9 @@ export default function PhotoStudio() {
         </div>
       </div>
 
-      <div className="grid min-h-0 flex-1 gap-2 xl:grid-cols-[220px_minmax(0,1fr)_330px]">
+      <div className="photo-editor-layout">
         {/* tira de fotos */}
-        <div className="panel hidden min-h-0 flex-col p-2 xl:flex">
+        <div className="photo-editor-library panel min-h-0 flex-col p-2">
           <p className="mb-1.5 flex items-center gap-1.5 font-display text-[11.5px] font-semibold text-ink">
             <ImageIcon className="size-3.5 text-pink" /> Fotos do acervo
           </p>
@@ -562,7 +570,7 @@ export default function PhotoStudio() {
         </div>
 
         {/* palco */}
-        <div className="flex min-h-0 flex-col gap-2">
+        <div className="photo-editor-stage">
           <div className="panel flex min-h-0 flex-1 flex-col p-2">
             <div className="mb-1.5 flex flex-wrap items-center gap-1">
               {BRUSH_TOOLS.map((t) => (
@@ -581,7 +589,7 @@ export default function PhotoStudio() {
               {rendering && <Loader2 className="size-3.5 animate-spin text-vio" />}
             </div>
 
-            <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden rounded-xl border border-line bg-[repeating-conic-gradient(#141420_0%_25%,#0e0e18_0%_50%)] bg-[length:20px_20px] p-2">
+            <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden rounded-xl border border-line bg-[repeating-conic-gradient(#292e30_0%_25%,#1a1d1f_0%_50%)] bg-[length:20px_20px] p-2">
               {!photo && (
                 <div className="text-center">
                   <p className="font-display text-sm font-semibold text-ink/80">Nenhuma foto selecionada</p>
@@ -646,7 +654,7 @@ export default function PhotoStudio() {
         </div>
 
         {/* painel direito */}
-        <div className="panel flex min-h-0 flex-col">
+        <div className="photo-editor-controls panel min-h-0 flex-col">
           <Tabs
             className="m-2"
             value={panel}
@@ -678,7 +686,7 @@ export default function PhotoStudio() {
                 </Section>
                 <Section title="Cor básica" icon={<Palette className="size-3.5 text-pink" />} defaultOpen={false}>
                   {ADJUST_DEFS.filter((d) => ["saturation", "vibrance", "temperature", "tint", "hue"].includes(d.key)).map((d) => (
-                    <Slider key={d.key} label={d.label} value={recipe.adjust[d.key]} min={d.min} max={d.max} onChange={(v) => setAdj(d.key, v)} onReset={() => setAdj(d.key, d.def)} accent="#f472b6" />
+                    <Slider key={d.key} label={d.label} value={recipe.adjust[d.key]} min={d.min} max={d.max} onChange={(v) => setAdj(d.key, v)} onReset={() => setAdj(d.key, d.def)} accent="var(--app-accent)" />
                   ))}
                   <Toggle
                     label="Vinheta circular"
@@ -779,7 +787,7 @@ export default function PhotoStudio() {
                       </div>
                     ))}
                   </div>
-                  <Slider label="Intensidade" value={recipe.lookIntensity} min={0} max={100} onChange={(v) => setRecipe((r) => ({ ...r, lookIntensity: v }))} accent="#a855f7" />
+                  <Slider label="Intensidade" value={recipe.lookIntensity} min={0} max={100} onChange={(v) => setRecipe((r) => ({ ...r, lookIntensity: v }))} accent="var(--app-accent)" />
                   <Btn size="sm" full onClick={() => commit({ ...recipe, look: "none", lookIntensity: 100, effects: [] }, "Remover look")}>
                     Remover look
                   </Btn>
@@ -812,7 +820,7 @@ export default function PhotoStudio() {
                       min={0}
                       max={100}
                       onChange={(v) => setRecipe((r) => ({ ...r, effects: r.effects.map((e) => (e.id === eff.id ? { ...e, amount: v } : e)) }))}
-                      accent="#f472b6"
+                      accent="var(--app-accent)"
                     />
                   ))}
                 </Section>
@@ -926,7 +934,7 @@ export default function PhotoStudio() {
                     >
                       Texto
                     </Btn>
-                    <Btn size="sm" onClick={() => setOverlays((list) => [...list, { id: uid("ov"), type: "shape", x: 0.5, y: 0.5, scale: 0.5, rotate: 0, opacity: 0.9, blend: "normal", shape: "rect", fill: "#a855f7", stroke: "#ffffff", strokeWidth: 0 }])}>
+                    <Btn size="sm" onClick={() => setOverlays((list) => [...list, { id: uid("ov"), type: "shape", x: 0.5, y: 0.5, scale: 0.5, rotate: 0, opacity: 0.9, blend: "normal", shape: "rect", fill: "#d7a45a", stroke: "#ffffff", strokeWidth: 0 }])}>
                       Forma
                     </Btn>
                     <Btn size="sm" onClick={() => setOverlays((list) => [...list, { id: uid("ov"), type: "sticker", x: 0.8, y: 0.2, scale: 1, rotate: 0, opacity: 1, blend: "normal", emoji: "🔥", size: 1 }])}>
@@ -1240,7 +1248,7 @@ function CurvesPanel({ recipe, onChange }: { recipe: ImageRecipe; onChange: (r: 
           <polyline
             points={toPath([{ x: 0, y: 0 }, ...points, { x: 1, y: 1 }])}
             fill="none"
-            stroke={channel === "rgb" ? "#22d3ee" : channel === "r" ? "#fb7185" : channel === "g" ? "#a3e635" : "#818cf8"}
+            stroke={channel === "rgb" ? "#22d3ee" : channel === "r" ? "#fb7185" : channel === "g" ? "#a3e635" : "#86a9d0"}
             strokeWidth={2}
           />
           {points.map((p, i) => (
@@ -1274,7 +1282,7 @@ function Histogram({ data }: { data: { r: number[]; g: number[]; b: number[]; l:
           className="flex-1 rounded-t-[1px]"
           style={{
             height: `${Math.max(2, (v / max) * 100)}%`,
-            background: `linear-gradient(180deg, rgba(255,255,255,0.75), rgba(168,85,247,0.5))`,
+            background: `linear-gradient(180deg, rgba(255,255,255,0.75), rgba(215,164,90,0.45))`,
           }}
         />
       ))}

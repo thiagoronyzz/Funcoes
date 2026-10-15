@@ -1,0 +1,1493 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#05060d">
+<title>Gravity Swap — Zcode</title>
+<meta name="description" content="Arcade de sobrevivência: você não controla o personagem, controla a direção da gravidade da arena. Empurre os bots para os espinhos e seja o último sobrevivente.">
+<!--
+  ══════════════════════════════════════════════════════════════════
+  GRAVITY SWAP — arcade de sobrevivência 2D (HTML5 + Canvas puro)
+  ------------------------------------------------------------------
+  Você NÃO controla o personagem. Você controla a GRAVIDADE da arena.
+  Todos (você e os bots) caem na direção escolhida. Vença sendo o
+  último sobrevivente: empurre os bots para os espinhos das bordas
+  e sobreviva à zona que encolhe.
+
+  Controles
+    W A S D / setas .... muda a direção da gravidade (cooldown 0,5s)
+    ESPAÇO ............. agarra a superfície por 2s (gasta 1 stamina)
+    SHIFT .............. dash curto na direção da gravidade
+    P / ESC ............ pausa     M: som     R: reiniciar
+    Toque .............. D-pad + botões AGARRAR / DASH na tela
+
+  Zero dependências externas: um único arquivo, fontes do sistema,
+  áudio sintetizado com WebAudio.
+  ══════════════════════════════════════════════════════════════════
+-->
+<style>
+  :root{
+    --bg:#05060d;
+    --bg2:#0b0e1c;
+    --neon:#00e5ff;
+    --pink:#ff2e88;
+    --danger:#ff2d55;
+    --safe:#39ff88;
+    --violet:#a855ff;
+    --amber:#ffb020;
+    --line:rgba(0,229,255,.18);
+    --txt:#dff6ff;
+    --dim:#6f86a6;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,"DejaVu Sans Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{
+    height:100%;overflow:hidden;background:var(--bg);color:var(--txt);
+    font-family:var(--mono);
+    -webkit-font-smoothing:antialiased;
+    overscroll-behavior:none;touch-action:none;
+    user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;
+  }
+  body{
+    display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px;
+    background:
+      radial-gradient(1200px 700px at 50% -10%, #101a3a 0%, transparent 60%),
+      var(--bg);
+  }
+
+  /* ── HUD ─────────────────────────────────────────────── */
+  #hud{
+    width:100%;max-width:1100px;display:flex;flex-wrap:wrap;align-items:center;
+    gap:10px 16px;padding:8px 12px;border:1px solid var(--line);border-radius:12px;
+    background:linear-gradient(180deg,rgba(11,14,28,.95),rgba(5,6,13,.9));
+    font-size:11px;letter-spacing:.08em;
+  }
+  .hg{display:flex;flex-direction:column;gap:4px;min-width:0}
+  .hg .lbl{color:var(--dim);font-size:9px;text-transform:uppercase;letter-spacing:.16em;white-space:nowrap}
+  .hg .val{font-size:14px;font-weight:700;color:var(--neon);white-space:nowrap}
+  .hg .val.big{font-size:20px}
+  .bar{width:74px;height:5px;border-radius:3px;background:rgba(255,255,255,.10);overflow:hidden}
+  .bar i{display:block;height:100%;width:100%;background:var(--neon);box-shadow:0 0 8px var(--neon)}
+  .bar.dash i{background:var(--amber);box-shadow:0 0 8px var(--amber)}
+  .pips{display:flex;gap:3px}
+  .pips i{width:16px;height:8px;border-radius:2px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18)}
+  .pips i.on{background:var(--safe);border-color:var(--safe);box-shadow:0 0 8px rgba(57,255,136,.7)}
+  .pips i.hp{background:var(--pink);border-color:var(--pink);box-shadow:0 0 8px rgba(255,46,136,.7)}
+  .pips i.chg{background:rgba(0,229,255,.45);border-color:var(--neon)}
+  .spacer{flex:1}
+  .mini{
+    font:inherit;font-size:11px;color:var(--txt);background:rgba(255,255,255,.05);
+    border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer;
+  }
+  .mini:active{transform:translateY(1px)}
+
+  /* ── palco / canvas ──────────────────────────────────── */
+  #stage{
+    position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;
+    background:#04050b;box-shadow:0 0 60px rgba(0,229,255,.10), inset 0 0 90px rgba(0,0,0,.8);
+    flex:0 0 auto;
+  }
+  #game{display:block;width:100%;height:100%}
+
+  /* ── feed de eliminações ─────────────────────────────── */
+  #feed{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:5px;align-items:flex-end;pointer-events:none}
+  .fitem{
+    font-size:11px;letter-spacing:.06em;padding:4px 9px;border-radius:6px;
+    background:rgba(5,6,13,.75);border:1px solid var(--line);color:var(--txt);
+    animation:fin .25s ease-out;
+  }
+  .fitem b{color:var(--danger)}
+  @keyframes fin{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+
+  /* ── avisos rápidos ──────────────────────────────────── */
+  #toast{
+    position:absolute;left:50%;top:14%;transform:translateX(-50%);
+    font-size:12px;letter-spacing:.14em;padding:6px 14px;border-radius:20px;
+    background:rgba(5,6,13,.8);border:1px solid var(--line);color:var(--neon);
+    opacity:0;transition:opacity .18s;pointer-events:none;
+  }
+  #toast.on{opacity:1}
+
+  /* ── overlays (menu / fim / pausa) ───────────────────── */
+  .overlay{
+    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:14px;padding:20px;text-align:center;
+    background:radial-gradient(700px 420px at 50% 40%, rgba(5,6,13,.82), rgba(3,4,9,.96));
+    z-index:5;
+  }
+  .overlay.hidden,.hidden{display:none!important}
+  .title{
+    font-size:clamp(30px,7vw,60px);font-weight:800;letter-spacing:.06em;line-height:1;
+    color:#fff;text-shadow:0 0 18px var(--neon),0 0 46px rgba(0,229,255,.5);
+  }
+  .title span{color:var(--pink);text-shadow:0 0 18px var(--pink),0 0 46px rgba(255,46,136,.5)}
+  .sub{font-size:clamp(11px,2.4vw,13px);color:var(--dim);letter-spacing:.12em;max-width:520px;line-height:1.7}
+  .keys{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;
+    width:100%;max-width:560px;margin-top:2px;
+  }
+  .key{
+    display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;
+    background:rgba(255,255,255,.04);border:1px solid var(--line);text-align:left;
+  }
+  .key b{
+    flex:0 0 auto;min-width:34px;text-align:center;padding:3px 6px;border-radius:6px;font-size:11px;
+    background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.4);color:var(--neon);
+  }
+  .key span{font-size:10.5px;color:var(--dim);letter-spacing:.04em;line-height:1.4}
+  .btn{
+    font:inherit;font-weight:700;font-size:15px;letter-spacing:.16em;cursor:pointer;
+    padding:14px 34px;border-radius:12px;color:#031018;border:0;
+    background:linear-gradient(180deg,#5ff3ff,var(--neon));
+    box-shadow:0 0 24px rgba(0,229,255,.55);transition:transform .12s,box-shadow .12s;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 0 34px rgba(0,229,255,.8)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line);box-shadow:none;font-size:12px;padding:11px 22px}
+  .rowbtn{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  #overTitle.win{color:var(--safe);text-shadow:0 0 20px var(--safe),0 0 60px rgba(57,255,136,.5)}
+  #overTitle.lose{color:var(--danger);text-shadow:0 0 20px var(--danger),0 0 60px rgba(255,45,85,.45)}
+  .stats{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;font-size:11px;color:var(--dim);letter-spacing:.1em}
+  .stats b{display:block;font-size:19px;color:var(--txt);letter-spacing:.04em}
+
+  /* ── controles de toque ──────────────────────────────── */
+  #touch{
+    width:100%;max-width:1100px;display:flex;justify-content:space-between;align-items:center;
+    gap:12px;padding:2px 4px;flex:0 0 auto;
+  }
+  .dpad{display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,44px);gap:5px}
+  .dpad .tb:nth-child(1){grid-area:1/2}
+  .dpad .tb:nth-child(2){grid-area:2/1}
+  .dpad .tb:nth-child(3){grid-area:2/3}
+  .dpad .tb:nth-child(4){grid-area:3/2}
+  .tb{
+    font:inherit;font-size:13px;font-weight:700;color:var(--neon);cursor:pointer;
+    background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.35);border-radius:10px;
+    touch-action:none;
+  }
+  .tb:active,.tb.hit{background:rgba(0,229,255,.3);box-shadow:0 0 16px rgba(0,229,255,.6)}
+  .acts{display:flex;gap:10px}
+  .round{
+    width:78px;height:62px;border-radius:16px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:2px;font-size:10px;letter-spacing:.1em;
+  }
+  .round.grab{color:var(--safe);background:rgba(57,255,136,.08);border-color:rgba(57,255,136,.4)}
+  .round.grab:active{background:rgba(57,255,136,.3);box-shadow:0 0 16px rgba(57,255,136,.6)}
+  .round.dashb{color:var(--amber);background:rgba(255,176,32,.08);border-color:rgba(255,176,32,.4)}
+  .round.dashb:active{background:rgba(255,176,32,.3);box-shadow:0 0 16px rgba(255,176,32,.6)}
+  .credit{font-size:9px;color:#2c3a55;letter-spacing:.2em;padding-bottom:2px}
+</style>
+</head>
+<body>
+
+  <!-- ══ HUD ══════════════════════════════════════════════ -->
+  <header id="hud">
+    <div class="hg">
+      <span class="lbl">Sobreviventes</span>
+      <span class="val big" id="hAlive">7</span>
+    </div>
+    <div class="hg">
+      <span class="lbl">Gravidade</span>
+      <span class="val" id="hGrav">▼ BAIXO</span>
+      <div class="bar"><i id="hGravBar"></i></div>
+    </div>
+    <div class="hg">
+      <span class="lbl">Stamina (espaço)</span>
+      <div class="pips" id="hStam"></div>
+    </div>
+    <div class="hg">
+      <span class="lbl">Dash (shift)</span>
+      <div class="bar dash"><i id="hDashBar"></i></div>
+    </div>
+    <div class="hg">
+      <span class="lbl">Integridade</span>
+      <div class="pips" id="hHp"></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="hg">
+      <span class="lbl">Zona encolhe em</span>
+      <span class="val" id="hZone">30s</span>
+    </div>
+    <button class="mini" id="btnPause" title="Pausar (P)">❚❚</button>
+    <button class="mini" id="btnMute" title="Som (M)">🔊</button>
+  </header>
+
+  <!-- ══ PALCO ════════════════════════════════════════════ -->
+  <main id="stage">
+    <canvas id="game" width="960" height="600" aria-label="Arena do Gravity Swap"></canvas>
+    <div id="feed" aria-live="polite"></div>
+    <div id="toast"></div>
+
+    <!-- Tela inicial -->
+    <section class="overlay" id="menu">
+      <h1 class="title">GRAVITY <span>SWAP</span></h1>
+      <p class="sub">
+        Você não move o personagem: você vira a GRAVIDADE da arena.<br>
+        Todos caem juntos — jogue os bots nos espinhos das bordas e seja o último de pé.
+      </p>
+      <div class="keys">
+        <div class="key"><b>WASD</b><span>Gira a gravidade (cooldown 0,5s)</span></div>
+        <div class="key"><b>ESPAÇO</b><span>Agarra a superfície por 2s — 1 stamina</span></div>
+        <div class="key"><b>SHIFT</b><span>Dash na direção da gravidade</span></div>
+        <div class="key"><b>ZONA</b><span>Encolhe e migra a cada 30s. Fora dela você perde integridade</span></div>
+        <div class="key"><b>LINHA</b><span>A linha tracejada mostra onde você vai cair: verde = seguro, vermelho = espinhos</span></div>
+        <div class="key"><b>DICA</b><span>Agarre antes de girar: você escolhe a direção da queda enquanto está preso</span></div>
+      </div>
+      <button class="btn" id="btnPlay">JOGAR</button>
+      <p class="sub" style="font-size:10px">7 lutadores · espinhos nas 4 bordas · plataformas flutuantes · no celular use o D-pad na tela</p>
+    </section>
+
+    <!-- Pausa -->
+    <section class="overlay hidden" id="pause">
+      <h2 class="title" style="font-size:clamp(24px,5vw,40px)">PAUSA</h2>
+      <div class="rowbtn">
+        <button class="btn" id="btnResume">CONTINUAR</button>
+        <button class="btn ghost" id="btnQuit">SAIR</button>
+      </div>
+    </section>
+
+    <!-- Fim de jogo -->
+    <section class="overlay hidden" id="over">
+      <h2 class="title" id="overTitle" style="font-size:clamp(28px,6vw,52px)">VOCÊ VENCEU</h2>
+      <p class="sub" id="overSub">Último sobrevivente da arena.</p>
+      <div class="stats">
+        <div><b id="stPlace">1º</b>COLOCAÇÃO</div>
+        <div><b id="stTime">0:00</b>TEMPO</div>
+        <div><b id="stKills">0</b>ELIMINADOS</div>
+        <div><b id="stZone">1</b>FASE DA ZONA</div>
+      </div>
+      <div class="rowbtn">
+        <button class="btn" id="btnAgain">JOGAR DE NOVO</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ══ CONTROLES DE TOQUE ═══════════════════════════════ -->
+  <div id="touch" class="hidden">
+    <div class="dpad">
+      <button class="tb" data-dir="1" aria-label="Gravidade para cima">▲</button>
+      <button class="tb" data-dir="2" aria-label="Gravidade para a esquerda">◀</button>
+      <button class="tb" data-dir="3" aria-label="Gravidade para a direita">▶</button>
+      <button class="tb" data-dir="0" aria-label="Gravidade para baixo">▼</button>
+    </div>
+    <div class="acts">
+      <button class="tb round grab" id="btnGrab">AGARRAR<span>espaço</span></button>
+      <button class="tb round dashb" id="btnDash">DASH<span>shift</span></button>
+    </div>
+  </div>
+  <div class="credit">ZCODE · GRAVITY SWAP · CANVAS PURO</div>
+
+<script>
+"use strict";
+/* ══════════════════════════════════════════════════════════════════
+   GRAVITY SWAP
+   1. Configuração · 2. Utilidades · 3. Nível · 4. Corpos
+   5. Física · 6. IA · 7. Zona · 8. Efeitos · 9. Entrada
+   10. HUD/Telas · 11. Render · 12. Loop
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ───────────────────────── 1. CONFIGURAÇÃO ─────────────────────── */
+const W = 960, H = 600;            // tamanho lógico da arena
+const STEP = 1 / 120;              // passo fixo da física (s)
+const WALL = 18;                   // espessura das paredes
+const SPIKE_D = 15;                // profundidade dos espinhos
+
+const GRAV_A   = 1500;             // aceleração da gravidade (px/s²)
+const MAX_SPD  = 1050;             // velocidade máxima (px/s)
+const REST     = 0.16;             // restituição (quique)
+const FRICTION = 0.86;             // atrito tangencial no contato
+const AIR_DRAG = 0.9993;           // arrasto do ar por passo
+
+const GRAV_CD    = 0.5;            // cooldown para girar a gravidade
+const GRAB_TIME  = 2.0;            // duração do agarrão
+const STAM_MAX   = 3;              // barras de stamina
+const STAM_REGEN = 5.5;            // segundos para recuperar 1 barra
+const DASH_CD    = 1.1;            // cooldown do dash
+const DASH_IMP   = 660;            // impulso do dash
+
+const ZONE_PERIOD = 30;            // a zona encolhe a cada 30s
+const ZONE_WARN   = 4;             // aviso nos últimos 4s
+const ZONE_DMG_T  = 0.9;           // intervalo de dano fora da zona
+const ZONE_DMG    = 1;             // dano por tick fora da zona
+const ZONE_FACTOR = 0.72;          // fator de encolhimento
+const ZONE_GRACE  = 1.6;           // trégua após encolher (dá tempo de correr)
+const ZONE_MIN_W  = 44;            // tamanho mínimo (morte súbita: cabe quase ninguém)
+const ZONE_MIN_H  = 34;
+const HP_MAX      = 3;             // integridade
+
+const BOT_COUNT = 6;               // bots inimigos (entre 5 e 8)
+const MAX_PART  = 420;             // teto de partículas
+
+/* direções da gravidade — índice usado no teclado/D-pad */
+const DIRS = [
+  { x: 0,  y: 1,  nome: "BAIXO",    icone: "▼" },
+  { x: 0,  y: -1, nome: "CIMA",     icone: "▲" },
+  { x: -1, y: 0,  nome: "ESQUERDA", icone: "◀" },
+  { x: 1,  y: 0,  nome: "DIREITA",  icone: "▶" }
+];
+
+const CORES_BOT = ["#ff2e88","#ffb020","#a855ff","#4ade80","#ff6b35","#f472b6","#facc15","#fb7185"];
+const COR_PLAYER = "#00e5ff";
+
+/* ───────────────────────── 2. UTILIDADES ───────────────────────── */
+const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+const rand  = (a, b) => a + Math.random() * (b - a);
+const randInt = (a, b) => Math.floor(rand(a, b + 1));
+const pick  = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const len   = (x, y) => Math.hypot(x, y);
+
+/** ponto dentro de retângulo, com folga opcional */
+function inRect(x, y, r, pad) {
+  pad = pad || 0;
+  return x >= r.x - pad && x <= r.x + r.w + pad && y >= r.y - pad && y <= r.y + r.h + pad;
+}
+
+/** distância aproximada do centro de um círculo a um AABB (0 = dentro) */
+function circleRectDist(cx, cy, r, rad) {
+  const dx = Math.max(r.x - cx, 0, cx - (r.x + r.w));
+  const dy = Math.max(r.y - cy, 0, cy - (r.y + r.h));
+  return Math.hypot(dx, dy) - rad;
+}
+
+/** resolve colisão círculo × AABB; devolve a normal do contato ou null */
+function collideRect(b, r) {
+  const cx = clamp(b.x, r.x, r.x + r.w);
+  const cy = clamp(b.y, r.y, r.y + r.h);
+  let dx = b.x - cx, dy = b.y - cy;
+  let d = Math.hypot(dx, dy);
+
+  if (d > b.r) return null;
+
+  if (d < 0.0001) {                       // centro dentro do sólido: empurra pelo eixo mais curto
+    const left = b.x - r.x, right = r.x + r.w - b.x;
+    const top = b.y - r.y, bottom = r.y + r.h - b.y;
+    const m = Math.min(left, right, top, bottom);
+    if (m === left)       { dx = -1; dy = 0; d = left + b.r; }
+    else if (m === right) { dx = 1;  dy = 0; d = right + b.r; }
+    else if (m === top)   { dx = 0;  dy = -1; d = top + b.r; }
+    else                  { dx = 0;  dy = 1;  d = bottom + b.r; }
+  }
+
+  const nx = dx / (d || 1), ny = dy / (d || 1);
+  if (!b.locked) { b.x += nx * (b.r - d); b.y += ny * (b.r - d); }
+
+  const vn = b.vx * nx + b.vy * ny;
+  if (vn < 0) {                            // separa velocidade normal e aplica atrito na tangente
+    b.vx -= (1 + REST) * vn * nx;
+    b.vy -= (1 + REST) * vn * ny;
+    const tx = -ny, ty = nx;
+    const vt = b.vx * tx + b.vy * ty;
+    b.vx -= vt * (1 - FRICTION) * tx;
+    b.vy -= vt * (1 - FRICTION) * ty;
+  }
+  return { nx, ny };
+}
+
+/** separação + impulso entre dois corpos circulares */
+function collideBodies(a, b) {
+  const dx = b.x - a.x, dy = b.y - a.y;
+  const d = Math.hypot(dx, dy), min = a.r + b.r;
+  if (d >= min || d === 0) return;
+  const nx = dx / d, ny = dy / d, pen = min - d;
+  const ia = a.locked ? 0 : 1 / a.mass, ib = b.locked ? 0 : 1 / b.mass;
+  const tot = ia + ib;
+  if (tot === 0) return;
+
+  a.x -= nx * pen * (ia / tot); a.y -= ny * pen * (ia / tot);
+  b.x += nx * pen * (ib / tot); b.y += ny * pen * (ib / tot);
+
+  const vn = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
+  if (vn > 0) return;
+  const j = -(1 + 0.22) * vn / tot;
+  a.vx -= j * nx * ia; a.vy -= j * ny * ia;
+  b.vx += j * nx * ib; b.vy += j * ny * ib;
+}
+
+/* ───────────────────────── 3. NÍVEL ────────────────────────────── */
+/* Paredes sólidas nas 4 bordas. Espinhos cobrem trechos dessas
+   bordas (com vãos seguros entre eles) e plataformas flutuam dentro
+   da arena como pontos de apoio. */
+const walls = [
+  { x: 0,        y: 0,          w: W,      h: WALL },   // topo
+  { x: 0,        y: H - WALL,   w: W,      h: WALL },   // base
+  { x: 0,        y: 0,          w: WALL,   h: H },      // esquerda
+  { x: W - WALL, y: 0,          w: WALL,   h: H }       // direita
+];
+
+/** cria os trechos de espinho de cada borda (orient = para onde apontam as pontas) */
+function buildSpikes() {
+  const s = [];
+  const add = (x, y, w, h, orient) => s.push({ x, y, w, h, orient });
+  for (const [a, b] of [[60,200],[300,440],[540,680],[780,900]])
+    add(a, WALL, b - a, SPIKE_D, "down");
+  for (const [a, b] of [[120,260],[380,500],[620,760],[840,930]])
+    add(a, H - WALL - SPIKE_D, b - a, SPIKE_D, "up");
+  for (const [a, b] of [[50,150],[250,340],[450,545]])
+    add(WALL, a, SPIKE_D, b - a, "right");
+  for (const [a, b] of [[50,150],[250,340],[450,545]])
+    add(W - WALL - SPIKE_D, a, SPIKE_D, b - a, "left");
+  return s;
+}
+const spikes = buildSpikes();
+
+const platforms = [
+  { x: 120, y: 150, w: 150, h: 16 },
+  { x: 690, y: 150, w: 150, h: 16 },
+  { x: 405, y: 105, w: 150, h: 16 },
+  { x: 150, y: 300, w: 110, h: 16 },
+  { x: 700, y: 300, w: 110, h: 16 },
+  { x: 410, y: 250, w: 140, h: 16 },
+  { x: 150, y: 450, w: 150, h: 16 },
+  { x: 660, y: 450, w: 150, h: 16 },
+  { x: 410, y: 395, w: 140, h: 16 }
+];
+const solids = walls.concat(platforms);   // tudo que é sólido (menos espinhos)
+
+/** pontos de nascimento (longe dos espinhos) */
+const SPAWNS = [
+  { x: 195, y: 128 }, { x: 765, y: 128 }, { x: 480, y: 82 },
+  { x: 205, y: 278 }, { x: 755, y: 278 }, { x: 480, y: 228 },
+  { x: 225, y: 428 }, { x: 735, y: 428 }, { x: 480, y: 372 }
+];
+
+/* ───────────────────────── 4. CORPOS ───────────────────────────── */
+let player = null;      // corpo do jogador (null no modo atrativo)
+let bodies = [];        // todos os corpos da arena
+let botSeq = 0;
+
+function makeBody(o) {
+  return Object.assign({
+    x: 0, y: 0, vx: 0, vy: 0, r: 13, mass: 1, cor: "#fff", nome: "?",
+    isPlayer: false, alive: true, hp: HP_MAX,
+    locked: false, grabT: 0, grounded: false, contact: null,
+    hopCd: 0, airCd: 0, glide: 0, glideAlvo: 0, probeT: 0, plan: null, sidePref: Math.random() < 0.5 ? 1 : -1,
+    skill: 0.5, flash: 0, dashCd: 0, zoneT: 0, respawn: 0, trail: []
+  }, o);
+}
+
+function makePlayer() {
+  return makeBody({
+    x: 480, y: 300, r: 15, mass: 1.7, cor: COR_PLAYER, nome: "VOCÊ", isPlayer: true
+  });
+}
+
+function makeBot(i) {
+  const sp = SPAWNS[i % SPAWNS.length];
+  botSeq++;
+  return makeBody({
+    x: sp.x + rand(-12, 12), y: sp.y, r: 13, mass: 1,
+    cor: CORES_BOT[(botSeq - 1) % CORES_BOT.length],
+    nome: "BOT-" + String(botSeq).padStart(2, "0"),
+    // habilidade variada: bots burros morrem primeiro, espertos dão trabalho
+    skill: clamp(0.24 + i * 0.11 + rand(-0.06, 0.06), 0.15, 0.95)
+  });
+}
+
+/* ───────────────────────── ESTADO GLOBAL ───────────────────────── */
+let state = "menu";          // menu | playing | paused | over
+let attract = true;          // modo atrativo atrás do menu
+let gravIndex = 0;           // índice em DIRS
+let gravCd = 0;
+let stam = STAM_MAX, stamT = 0;
+let zone = { x: 0, y: 0, w: 0, h: 0, phase: 0, t: 0 };
+let particles = [];
+let shake = 0, flashScreen = 0;
+let matchTime = 0, intro = 0;
+let elimByZone = 0, elimTotal = 0;
+let autoFlip = 0;            // timer do modo atrativo
+const keys = Object.create(null);
+
+/* ───────────────────────── 5. FÍSICA ───────────────────────────── */
+/** sonda o que está no caminho a partir de (x,y) na direção dir */
+function probe(x, y, dir, rad) {
+  const maxD = 1000, passo = 6;
+  const px = -dir.y, py = dir.x;                    // perpendicular
+  for (let d = rad * 0.6; d < maxD; d += passo) {
+    const cx = x + dir.x * d, cy = y + dir.y * d;
+    for (const s of spikes) {                        // testa também as laterais do corpo
+      if (inRect(cx, cy, s, rad * 0.45) ||
+          inRect(cx + px * rad * 0.75, cy + py * rad * 0.75, s, rad * 0.2) ||
+          inRect(cx - px * rad * 0.75, cy - py * rad * 0.75, s, rad * 0.2))
+        return { tipo: "spike", d };
+    }
+    for (const r of solids) {
+      if (inRect(cx, cy, r, rad * 0.6)) return { tipo: "solid", d };
+    }
+  }
+  return { tipo: "nada", d: maxD };
+}
+
+const g = () => DIRS[gravIndex];
+
+/** aplica movimento + colisões de um corpo */
+function stepBody(b, dt) {
+  if (!b.alive) return;
+
+  if (b.locked) {                                    // agarrado: posição travada
+    b.vx = b.vy = 0;
+    b.grabT -= dt;
+    if (b.grabT <= 0) { b.locked = false; }
+    return;
+  }
+
+  b.vx += g().x * GRAV_A * dt;
+  b.vy += g().y * GRAV_A * dt;
+  if (b.think) b.think(b, dt);                        // IA (só bots)
+
+  const sp = Math.hypot(b.vx, b.vy);
+  if (sp > MAX_SPD) { b.vx = b.vx / sp * MAX_SPD; b.vy = b.vy / sp * MAX_SPD; }
+  b.vx *= AIR_DRAG; b.vy *= AIR_DRAG;
+
+  b.x += b.vx * dt; b.y += b.vy * dt;
+
+  b.contact = null; b.grounded = false;
+  for (let k = 0; k < 2; k++) {
+    for (const r of solids) {
+      const c = collideRect(b, r);
+      if (c) {
+        b.contact = c;
+        // a normal do contato aponta para FORA da superfície: se ela se opõe à
+        // gravidade (produto escalar negativo), o corpo está apoiado nela
+        if (c.nx * g().x + c.ny * g().y < -0.5) b.grounded = true;
+      }
+    }
+  }
+  b.x = clamp(b.x, WALL + b.r * 0.2, W - WALL - b.r * 0.2);
+  b.y = clamp(b.y, WALL + b.r * 0.2, H - WALL - b.r * 0.2);
+
+  if (b.dashCd > 0) b.dashCd -= dt;
+  if (b.hopCd > 0) b.hopCd -= dt;
+  if (b.airCd > 0) b.airCd -= dt;
+  if (b.glide > 0 && b.locked) b.glide = 0;
+  if (b.flash > 0) b.flash -= dt;
+
+  b.trail.unshift({ x: b.x, y: b.y });
+  if (b.trail.length > 7) b.trail.pop();
+}
+
+/** espinhos matam na hora */
+function checkSpikes(b) {
+  if (!b.alive || b.locked) return;
+  for (const s of spikes) {
+    if (circleRectDist(b.x, b.y, s, 0) < b.r * 0.5) { kill(b, "espinhos"); return; }
+  }
+}
+
+/** dano por ficar fora da zona segura */
+function checkZone(b, dt) {
+  if (!b.alive) return;
+  const dentro = b.x > zone.x && b.x < zone.x + zone.w && b.y > zone.y && b.y < zone.y + zone.h;
+  if (dentro) { b.zoneT = 0; return; }
+  if (zone.grace > 0) { b.zoneT = 0; return; }          // trégua logo após encolher
+  b.zoneT += dt;
+  if (b.zoneT >= ZONE_DMG_T) {
+    b.zoneT = 0;
+    damage(b, ZONE_DMG, "zona");
+  }
+}
+
+function damage(b, amount, cause) {
+  if (!b.alive) return;
+  b.hp -= amount;
+  b.flash = 0.3;
+  burst(b.x, b.y, 8, "#ff2d55", 120);
+  if (b.isPlayer) { shake = Math.max(shake, 6); tone(180, 0.12, "sawtooth", 0.05, -80); }
+  if (b.hp <= 0) kill(b, cause);
+}
+
+function kill(b, cause) {
+  if (!b.alive) return;
+  b.alive = false; b.hp = 0; b.locked = false;
+  burst(b.x, b.y, b.isPlayer ? 46 : 34, b.cor, b.isPlayer ? 320 : 260);
+  ring(b.x, b.y, b.cor);
+  shake = Math.max(shake, b.isPlayer ? 16 : 9);
+  flashScreen = Math.max(flashScreen, b.isPlayer ? 0.5 : 0.22);
+  elimTotal++;
+  if (cause === "zona") elimByZone++;
+
+  if (attract) { b.respawn = 1.1; return; }           // no modo atrativo o bot volta
+
+  const motivo = cause === "zona" ? "consumido pela zona" : "dilacerado nos espinhos";
+  feed(b.isPlayer ? "<b>VOCÊ</b> " + motivo : "<b>" + b.nome + "</b> " + motivo);
+  noise(b.isPlayer ? 0.5 : 0.26, b.isPlayer ? 0.10 : 0.06);
+  tone(b.isPlayer ? 120 : 320, 0.25, "square", 0.05, -90);
+
+  const vivos = bodies.filter(x => x.alive).length;
+  if (!player || !player.alive) {
+    if (b.isPlayer) endMatch(false, vivos + 1);
+  } else if (vivos === 1 && player.alive) {
+    endMatch(true, 1);
+  }
+}
+
+/* ───────────────────────── 6. IA DOS BOTS ──────────────────────── */
+/* Ideia: o bot sonda o que existe na direção da gravidade. Se a
+   aterrissagem seria nos espinhos, ele pula na hora certa e se
+   arrasta na superfície em direção ao vão mais seguro. A "skill"
+   controla reação, força do pulo e teimosia. */
+const CRAWL = 300, HOP = 520, SEEK = 340;
+const GLIDE_T = 1.0, GLIDE_ACC = 2700, GLIDE_BRAKE = 2700;   // voo de emergência
+
+/** varre deslocamentos perpendiculares à gravidade e devolve o primeiro que
+ *  NÃO termina em espinho — é para lá que o bot tenta fugir */
+function safeOffset(b, d, px, py) {
+  for (const passo of [45, 90, 140, 195, 255]) {
+    for (const sgn of [1, -1]) {
+      const x = b.x + px * passo * sgn, y = b.y + py * passo * sgn;
+      if (x < WALL + b.r + 6 || x > W - WALL - b.r - 6) continue;
+      if (y < WALL + b.r + 6 || y > H - WALL - b.r - 6) continue;
+      if (probe(x, y, d, b.r).tipo !== "spike") return passo * sgn;
+    }
+  }
+  return 0;
+}
+
+function planBot(b) {
+  const d = g(), px = -d.y, py = d.x;
+  const direto = probe(b.x, b.y, d, b.r);
+  const perigo = direto.tipo === "spike";
+  const la = probe(b.x + px * 72, b.y + py * 72, d, b.r);
+  const lb = probe(b.x - px * 72, b.y - py * 72, d, b.r);
+  const okA = la.tipo !== "spike", okB = lb.tipo !== "spike";
+
+  let side = b.sidePref;
+  if (okA && !okB) side = 1;
+  else if (okB && !okA) side = -1;
+  else b.sidePref = side;
+
+  // para onde fugir: vão seguro mais próximo na direção perpendicular à queda
+  let refugio = 0;
+  if (perigo) {
+    refugio = safeOffset(b, d, px, py);
+    if (refugio !== 0) { side = refugio > 0 ? 1 : -1; b.sidePref = side; }
+  }
+
+  // está fora da zona segura? então o destino é o centro dela
+  let alvo = null;
+  const dentro = b.x > zone.x && b.x < zone.x + zone.w && b.y > zone.y && b.y < zone.y + zone.h;
+  if (!dentro) alvo = { x: zone.x + zone.w / 2, y: zone.y + zone.h / 2 };
+
+  // só sai do lugar quando precisa (queda fatal ou zona); senão fica quieto na plataforma
+  let mover = perigo || alvo !== null;
+  if (alvo && !perigo) {
+    const proj = (alvo.x - b.x) * px + (alvo.y - b.y) * py;   // projeção no eixo da superfície
+    side = proj >= 0 ? 1 : -1;
+  }
+  if (mover && !perigo) {                                      // não andar pela beirada para a morte
+    const beira = probe(b.x + px * side * (b.r + 18), b.y + py * side * (b.r + 18), d, b.r);
+    if (beira.tipo === "spike") mover = false;
+  }
+  return { perigo, dist: direto.d, side, refugio, alvo, mover };
+}
+
+function botThink(b, dt) {
+  b.probeT -= dt;
+  if (b.probeT <= 0) {
+    b.probeT = 0.10 + (1 - b.skill) * 0.22 + rand(0, 0.05);
+    b.plan = planBot(b);
+  }
+  const p = b.plan;
+  if (!p) return;
+  const d = g(), px = -d.y, py = d.x;
+
+  // 1) arrastar-se pela superfície em direção ao lado seguro (só quando precisa)
+  if (b.grounded && !b.locked && p.mover) {
+    b.vx += px * p.side * CRAWL * dt;
+    b.vy += py * p.side * CRAWL * dt;
+  }
+
+  // 2) no chão e com queda fatal pela frente: salta mirando o vão seguro
+  if (p.perigo && b.grounded && b.hopCd <= 0 && Math.random() < 0.35 + b.skill * 0.6) {
+    b.vx += -d.x * HOP + px * p.side * HOP * 0.55;
+    b.vy += -d.y * HOP + py * p.side * HOP * 0.55;
+    b.hopCd = 0.85 + (1 - b.skill) * 1.5;
+    b.grounded = false;
+    burst(b.x, b.y, 5, b.cor, 90);
+  }
+
+  // 3) pego no ar com o impacto chegando perto: liga o voo de emergência.
+  //    Enquanto durar o combustível ele freia a queda e desliza até o vão mais
+  //    próximo. É o que impede uma virada única de limpar a arena — para
+  //    eliminar é preciso emendar viradas (cooldown 0,5s) ou empurrar no dash.
+  if (p.perigo && !b.grounded && p.dist < 260 && b.glide <= 0 && b.airCd <= 0 &&
+      Math.random() < 0.4 + b.skill * 0.6) {
+    b.glide = GLIDE_T;
+    b.glideAlvo = b.x * px + b.y * py + p.refugio;   // coordenada no eixo perpendicular
+    b.airCd = 0.9 + (1 - b.skill) * 1.4;
+    burst(b.x, b.y, 8, b.cor, 150);
+    ring(b.x, b.y, b.cor);
+  }
+  if (b.glide > 0) {
+    b.glide -= dt;
+    const err = b.glideAlvo - (b.x * px + b.y * py);
+    const e = clamp(err / 45, -1, 1);
+    b.vx += px * e * GLIDE_ACC * dt;                 // desliza para o refúgio
+    b.vy += py * e * GLIDE_ACC * dt;
+    const vg = b.vx * d.x + b.vy * d.y;              // freia a queda
+    if (vg > 0) {
+      const corte = Math.min(vg, GLIDE_BRAKE * dt);
+      b.vx -= d.x * corte; b.vy -= d.y * corte;
+    }
+    if (b.grounded) b.glide = 0;
+  }
+
+  // 4) correr para a zona segura
+  if (p.alvo) {
+    const dx = p.alvo.x - b.x, dy = p.alvo.y - b.y, l = Math.hypot(dx, dy) || 1;
+    b.vx += (dx / l) * SEEK * dt;
+    b.vy += (dy / l) * SEEK * dt;
+  }
+}
+
+/* ───────────────────────── 7. ZONA SEGURA ──────────────────────── */
+function resetZone() {
+  zone.x = WALL + SPIKE_D; zone.y = WALL + SPIKE_D;
+  zone.w = W - 2 * (WALL + SPIKE_D); zone.h = H - 2 * (WALL + SPIKE_D);
+  zone.phase = 1; zone.t = 0; zone.grace = 0;
+}
+
+function shrinkZone() {
+  // depois da fase 8 entra a MORTE SÚBITA: a zona colapsa de vez, garantindo
+  // que nenhuma partida se arraste para sempre
+  const subito = zone.phase >= 8;
+  const fator = subito ? 0.55 : ZONE_FACTOR;
+  const nw = Math.max(subito ? 8 : ZONE_MIN_W, zone.w * fator);
+  const nh = Math.max(subito ? 8 : ZONE_MIN_H, zone.h * fator);
+  const folgaX = zone.w - nw, folgaY = zone.h - nh;
+  // a zona não só encolhe: ela também MIGRA para longe do centro anterior,
+  // obrigando todo mundo a se deslocar (nada de acampar no meio da arena)
+  let ox = 0, oy = 0;
+  const alvoMin = Math.max(folgaX, folgaY) * 0.45;
+  for (let i = 0; i < 30; i++) {
+    const tx = Math.random() * folgaX, ty = Math.random() * folgaY;
+    ox = tx; oy = ty;
+    if (Math.hypot(tx - folgaX / 2, ty - folgaY / 2) >= alvoMin) break;
+  }
+  zone.x += ox; zone.y += oy; zone.w = nw; zone.h = nh;
+  zone.phase++;
+  zone.t = 0;
+  zone.grace = ZONE_GRACE;
+  shake = Math.max(shake, 10);
+  flashScreen = Math.max(flashScreen, 0.3);
+  feed(subito ? "☠ MORTE SÚBITA — a zona colapsou (fase " + zone.phase + ")"
+              : "⚠ A ZONA ENCOLHEU E MIGROU — fase " + zone.phase);
+  tone(660, 0.16, "square", 0.05, 180);
+  setTimeout(() => tone(880, 0.2, "square", 0.05, 120), 140);
+}
+
+/* ───────────────────────── 8. EFEITOS ──────────────────────────── */
+function burst(x, y, n, cor, spd) {
+  for (let i = 0; i < n && particles.length < MAX_PART; i++) {
+    const a = Math.random() * Math.PI * 2, s = rand(spd * 0.25, spd);
+    particles.push({
+      x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s,
+      vida: rand(0.35, 0.95), t: 0, cor, tam: rand(1.6, 4.2), tipo: "p"
+    });
+  }
+}
+function ring(x, y, cor) {
+  if (particles.length >= MAX_PART) return;
+  particles.push({ x, y, vx: 0, vy: 0, vida: 0.5, t: 0, cor, tam: 6, tipo: "r" });
+}
+function stepParticles(dt) {
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.t += dt;
+    if (p.t >= p.vida) { particles.splice(i, 1); continue; }
+    if (p.tipo === "p") {
+      p.x += p.vx * dt; p.y += p.vy * dt;
+      p.vx *= 0.96; p.vy *= 0.96;
+      p.vx += g().x * 260 * dt; p.vy += g().y * 260 * dt;   // partículas também sentem a gravidade
+    }
+  }
+}
+
+/* ───────────────── ÁUDIO (WebAudio, sem arquivos) ──────────────── */
+let actx = null, muted = false;
+function audio() {
+  if (!actx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    actx = new AC();
+  }
+  if (actx.state === "suspended") actx.resume();
+  return actx;
+}
+function tone(freq, dur, type, gain, slide) {
+  if (muted) return;
+  const a = audio(); if (!a) return;
+  try {
+    const o = a.createOscillator(), gn = a.createGain();
+    o.type = type || "square";
+    o.frequency.setValueAtTime(freq, a.currentTime);
+    if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(40, freq + slide), a.currentTime + dur);
+    gn.gain.setValueAtTime(gain || 0.05, a.currentTime);
+    gn.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + dur);
+    o.connect(gn); gn.connect(a.destination);
+    o.start(); o.stop(a.currentTime + dur);
+  } catch (e) { /* áudio é opcional */ }
+}
+function noise(dur, gain) {
+  if (muted) return;
+  const a = audio(); if (!a) return;
+  try {
+    const n = Math.floor(a.sampleRate * dur);
+    const buf = a.createBuffer(1, n, a.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+    const src = a.createBufferSource(); src.buffer = buf;
+    const gn = a.createGain(); gn.gain.value = gain || 0.06;
+    src.connect(gn); gn.connect(a.destination); src.start();
+  } catch (e) { /* idem */ }
+}
+
+/* ───────────────────────── 9. ENTRADA ──────────────────────────── */
+const $ = (id) => document.getElementById(id);
+const canvas = $("game"), ctx = canvas.getContext("2d");
+const stage = $("stage"), hudEl = $("hud"), touchEl = $("touch");
+const menuEl = $("menu"), pauseEl = $("pause"), overEl = $("over");
+const feedEl = $("feed"), toastEl = $("toast");
+
+/** muda a direção da gravidade (com cooldown) */
+function setGravity(idx, silent) {
+  if (state !== "playing" || idx === gravIndex) return;
+  if (gravCd > 0) {
+    if (!silent) { toast("GRAVIDADE EM RECARGA"); tone(140, 0.07, "square", 0.03); }
+    return;
+  }
+  gravIndex = idx;
+  gravCd = GRAV_CD;
+  shake = Math.max(shake, 4);
+  burst(player && player.alive ? player.x : W / 2, player && player.alive ? player.y : H / 2, 12, COR_PLAYER, 180);
+  tone([300, 380, 260, 340][idx], 0.09, "triangle", 0.05, 120);
+}
+
+/** agarrar a superfície por GRAB_TIME (gasta 1 barra de stamina) */
+function tryGrab() {
+  if (state !== "playing" || !player || !player.alive) return;
+  if (player.locked) { player.locked = false; player.grabT = 0; toast("SOLTOU"); return; }   // soltar antes
+  if (stam < 1) { toast("SEM STAMINA"); tone(150, 0.08, "square", 0.03); return; }
+  if (!player.grounded) { toast("PRECISA DE UMA SUPERFÍCIE"); tone(160, 0.08, "square", 0.03); return; }
+  stam -= 1;
+  player.locked = true;
+  player.grabT = GRAB_TIME;
+  player.vx = player.vy = 0;
+  ring(player.x, player.y, "#39ff88");
+  burst(player.x, player.y, 10, "#39ff88", 130);
+  tone(520, 0.12, "sine", 0.05, -160);
+}
+
+/** dash na direção da gravidade */
+function tryDash() {
+  if (state !== "playing" || !player || !player.alive) return;
+  if (player.dashCd > 0) { toast("DASH EM RECARGA"); return; }
+  if (player.locked) { player.locked = false; player.grabT = 0; }
+  const d = g();
+  player.vx += d.x * DASH_IMP;
+  player.vy += d.y * DASH_IMP;
+  player.dashCd = DASH_CD;
+  burst(player.x, player.y, 14, COR_PLAYER, 240);
+  ring(player.x, player.y, COR_PLAYER);
+  shake = Math.max(shake, 3);
+  tone(700, 0.13, "sawtooth", 0.045, -420);
+}
+
+const GRAV_KEYS = {
+  w: 1, arrowup: 1, s: 0, arrowdown: 0, a: 2, arrowleft: 2, d: 3, arrowright: 3
+};
+
+window.addEventListener("keydown", (e) => {
+  const k = e.key.toLowerCase();
+  if (k in GRAV_KEYS || k === " " || k === "spacebar" || k === "shift") e.preventDefault();
+  if (keys[k]) return;                                  // ignora auto-repeat
+  keys[k] = true;
+
+  if (k === "m") { toggleMute(); return; }
+  if (k === "p" || k === "escape") { togglePause(); return; }
+  if (k === "r" && (state === "over" || state === "paused")) { startMatch(); return; }
+
+  if (state === "menu" && (k === "enter" || k === " ")) { startMatch(); return; }
+  if (state === "over" && (k === "enter" || k === " ")) { startMatch(); return; }
+
+  if (k in GRAV_KEYS) setGravity(GRAV_KEYS[k]);
+  else if (k === " " || k === "spacebar") tryGrab();
+  else if (k === "shift") tryDash();
+});
+window.addEventListener("keyup", (e) => { keys[e.key.toLowerCase()] = false; });
+window.addEventListener("blur", () => { for (const k in keys) keys[k] = false; if (state === "playing") togglePause(true); });
+
+/* controles de toque */
+function bindTouch(btn, fn) {
+  const on = (e) => { e.preventDefault(); btn.classList.add("hit"); audio(); fn(); };
+  const off = () => btn.classList.remove("hit");
+  btn.addEventListener("pointerdown", on);
+  btn.addEventListener("pointerup", off);
+  btn.addEventListener("pointercancel", off);
+  btn.addEventListener("pointerleave", off);
+}
+document.querySelectorAll("#touch .dpad .tb").forEach((b) => {
+  bindTouch(b, () => setGravity(parseInt(b.dataset.dir, 10)));
+});
+bindTouch($("btnGrab"), tryGrab);
+bindTouch($("btnDash"), tryDash);
+
+$("btnPlay").addEventListener("click", startMatch);
+$("btnAgain").addEventListener("click", startMatch);
+$("btnResume").addEventListener("click", () => togglePause());
+$("btnQuit").addEventListener("click", () => { state = "menu"; attract = true; showMenu(); });
+$("btnPause").addEventListener("click", () => togglePause());
+$("btnMute").addEventListener("click", toggleMute);
+
+function toggleMute() {
+  muted = !muted;
+  $("btnMute").textContent = muted ? "🔇" : "🔊";
+  if (!muted) tone(520, 0.08, "sine", 0.04);
+}
+function togglePause(force) {
+  if (state === "playing" && (force === true || force === undefined)) {
+    state = "paused"; pauseEl.classList.remove("hidden");
+  } else if (state === "paused") {
+    state = "playing"; pauseEl.classList.add("hidden");
+  }
+}
+
+/* ───────────────────────── 10. HUD / TELAS ─────────────────────── */
+function showMenu() {
+  menuEl.classList.remove("hidden");
+  overEl.classList.add("hidden");
+  pauseEl.classList.add("hidden");
+}
+function feed(html) {
+  const d = document.createElement("div");
+  d.className = "fitem";
+  d.innerHTML = html;
+  feedEl.appendChild(d);
+  while (feedEl.children.length > 5) feedEl.removeChild(feedEl.firstChild);
+  setTimeout(() => d.remove(), 3600);
+}
+let toastT = 0;
+function toast(txt) {
+  toastEl.textContent = txt;
+  toastEl.classList.add("on");
+  toastT = 1.1;
+}
+function fmtTime(s) {
+  const m = Math.floor(s / 60), r = Math.floor(s % 60);
+  return m + ":" + String(r).padStart(2, "0");
+}
+
+/* monta os pips de stamina/integridade uma única vez */
+const stamPips = [], hpPips = [];
+for (let i = 0; i < STAM_MAX; i++) { const e = document.createElement("i"); $("hStam").appendChild(e); stamPips.push(e); }
+for (let i = 0; i < HP_MAX; i++)   { const e = document.createElement("i"); $("hHp").appendChild(e);   hpPips.push(e); }
+
+let lastHud = "";
+function updateHud() {
+  const vivos = bodies.filter(b => b.alive).length;
+  const d = DIRS[gravIndex];
+  const sig = [
+    stam + "|" + Math.floor(stamT * 4), vivos, gravIndex, Math.ceil(gravCd * 10),
+    player ? player.hp : 0, Math.ceil(zone.t), zone.phase,
+    Math.ceil((player ? player.dashCd : 0) * 10), state
+  ].join(",");
+  if (sig === lastHud) return;                            // evita mexer no DOM toda frame
+  lastHud = sig;
+
+  $("hAlive").textContent = vivos;
+  $("hGrav").textContent = d.icone + " " + d.nome;
+  $("hGrav").style.color = gravCd > 0 ? "#ffb020" : "var(--neon)";
+  $("hGravBar").style.width = (100 - (gravCd / GRAV_CD) * 100) + "%";
+  $("hDashBar").style.width = (player ? 100 - (player.dashCd / DASH_CD) * 100 : 100) + "%";
+  for (let i = 0; i < STAM_MAX; i++) {
+    stamPips[i].className = i < stam ? "on" : (i === Math.floor(stam) && stamT > 0 ? "chg" : "");
+  }
+  for (let i = 0; i < HP_MAX; i++) hpPips[i].className = player && i < player.hp ? "hp" : "";
+  const falta = Math.max(0, ZONE_PERIOD - zone.t);
+  $("hZone").textContent = falta <= ZONE_WARN ? "⚠ " + Math.ceil(falta) + "s" : Math.ceil(falta) + "s";
+  $("hZone").style.color = falta <= ZONE_WARN ? "var(--danger)" : "var(--neon)";
+}
+
+function endMatch(won, place) {
+  if (state === "over") return;
+  state = "over";
+  const t = $("overTitle");
+  t.textContent = won ? "VOCÊ VENCEU" : "VOCÊ PERDEU";
+  t.className = "title " + (won ? "win" : "lose");
+  $("overSub").textContent = won
+    ? "Último sobrevivente da arena. A gravidade obedece você."
+    : "A arena venceu desta vez — " + (place - 1) + " lutador(es) seguiram vivos.";
+  $("stPlace").textContent = place + "º";
+  $("stTime").textContent = fmtTime(matchTime);
+  $("stKills").textContent = elimTotal - (player && player.alive ? 0 : 1);
+  $("stZone").textContent = zone.phase;
+  overEl.classList.remove("hidden");
+  if (won) { [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => tone(f, 0.22, "triangle", 0.06), i * 130)); }
+  else { [400, 300, 220, 150].forEach((f, i) => setTimeout(() => tone(f, 0.26, "sawtooth", 0.05), i * 150)); }
+}
+
+/* ──────────────────── partida / modo atrativo ──────────────────── */
+function startMatch() {
+  audio();
+  attract = false;
+  botSeq = 0;
+  player = makePlayer();
+  bodies = [player];
+  for (let i = 0; i < BOT_COUNT; i++) {
+    const b = makeBot(i);
+    b.think = botThink;
+    bodies.push(b);
+  }
+  gravIndex = 0; gravCd = 0;
+  stam = STAM_MAX; stamT = 0;
+  particles = [];
+  shake = 0; flashScreen = 0;
+  matchTime = 0; intro = 2.6; elimTotal = 0; elimByZone = 0;
+  resetZone();
+  feedEl.innerHTML = "";
+  menuEl.classList.add("hidden");
+  overEl.classList.add("hidden");
+  pauseEl.classList.add("hidden");
+  state = "playing";
+  tone(440, 0.1, "triangle", 0.05);
+  setTimeout(() => tone(660, 0.16, "triangle", 0.05), 130);
+}
+
+function startAttract() {
+  attract = true;
+  player = null;
+  botSeq = 0;
+  bodies = [];
+  for (let i = 0; i < 8; i++) { const b = makeBot(i); b.think = botThink; bodies.push(b); }
+  resetZone();
+  gravIndex = 0; gravCd = 0; autoFlip = 2.4;
+  particles = [];
+}
+
+/* ─────────────────────── 11. RENDERIZAÇÃO ──────────────────────── */
+let bgT = 0;
+
+function drawBackground() {
+  ctx.fillStyle = "#04050b";
+  ctx.fillRect(0, 0, W, H);
+
+  // grade
+  ctx.strokeStyle = "rgba(0,229,255,.055)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let x = 40; x < W; x += 40) { ctx.moveTo(x, 0); ctx.lineTo(x, H); }
+  for (let y = 40; y < H; y += 40) { ctx.moveTo(0, y); ctx.lineTo(W, y); }
+  ctx.stroke();
+
+  // filetes que escorrem na direção da gravidade
+  const d = g();
+  ctx.strokeStyle = "rgba(0,229,255,.10)";
+  ctx.lineWidth = 2;
+  const off = (bgT * 420) % 90;
+  ctx.beginPath();
+  for (let i = -1; i < 14; i++) {
+    if (d.x !== 0) {
+      const y = ((i * 90 + off) % (H + 90));
+      ctx.moveTo(0, y); ctx.lineTo(W, y);
+    } else {
+      const x = ((i * 90 + off) % (W + 90));
+      ctx.moveTo(x, 0); ctx.lineTo(x, H);
+    }
+  }
+  ctx.stroke();
+}
+
+function drawWalls() {
+  const d = g();
+  ctx.save();
+  for (const w of walls) {
+    const ehChao = (w.y === H - WALL && d.y === 1) || (w.y === 0 && d.y === -1) ||
+                   (w.x === 0 && d.x === -1) || (w.x === W - WALL && d.x === 1);
+    ctx.fillStyle = ehChao ? "rgba(0,229,255,.20)" : "rgba(90,120,160,.16)";
+    ctx.fillRect(w.x, w.y, w.w, w.h);
+    ctx.strokeStyle = ehChao ? "rgba(0,229,255,.85)" : "rgba(120,150,190,.35)";
+    ctx.lineWidth = ehChao ? 2 : 1;
+    ctx.shadowColor = ehChao ? "#00e5ff" : "transparent";
+    ctx.shadowBlur = ehChao ? 14 : 0;
+    ctx.strokeRect(w.x + 0.5, w.y + 0.5, w.w - 1, w.h - 1);
+  }
+  ctx.restore();
+}
+
+function drawSpikes() {
+  ctx.save();
+  ctx.shadowColor = "#ff2d55";
+  ctx.shadowBlur = 12;
+  ctx.fillStyle = "#ff2d55";
+  for (const s of spikes) {
+    const horiz = s.orient === "up" || s.orient === "down";
+    const n = Math.max(1, Math.floor((horiz ? s.w : s.h) / 17));
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      if (horiz) {
+        const tw = s.w / n, x0 = s.x + i * tw;
+        const base = s.orient === "down" ? s.y : s.y + s.h;
+        const tip  = s.orient === "down" ? s.y + s.h : s.y;
+        ctx.moveTo(x0, base); ctx.lineTo(x0 + tw, base); ctx.lineTo(x0 + tw / 2, tip);
+      } else {
+        const th = s.h / n, y0 = s.y + i * th;
+        const base = s.orient === "right" ? s.x : s.x + s.w;
+        const tip  = s.orient === "right" ? s.x + s.w : s.x;
+        ctx.moveTo(base, y0); ctx.lineTo(base, y0 + th); ctx.lineTo(tip, y0 + th / 2);
+      }
+      ctx.closePath();
+    }
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawPlatforms() {
+  ctx.save();
+  for (const p of platforms) {
+    ctx.fillStyle = "rgba(168,85,255,.20)";
+    ctx.strokeStyle = "#a855ff";
+    ctx.lineWidth = 2;
+    ctx.shadowColor = "#a855ff";
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    const r = 5;
+    ctx.moveTo(p.x + r, p.y);
+    ctx.lineTo(p.x + p.w - r, p.y); ctx.quadraticCurveTo(p.x + p.w, p.y, p.x + p.w, p.y + r);
+    ctx.lineTo(p.x + p.w, p.y + p.h - r); ctx.quadraticCurveTo(p.x + p.w, p.y + p.h, p.x + p.w - r, p.y + p.h);
+    ctx.lineTo(p.x + r, p.y + p.h); ctx.quadraticCurveTo(p.x, p.y + p.h, p.x, p.y + p.h - r);
+    ctx.lineTo(p.x, p.y + r); ctx.quadraticCurveTo(p.x, p.y, p.x + r, p.y);
+    ctx.closePath();
+    ctx.fill(); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawZone() {
+  // fora da zona = área vermelha
+  ctx.save();
+  ctx.fillStyle = "rgba(255,45,85,.13)";
+  ctx.beginPath();
+  ctx.rect(0, 0, W, H);
+  ctx.rect(zone.x, zone.y, zone.w, zone.h);
+  ctx.fill("evenodd");
+
+  const falta = ZONE_PERIOD - zone.t;
+  const pulso = 0.5 + 0.5 * Math.sin(bgT * (falta <= ZONE_WARN ? 14 : 3));
+  ctx.setLineDash([12, 9]);
+  ctx.lineDashOffset = -bgT * 30;
+  ctx.strokeStyle = falta <= ZONE_WARN
+    ? "rgba(255,45,85," + (0.55 + pulso * 0.45) + ")"
+    : "rgba(57,255,136,.55)";
+  ctx.lineWidth = 2;
+  ctx.shadowColor = falta <= ZONE_WARN ? "#ff2d55" : "#39ff88";
+  ctx.shadowBlur = 10 + pulso * 10;
+  ctx.strokeRect(zone.x, zone.y, zone.w, zone.h);
+  ctx.restore();
+}
+
+function drawBody(b) {
+  const d = g();
+
+  // rastro
+  if (b.trail.length > 1) {
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    for (let i = 1; i < b.trail.length; i++) {
+      const t = b.trail[i], a = (1 - i / b.trail.length) * 0.22;
+      ctx.fillStyle = b.cor;
+      ctx.globalAlpha = a;
+      ctx.beginPath();
+      ctx.arc(t.x, t.y, b.r * (1 - i / b.trail.length * 0.6), 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  ctx.save();
+  // âncora do agarrão
+  if (b.locked) {
+    ctx.strokeStyle = "#39ff88";
+    ctx.lineWidth = 2;
+    ctx.shadowColor = "#39ff88";
+    ctx.shadowBlur = 14;
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, b.r + 6 + Math.sin(bgT * 12) * 1.6, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  ctx.shadowColor = b.cor;
+  ctx.shadowBlur = b.isPlayer ? 22 : 14;
+  ctx.fillStyle = b.flash > 0 ? "#ffffff" : b.cor;
+  ctx.beginPath();
+  ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+  ctx.fill();
+
+  // miolo
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = "rgba(4,6,14,.75)";
+  ctx.beginPath();
+  ctx.arc(b.x, b.y, b.r * 0.56, 0, Math.PI * 2);
+  ctx.fill();
+
+  // olhos olhando "para baixo" (na direção da gravidade)
+  ctx.fillStyle = b.cor;
+  const ex = d.x * b.r * 0.28, ey = d.y * b.r * 0.28;
+  const px = -d.y * b.r * 0.32, py = d.x * b.r * 0.32;
+  ctx.beginPath();
+  ctx.arc(b.x + ex + px, b.y + ey + py, b.r * 0.14, 0, Math.PI * 2);
+  ctx.arc(b.x + ex - px, b.y + ey - py, b.r * 0.14, 0, Math.PI * 2);
+  ctx.fill();
+
+  // marcador do jogador
+  if (b.isPlayer) {
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, b.r + 3, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  // integridade dos bots
+  if (!b.isPlayer && b.alive) {
+    for (let i = 0; i < HP_MAX; i++) {
+      ctx.fillStyle = i < b.hp ? b.cor : "rgba(255,255,255,.18)";
+      ctx.fillRect(b.x - 9 + i * 7, b.y - b.r - 9, 5, 3);
+    }
+  }
+  ctx.restore();
+}
+
+/** linha de aterrissagem: mostra onde o jogador vai cair na gravidade atual
+ *  (verde = superfície segura, vermelho = espinhos). Sem isso o jogo é ilegível. */
+function drawLandingAid() {
+  if (!player || !player.alive || state !== "playing" || intro > 0) return;
+  const d = g();
+  const hit = probe(player.x, player.y, d, player.r);
+  const dist = Math.min(hit.d, 1400);
+  const ex = player.x + d.x * dist, ey = player.y + d.y * dist;
+  const seguro = hit.tipo !== "spike";
+  ctx.save();
+  ctx.setLineDash([6, 9]);
+  ctx.lineDashOffset = -bgT * 45;
+  ctx.strokeStyle = seguro ? "rgba(57,255,136,.5)" : "rgba(255,45,85,.75)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(player.x, player.y);
+  ctx.lineTo(ex, ey);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = seguro ? "#39ff88" : "#ff2d55";
+  ctx.shadowColor = ctx.fillStyle;
+  ctx.shadowBlur = 14;
+  ctx.beginPath();
+  ctx.arc(ex, ey, 5 + Math.sin(bgT * 8) * 1.2, 0, Math.PI * 2);
+  ctx.fill();
+  if (!seguro) {                                     // alerta de queda fatal
+    ctx.strokeStyle = "#ff2d55";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(ex, ey, 12 + Math.sin(bgT * 10) * 3, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawParticles() {
+  ctx.save();
+  ctx.globalCompositeOperation = "lighter";
+  for (const p of particles) {
+    const k = 1 - p.t / p.vida;
+    ctx.globalAlpha = k;
+    ctx.fillStyle = p.cor;
+    if (p.tipo === "r") {
+      ctx.strokeStyle = p.cor;
+      ctx.lineWidth = 2 * k;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.tam + (1 - k) * 46, 0, Math.PI * 2);
+      ctx.stroke();
+    } else {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.tam * k + 0.4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+/** seta grande indicando a gravidade + nome da direção */
+function drawGravityHint() {
+  const d = g();
+  ctx.save();
+  ctx.translate(W / 2, H / 2);
+  ctx.rotate(Math.atan2(d.y, d.x));
+  ctx.globalAlpha = 0.10 + 0.05 * Math.sin(bgT * 4);
+  ctx.fillStyle = COR_PLAYER;
+  ctx.beginPath();
+  ctx.moveTo(46, 0); ctx.lineTo(-22, -30); ctx.lineTo(-8, 0); ctx.lineTo(-22, 30);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+
+  ctx.save();
+  ctx.globalAlpha = 0.5;
+  ctx.fillStyle = "#6f86a6";
+  ctx.font = "11px " + "ui-monospace, monospace";
+  ctx.textAlign = "center";
+  ctx.fillText("GRAVIDADE " + DIRS[gravIndex].nome, W / 2, H - 26);
+  ctx.restore();
+}
+
+function drawIntro() {
+  const n = Math.ceil(intro - 0.6);
+  ctx.save();
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#fff";
+  ctx.shadowColor = COR_PLAYER;
+  ctx.shadowBlur = 24;
+  if (n > 0) {
+    ctx.font = "700 84px ui-monospace, monospace";
+    ctx.fillText(String(n), W / 2, H / 2 + 28);
+  } else {
+    ctx.font = "700 56px ui-monospace, monospace";
+    ctx.fillStyle = "#39ff88";
+    ctx.shadowColor = "#39ff88";
+    ctx.fillText("VAI!", W / 2, H / 2 + 20);
+  }
+  ctx.restore();
+}
+
+function render() {
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  if (shake > 0.1) ctx.translate(rand(-shake, shake) * 0.6, rand(-shake, shake) * 0.6);
+
+  drawBackground();
+  drawZone();
+  drawWalls();
+  drawPlatforms();
+  drawSpikes();
+  drawGravityHint();
+  drawLandingAid();
+  for (const b of bodies) if (b.alive) drawBody(b);
+  drawParticles();
+  if (state === "playing" && intro > 0) drawIntro();
+
+  ctx.restore();
+
+  if (flashScreen > 0.01) {
+    ctx.save();
+    ctx.fillStyle = "rgba(255,255,255," + (flashScreen * 0.35) + ")";
+    ctx.fillRect(0, 0, W, H);
+    ctx.restore();
+  }
+}
+
+/* ──────────────────────── 12. LOOP ─────────────────────────────── */
+let dpr = 1;
+function layout() {
+  const tch = touchEl.classList.contains("hidden") ? 0 : touchEl.offsetHeight + 8;
+  const availW = window.innerWidth - 20;
+  const availH = window.innerHeight - hudEl.offsetHeight - tch - 46;
+  const s = Math.max(0.25, Math.min(availW / W, availH / H));
+  stage.style.width = Math.floor(W * s) + "px";
+  stage.style.height = Math.floor(H * s) + "px";
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.round(W * dpr);
+  canvas.height = Math.round(H * dpr);
+}
+window.addEventListener("resize", layout);
+window.addEventListener("orientationchange", () => setTimeout(layout, 120));
+
+/** detecta tela de toque e mostra o D-pad */
+function setupTouchUI() {
+  const coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+  if (coarse || ("ontouchstart" in window) || window.innerWidth < 860) {
+    touchEl.classList.remove("hidden");
+  }
+  layout();
+}
+
+/** atualização lógica de um passo fixo */
+function update(dt) {
+  bgT += dt;
+  if (toastT > 0) { toastT -= dt; if (toastT <= 0) toastEl.classList.remove("on"); }
+  if (shake > 0) shake = Math.max(0, shake - dt * 26);
+  if (flashScreen > 0) flashScreen = Math.max(0, flashScreen - dt * 2.4);
+
+  if (state === "menu" && attract) {
+    // modo atrativo: bots brigando sozinhos + gravidade trocando
+    autoFlip -= dt;
+    if (autoFlip <= 0) { autoFlip = rand(1.8, 3.4); gravIndex = randInt(0, 3); gravCd = 0; }
+    for (const b of bodies) {
+      if (!b.alive) { b.respawn -= dt; if (b.respawn <= 0) respawnBot(b); continue; }
+      stepBody(b, dt);
+      checkSpikes(b);
+    }
+    for (let i = 0; i < bodies.length; i++)
+      for (let j = i + 1; j < bodies.length; j++)
+        if (bodies[i].alive && bodies[j].alive) collideBodies(bodies[i], bodies[j]);
+    stepParticles(dt);
+    return;
+  }
+
+  if (state !== "playing") { stepParticles(dt); return; }
+
+  if (intro > 0) { intro -= dt; stepParticles(dt); return; }   // contagem inicial: física parada
+
+  matchTime += dt;
+  if (gravCd > 0) gravCd = Math.max(0, gravCd - dt);
+
+  // stamina do jogador
+  if (stam < STAM_MAX) {
+    stamT += dt;
+    if (stamT >= STAM_REGEN) { stamT = 0; stam++; tone(760, 0.07, "sine", 0.03); }
+  } else stamT = 0;
+
+  // zona
+  zone.t += dt;
+  if (zone.grace > 0) zone.grace = Math.max(0, zone.grace - dt);
+  if (zone.t >= ZONE_PERIOD) shrinkZone();
+
+  // física
+  for (const b of bodies) if (b.alive) stepBody(b, dt);
+  for (let i = 0; i < bodies.length; i++) {
+    for (let j = i + 1; j < bodies.length; j++) {
+      if (bodies[i].alive && bodies[j].alive) collideBodies(bodies[i], bodies[j]);
+    }
+  }
+  for (const b of bodies) { if (!b.alive) continue; checkSpikes(b); if (b.alive) checkZone(b, dt); }
+  stepParticles(dt);
+}
+
+function respawnBot(b) {
+  const sp = pick(SPAWNS);
+  b.x = sp.x + rand(-14, 14); b.y = sp.y;
+  b.vx = b.vy = 0; b.hp = HP_MAX; b.alive = true; b.zoneT = 0; b.flash = 0;
+  b.glide = 0; b.airCd = 0; b.hopCd = 0; b.plan = null;
+  ring(b.x, b.y, b.cor);
+}
+
+let acc = 0, last = 0;
+function frame(now) {
+  requestAnimationFrame(frame);
+  if (!last) last = now;
+  let dt = (now - last) / 1000;
+  last = now;
+  if (dt > 0.25) dt = 0.25;              // aba aberta em segundo plano
+  acc += dt;
+  let passos = 0;
+  while (acc >= STEP && passos < 12) { update(STEP); acc -= STEP; passos++; }
+  if (passos >= 12) acc = 0;
+  render();
+  updateHud();
+}
+
+/* ───────────────────────── BOOT ────────────────────────────────── */
+setupTouchUI();
+startAttract();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

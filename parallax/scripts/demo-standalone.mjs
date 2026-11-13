@@ -1,0 +1,26 @@
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+process.chdir(ROOT);
+import { JSDOM, VirtualConsole } from "jsdom";
+const target = process.argv[2] || "parallax-standalone.html";
+const html = fs.readFileSync(target, "utf8");
+const vc = new VirtualConsole();
+const errs = [];
+vc.on("jsdomError", (e) => { if (!/Could not parse CSS/.test(e.message)) errs.push("jsdomError: " + e.message); });
+vc.on("error", (...a) => errs.push("error: " + a.join(" ")));
+vc.on("warn", () => {});
+const dom = new JSDOM(html, { url: "file:///x/index.html", runScripts: "dangerously", pretendToBeVisual: true, virtualConsole: vc });
+await new Promise((r) => setTimeout(r, 2500));
+const doc = dom.window.document;
+const text = doc.body.textContent || "";
+const root = doc.querySelector(".par-shell");
+const report = (l, ok, extra = "") => { console.log(`${ok ? "✓" : "✗"} ${l}${extra ? " · " + extra : ""}`); if (!ok) process.exitCode = 1; };
+report("montou o shell", !!root && root.children.length >= 3, `${root?.children.length} seções`);
+report("onboarding presente", text.includes("A web não foi feita para o seu cérebro"));
+report("navegador renderizado", text.includes("Janela de atenção"));
+report("motor reescreveu", text.includes("por que mudou"));
+report("sem erros de script", errs.length === 0, errs.slice(0, 2).join(" | "));
+process.exit(process.exitCode || 0);

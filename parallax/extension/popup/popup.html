@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Parallax</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden>
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#7c9cff" />
+              <stop offset="100%" stop-color="#f0c987" />
+            </linearGradient>
+          </defs>
+          <path d="M6 25c5-13 8-13 13 0" fill="none" stroke="url(#g)" stroke-width="2.4" stroke-linecap="round" />
+          <path d="M19 25c2.6-6.6 4.4-6.6 7-0" fill="none" stroke="#f0c987" stroke-width="2" stroke-linecap="round" opacity=".75" />
+          <path d="M10 9h12" stroke="#e8ecf4" stroke-width="2" stroke-linecap="round" opacity=".8" />
+        </svg>
+        <div>
+          <strong>Parallax</strong>
+          <span id="host">carregando…</span>
+        </div>
+      </div>
+      <button id="toggle" class="switch" type="button" aria-label="Ativar ou pausar o Parallax" aria-checked="true">
+        <i></i>
+      </button>
+    </header>
+
+    <section class="block">
+      <p class="label">modo</p>
+      <div class="modes" id="modes">
+        <button type="button" data-mode="aprendizado">Aprendizado</button>
+        <button type="button" data-mode="pesquisa">Pesquisa</button>
+        <button type="button" data-mode="compra">Compra</button>
+        <button type="button" data-mode="foco">Foco</button>
+        <button type="button" data-mode="calma">Calma</button>
+      </div>
+      <p class="hint" id="mode-hint">reescreve no seu nível, com glossário e densidade ajustada</p>
+    </section>
+
+    <section class="block">
+      <p class="label">nível da reescrita</p>
+      <div class="levels" id="levels">
+        <button type="button" data-level="iniciante">iniciante</button>
+        <button type="button" data-level="intermediario">médio</button>
+        <button type="button" data-level="avancado">avançado</button>
+      </div>
+      <div class="range-row">
+        <span class="label">intensidade</span>
+        <input id="intensity" type="range" min="10" max="100" step="5" value="85" />
+        <span class="mono" id="intensity-val">85%</span>
+      </div>
+      <div class="toggles">
+        <label class="row">
+          <span>suprimir estímulo (foco/calma)</span>
+          <input id="suppressed" type="checkbox" checked />
+        </label>
+        <label class="row">
+          <span>reescrever automaticamente</span>
+          <input id="autoscan" type="checkbox" checked />
+        </label>
+      </div>
+    </section>
+
+    <section class="block">
+      <p class="label">nesta página</p>
+      <div class="stats">
+        <div><b id="s-blocks">—</b><span>blocos reescritos</span></div>
+        <div><b id="s-removed">—</b><span>estímulos suprimidos</span></div>
+        <div><b id="s-patterns">—</b><span>dark patterns</span></div>
+      </div>
+      <div class="actions">
+        <button id="apply" class="primary" type="button">Reescrever agora</button>
+        <button id="restore" type="button">Restaurar original</button>
+      </div>
+    </section>
+
+    <section class="block">
+      <p class="label">memória do dispositivo</p>
+      <div class="stats small">
+        <div><b id="s-pages">0</b><span>páginas</span></div>
+        <div><b id="s-total">0</b><span>blocos (total)</span></div>
+        <div><b id="s-patterns-total">0</b><span>padrões vistos</span></div>
+      </div>
+      <p class="foot">
+        Nada sai do seu dispositivo: a reescrita, o glossário e a detecção de padrões rodam no content script.
+        Sem conta, sem telemetria, sem servidor.
+      </p>
+      <div class="actions">
+        <button id="open-demo" type="button">Abrir a demo completa</button>
+        <button id="reset" class="danger" type="button">Zerar dados</button>
+      </div>
+    </section>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

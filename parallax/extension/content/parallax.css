@@ -1,0 +1,450 @@
+/* ────────────────────────────────────────────────────────────────────────────
+   Parallax · estilos injetados (escopados em #parallax-root)
+   Nada daqui vaza para o site: tudo vive dentro de um Shadow DOM.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+#parallax-root {
+  all: initial;
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2147483646;
+  font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: #e8ecf4;
+}
+
+/* a pílula flutuante */
+.px-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #2a3346;
+  border-radius: 999px;
+  background: rgba(10, 13, 20, 0.94);
+  box-shadow: 0 14px 32px -12px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  padding: 6px 8px 6px 10px;
+  backdrop-filter: blur(14px);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s;
+  user-select: none;
+}
+.px-pill:hover {
+  border-color: #46536d;
+  transform: translateY(-1px);
+}
+.px-pill .px-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #7ce0b1;
+  box-shadow: 0 0 8px rgba(124, 224, 177, 0.8);
+  flex-shrink: 0;
+}
+.px-pill .px-dot.px-off {
+  background: #5d6479;
+  box-shadow: none;
+}
+.px-pill .px-name {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #e8ecf4;
+}
+.px-pill .px-mode {
+  font-size: 10px;
+  color: #8b93a7;
+  border-left: 1px solid #2a3346;
+  padding-left: 8px;
+  margin-left: 2px;
+}
+.px-pill .px-count {
+  font-variant-numeric: tabular-nums;
+  font-size: 10px;
+  color: #f0c987;
+  background: rgba(240, 201, 135, 0.1);
+  border: 1px solid rgba(240, 201, 135, 0.3);
+  border-radius: 999px;
+  padding: 1px 6px;
+}
+
+/* painel */
+.px-panel {
+  position: absolute;
+  right: 0;
+  bottom: 48px;
+  width: 336px;
+  max-height: min(70vh, 620px);
+  overflow: hidden auto;
+  border: 1px solid #2a3346;
+  border-radius: 16px;
+  background: #0c0f16;
+  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.9);
+  padding: 12px;
+  font-size: 12px;
+  scrollbar-width: thin;
+}
+.px-panel[hidden] {
+  display: none;
+}
+.px-panel h1 {
+  margin: 0 0 2px;
+  font-size: 13px;
+  font-weight: 650;
+  color: #e8ecf4;
+}
+.px-panel .px-sub {
+  margin: 0 0 10px;
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: #8b93a7;
+}
+.px-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 10px 0 4px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #5d6479;
+}
+.px-modes {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+}
+.px-mode-btn {
+  border: 1px solid #232a39;
+  border-radius: 9px;
+  background: #12151f;
+  color: #8b93a7;
+  padding: 7px 2px 6px;
+  font-size: 9.5px;
+  font-weight: 550;
+  cursor: pointer;
+  transition: all 0.14s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  line-height: 1.15;
+}
+.px-mode-btn:hover {
+  border-color: #37405a;
+  color: #e8ecf4;
+}
+.px-mode-btn.px-active {
+  border-color: rgba(124, 156, 255, 0.6);
+  background: rgba(124, 156, 255, 0.13);
+  color: #e8ecf4;
+}
+.px-mode-btn.px-calma.px-active {
+  border-color: rgba(127, 209, 232, 0.6);
+  background: rgba(127, 209, 232, 0.12);
+}
+.px-levels {
+  display: flex;
+  gap: 3px;
+}
+.px-level-btn {
+  flex: 1;
+  border: 1px solid #232a39;
+  border-radius: 8px;
+  background: #12151f;
+  color: #8b93a7;
+  padding: 5px 0;
+  font-size: 10px;
+  cursor: pointer;
+}
+.px-level-btn.px-active {
+  border-color: rgba(124, 156, 255, 0.55);
+  background: rgba(124, 156, 255, 0.13);
+  color: #e8ecf4;
+}
+.px-range {
+  width: 100%;
+  accent-color: #7c9cff;
+  height: 3px;
+  cursor: pointer;
+}
+.px-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(35, 42, 57, 0.6);
+  font-size: 11px;
+  color: #b1b8c6;
+}
+.px-row:last-child {
+  border-bottom: 0;
+}
+.px-btn {
+  border: 1px solid #2a3346;
+  border-radius: 9px;
+  background: #12151f;
+  color: #e8ecf4;
+  padding: 6px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.14s;
+}
+.px-btn:hover {
+  border-color: #46536d;
+  background: #171b27;
+}
+.px-btn.px-primary {
+  background: #7c9cff;
+  border-color: #7c9cff;
+  color: #0a0d16;
+  font-weight: 650;
+}
+.px-btn.px-primary:hover {
+  background: #6a8bf5;
+}
+.px-btn.px-gold {
+  background: #f0c987;
+  border-color: #f0c987;
+  color: #1a1408;
+  font-weight: 650;
+}
+.px-btn.px-danger {
+  border-color: rgba(240, 143, 143, 0.45);
+  color: #f08f8f;
+}
+.px-btn.px-sm {
+  padding: 4px 8px;
+  font-size: 10px;
+  border-radius: 7px;
+}
+.px-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin-top: 8px;
+}
+.px-stat {
+  border: 1px solid #232a39;
+  border-radius: 9px;
+  background: #101319;
+  padding: 6px;
+  text-align: center;
+}
+.px-stat b {
+  display: block;
+  font-size: 15px;
+  color: #e8ecf4;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.px-stat span {
+  font-size: 8.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5d6479;
+}
+.px-hit {
+  border: 1px solid rgba(240, 143, 143, 0.28);
+  background: rgba(240, 143, 143, 0.07);
+  border-radius: 9px;
+  padding: 7px 8px;
+  margin-bottom: 5px;
+  font-size: 10.5px;
+}
+.px-hit b {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  color: #f6c4c4;
+  font-weight: 600;
+}
+.px-hit em {
+  display: block;
+  margin-top: 3px;
+  font-style: normal;
+  color: #b1b8c6;
+  line-height: 1.45;
+}
+.px-hit small {
+  display: block;
+  margin-top: 3px;
+  font-size: 9px;
+  color: #7a8496;
+}
+.px-sev {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #f08f8f;
+  flex-shrink: 0;
+}
+.px-sev.px-media {
+  background: #f0c987;
+}
+.px-sev.px-baixa {
+  background: #7a8496;
+}
+.px-foot {
+  margin: 10px 0 0;
+  font-size: 9px;
+  line-height: 1.5;
+  color: #4f5768;
+  border-top: 1px solid #1d2331;
+  padding-top: 8px;
+}
+.px-toggle {
+  position: relative;
+  width: 30px;
+  height: 17px;
+  border-radius: 999px;
+  border: 1px solid #2a3346;
+  background: #1a1f2c;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.px-toggle.px-on {
+  background: rgba(124, 156, 255, 0.75);
+  border-color: rgba(124, 156, 255, 0.85);
+}
+.px-toggle i {
+  position: absolute;
+  top: 1.5px;
+  left: 1.5px;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #eef1f7;
+  transition: left 0.15s;
+}
+.px-toggle.px-on i {
+  left: 15px;
+}
+.px-why {
+  border-top: 1px solid #1d2331;
+  margin-top: 8px;
+  padding-top: 6px;
+  font-size: 9.5px;
+  color: #6b7488;
+  line-height: 1.5;
+  max-height: 120px;
+  overflow: auto;
+}
+
+/* ── alterações na própria página ─────────────────────────────────────────── */
+
+/* termo reescrito: sublinhado pontilhado discreto */
+.parallax-term {
+  border-bottom: 1.5px dotted rgba(124, 156, 255, 0.55);
+  cursor: help;
+  position: relative;
+}
+
+/* elemento suprimido no modo foco/calma */
+.parallax-suppressed {
+  filter: grayscale(1) !important;
+  opacity: 0.18 !important;
+  transition: opacity 0.35s ease, filter 0.35s ease !important;
+  pointer-events: none !important;
+}
+.parallax-suppressed:hover {
+  opacity: 0.55 !important;
+  filter: grayscale(1) !important;
+}
+
+/* página inteira no modo calma */
+html.parallax-calm {
+  filter: saturate(0.35) contrast(0.94) !important;
+}
+html.parallax-calm img,
+html.parallax-calm video {
+  filter: saturate(0.4) brightness(0.96) !important;
+}
+html.parallax-calm [class*="notif"],
+html.parallax-calm [class*="badge"],
+html.parallax-calm [class*="counter"],
+html.parallax-calm [class*="like"] {
+  opacity: 0.35 !important;
+}
+
+/* reescrita tira a "cara" de conversão */
+html.parallax-learning .parallax-ad,
+html.parallax-learning [class*="advert"],
+html.parallax-learning [class*="sponsor"] {
+  filter: grayscale(0.75) !important;
+  opacity: 0.6 !important;
+}
+
+/* modo foco: elementos de engajamento ficam apagados */
+html.parallax-focus [class*="sidebar"]:not(main):not(article),
+html.parallax-focus aside,
+html.parallax-focus [class*="feed"],
+html.parallax-focus [class*="recommend"] {
+  filter: grayscale(1) !important;
+  opacity: 0.22 !important;
+  transition: opacity 0.3s !important;
+}
+html.parallax-focus aside:hover,
+html.parallax-focus [class*="feed"]:hover,
+html.parallax-focus [class*="recommend"]:hover {
+  opacity: 0.7 !important;
+}
+html.parallax-focus [class*="notification"],
+html.parallax-focus [class*="ticker"] {
+  display: none !important;
+}
+
+/* pontinhos de glossário */
+.parallax-tooltip {
+  position: absolute;
+  z-index: 2147483647;
+  max-width: 260px;
+  border: 1px solid #2a3346;
+  border-radius: 10px;
+  background: #0c0f16;
+  color: #c3cad8;
+  padding: 8px 10px;
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+  font-size: 11px;
+  line-height: 1.5;
+  box-shadow: 0 18px 36px -14px rgba(0, 0, 0, 0.85);
+  pointer-events: none;
+}
+.parallax-tooltip b {
+  display: block;
+  color: #e8ecf4;
+  font-size: 11px;
+  margin-bottom: 2px;
+}
+
+/* aviso de contradição/relatório */
+.parallax-nudge {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 2147483645;
+  border: 1px solid rgba(240, 201, 135, 0.4);
+  border-radius: 999px;
+  background: rgba(14, 12, 8, 0.95);
+  color: #f0c987;
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+  font-size: 11px;
+  padding: 7px 14px;
+  box-shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.parallax-nudge button {
+  border: 0;
+  background: rgba(240, 201, 135, 0.15);
+  color: #f0c987;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 10px;
+  cursor: pointer;
+}

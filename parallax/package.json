@@ -1,0 +1,38 @@
+{
+  "name": "parallax",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Parallax — a camada que reescreve a web em tempo real para o seu cérebro. Protótipo funcional: browser simulado + motor de re-renderização + extensão Chrome.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "typecheck": "tsc -b --pretty false",
+    "preview": "vite preview --host 0.0.0.0 --port 4174",
+    "test": "node --test \"tests/*.test.mjs\"",
+    "ext": "node scripts/build-extension.mjs",
+    "standalone": "node scripts/build-standalone.mjs",
+    "demo": "node scripts/demo.mjs && node scripts/demo-nav.mjs && node scripts/demo-standalone.mjs",
+    "verify": "npm run typecheck && npm test && npm run ext && npm run standalone && npm run demo",
+    "ext:test": "node --test \"tests/*.test.mjs\" && node scripts/build-extension.mjs"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.0.0",
+    "lucide-react": "^0.469.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^2.5.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0",
+    "esbuild": "^0.25.12"
+  }
+}

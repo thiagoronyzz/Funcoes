@@ -1,0 +1,25 @@
+node_modules/
+dist/
+.vite/
+*.local
+
+# pacote gerado pela extensão
+extension/dist/
+
+# rascunhos de teste locais (o fixture da extensão fica versionado)
+.smoke/
+
+# logs
+npm-debug.log*
+yarn-error.log*
+
+# ambiente
+.env
+.env.*
+
+# sistema
+.DS_Store
+Thumbs.db
+
+# tipos
+*.tsbuildinfo

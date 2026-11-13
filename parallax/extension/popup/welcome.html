@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Parallax — bem-vindo</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(900px 400px at 15% -10%, rgba(124, 156, 255, 0.18), transparent 60%),
+          radial-gradient(700px 400px at 100% 0%, rgba(240, 201, 135, 0.08), transparent 55%),
+          #080a10;
+        color: #e8ecf4;
+        font-family: Inter, "Segoe UI", system-ui, sans-serif;
+        padding: 32px 20px;
+      }
+      main {
+        max-width: 760px;
+        width: 100%;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: 1px solid rgba(240, 201, 135, 0.4);
+        background: rgba(240, 201, 135, 0.08);
+        color: #f0c987;
+        border-radius: 999px;
+        padding: 4px 10px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+      }
+      h1 {
+        font-size: clamp(26px, 4vw, 40px);
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+        margin: 16px 0 10px;
+      }
+      h1 span {
+        color: #f0c987;
+      }
+      p.lead {
+        font-size: 15px;
+        line-height: 1.6;
+        color: #b1b8c6;
+        max-width: 620px;
+        margin: 0 0 24px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+        margin-bottom: 26px;
+      }
+      .card {
+        border: 1px solid #262c3b;
+        border-radius: 14px;
+        background: #12151f;
+        padding: 14px;
+      }
+      .card b {
+        display: block;
+        font-size: 12.5px;
+        margin-bottom: 4px;
+      }
+      .card span {
+        font-size: 11.5px;
+        line-height: 1.5;
+        color: #8b93a7;
+      }
+      .steps {
+        display: grid;
+        gap: 8px;
+        margin-bottom: 26px;
+      }
+      .step {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        border: 1px solid #1f2533;
+        border-radius: 10px;
+        padding: 10px 12px;
+        background: rgba(18, 21, 31, 0.6);
+      }
+      .step i {
+        display: grid;
+        place-items: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        background: rgba(124, 156, 255, 0.16);
+        color: #7c9cff;
+        font-size: 11px;
+        font-style: normal;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      .step p {
+        margin: 0;
+        font-size: 12.5px;
+        line-height: 1.5;
+        color: #c3cad8;
+      }
+      .step code {
+        background: #0b0e14;
+        border: 1px solid #262c3b;
+        border-radius: 4px;
+        padding: 1px 5px;
+        font-size: 11px;
+        color: #f0c987;
+      }
+      .cta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border-radius: 10px;
+        border: 1px solid #2a3346;
+        background: #12151f;
+        color: #e8ecf4;
+        padding: 10px 16px;
+        font-size: 13px;
+        font-weight: 550;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .btn.primary {
+        background: #7c9cff;
+        border-color: #7c9cff;
+        color: #0a0d16;
+        font-weight: 650;
+      }
+      .btn:hover {
+        filter: brightness(1.08);
+      }
+      .note {
+        margin-top: 22px;
+        font-size: 11.5px;
+        line-height: 1.6;
+        color: #5d6479;
+        border-top: 1px solid #1f2533;
+        padding-top: 14px;
+      }
+      .note b {
+        color: #8b93a7;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <span class="badge">instalado com sucesso · versão 0.1 · 100% local</span>
+      <h1>O Parallax está olhando a web para o seu <span>cérebro</span>, não para o algoritmo.</h1>
+      <p class="lead">
+        A partir de agora, visite qualquer página com texto. A pílula no canto direito mostra o que foi reescrito.
+        Nenhum trecho de página é enviado para um servidor — o motor inteiro roda no seu dispositivo.
+      </p>
+
+      <div class="grid">
+        <div class="card">
+          <b>Reescreve no seu nível</b>
+          <span>iniciante simplifica palavras e encurta frases; avançado eleva a densidade técnica.</span>
+        </div>
+        <div class="card">
+          <b>Suprime sem bloquear</b>
+          <span>no foco e na calma, anúncios e feeds ficam apagados — e continuam acessíveis se você precisar.</span>
+        </div>
+        <div class="card">
+          <b>Expõe dark patterns</b>
+          <span>prova social fabricada, urgência falsa e escassez artificial com o trecho que disparou o alerta.</span>
+        </div>
+      </div>
+
+      <div class="steps">
+        <div class="step"><i>1</i><p>Abra uma página com bastante texto (um artigo, uma notícia, a Wikipédia).</p></div>
+        <div class="step"><i>2</i><p>Clique na pílula no canto inferior direito ou use <code>Ctrl+Shift+P</code>.</p></div>
+        <div class="step"><i>3</i><p>Escolha o modo. A página é re-renderizada ali mesmo; “restaurar original” desfaz tudo.</p></div>
+        <div class="step"><i>4</i><p>Dica: em qualquer site, o popup da extensão mostra quantos blocos foram reescritos e quantos padrões foram vistos.</p></div>
+      </div>
+
+      <div class="cta">
+        <button class="btn primary" id="try">Abrir uma página de teste</button>
+        <button class="btn" id="close">Começar a navegar</button>
+      </div>
+
+      <p class="note">
+        <b>Privacidade:</b> o Parallax usa <code>chrome.storage.local</code> (não sincroniza com conta) e um content script
+        com <code>&lt;all_urls&gt;</code> apenas para ler o texto visível da aba ativa. Não há requisições de rede, analytics
+        ou servidor. O código está em <b>parallax/extension/</b> neste repositório e pode ser auditado linha por linha.
+      </p>
+    </main>
+    <script src="welcome.js"></script>
+  </body>
+</html>

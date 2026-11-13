@@ -10,14 +10,20 @@ Este diretório contém duas coisas que rodam de verdade:
 | --- | --- | --- |
 | **`src/`** | o navegador-demo completo (5 modos, grafo, flashcards, dark patterns, benchmarking) | `npm install && npm run dev` |
 | **`extension/`** | extensão Chrome **Manifest V3** com o mesmo motor rodando em qualquer site real | `npm run ext` → carregar `extension/` no Chrome |
+| **`parallax-standalone.html`** | o app inteiro num arquivo só (707 kB, zero requisições) | duplo clique — não precisa de servidor |
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173
-npm test           # 16 testes do motor (reescrita + dark patterns)
-npm run ext        # valida o manifest e empacota extension/dist/*.zip
+npm run dev         # http://localhost:5173
+npm test            # 20 testes: motor, dark patterns e paridade TS ⇄ extensão
 npm run typecheck
+npm run ext         # valida o manifest e empacota extension/dist/*.zip
+npm run standalone  # regenera parallax-standalone.html a partir de dist/
 ```
+
+O arquivo único **não é editado à mão**: `scripts/build-standalone.mjs` roda o build de produção,
+embute CSS e JS no HTML, verifica que nenhuma referência externa sobrou e falha se sobrar.
+É o formato que você manda num zip, abre offline e mostra sem servidor.
 
 Nada sai do dispositivo: reescrita, glossário, grafo, citações, flashcards e detecção de padrões são todos locais.
 Sem conta, sem backend, sem telemetria.
@@ -35,18 +41,22 @@ com **métricas e justificativa por parágrafo**:
 - **Regras heurísticas** de simplificação (conectores formais, voz passiva, jargão) e de densificação.
 - **Separação de frases longas** em pontos de quebra naturais (sem fragmentar).
 - **Glossário** extraído dos termos da página, com tooltip em cada parágrafo.
-- **Complexidade** antes/depois (Flesch adaptado + densidade lexical) e **tempo por bloco**.
+- **Complexidade** antes/depois: índice 0–100 normalizado para o português (palavras por frase, sílabas por
+  palavra e proporção de palavras longas), em vez do Flesch bruto, que satura com palavras longas em pt-BR.
+- **Tempo por bloco** medido de verdade (`performance.now`), não estimado.
 - Cada mudança é auditável: `o que → o que` e `por quê`. A demo expõe isso em “por que mudou”,
   e o laboratório (**Motor**) coloca original × 3 níveis lado a lado.
 
 Testes em `tests/rewrite.test.mjs` cobrem idempotência, capitalização, calma, glossário, intensidade zero e
-resumo extrativo — `npm test` roda tudo em ~150 ms.
+resumo extrativo. `tests/parity.test.mjs` compila o motor TypeScript e compara **texto por texto** com o motor
+da extensão em 4 trechos × 3 níveis × 3 intensidades: se os dois lados divergirem, o teste quebra.
+`npm test` roda tudo (20 testes) em ~200 ms.
 
 ### 2. Os cinco modos, aplicados ao DOM
 
 | Modo | O que muda na página |
 | --- | --- |
-| **Aprendizado** | reescrita no seu nível, tooltips de glossário, flashcards e quiz gerados do texto |
+| **Aprendizado** | reescrita no seu nível (com tradução de jargão clínico/técnico), tooltips de glossário, flashcards e quiz gerados do texto |
 | **Pesquisa** | resumo extrativo, layout uniforme, referências no estilo escolhido (ABNT/APA/BibTeX), grafo entre fontes |
 | **Compra** | preço real × histórico de 90 dias, reviews filtradas, **dark patterns com o trecho que disparou** |
 | **Foco** | anúncios, comentários e feeds suprimidos (não bloqueados), abas não essenciais dessaturadas, timer adaptativo |
@@ -129,7 +139,9 @@ src/
   components/       MockPage, RewrittenText, SidePanel, GraphCanvas, Compare, ui
   views/            Browser, Cerebro, Foco, Lab, Manifesto
   data/sites.ts     6 sites, 9 páginas, 4 produtos, 90 dias de preço
-index.html          build embutido num único arquivo — abre com duplo clique, 100% offline
+index.html          entrada do Vite (dev/build)
+parallax-standalone.html  build embutido num arquivo — gerado por npm run standalone
+scripts/            build-extension.mjs (manifest + zip), build-standalone.mjs (arquivo único)
 extension/
   manifest.json     MV3
   shared/           rewrite.js, darkpatterns.js, store.js (JS puro, sem bundler)
@@ -137,7 +149,7 @@ extension/
   popup/            popup + welcome
   tests/fixture.html
   dist/*.zip        pacote gerado por npm run ext
-tests/              16 testes rodáveis com node --test
+tests/              20 testes rodáveis com node --test (motor, dark patterns, paridade)
 ```
 
 Estado: um objeto serializável em `localStorage` (`parallax.v1`). Nada de `any` no caminho crítico — `npm run typecheck`

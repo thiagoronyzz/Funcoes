@@ -14,8 +14,21 @@ export const LEVEL_META: Record<Level, { label: string; hint: string; factor: nu
   avancado: { label: "Avançado", hint: "termos técnicos preservados, densidade alta", factor: 1.05 },
 };
 
+type Rule = { re: RegExp; to: string; why?: string; keepComma?: boolean };
+
+/**
+ * Par reversível (simples ⇄ formal). Separado das listas direcionais para que
+ * nenhuma etapa desfaça a outra: só o nível avançado usa, nos dois sentidos.
+ */
+const REVERSIBLE: Rule[] = [
+  { re: /\bpode\b/gi, to: "é capaz de", why: "registro formal" },
+  { re: /\bfaz\b/gi, to: "realiza", why: "registro formal" },
+  { re: /\busa\b/gi, to: "utiliza", why: "registro formal" },
+  { re: /\bmuito\b/gi, to: "substancialmente", why: "intensificador preciso" },
+];
+
 /** Sinônimos: jargão → linguagem simples. Usado pelo modo iniciante. */
-const PLAIN: { re: RegExp; to: string; why?: string }[] = [
+const PLAIN: Rule[] = [
   { re: /\butiliza(?:r|do|da|m)?\b/gi, to: "usa", why: "verbo rebuscado → comum" },
   { re: /\bpossibilita\b/gi, to: "permite", why: "palavra longa → curta" },
   { re: /\bentretanto\b/gi, to: "mas", why: "conector formal → cotidiano" },
@@ -40,7 +53,7 @@ const PLAIN: { re: RegExp; to: string; why?: string }[] = [
   { re: /\bjustifica\b/gi, to: "explica por que", why: "verbo formal → cotidiano" },
   { re: /\bsobretudo\b/gi, to: "principalmente", why: "advérbio formal" },
   { re: /\belevad[ao]\b/gi, to: "alta", why: "formal → direto" },
-  { re: /\bconsidera-se\b/gi, to: "a gente considera", why: "voz passiva → ativa" },
+  { re: /\bconsidera-se\b/gi, to: "podemos considerar", why: "voz passiva → ativa" },
   { re: /\bmensurável\b/gi, to: "que dá para medir", why: "adjetivo técnico" },
   { re: /\bconsequência medida\b/gi, to: "resultado observado", why: "nominalização" },
   { re: /\bnão corresponde a\b/gi, to: "não é", why: "rodeio verbal" },
@@ -50,13 +63,24 @@ const PLAIN: { re: RegExp; to: string; why?: string }[] = [
   { re: /\bdesigna\b/gi, to: "chama", why: "formal → direto" },
   { re: /\bvigilância\b/gi, to: "monitoramento", why: "termo carregado → neutro" },
   { re: /\becológicas?\b/gi, to: "no dia a dia", why: "jargão" },
+  // vocabulário técnico: o que um humano explicaria antes do resto
+  { re: /\bhipertensão arterial sistêmica\b/gi, to: "pressão alta", why: "termo técnico traduzido" },
+  { re: /\bsistêmica\b/gi, to: "do corpo todo", why: "termo técnico traduzido" },
+  { re: /\bmultifatorial\b/gi, to: "de várias causas", why: "termo técnico traduzido" },
+  { re: /\bpressóric[oa]s?\b/gi, to: "de pressão", why: "termo técnico traduzido" },
+  { re: /\bórgãos-alvo\b/gi, to: "órgãos que sofrem com ela", why: "termo técnico traduzido" },
+  { re: /\bfrequentemente\b/gi, to: "muitas vezes", why: "advérbio formal" },
+  { re: /\bsubsequentes\b/gi, to: "seguintes", why: "adjetivo formal" },
+  { re: /\brisco cardiovascular global\b/gi, to: "risco para o coração como um todo", why: "termo técnico traduzido" },
+  { re: /\bde forma padronizada\b/gi, to: "do mesmo jeito", why: "termo técnico traduzido" },
+  { re: /\bpadronizada\b/gi, to: "do mesmo jeito", why: "termo técnico traduzido" },
+  { re: /\belevação sustentada\b/gi, to: "aumento que não passa", why: "termo técnico traduzido" },
 ];
 
 /** Troca de conectores e densidade para o nível avançado. */
-const DENSE: { re: RegExp; to: string; why?: string }[] = [
-  { re: /\bmas\b(?!\s+(?:também|tanto))/gi, to: "contudo", why: "conector elevado (nível avançado)" },
+const DENSE: Rule[] = [
+  { re: /\bmas\b(?!\s+(?:também|tanto))/gi, to: "contudo", why: "conector elevado (nível avançado)", keepComma: true },
   { re: /\bpor isso\b/gi, to: "portanto", why: "conector elevado (nível avançado)" },
-  { re: /\bmuito\b/gi, to: "substancialmente", why: "intensificador preciso" },
   { re: /\bimportante\b/gi, to: "determinante", why: "precisão lexical" },
   { re: /\bmostra\b/gi, to: "evidencia", why: "precisão lexical" },
   { re: /\bdá para\b/gi, to: "é possível", why: "impessoalidade" },
@@ -72,13 +96,28 @@ function wordsOf(text: string) {
   return text.split(/\s+/).filter(Boolean);
 }
 
+/**
+ * Índice de densidade 0–100 (não é o Flesch bruto, que estoura com palavras longas
+ * do português). Combina comprimento de frase, sílabas por palavra e proporção de
+ * palavras longas — cada um normalizado na faixa real do português culto.
+ */
 export function complexityOf(text: string) {
   const words = wordsOf(text);
+  if (!words.length) return 0;
   const sentences = Math.max(1, (text.match(/[.!?](\s|$)/g) ?? []).length);
   const longWords = words.filter((w) => w.replace(/\W/g, "").length >= 9).length;
   const syllables = words.reduce((acc, w) => acc + Math.max(1, (w.match(/[aeiouáéíóúâêôãõ]/gi) ?? []).length), 0);
-  const fk = 0.39 * (words.length / sentences) + 11.8 * (syllables / Math.max(1, words.length)) - 15.59;
-  return Math.round(Math.max(0, Math.min(100, (longWords / Math.max(1, words.length)) * 180 + fk * 2.2)));
+  const asl = words.length / sentences; // palavras por frase
+  const asw = syllables / words.length; // sílabas por palavra
+  const longPct = longWords / words.length;
+  const aslScore = clamp01((asl - 8) / 22) * 42;
+  const aswScore = clamp01((asw - 1.45) / 1.15) * 33;
+  const longScore = clamp01(longPct / 0.35) * 25;
+  return Math.round(aslScore + aswScore + longScore);
+}
+
+function clamp01(n: number) {
+  return Math.max(0, Math.min(1, n));
 }
 
 /** Divide um parágrafo longo em frases curtas, sem gerar fragmentos nem duplicar trabalho. */
@@ -167,21 +206,55 @@ function emitSentence(raw: string, maxWords: number, state: { out: string[]; spl
   emitSentence(tail.charAt(0).toUpperCase() + tail.slice(1), maxWords, state);
 }
 
+type Replacer = string | ((matched: string, offset: number, whole: string) => string);
+
 /** Mantém maiúscula quando a substituição cai no início de uma frase. */
-function replaceKeepingCase(out: string, rule: RegExp, to: string) {
+function replaceKeepingCase(out: string, rule: RegExp, to: Replacer) {
   return out.replace(rule, (...args: unknown[]) => {
     const rest = args.slice(1) as unknown[];
     const offset = rest[rest.length - 2] as number;
+    const matched = String(args[0]);
+    const raw = typeof to === "function" ? to(matched, offset, out) : to;
     const before = out.slice(0, offset).trimEnd();
     const atStart = before === "" || /[.!?]$/.test(before);
-    if (!atStart) return to;
-    return to.charAt(0).toUpperCase() + to.slice(1);
+    return atStart ? raw.charAt(0).toUpperCase() + raw.slice(1) : raw;
   });
 }
 
-function plainify(text: string): { text: string; notes: RewriteNote[] } {
+/**
+ * Conectores adversativos entre vírgulas: "o que, entretanto, não é" vira
+ * "o que, mas não é" — sem sobrar ", mas,". Roda antes das regras gerais.
+ */
+const CONTRAST_WORD = "(?:entretanto|contudo|porém|todavia|no entanto)";
+const CONTRAST_PATTERNS = [
+  { re: new RegExp(`,\\s*${CONTRAST_WORD}\\s*,`, "gi"), to: ", mas" },
+  { re: new RegExp(`\\b${CONTRAST_WORD}\\s*,`, "gi"), to: "mas" },
+  { re: new RegExp(`,\\s*${CONTRAST_WORD}\\b`, "gi"), to: ", mas" },
+];
+
+function absorbContrast(text: string): { text: string; changed: string[] } {
   let out = text;
-  const notes: RewriteNote[] = [];
+  const changed: string[] = [];
+  for (const { re, to } of CONTRAST_PATTERNS) {
+    out = out.replace(re, (m) => {
+      changed.push(m.trim());
+      return to;
+    });
+  }
+  return { text: out, changed };
+}
+
+/** Devolve maiúscula ao primeiro token de cada frase depois de todas as trocas. */
+function fixSentenceCase(text: string) {
+  return text.replace(/(^|[.!?]\s+)([a-zà-ÿ])/g, (_, prefix: string, letter: string) => prefix + letter.toUpperCase());
+}
+
+function plainify(text: string): { text: string; notes: RewriteNote[] } {
+  const contrast = absorbContrast(text);
+  let out = contrast.text;
+  const notes: RewriteNote[] = contrast.changed
+    .slice(0, 3)
+    .map((from) => ({ from, to: "mas", why: "conector adversativo direto" }));
   for (const rule of PLAIN) {
     const matches = out.match(rule.re);
     if (!matches) continue;
@@ -193,6 +266,19 @@ function plainify(text: string): { text: string; notes: RewriteNote[] } {
 }
 
 /** Caminho inverso: texto simples volta a ficar denso (usado no nível avançado). */
+/**
+ * Adensamento do nível avançado. Fica separado de UPGRADE (que desfaz o nível
+ * iniciante): aplicar os dois sempre desfaria o próprio trabalho.
+ */
+const ADVANCED: Rule[] = [
+  { re: /\bexplica por que\b/gi, to: "justifica", why: "nominalização" },
+  { re: /\bfala sobre\b/gi, to: "discorre sobre", why: "registro formal" },
+  { re: /\bfala\b/gi, to: "discorre", why: "registro formal" },
+  { re: /\bboa parte\b/gi, to: "parcela significativa", why: "léxico técnico" },
+  { re: /\bmuitas vezes\b/gi, to: "frequentemente", why: "advérbio formal" },
+  { re: /\bao mesmo tempo\b/gi, to: "simultaneamente", why: "advérbio formal" },
+];
+
 const UPGRADE: { re: RegExp; to: string; why?: string }[] = [
   { re: /\bexplica por que\b/gi, to: "justifica", why: "nominalização (nível avançado)" },
   { re: /\bque n[ãa]o passa\b/gi, to: "persistente", why: "adjetivo técnico (nível avançado)" },
@@ -256,7 +342,7 @@ export function keywordsOf(text: string, n = 8): string[] {
     .map(([w]) => w);
 }
 
-function plainifyWith(text: string, rules: { re: RegExp; to: string; why?: string }[]) {
+function plainifyWith(text: string, rules: Rule[]) {
   let out = text;
   const notes: RewriteNote[] = [];
   for (const rule of rules) {
@@ -311,8 +397,8 @@ export function rewriteBlock({ text, level, variant, intensity = 0.8, calm = fal
     });
   }
 
-  // 3. heurística local
-  if (level === "iniciante") {
+  // 3. heurística local (mesma régua do motor da extensão: 0.35)
+  if (level === "iniciante" && intensity > 0.35) {
     const plain = plainify(out);
     out = plain.text;
     notes.push(...plain.notes);
@@ -325,16 +411,26 @@ export function rewriteBlock({ text, level, variant, intensity = 0.8, calm = fal
       out = out.replace(/!\s*/g, ". ").replace(/\s+/g, " ");
       notes.push({ from: "!", to: ".", why: "modo calma remove exclamações e urgência" });
     }
-  } else if (level === "avancado") {
-    // primeiro desfaz simplificações anteriores; só depois densifica
-    const upgrade = plainifyWith(out, UPGRADE);
-    out = upgrade.text;
-    notes.push(...upgrade.notes);
+  } else if (level === "avancado" && intensity > 0.35) {
+    // desfaz o nível iniciante só quando ele está realmente presente
+    const simpleHits = UPGRADE.reduce((acc, r) => acc + (out.match(r.re) ?? []).length, 0);
+    if (simpleHits >= 2) {
+      const upgrade = plainifyWith(out, UPGRADE);
+      out = upgrade.text;
+      notes.push(...upgrade.notes);
+    }
+    const reversible = plainifyWith(out, REVERSIBLE);
+    out = reversible.text;
+    notes.push(...reversible.notes);
+    const advanced = plainifyWith(out, ADVANCED);
+    out = advanced.text;
+    notes.push(...advanced.notes);
     const dense = densify(out);
     out = dense.text;
     notes.push(...dense.notes);
   }
 
+  out = fixSentenceCase(out);
   const after = complexityOf(out);
   return {
     text: out.trim(),

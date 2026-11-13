@@ -41,8 +41,27 @@
     [/\bvigilância\b/gi, "monitoramento"]
   ];
 
-  var UPGRADE = [
+  /**
+   * Par reversível (simples ⇄ formal) usado nos dois sentidos. Fica separado das
+   * listas direcionais para que nenhuma regra desfaça o trabalho da outra etapa.
+   */
+  var REVERSIBLE_SIMPLE = [
+    [/\bpode\b/gi, "é capaz de"],
+    [/\bfaz\b/gi, "realiza"],
+    [/\busa\b/gi, "utiliza"],
+    [/\bmuito\b/gi, "substancialmente"]
+  ];
+
+  var ADVANCED = [
     [/\bexplica por que\b/gi, "justifica"],
+    [/\bfala sobre\b/gi, "discorre sobre"],
+    [/\bfala\b/gi, "discorre"],
+    [/\bboa parte\b/gi, "parcela significativa"],
+    [/\bmuitas vezes\b/gi, "frequentemente"],
+    [/\bao mesmo tempo\b/gi, "simultaneamente"]
+  ];
+
+  var UPGRADE = [
     [/\bque n[ãa]o passa\b/gi, "persistente"],
     [/\bpodemos considerar\b/gi, "considera-se"],
     [/\bn[ãa]o é\b/gi, "não corresponde a"],
@@ -53,13 +72,11 @@
   ];
 
   var DENSE = [
-    [/\bmas\b/gi, "contudo"],
+    [/\bmas\b(?!\s+(?:também|tanto))/gi, "contudo"],
     [/\bpor isso\b/gi, "portanto"],
-    [/\bmuito\b/gi, "substancialmente"],
     [/\bimportante\b/gi, "determinante"],
     [/\bmostra\b/gi, "evidencia"],
-    [/\bdá para\b/gi, "é possível"],
-    [/\bcoisa\b/gi, "elemento"]
+    [/\bdá para\b/gi, "é possível"]
   ];
 
   var STOP = {};
@@ -73,8 +90,10 @@
     return text.split(/\s+/).filter(Boolean);
   }
 
+  /** Mesma fórmula do protótipo (src/core/rewrite.ts): 0–100, normalizada p/ português. */
   function complexityOf(text) {
     var w = words(text);
+    if (!w.length) return 0;
     var sentences = Math.max(1, (text.match(/[.!?](\s|$)/g) || []).length);
     var longWords = w.filter(function (x) {
       return x.replace(/\W/g, "").length >= 9;
@@ -83,8 +102,14 @@
       var m = x.match(/[aeiouáéíóúâêôãõ]/gi);
       return acc + Math.max(1, m ? m.length : 0);
     }, 0);
-    var fk = 0.39 * (w.length / sentences) + 11.8 * (syllables / Math.max(1, w.length)) - 15.59;
-    return Math.round(Math.max(0, Math.min(100, (longWords / Math.max(1, w.length)) * 180 + fk * 2.2)));
+    var asl = w.length / sentences;
+    var asw = syllables / w.length;
+    var longPct = longWords / w.length;
+    return Math.round(clamp01((asl - 8) / 22) * 42 + clamp01((asw - 1.45) / 1.15) * 33 + clamp01(longPct / 0.35) * 25);
+  }
+
+  function clamp01(n) {
+    return Math.max(0, Math.min(1, n));
   }
 
   function wordCount(s) {
@@ -170,8 +195,29 @@
     };
   }
 
-  function applyRules(text, rules) {
-    var notes = [];
+  /** Conectores adversativos entre vírgulas: "o que, entretanto, não" vira "o que, mas não". */
+  var CONTRAST_WORD = "(?:entretanto|contudo|porém|todavia|no entanto)";
+
+  function absorbContrast(text) {
+    var changed = [];
+    var out = text
+      .replace(new RegExp(",\\s*" + CONTRAST_WORD + "\\s*,", "gi"), function (m) {
+        changed.push(m.trim());
+        return ", mas";
+      })
+      .replace(new RegExp("\\b" + CONTRAST_WORD + "\\s*,", "gi"), function (m) {
+        changed.push(m.trim());
+        return "mas";
+      })
+      .replace(new RegExp(",\\s*" + CONTRAST_WORD + "\\b", "gi"), function (m) {
+        changed.push(m.trim());
+        return ", mas";
+      });
+    return { text: out, changed: changed };
+  }
+
+  function applyRules(text, rules, contrastNotes) {
+    var notes = contrastNotes || [];
     var out = text;
     rules.forEach(function (rule) {
       var re = rule[0];
@@ -203,7 +249,30 @@
     var out = text;
 
     if (level === "iniciante" && intensity > 0.35) {
-      var plain = applyRules(out, PLAIN);
+      var contrast = absorbContrast(out);
+      out = contrast.text;
+      var notesFromContrast = contrast.changed.slice(0, 3).map(function (from) {
+        return { from: from, to: "mas", why: "conector adversativo direto" };
+      });
+      var vocabulary = [
+        [/\bhipertensão arterial sistêmica\b/gi, "pressão alta"],
+        [/\bsistêmica\b/gi, "do corpo todo"],
+        [/\bmultifatorial\b/gi, "de várias causas"],
+        [/\bpressóric[oa]s?\b/gi, "de pressão"],
+        [/\bórgãos-alvo\b/gi, "órgãos que sofrem com ela"],
+        [/\bfrequentemente\b/gi, "muitas vezes"],
+        [/\bsubsequentes\b/gi, "seguintes"],
+        [/\brisco cardiovascular global\b/gi, "risco para o coração como um todo"],
+        [/\bde forma padronizada\b/gi, "do mesmo jeito"],
+        [/\bpadronizada\b/gi, "do mesmo jeito"],
+        [/\belevação sustentada\b/gi, "aumento que não passa"]
+      ];
+      var plainWords = applyRules(out, vocabulary, []);
+      out = plainWords.text;
+      notesFromContrast = notesFromContrast.concat(plainWords.notes.map(function (n) {
+        return { from: n.from, to: n.to, why: "termo técnico traduzido" };
+      }));
+      var plain = applyRules(out, PLAIN, notesFromContrast);
       out = plain.text;
       notes = notes.concat(plain.notes.map(function (n) { return { from: n.from, to: n.to, why: "linguagem simples" }; }));
       var short = shorten(out, 26);
@@ -212,9 +281,19 @@
         notes.push({ from: "parágrafo longo", to: "frases curtas", why: short.splits + " frase(s) dividida(s)" });
       }
     } else if (level === "avancado" && intensity > 0.35) {
-      var up = applyRules(out, UPGRADE);
-      out = up.text;
-      notes = notes.concat(up.notes.map(function (n) { return { from: n.from, to: n.to, why: "densidade técnica" }; }));
+      // se o texto está na forma "simples" (só nesse caso), devolve o registro formal
+      var upgradeHits = UPGRADE.reduce(function (acc, r) { return acc + (out.match(r[0]) || []).length; }, 0);
+      if (upgradeHits >= 2) {
+        var up = applyRules(out, UPGRADE);
+        out = up.text;
+        notes = notes.concat(up.notes.map(function (n) { return { from: n.from, to: n.to, why: "registro formal" }; }));
+      }
+      var reversible = applyRules(out, REVERSIBLE_SIMPLE);
+      out = reversible.text;
+      notes = notes.concat(reversible.notes.map(function (n) { return { from: n.from, to: n.to, why: "registro formal" }; }));
+      var adv = applyRules(out, ADVANCED);
+      out = adv.text;
+      notes = notes.concat(adv.notes.map(function (n) { return { from: n.from, to: n.to, why: "densidade técnica" }; }));
       var dense = applyRules(out, DENSE);
       out = dense.text;
       notes = notes.concat(dense.notes.map(function (n) { return { from: n.from, to: n.to, why: "densidade técnica" }; }));
@@ -231,6 +310,7 @@
       if (lower.indexOf(String(t.term).toLowerCase()) !== -1) glossary.push(t);
     });
 
+    out = fixSentenceCase(out);
     var after = complexityOf(out);
     return {
       text: out.trim(),

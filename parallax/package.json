@@ -12,6 +12,8 @@
     "test": "node --test \"tests/*.test.mjs\"",
     "ext": "node scripts/build-extension.mjs",
     "standalone": "node scripts/build-standalone.mjs",
+    "demo": "node scripts/demo.mjs && node scripts/demo-nav.mjs && node scripts/demo-standalone.mjs",
+    "verify": "npm run typecheck && npm test && npm run ext && npm run standalone && npm run demo",
     "ext:test": "node --test \"tests/*.test.mjs\" && node scripts/build-extension.mjs"
   },
   "dependencies": {

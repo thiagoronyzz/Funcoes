@@ -65,6 +65,10 @@ export function SidePanel({ state, pageId }: { state: ParallaxState; pageId: str
         ))}
       </div>
 
+      <div className="shrink-0 px-2.5 pt-2.5">
+        <ModeSelector state={state} />
+      </div>
+
       <div className="scroll-thin min-h-0 flex-1 overflow-y-auto p-2.5">
         {state.mode === "compra" && state.sidePanel === "assistente" && <CommercePanel state={state} pageId={pageId} />}
         {state.sidePanel === "assistente" && state.mode !== "compra" && <AssistantPanel state={state} pageId={pageId} />}
@@ -185,57 +189,6 @@ function AssistantPanel({ state, pageId }: { state: ParallaxState; pageId: strin
         )}
       </div>
 
-      <div className="panel p-2.5">
-        <div className="mb-1.5 flex items-center gap-1.5">
-          <Sparkles className="size-3.5 text-gold" />
-          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink2">modo ativo</span>
-          <span className="ml-auto"><ModeChip mode={state.mode} /></span>
-        </div>
-        <div className="grid grid-cols-5 gap-1">
-          {(["aprendizado", "pesquisa", "compra", "foco", "calma"] as const).map((m) => (
-            <button
-              key={m}
-              type="button"
-              onClick={() => dispatch({ type: "mode", mode: m })}
-              className={cn(
-                "rounded-md border px-1 py-1.5 text-[9.5px] font-medium capitalize transition",
-                state.mode === m ? "border-vio/60 bg-vio/15 text-ink" : "border-line bg-panel2/50 text-dim hover:text-ink"
-              )}
-            >
-              {m === "aprendizado" ? "aprender" : m === "pesquisa" ? "pesquisar" : m === "compra" ? "comprar" : m === "foco" ? "focar" : "calma"}
-            </button>
-          ))}
-        </div>
-        <div className="mt-2 space-y-1.5">
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-[10px] text-dim">nível de reescrita</span>
-            <Segmented
-              value={state.level}
-              onChange={(v) => dispatch({ type: "level", level: v as Level })}
-              options={[
-                { value: "iniciante", label: "iniciante" },
-                { value: "intermediario", label: "médio" },
-                { value: "avancado", label: "avançado" },
-              ]}
-            />
-          </div>
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-[10px] text-dim">intensidade</span>
-            <div className="flex flex-1 items-center gap-2">
-              <input
-                type="range"
-                min={0}
-                max={100}
-                value={Math.round(state.settings.rewriteIntensity * 100)}
-                onChange={(e) => dispatch({ type: "settings", patch: { rewriteIntensity: Number(e.target.value) / 100 } })}
-                className="h-1 flex-1 cursor-pointer appearance-none rounded-full bg-line accent-vio"
-              />
-              <span className="mono w-7 text-right text-[9.5px] text-dim">{Math.round(state.settings.rewriteIntensity * 100)}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {page && (
         <div className="panel p-2.5">
           <SectionTitle icon={<BookOpen className="size-3.5" />} title="nesta página" hint={`${pageStats(page).words} palavras · complexidade ${pageStats(page).complexity}`} />
@@ -307,6 +260,67 @@ function AssistantPanel({ state, pageId }: { state: ParallaxState; pageId: strin
       )}
 
       {quizOpen && page && <QuizModal pageId={page.id} onClose={() => setQuizOpen(false)} />}
+    </div>
+  );
+}
+
+/**
+ * Seletor de modo. Vive no nível do painel (e não dentro do assistente) porque
+ * o modo compra troca o conteúdo do painel — o seletor precisa continuar ali.
+ */
+function ModeSelector({ state }: { state: ParallaxState }) {
+  const { dispatch } = useParallax();
+  return (
+    <div className="panel p-2.5">
+
+        <div className="mb-1.5 flex items-center gap-1.5">
+          <Sparkles className="size-3.5 text-gold" />
+          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink2">modo ativo</span>
+          <span className="ml-auto"><ModeChip mode={state.mode} /></span>
+        </div>
+        <div className="grid grid-cols-5 gap-1">
+          {(["aprendizado", "pesquisa", "compra", "foco", "calma"] as const).map((m) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => dispatch({ type: "mode", mode: m })}
+              className={cn(
+                "rounded-md border px-1 py-1.5 text-[9.5px] font-medium capitalize transition",
+                state.mode === m ? "border-vio/60 bg-vio/15 text-ink" : "border-line bg-panel2/50 text-dim hover:text-ink"
+              )}
+            >
+              {m === "aprendizado" ? "aprender" : m === "pesquisa" ? "pesquisar" : m === "compra" ? "comprar" : m === "foco" ? "focar" : "calma"}
+            </button>
+          ))}
+        </div>
+        <div className="mt-2 space-y-1.5">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[10px] text-dim">nível de reescrita</span>
+            <Segmented
+              value={state.level}
+              onChange={(v) => dispatch({ type: "level", level: v as Level })}
+              options={[
+                { value: "iniciante", label: "iniciante" },
+                { value: "intermediario", label: "médio" },
+                { value: "avancado", label: "avançado" },
+              ]}
+            />
+          </div>
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[10px] text-dim">intensidade</span>
+            <div className="flex flex-1 items-center gap-2">
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={Math.round(state.settings.rewriteIntensity * 100)}
+                onChange={(e) => dispatch({ type: "settings", patch: { rewriteIntensity: Number(e.target.value) / 100 } })}
+                className="h-1 flex-1 cursor-pointer appearance-none rounded-full bg-line accent-vio"
+              />
+              <span className="mono w-7 text-right text-[9.5px] text-dim">{Math.round(state.settings.rewriteIntensity * 100)}</span>
+            </div>
+          </div>
+        </div>
     </div>
   );
 }

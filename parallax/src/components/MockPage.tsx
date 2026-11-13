@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { RewrittenText } from "@/components/RewrittenText";
 import { CompareDock } from "@/components/Compare";
 import { estimateFakeReviews } from "@/core/darkpatterns";
-import { complexityOf, extractKeySentences, LEVEL_META } from "@/core/rewrite";
+import { extractKeySentences, LEVEL_META, rewriteBlock } from "@/core/rewrite";
 import { PRODUCTS, SITES, pagePlainText, pageStats, type Page } from "@/data/sites";
 import { store } from "@/core/store";
 import type { CognitionSnapshot, ModeId, ParallaxState } from "@/core/types";
@@ -41,6 +41,46 @@ export function MockPage({
     const comments = page.blocks.flatMap((b) => b.items ?? []);
     return estimateFakeReviews(comments);
   }, [page]);
+
+  /** densidade real do texto reescrito (mesmo motor que renderiza os parágrafos) */
+  const density = useMemo(() => {
+    const first = page.blocks.find((b) => b.kind === "p" && b.text && !b.variants);
+    if (!first || !enabled) return { before: stats.complexity, after: stats.complexity };
+    const result = rewriteBlock({ text: first.text ?? "", level, intensity: state.settings.rewriteIntensity });
+    return { before: result.complexityBefore, after: result.complexityAfter };
+  }, [page, level, enabled, state.settings.rewriteIntensity, stats.complexity]);
+
+  /**
+   * Calma finita: além de suprimir anúncio/comentário, mostra só os blocos que
+   * carregam a ideia (títulos, primeiro parágrafo de cada seção e destaques).
+   */
+  const visibleBlocks = useMemo(() => {
+    if (mode !== "calma") return page.blocks;
+    const kept = new Set<number>();
+    const seenSections = new Set<string>();
+    let section = "abertura";
+    page.blocks.forEach((b, i) => {
+      if (b.kind === "ad" || b.kind === "comments") {
+        kept.add(i); // viram o aviso "suprimido pelo modo calma"
+        return;
+      }
+      if (b.kind === "h2" || b.kind === "h3") {
+        section = b.text ?? `secao-${i}`;
+        kept.add(i);
+        return;
+      }
+      if (b.kind === "lead" || b.kind === "quote" || b.kind === "callout" || b.kind === "stat") {
+        kept.add(i);
+        return;
+      }
+      // um parágrafo por seção: o resto do detalhe fica guardado
+      if (b.kind === "p" && !seenSections.has(section)) {
+        seenSections.add(section);
+        kept.add(i);
+      }
+    });
+    return page.blocks.filter((_, i) => kept.has(i));
+  }, [mode, page]);
 
   const removed = useMemo(() => {
     let count = 0;
@@ -153,7 +193,7 @@ export function MockPage({
           )}
 
           <div className="page-body">
-            {page.blocks.map((block, idx) => (
+            {visibleBlocks.map((block, idx) => (
               <BlockView
                 key={idx}
                 block={block}
@@ -164,6 +204,11 @@ export function MockPage({
                 site={site}
               />
             ))}
+            {mode === "calma" && (
+              <p className="mb-0 mt-4 text-[10px] text-[#8b8678]">
+                modo calma · {page.blocks.length - visibleBlocks.length} bloco(s) de detalhe guardados — abra quando quiser.
+              </p>
+            )}
           </div>
 
           {page.refs && page.refs.length > 0 && (
@@ -205,7 +250,7 @@ export function MockPage({
               {whyOpen && (
                 <ul className="mb-0 mt-2 space-y-1.5 pl-4 text-[11px] leading-relaxed text-[#55524a]">
                   <li>
-                    Densidade de leitura: <b>{stats.complexity}</b> → <b>{Math.max(8, complexityOf(plain) - (level === "iniciante" ? 22 : level === "avancado" ? -8 : 8))}</b>{" "}
+                    Densidade de leitura: <b>{density.before}</b> → <b>{density.after}</b>{" "}
                     (nível {level})
                   </li>
                   <li>{enabled ? `${stats.words} palavras reprocessadas em ${renderMs} ms, 0 requisições de rede.` : "texto original"}</li>

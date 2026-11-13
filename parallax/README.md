@@ -19,7 +19,14 @@ npm test            # 20 testes: motor, dark patterns e paridade TS ⇄ extensã
 npm run typecheck
 npm run ext         # valida o manifest e empacota extension/dist/*.zip
 npm run standalone  # regenera parallax-standalone.html a partir de dist/
+npm run verify      # tudo acima + roteiro de demonstração (11 passos) no arquivo único
+npm run demo        # só o roteiro: modos, calma, foco, omnibox, atalhos, quiz
 ```
+
+O roteiro de `npm run demo` abre o `parallax-standalone.html` num DOM real (jsdom), clica nos
+botões como um usuário e falha se um modo deixar de mudar a página, se o painel sumir ou se
+aparecer erro de console. Foi ele que pegou dois bugs reais: o seletor de modo desaparecia no
+modo Compra e o arquivo único gerava JS inválido quando o bundle continha `$&`.
 
 O arquivo único **não é editado à mão**: `scripts/build-standalone.mjs` roda o build de produção,
 embute CSS e JS no HTML, verifica que nenhuma referência externa sobrou e falha se sobrar.
@@ -60,7 +67,7 @@ da extensão em 4 trechos × 3 níveis × 3 intensidades: se os dois lados diver
 | **Pesquisa** | resumo extrativo, layout uniforme, referências no estilo escolhido (ABNT/APA/BibTeX), grafo entre fontes |
 | **Compra** | preço real × histórico de 90 dias, reviews filtradas, **dark patterns com o trecho que disparou** |
 | **Foco** | anúncios, comentários e feeds suprimidos (não bloqueados), abas não essenciais dessaturadas, timer adaptativo |
-| **Calma** | dessaturação, contraste reduzido, métricas de ansiedade escondidas, só 4 frases essenciais + respiração 60 s |
+| **Calma** | dessaturação, contraste reduzido, métricas de ansiedade escondidas, feed finito (1 parágrafo por seção), só 4 frases essenciais + respiração 60 s |
 
 Os modos não são botões decorativos: o `MockPage` decide por bloco o que renderizar, e o `engine-strip`
 mostra quantos estímulos foram suprimidos e em quantos milissegundos.
